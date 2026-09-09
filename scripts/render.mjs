@@ -21,6 +21,21 @@ const history = (await readJson(HISTORY, [])) ?? [];
 // rather than something to publish.
 const audit = await readJson(join(ROOT, "reports", "aggregate.json"));
 
+/**
+ * The aggregate is published only once it actually describes the directory.
+ *
+ * A partial sweep is not a small version of the finding, it is a different
+ * claim: "4 of 553 sites" invites the reader to generalise from a sample that
+ * cannot carry it. Until a sweep has covered nearly everything tracked, the
+ * section is absent rather than qualified — the same reason the drift counts
+ * read "none yet" instead of a confident zero.
+ */
+const auditCoverage =
+  audit && report.totals.sites
+    ? (audit.sitesAudited + (audit.sitesUnreachable ?? 0)) / report.totals.sites
+    : 0;
+const auditIsRepresentative = auditCoverage >= 0.9;
+
 const sev = (s) => `<span class="sev ${s}">${s}</span>`;
 
 /**
@@ -195,13 +210,13 @@ const html = `<!doctype html>
   }
 
   ${
-    audit
+    auditIsRepresentative
       ? `<h2>What sites declare</h2>
   <div class="quiet">
     <p style="margin-top:0">A weekly read-only pass in a real browser over the sites this repo tracks —
     loading each page and recording the tools it registers, never calling one. Aggregate only:
     no site is named here, and none of these counts is an accusation about anyone.</p>
-    <p><strong>${audit.sitesAudited}</strong> sites read ·
+    <p><strong>${audit.sitesAudited}</strong> of ${report.totals.sites} sites read ·
        <strong>${audit.toolsSeen}</strong> tools ·
        <strong>${audit.toolsDeclaringAnnotations}</strong> tools declare a safety annotation
        (<strong>${audit.sitesDeclaringAnyAnnotation}</strong> sites) — the public directory records
