@@ -1,0 +1,177 @@
+{
+  "sponsio": 1,
+  "url": "https://export.tools/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "clear_export",
+      "description": "Unload the current chat export and return the page to its empty starting state, clearing the share URL field. Nothing is deleted from the user's device; load again with load_poe_share or load_poe_transcript. Returns JSON: { ok, message }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "download_attachments_zip",
+      "description": "Build a zip containing the loaded transcript plus every attachment and save it to the user's device via the browser download. Requires a chat to be loaded first (load_poe_share or load_poe_transcript). Fetching many attachments can take a while. Returns JSON: { ok, message, filename, attachmentCount, includesTranscript }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_chat_messages",
+      "description": "Read the parsed messages of the loaded Poe chat transcript in order, paginated. Each message has a role (human or bot), its text (truncated to maxChars), and the attachment URLs it carries. Use offset/nextOffset to read further into long conversations. Returns JSON: { loaded, total, offset, hasMore, nextOffset, messages: [{ index, role, text, truncated, attachments }] }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100000,
+            "default": 0,
+            "description": "Zero-based index of the first message to return."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 10,
+            "description": "Maximum number of messages to return."
+          },
+          "maxChars": {
+            "type": "integer",
+            "minimum": 20,
+            "maximum": 4000,
+            "default": 400,
+            "description": "Truncate each message's text to this many characters."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_export_summary",
+      "description": "Summarise the currently loaded Poe chat export: whether anything is loaded, the source file name, message/attachment/image counts, the active view, and the share URL if one was loaded. Call this first to decide whether to load something or inspect what is already there. Returns JSON: { loaded, source, shareUrl, messageCount, attachmentCount, imageCount, view, loading }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_attachments",
+      "description": "List attachment URLs from the loaded Poe chat export, paginated and optionally filtered by kind (image, video, audio, file). Each item includes its index, URL, file name, and kind. Use offset/nextOffset to page through large exports; use download_attachments_zip to fetch everything at once. Returns JSON: { loaded, total, offset, hasMore, nextOffset, attachments: [{ index, url, filename, kind }] }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100000,
+            "default": 0,
+            "description": "Zero-based index of the first attachment to return."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 10,
+            "description": "Maximum number of attachments to return."
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "all",
+              "image",
+              "video",
+              "audio",
+              "file"
+            ],
+            "default": "all",
+            "description": "Only return attachments of this kind."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "load_poe_share",
+      "description": "Load a public poe.com share link to view the conversation and its attachments. Use when the user provides a Poe share URL of the form https://poe.com/s/<share-id>. Replaces whatever is currently loaded; the fetch goes through this site's /api/share endpoint. For a downloaded transcript file use load_poe_transcript instead. Returns JSON: { ok, message, source, messageCount, attachmentCount }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "share_url": {
+            "type": "string",
+            "format": "uri",
+            "pattern": "^https://poe\\.com/s/[A-Za-z0-9_-]+$",
+            "minLength": 19,
+            "maxLength": 2048,
+            "description": "The public Poe share URL to load, exactly of the form https://poe.com/s/<share-id>."
+          }
+        },
+        "required": [
+          "share_url"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "load_poe_transcript",
+      "description": "Load a Poe chat export from its text content instead of the file picker. Accepts the Markdown transcript returned by the @export-chat or @SaveThisChat bots, the JSON returned by @savechats, a saved Poe next-data.json, or a { messages: [{ role, content, attachments }] } JSON export. Replaces whatever is currently loaded. For a poe.com share link use load_poe_share instead. Returns JSON: { ok, message, source, messageCount, attachmentCount }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The full text of the transcript file (.md or .json)."
+          },
+          "filename": {
+            "type": "string",
+            "pattern": "\\.(md|json)$",
+            "default": "chat-export.md",
+            "description": "File name to record as the source; determines how the content is parsed and how it is named in the zip. Must end in .md or .json."
+          }
+        },
+        "required": [
+          "content"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_view_mode",
+      "description": "Switch the loaded conversation between the attachment grid view and the chat transcript view. The chat view is only available when the export contains parsed messages. Returns JSON: { ok, view, message }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "view": {
+            "type": "string",
+            "enum": [
+              "grid",
+              "chat"
+            ],
+            "description": "Which view to show: 'grid' (attachments) or 'chat' (transcript)."
+          }
+        },
+        "required": [
+          "view"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "export.tools",
+  "source": "webmcp.com/api/directory.json"
+}

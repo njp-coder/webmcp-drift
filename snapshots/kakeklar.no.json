@@ -1,0 +1,112 @@
+{
+  "sponsio": 1,
+  "url": "https://kakeklar.no/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "get_shopping_list",
+      "description": "Return the current birthday-party shopping list exactly as shown on the page: every item to buy with quantities, pack sizes, allergy notes, the estimated total cost, and a shareable URL. Use this to read the plan without changing any settings.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "plan_birthday_party",
+      "description": "Configure the Norwegian kids' birthday party (child's age, number of child guests, accompanying adults, venue, duration, main dish, bread split and per-allergy guest counts) and generate the age-aware shopping list. Use this whenever the user wants to set up or adjust the party and see what to buy.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "age": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 14,
+            "description": "The birthday child's age in years (barnets alder)."
+          },
+          "guests": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 40,
+            "description": "Number of child guests attending (antall barn)."
+          },
+          "adults": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 20,
+            "description": "Accompanying adults who stay and also eat (voksne). Defaults to the current value."
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "hjemme",
+              "barnehage"
+            ],
+            "description": "Where the party is held: 'hjemme' (at home) or 'barnehage' (kindergarten). Defaults to the current value."
+          },
+          "duration": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5,
+            "description": "Party length in hours (varighet). Defaults to the current value."
+          },
+          "mainDish": {
+            "type": "string",
+            "enum": [
+              "polser",
+              "pizza"
+            ],
+            "description": "Main dish: 'polser' (hot dogs) or 'pizza'. Defaults to the current value."
+          },
+          "breadRatio": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100,
+            "description": "Percent of the bread that is soft potato lompe; the rest is hot-dog buns. Only relevant when mainDish is polser. Defaults to the current value."
+          },
+          "allergies": {
+            "type": "object",
+            "description": "Number of child guests with each dietary restriction. Omit a key when no guest has that restriction.",
+            "properties": {
+              "gluten": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Child guests with gluten allergy."
+              },
+              "melk": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Child guests with milk allergy."
+              },
+              "egg": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Child guests with egg allergy."
+              },
+              "nott": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Child guests with nut allergy."
+              },
+              "svin": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Child guests who do not eat pork."
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "age",
+          "guests"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "kakeklar.no",
+  "source": "webmcp.com/api/directory.json"
+}

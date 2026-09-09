@@ -1,0 +1,159 @@
+{
+  "sponsio": 1,
+  "url": "https://spree.apparel.monster",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "add_to_cart",
+      "description": "Adds a product variant (specific size/color combination) to the cart. Requires user confirmation. Returns the updated cart summary.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "variant_id": {
+            "type": "integer",
+            "description": "The variant ID (NOT the product ID). Get this from get_product → variants."
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "default": 1
+          }
+        },
+        "required": [
+          "variant_id"
+        ]
+      }
+    },
+    {
+      "name": "apply_coupon",
+      "description": "Apply a promotion or discount code to the current cart. Returns whether the promo was accepted.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "coupon_code": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "coupon_code"
+        ]
+      }
+    },
+    {
+      "name": "get_product",
+      "description": "Fetch full details for one product by slug, including variants (sizes/colors) and stock status.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Product slug, e.g. 'denim-shirt'."
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "get_store_info",
+      "description": "Returns the store name, currency, API base URL, and pointers to all /.well-known/ discovery endpoints.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "go_to_checkout",
+      "description": "Navigates the current tab to the checkout page for the active cart. Requires user confirmation.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_categories",
+      "description": "Returns top-level and nested categories (taxons) of the apparel catalog — Men, Women, Sportswear, Brands, Collections, and promotional groupings.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "parent": {
+            "type": "string",
+            "description": "Optional permalink filter for children of a given parent, e.g. 'categories/men'."
+          }
+        }
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Search for apparel products by name, category (taxon permalink), price range, or stock status. Returns up to 20 results with name, price, and URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Keyword to match against product names, e.g. 'denim shirt'."
+          },
+          "taxon": {
+            "type": "string",
+            "description": "Permalink filter, e.g. 'categories/men/shirts' or 'collections/new-arrivals'."
+          },
+          "min_price": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Minimum price in USD."
+          },
+          "max_price": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Maximum price in USD."
+          },
+          "in_stock": {
+            "type": "boolean",
+            "description": "If true, only return purchasable items in stock.",
+            "default": true
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "popularity",
+              "-popularity",
+              "price",
+              "-price",
+              "name",
+              "-name",
+              "-available_on"
+            ],
+            "description": "Sort order.",
+            "default": "-popularity"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "default": 10
+          }
+        }
+      }
+    },
+    {
+      "name": "view_cart",
+      "description": "Returns the agent's current cart (line items, quantities, totals). Creates an empty cart if none exists.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    }
+  ],
+  "host": "spree.apparel.monster",
+  "source": "webmcp.com/api/directory.json"
+}

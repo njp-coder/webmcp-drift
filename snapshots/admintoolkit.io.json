@@ -1,0 +1,905 @@
+{
+  "sponsio": 1,
+  "url": "https://admintoolkit.io/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "admintoolkit_analyze_email_headers",
+      "description": "Return a read-only email message header report. Accepts pasted RFC 5322 headers. Includes raw Received order, recorded Authentication-Results and caller-configured authserv-id trust; it does not perform cryptographic authentication or reverse-DNS verification.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "anyOf": [
+          {
+            "required": [
+              "headers"
+            ]
+          }
+        ],
+        "properties": {
+          "headers": {
+            "description": "Full email headers to analyze, e.g. 'Authentication-Results: ...'.",
+            "type": "string"
+          },
+          "trusted_authserv_ids": {
+            "description": "Optional authserv-id values explicitly trusted by the caller; without them, Authentication-Results remain unverified recorded claims.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [],
+        "type": "object"
+      }
+    },
+    {
+      "name": "admintoolkit_analyze_http_headers",
+      "description": "Return a read-only HTTP response-header report for a public endpoint. Accepts pasted headers or a public URL. Includes security, cache, framing, duplicate/conflicting header fields, prioritized findings and remediation notes.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "anyOf": [
+          {
+            "required": [
+              "url"
+            ]
+          },
+          {
+            "required": [
+              "headers"
+            ]
+          }
+        ],
+        "properties": {
+          "headers": {
+            "description": "Pasted HTTP response headers, e.g. 'Strict-Transport-Security: max-age=31536000'.",
+            "type": "string"
+          },
+          "url": {
+            "description": "Public URL to fetch for HTTP header analysis, e.g. 'https://example.com/'.",
+            "format": "uri",
+            "type": "string"
+          }
+        },
+        "required": [],
+        "type": "object"
+      }
+    },
+    {
+      "name": "admintoolkit_calculate_cidr_subnet",
+      "description": "Return a read-only local IPv4 or IPv6 CIDR report. Accepts a CIDR block plus optional split prefix and address family. Includes exact BigInt-derived boundaries and address counts, RFC 3021 /31 and host-route /32 semantics, no IPv6 broadcast claim, embedded-IPv4 parsing and a capped subnet preview.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "cidr": {
+            "anyOf": [
+              {
+                "pattern": "^(?:(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])\\.){3}(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])/(?:[0-9]|[12][0-9]|3[0-2])$",
+                "title": "IPv4 CIDR (/0 through /32)"
+              },
+              {
+                "pattern": "^(?=[0-9A-Fa-f:.]+/(?:[0-9]|[1-9][0-9]|1[01][0-9]|12[0-8])$)(?=[^/]*:)[0-9A-Fa-f:.]+/(?:[0-9]|[1-9][0-9]|1[01][0-9]|12[0-8])$",
+                "title": "IPv6 CIDR (/0 through /128)"
+              }
+            ],
+            "description": "CIDR block to calculate, e.g. '192.0.2.0/24'.",
+            "type": "string"
+          },
+          "family": {
+            "description": "Address family: 'auto', 'ipv4', or 'ipv6', e.g. 'ipv4'.",
+            "enum": [
+              "auto",
+              "ipv4",
+              "ipv6"
+            ],
+            "type": "string"
+          },
+          "target": {
+            "description": "Split target prefix length, e.g. '26' for /26 subnets.",
+            "pattern": "^(?:[0-9]|[1-9][0-9]|1[01][0-9]|12[0-8])$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "cidr"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "admintoolkit_check_ai_crawler_access",
+      "description": "Return a read-only RFC 9309 robots.txt access report for AI and search crawlers. Accepts robots.txt text or a public robots.txt URL plus an optional path. Includes merged matching groups, octet-normalized longest-match decisions, per-crawler evidence, transport status, crawler-registry provenance and policy snippets.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "anyOf": [
+          {
+            "required": [
+              "url"
+            ]
+          },
+          {
+            "required": [
+              "content"
+            ]
+          }
+        ],
+        "properties": {
+          "content": {
+            "description": "Pasted robots.txt content to validate locally, e.g. 'User-agent: GPTBot'.",
+            "type": "string"
+          },
+          "crawlers": {
+            "description": "Crawler tokens to evaluate as an array, e.g. ['GPTBot','Google-Extended'].",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "path": {
+            "description": "Path to evaluate against robots.txt rules, e.g. '/' or '/tools/'.",
+            "type": "string"
+          },
+          "url": {
+            "description": "Robots.txt URL or bare domain to fetch, e.g. 'https://example.com/robots.txt'.",
+            "format": "uri",
+            "type": "string"
+          }
+        },
+        "required": [],
+        "type": "object"
+      }
+    },
+    {
+      "name": "admintoolkit_check_bimi_record",
+      "description": "Return a read-only BIMI readiness report for a mail domain. Accepts a domain, selector and optional BIMI, DMARC, logo or certificate evidence. Includes TXT syntax, DMARC dependency, asset URL findings and a conservative BIMI draft.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "dmarc": {
+            "description": "Pasted DMARC TXT record for BIMI policy review, e.g. 'v=DMARC1; p=reject'.",
+            "type": "string"
+          },
+          "domain": {
+            "description": "BIMI domain to check, e.g. 'example.com'.",
+            "pattern": "^(?=.{1,253}\\.?$)(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\\.)+(?:[A-Za-z]{2,63}|[Xx][Nn]--[A-Za-z0-9](?:[A-Za-z0-9-]{0,57}[A-Za-z0-9])?)\\.?$",
+            "type": "string"
+          },
+          "evidence_url": {
+            "description": "BIMI VMC or evidence URL to inspect, e.g. 'https://example.com/vmc.pem'.",
+            "format": "uri",
+            "type": "string"
+          },
+          "logo_url": {
+            "description": "BIMI SVG logo URL to inspect, e.g. 'https://example.com/logo.svg'.",
+            "format": "uri",
+            "type": "string"
+          },
+          "record": {
+            "description": "Pasted BIMI TXT record, e.g. 'v=BIMI1; l=https://example.com/logo.svg'.",
+            "type": "string"
+          },
+          "selector": {
+            "description": "BIMI selector to query, e.g. 'default'.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "domain"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "admintoolkit_check_caa_records",
+      "description": "Return a read-only CAA certificate-authority policy report for a domain. Accepts a domain plus optional CAA records and issuer details. Includes issue, issuewild, iodef, ACME parameters, policy gaps and record-generation guidance.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "ca": {
+            "description": "CA domain for generated CAA records, e.g. 'letsencrypt.org'.",
+            "type": "string"
+          },
+          "domain": {
+            "description": "CAA domain to check, e.g. 'example.com' (no scheme).",
+            "pattern": "^(?=.{1,253}\\.?$)(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\\.)+(?:[A-Za-z]{2,63}|[Xx][Nn]--[A-Za-z0-9](?:[A-Za-z0-9-]{0,57}[A-Za-z0-9])?)\\.?$",
+            "type": "string"
+          },
+          "iodef": {
+            "description": "CAA iodef report destination, e.g. 'mailto:security@example.com'.",
+            "type": "string"
+          },
+          "issuemail": {
+            "description": "CAA issuemail issuer-domain value from RFC 9495, optionally followed by issuer parameters, e.g. 'letsencrypt.org; validationmethods=dns-01'.",
+            "type": "string"
+          },
+          "methods": {
+            "description": "CAA validationmethods value, e.g. 'dns-01'.",
+            "type": "string"
+          },
+          "records": {
+            "description": "CAA records to inspect, one per line, e.g. '0 issue letsencrypt.org'.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "domain"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "admintoolkit_check_email_auth_records",
+      "description": "Return a read-only SPF, DMARC and DKIM report for a mail domain. Accepts a domain plus optional pasted TXT values. Includes syntax, policy strength, alignment, DNS evidence and record-specific warnings.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "dkim_record": {
+            "description": "Pasted DKIM TXT value, e.g. 'v=DKIM1; k=rsa; p=...'.",
+            "type": "string"
+          },
+          "dmarc_record": {
+            "description": "Pasted DMARC TXT record, e.g. 'v=DMARC1; p=reject'.",
+            "type": "string"
+          },
+          "domain": {
+            "description": "Mail domain to check, e.g. 'example.com'.",
+            "pattern": "^(?=.{1,253}\\.?$)(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\\.)+(?:[A-Za-z]{2,63}|[Xx][Nn]--[A-Za-z0-9](?:[A-Za-z0-9-]{0,57}[A-Za-z0-9])?)\\.?$",
+            "type": "string"
+          },
+          "policy": {
+            "description": "Expected DMARC policy value, e.g. 'reject'.",
+            "enum": [
+              "none",
+              "quarantine",
+              "reject"
+            ],
+            "type": "string"
+          },
+          "selector": {
+            "description": "DKIM selector to query, e.g. 's1' or 'default'.",
+            "type": "string"
+          },
+          "selector_mode": {
+            "description": "DKIM selector mode: 'auto', 'manual', or 'none', e.g. 'auto'.",
+            "enum": [
+              "manual",
+              "auto",
+              "none"
+            ],
+            "type": "string"
+          },
+          "spf_record": {
+            "description": "Pasted SPF TXT record, e.g. 'v=spf1 redirect=spf.example.com'.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "domain"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "admintoolkit_check_mta_sts_policy",
+      "description": "Return a read-only MTA-STS deployment report for a mail domain. Accepts a domain plus optional TXT, policy, MX and TLS-RPT evidence. Includes mode, max-age, syntax, id consistency, MX coverage, conformance findings and remediation warnings.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "dns_txt": {
+            "description": "Pasted _mta-sts TXT value, e.g. 'v=STSv1; id=20260713'.",
+            "type": "string"
+          },
+          "domain": {
+            "description": "Mail domain for MTA-STS checks, e.g. 'example.com'.",
+            "pattern": "^(?=.{1,253}\\.?$)(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\\.)+(?:[A-Za-z]{2,63}|[Xx][Nn]--[A-Za-z0-9](?:[A-Za-z0-9-]{0,57}[A-Za-z0-9])?)\\.?$",
+            "type": "string"
+          },
+          "mode": {
+            "description": "Generated MTA-STS policy mode: 'testing', 'enforce', or 'none', e.g. 'testing'.",
+            "enum": [
+              "testing",
+              "enforce",
+              "none"
+            ],
+            "type": "string"
+          },
+          "mx_hosts": {
+            "description": "Known MX hostnames, one per line, e.g. 'mail.example.com'.",
+            "type": "string"
+          },
+          "policy": {
+            "description": "Pasted MTA-STS policy text, e.g. 'version: STSv1'.",
+            "type": "string"
+          },
+          "tls_rpt": {
+            "description": "Pasted TLS-RPT TXT value, e.g. 'v=TLSRPTv1; rua=mailto:tls@example.com'.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "domain"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "admintoolkit_check_mx_records",
+      "description": "Return a read-only MX routing report for a mail domain. Accepts a domain name. Includes exchanger hosts, preferences, Null MX, CNAME risk, address resolution and actionable mail-routing warnings.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "domain": {
+            "description": "Mail domain to check via DNS MX lookup, e.g. 'example.com'.",
+            "pattern": "^(?=.{1,253}\\.?$)(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\\.)+(?:[A-Za-z]{2,63}|[Xx][Nn]--[A-Za-z0-9](?:[A-Za-z0-9-]{0,57}[A-Za-z0-9])?)\\.?$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "domain"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "admintoolkit_check_redirect_indexability",
+      "description": "Return a read-only redirect, canonical and indexability report for a public URL. Accepts a URL. Includes bounded per-hop status and SSRF evidence, final URL, HTML and HTTP canonical hints, robots meta and scoped X-Robots-Tag directives, hreflang, separate sitemap reachability and membership, and evidence completeness.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "url": {
+            "description": "Public URL to check for redirects and indexability, e.g. 'https://example.com/'.",
+            "format": "uri",
+            "type": "string"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "admintoolkit_check_smtp_tls_readiness",
+      "description": "Return a read-only SMTP TLS delivery readiness report for a mail domain. Accepts a domain and optional MTA-STS, TLS-RPT, DANE and FCrDNS checks. Includes MX, STARTTLS, certificate, policy-alignment and downgrade-risk findings.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "check_dane": {
+            "description": "Include DANE/TLSA checks; pass true or false, e.g. true.",
+            "type": "boolean"
+          },
+          "check_fcrdns": {
+            "description": "Include forward-confirmed reverse DNS checks; pass true or false, e.g. true.",
+            "type": "boolean"
+          },
+          "check_mta_sts": {
+            "description": "Include MTA-STS checks; pass true or false, e.g. true.",
+            "type": "boolean"
+          },
+          "check_tls_rpt": {
+            "description": "Include TLS-RPT checks; pass true or false, e.g. true.",
+            "type": "boolean"
+          },
+          "domain": {
+            "description": "Mail domain for SMTP TLS readiness checks, e.g. 'example.com'.",
+            "pattern": "^(?=.{1,253}\\.?$)(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\\.)+(?:[A-Za-z]{2,63}|[Xx][Nn]--[A-Za-z0-9](?:[A-Za-z0-9-]{0,57}[A-Za-z0-9])?)\\.?$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "domain"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "admintoolkit_check_tls_configuration",
+      "description": "Return a read-only public TLS configuration report for a host. Accepts host and port plus optional HSTS evidence. Includes separate exact-version probes, a distinct verified default handshake, SAN identity/trust evidence, negotiated cipher and ALPN evidence, and HTTPS-only HSTS checks; it does not claim cipher or ALPN enumeration.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "host": {
+            "anyOf": [
+              {
+                "pattern": "^(?=.{1,253}\\.?$)[A-Za-z0-9](?:[A-Za-z0-9.-]{0,251}[A-Za-z0-9])?\\.?$",
+                "title": "DNS hostname"
+              },
+              {
+                "pattern": "^(?:(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])\\.){3}(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])$",
+                "title": "IPv4 literal"
+              },
+              {
+                "pattern": "^(?=[0-9A-Fa-f:]+$)(?=.*:)[0-9A-Fa-f:]+$",
+                "title": "IPv6 literal"
+              }
+            ],
+            "description": "Public TLS DNS host or IP literal to check, e.g. 'example.com' or '1.1.1.1' (no scheme; private/reserved targets are rejected).",
+            "type": "string"
+          },
+          "hsts": {
+            "description": "Optional pasted HSTS header, e.g. 'max-age=31536000; includeSubDomains'.",
+            "type": "string"
+          },
+          "port": {
+            "description": "TLS port number to check, e.g. '443'.",
+            "pattern": "^(?:[1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "host"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "admintoolkit_check_tls_rpt_policy",
+      "description": "Return a read-only SMTP TLS Reporting report for a mail domain. Accepts a domain plus optional TLS-RPT TXT or RUA values. Includes version syntax, reporting destinations, external-provider use, conformance findings and remediation warnings.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "dns_txt": {
+            "description": "Pasted _smtp._tls TXT value, e.g. 'v=TLSRPTv1; rua=mailto:tls@example.com'.",
+            "type": "string"
+          },
+          "domain": {
+            "description": "Mail domain for TLS-RPT checks, e.g. 'example.com'.",
+            "pattern": "^(?=.{1,253}\\.?$)(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\\.)+(?:[A-Za-z]{2,63}|[Xx][Nn]--[A-Za-z0-9](?:[A-Za-z0-9-]{0,57}[A-Za-z0-9])?)\\.?$",
+            "type": "string"
+          },
+          "rua": {
+            "description": "Generated TLS-RPT rua destination, e.g. 'mailto:tls@example.com'.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "domain"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "admintoolkit_decode_edid_data",
+      "description": "Return a read-only local EDID 1.3/1.4 and bounded CTA report. Includes identity, checksums, feature-qualified preferred timing, detailed timings, SVD/SAD and speaker data, selected CTA extended blocks, and lossless raw unknown blocks from hex or file content. It does not infer Atmos, DTS:X, dynamic HDR, Dolby Vision, HDR10+, FRL, DSC, VRR, ALLM, or QMS from unimplemented evidence.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "anyOf": [
+          {
+            "required": [
+              "file"
+            ]
+          },
+          {
+            "required": [
+              "edid_hex"
+            ]
+          }
+        ],
+        "properties": {
+          "edid_hex": {
+            "description": "Pasted EDID hex string, e.g. '00ffffffffffff00...'.",
+            "type": "string"
+          },
+          "file": {
+            "description": "EDID file contents as text or hex, e.g. a 128-byte EDID block.",
+            "type": "string"
+          }
+        },
+        "required": [],
+        "type": "object"
+      }
+    },
+    {
+      "name": "admintoolkit_decode_ssl_certificate",
+      "description": "Return a read-only X.509 TLS certificate report. Accepts PEM text or public TLS host details. Includes subject, issuer, SANs, validity, fingerprints, key usage, extensions, hostname and certificate-health findings.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "anyOf": [
+          {
+            "required": [
+              "host"
+            ]
+          },
+          {
+            "required": [
+              "pem"
+            ]
+          }
+        ],
+        "properties": {
+          "host": {
+            "description": "TLS certificate host to connect to, e.g. 'example.com'.",
+            "pattern": "^(?=.{1,253}\\.?$)[A-Za-z0-9](?:[A-Za-z0-9.-]{0,251}[A-Za-z0-9])?\\.?$",
+            "type": "string"
+          },
+          "pem": {
+            "description": "Certificate PEM text to decode, e.g. '-----BEGIN CERTIFICATE-----'.",
+            "type": "string"
+          },
+          "port": {
+            "description": "TLS certificate port number, e.g. '443'.",
+            "pattern": "^(?:[1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$",
+            "type": "string"
+          },
+          "protocol": {
+            "description": "Certificate protocol value, currently 'TLS', e.g. 'TLS'.",
+            "enum": [
+              "TLS"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [],
+        "type": "object"
+      }
+    },
+    {
+      "name": "admintoolkit_generate_tlsa_record",
+      "description": "Return a read-only DANE TLSA record report. Accepts host, port, protocol, usage, selector, matching type and optional certificate data. Includes owner name, digest, generated TLSA data and DNS comparison findings.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "file": {
+            "description": "Certificate file content to parse, e.g. PEM text from a .crt file.",
+            "type": "string"
+          },
+          "host": {
+            "description": "TLS service host for TLSA generation, e.g. 'mail.example.com'.",
+            "pattern": "^(?=.{1,253}\\.?$)[A-Za-z0-9](?:[A-Za-z0-9.-]{0,251}[A-Za-z0-9])?\\.?$",
+            "type": "string"
+          },
+          "matching": {
+            "description": "TLSA matching type: 0=full, 1=SHA-256, 2=SHA-512.",
+            "enum": [
+              "0",
+              "1",
+              "2"
+            ],
+            "type": "string"
+          },
+          "pem": {
+            "description": "Certificate PEM, DER base64, or hex input, e.g. '-----BEGIN CERTIFICATE-----'.",
+            "type": "string"
+          },
+          "port": {
+            "description": "TLS service port number, e.g. '25' or '443'.",
+            "pattern": "^(?:[1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$",
+            "type": "string"
+          },
+          "protocol": {
+            "description": "TLSA transport protocol: 'tcp' or 'udp', e.g. 'tcp'.",
+            "enum": [
+              "tcp",
+              "udp"
+            ],
+            "type": "string"
+          },
+          "selector": {
+            "description": "TLSA selector: 0=full certificate or 1=SPKI, e.g. '1'.",
+            "enum": [
+              "0",
+              "1"
+            ],
+            "type": "string"
+          },
+          "usage": {
+            "description": "TLSA certificate usage: 0=PKIX-TA, 1=PKIX-EE, 2=DANE-TA, 3=DANE-EE.",
+            "enum": [
+              "0",
+              "1",
+              "2",
+              "3"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "host"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "admintoolkit_show_public_ip_context",
+      "description": "Return a read-only same-origin IP context report for the current request. Requires no input. Includes the canonical primary address, directly observed peer, trusted-proxy decision, preserved forwarded-header claims and observed address family; one request path does not prove dual-stack capability and no third-party Geo-IP lookup is performed.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {},
+        "required": [],
+        "type": "object"
+      }
+    },
+    {
+      "name": "admintoolkit_validate_a2a_agent_card",
+      "description": "Return a read-only version-aware A2A Agent Card validation report. Includes v0.2, v0.3 and v1.0 structure plus discovery-path evidence without claiming endpoint, authentication or signature conformance.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "anyOf": [
+          {
+            "required": [
+              "url"
+            ]
+          },
+          {
+            "required": [
+              "json"
+            ]
+          }
+        ],
+        "properties": {
+          "json": {
+            "description": "Pasted Agent Card JSON to validate locally, e.g. '{\"name\":\"Agent\"}'.",
+            "type": "string"
+          },
+          "url": {
+            "description": "Agent Card URL or bare domain to fetch, e.g. 'https://example.com/.well-known/agent-card.json'.",
+            "format": "uri",
+            "type": "string"
+          }
+        },
+        "required": [],
+        "type": "object"
+      }
+    },
+    {
+      "name": "admintoolkit_validate_arc_chain",
+      "description": "Return a read-only ARC structural validation report. Accepts pasted ARC-Seal, ARC-Message-Signature and ARC-Authentication-Results fields. Includes structural completeness, instance continuity and recorded cv state; cryptographic validation and sealer trust are not evaluated.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "anyOf": [
+          {
+            "required": [
+              "headers"
+            ]
+          }
+        ],
+        "properties": {
+          "headers": {
+            "description": "Message headers containing ARC fields, e.g. 'ARC-Seal: i=1; ...'.",
+            "type": "string"
+          }
+        },
+        "required": [],
+        "type": "object"
+      }
+    },
+    {
+      "name": "admintoolkit_validate_dane_records",
+      "description": "Return a read-only DANE service validation report. Accepts service host, port, protocol, TLSA records, DNSSEC status and optional certificate evidence. Includes owner names, TLSA syntax, DNSSEC dependency and certificate-match findings.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "dnssec": {
+            "description": "DNSSEC validation status: '', 'secure', or 'bogus', e.g. 'secure'.",
+            "enum": [
+              "",
+              "secure",
+              "bogus"
+            ],
+            "type": "string"
+          },
+          "host": {
+            "description": "DANE service host to validate, e.g. 'mail.example.com'.",
+            "pattern": "^(?=.{1,253}\\.?$)[A-Za-z0-9](?:[A-Za-z0-9.-]{0,251}[A-Za-z0-9])?\\.?$",
+            "type": "string"
+          },
+          "mode": {
+            "description": "DANE validation mode: 'smtp' or 'tls', e.g. 'smtp'.",
+            "enum": [
+              "smtp",
+              "tls"
+            ],
+            "type": "string"
+          },
+          "port": {
+            "description": "DANE service port number, e.g. '25' or '443'.",
+            "pattern": "^(?:[1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$",
+            "type": "string"
+          },
+          "protocol": {
+            "description": "DANE transport protocol: 'tcp' or 'udp', e.g. 'tcp'.",
+            "enum": [
+              "tcp",
+              "udp"
+            ],
+            "type": "string"
+          },
+          "tlsa_records": {
+            "description": "TLSA records to validate, one per line, e.g. '3 1 1 <sha256>'.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "host"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "admintoolkit_validate_dnssec_records",
+      "description": "Return a read-only DNSSEC evidence report for a domain. Accepts a domain plus optional DS, DNSKEY, RRSIG and resolver-status data. Includes chain readiness, algorithms, missing records, validation findings and warnings.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "dnskey_records": {
+            "description": "DNSKEY records for the zone, one per line, e.g. '257 3 13 <key>'.",
+            "type": "string"
+          },
+          "domain": {
+            "description": "DNSSEC domain to validate, e.g. 'example.com'.",
+            "pattern": "^(?=.{1,253}\\.?$)(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\\.)+(?:[A-Za-z]{2,63}|[Xx][Nn]--[A-Za-z0-9](?:[A-Za-z0-9-]{0,57}[A-Za-z0-9])?)\\.?$",
+            "type": "string"
+          },
+          "ds_records": {
+            "description": "DS records for the domain, one per line, e.g. '12345 13 2 <digest>'.",
+            "type": "string"
+          },
+          "rrsig_records": {
+            "description": "RRSIG records for validation context, one per line, e.g. 'example.com. RRSIG ...'.",
+            "type": "string"
+          },
+          "status": {
+            "description": "Resolver validation status: '', 'secure', or 'bogus', e.g. 'secure'.",
+            "enum": [
+              "",
+              "secure",
+              "bogus"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "domain"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "admintoolkit_validate_llms_txt",
+      "description": "Validate the required initial H1, optional summary and project details, and any H2 resource lists with link titles, URLs, optional descriptions, findings, and source-line evidence.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "anyOf": [
+          {
+            "required": [
+              "url"
+            ]
+          },
+          {
+            "required": [
+              "content"
+            ]
+          }
+        ],
+        "properties": {
+          "content": {
+            "description": "Pasted llms.txt Markdown content to validate locally, e.g. '# Example'.",
+            "type": "string"
+          },
+          "url": {
+            "description": "llms.txt URL or bare domain to fetch, e.g. 'https://example.com/llms.txt'.",
+            "format": "uri",
+            "type": "string"
+          }
+        },
+        "required": [],
+        "type": "object"
+      }
+    },
+    {
+      "name": "admintoolkit_validate_security_txt",
+      "description": "Return a read-only RFC 9116 security.txt report. Accepts pasted content or a public security.txt URL plus optional contact fields. Includes contact, expiry, canonical, encryption, policy, language fields, findings and draft output.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "anyOf": [
+          {
+            "required": [
+              "url"
+            ]
+          },
+          {
+            "required": [
+              "content"
+            ]
+          }
+        ],
+        "properties": {
+          "contact": {
+            "anyOf": [
+              {
+                "format": "uri"
+              },
+              {
+                "format": "email"
+              }
+            ],
+            "description": "Generated Contact field value, e.g. 'mailto:security@example.com'.",
+            "type": "string"
+          },
+          "content": {
+            "description": "Pasted security.txt content, e.g. 'Contact: mailto:security@example.com'.",
+            "type": "string"
+          },
+          "encryption": {
+            "description": "Generated Encryption URL value, e.g. 'https://example.com/pgp.txt'.",
+            "format": "uri",
+            "type": "string"
+          },
+          "pgp_key": {
+            "description": "Generated PGP key identifier, e.g. 'openpgp4fpr:ABCD...'.",
+            "type": "string"
+          },
+          "policy": {
+            "description": "Generated Policy URL value, e.g. 'https://example.com/security-policy'.",
+            "format": "uri",
+            "type": "string"
+          },
+          "url": {
+            "description": "Public security.txt URL or bare domain, e.g. 'https://example.com/.well-known/security.txt'.",
+            "format": "uri",
+            "type": "string"
+          }
+        },
+        "required": [],
+        "type": "object"
+      }
+    },
+    {
+      "name": "admintoolkit_validate_webmcp_tool",
+      "description": "Return a read-only WebMCP report for pasted or fetched source. Includes declarative and imperative static-source evidence separately from caller-provided runtime observation; pasted JavaScript is never executed and active runtime tools are never inferred from source alone.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "anyOf": [
+          {
+            "required": [
+              "url"
+            ]
+          },
+          {
+            "required": [
+              "source"
+            ]
+          }
+        ],
+        "properties": {
+          "source": {
+            "description": "Pasted HTML or JavaScript source to validate locally, e.g. 'data-tool-name=demo'.",
+            "type": "string"
+          },
+          "url": {
+            "description": "Public page URL to fetch for WebMCP validation, e.g. 'https://example.com/'.",
+            "format": "uri",
+            "type": "string"
+          }
+        },
+        "required": [],
+        "type": "object"
+      }
+    }
+  ],
+  "host": "admintoolkit.io",
+  "source": "webmcp.com/api/directory.json"
+}

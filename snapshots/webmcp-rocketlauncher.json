@@ -1,0 +1,144 @@
+{
+  "sponsio": 1,
+  "url": "https://bandarra.me/apps/webmcp-rocketlauncher/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "abort_sequence",
+      "description": "Aborts the sequence and resets to IDLE. Valid from any state during the sequence.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "calculate_fuel",
+      "description": "Calculates the required fuel amount and oxidizer ratio based on the target trajectory.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "trajectory": {
+            "type": "string",
+            "description": "Launch destination, e.g. \"Moon\", \"Mars\", \"ISS\"."
+          }
+        },
+        "required": [
+          "trajectory"
+        ]
+      }
+    },
+    {
+      "name": "get_page_state",
+      "description": "Returns the current rocket state (status and fuel level). If the user asks to launch a rocket, automatically execute this step first without asking for confirmation.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "ignite_engines",
+      "description": "Fires the rocket engines, transitioning from PREPARED to LAUNCHED. Only valid when status is PREPARED — follow the full prerequisite chain first.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "load_fuel",
+      "description": "Loads propellants. Transitions from DIAGNOSTICS to FUELED. Only valid when status is DIAGNOSTICS.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "description": "Fuel amount in tons."
+          },
+          "oxidizer_ratio": {
+            "type": "number",
+            "description": "Oxidizer ratio (e.g., 2.5)."
+          }
+        },
+        "required": [
+          "amount",
+          "oxidizer_ratio"
+        ]
+      }
+    },
+    {
+      "name": "post_comment",
+      "description": "Leave a blog post comment",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string"
+          },
+          "website": {
+            "type": "string"
+          },
+          "author_name": {
+            "type": "string"
+          },
+          "author_email": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "author_name",
+          "text"
+        ]
+      }
+    },
+    {
+      "name": "prepare_launch",
+      "description": "Transitions the system from FUELED to PREPARED. Requires the user's 4-digit auth_code — ask the user, never guess it. Only valid when status is FUELED.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "auth_code": {
+            "type": "string",
+            "description": "4-digit authorization code. Must be obtained from the user."
+          },
+          "trajectory": {
+            "type": "string",
+            "description": "Launch destination, e.g. \"Moon\" or \"Mars\"."
+          }
+        },
+        "required": [
+          "auth_code",
+          "trajectory"
+        ]
+      }
+    },
+    {
+      "name": "reset_system",
+      "description": "Resets the system to IDLE with full fuel. Valid from any state.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "run_diagnostics",
+      "description": "Runs system checks. Transitions from IDLE to DIAGNOSTICS. Only valid when status is IDLE.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    }
+  ],
+  "host": "webmcp-rocketlauncher",
+  "source": "webmcp.com/api/directory.json"
+}

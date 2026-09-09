@@ -1,0 +1,194 @@
+{
+  "sponsio": 1,
+  "url": "https://hopi.co.uk/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "hopi_directory",
+      "description": "List all of Hopi's agent-callable tools (name, page URL, category, description). Call this first to discover the catalogue, then open a tool's url and invoke the tool named there.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "description": "Optional category filter, e.g. money, maths, convert, text, health"
+          }
+        }
+      }
+    },
+    {
+      "name": "hopi_event_wine_calculator",
+      "description": "Work out how many bottles of red, white and Champagne to buy for an event, from the number of guests and glasses per guest. Ticking different wines splits a colour into one wine per glass, each poured once for every guest.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "guests": {
+            "type": "number",
+            "description": "Number of guests"
+          },
+          "redGlasses": {
+            "type": "number",
+            "description": "Glasses of red per guest"
+          },
+          "redSize": {
+            "type": "number",
+            "description": "Red glass size in ml: 125, 175 or 250"
+          },
+          "redDifferent": {
+            "type": "boolean",
+            "description": "Serve a different red for each glass"
+          },
+          "whiteGlasses": {
+            "type": "number",
+            "description": "Glasses of white per guest"
+          },
+          "whiteSize": {
+            "type": "number",
+            "description": "White glass size in ml: 125, 175 or 250"
+          },
+          "whiteDifferent": {
+            "type": "boolean",
+            "description": "Serve a different white for each glass"
+          },
+          "sparklingGlasses": {
+            "type": "number",
+            "description": "Glasses of Champagne or sparkling per guest"
+          },
+          "sparklingSize": {
+            "type": "number",
+            "description": "Sparkling glass size in ml: 100, 125 or 150"
+          },
+          "sparklingDifferent": {
+            "type": "boolean",
+            "description": "Serve a different sparkling for each glass"
+          }
+        },
+        "required": [
+          "guests"
+        ]
+      }
+    },
+    {
+      "name": "hopi_inflation_calculator",
+      "description": "Adjust a money amount for UK inflation. Mode 'cpi' uses the ONS monthly CPI index (2015 = 100) between two months from January 1988 to July 2026 and returns the adjusted value, total change and average annual rate. Mode 'custom' compounds a chosen annual rate over a number of years. Amounts in GBP.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "cpi",
+              "custom"
+            ],
+            "description": "'cpi' uses the ONS CPI index between two months; 'custom' uses your own rate"
+          },
+          "amount": {
+            "type": "number",
+            "minimum": 0,
+            "description": "The money amount to adjust"
+          },
+          "fromMonth": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12,
+            "description": "CPI mode: starting month (1 to 12)"
+          },
+          "fromYear": {
+            "type": "integer",
+            "minimum": 1988,
+            "maximum": 2026,
+            "description": "CPI mode: starting year (1988 to 2026)"
+          },
+          "toMonth": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12,
+            "default": 7,
+            "description": "CPI mode: ending month (1 to 12, default is the latest month)"
+          },
+          "toYear": {
+            "type": "integer",
+            "minimum": 1988,
+            "maximum": 2026,
+            "default": 2026,
+            "description": "CPI mode: ending year (default is the latest year)"
+          },
+          "ratePercent": {
+            "type": "number",
+            "minimum": -50,
+            "maximum": 100,
+            "description": "Custom mode: annual inflation rate as a percentage (-50 to 100)"
+          },
+          "years": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 200,
+            "description": "Custom mode: number of years (0 to 200)"
+          }
+        },
+        "required": [
+          "mode",
+          "amount"
+        ],
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "mode": {
+                  "const": "cpi"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "fromMonth",
+                "fromYear"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "mode": {
+                  "const": "custom"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "ratePercent",
+                "years"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "hopi_search",
+      "description": "Search Hopi's tools by keyword and get the best matches (title, page URL, category, description). Use this when you know the task but not the exact tool, e.g. 'kg to stone', 'take home pay', 'convert hex to rgb'. Open a result's url to use it.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search keywords, e.g. 'convert kilograms to stone'"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum results to return (default 10)"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "hopi.co.uk",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,82 @@
+{
+  "sponsio": 1,
+  "url": "https://airportloungelist.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "get_airport_lounges",
+      "description": "List every lounge at one airport by its 3-letter IATA code (e.g. 'LHR', 'SIN', 'JFK'), plus the airport's location and lounge count.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "iata": {
+            "type": "string",
+            "description": "3-letter IATA airport code"
+          }
+        },
+        "required": [
+          "iata"
+        ]
+      }
+    },
+    {
+      "name": "get_lounge_details",
+      "description": "Look up one airport lounge by its Airport Lounge List slug (e.g. 'plaza-premium-lounge-sin-terminal-1'). Returns location, hours, amenities and who can get in.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Lounge slug from a /lounges/<slug> URL"
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "navigate_to",
+      "description": "Move the browser to another page on Airport Lounge List, e.g. '/lounges/<slug>', '/airports/<slug>', '/networks/priority-pass', '/amenities/showers', '/access/credit-cards' or '/compare'.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Site-relative path starting with /"
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    },
+    {
+      "name": "search_lounges",
+      "description": "Search every airport lounge in the directory by name, airport, city, country or IATA code (e.g. 'Heathrow', 'Plaza Premium SIN', 'Centurion'). Returns a page of matches with airport, terminal, day-pass availability and a link to each lounge.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Free-text search, e.g. 'Priority Pass LHR'"
+          },
+          "page": {
+            "type": "integer",
+            "description": "Result page, 1-based",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "airportloungelist.com",
+  "source": "webmcp.com/api/directory.json"
+}

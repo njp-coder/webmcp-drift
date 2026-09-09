@@ -1,0 +1,140 @@
+{
+  "sponsio": 1,
+  "url": "https://pkaso.ir/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "browse_blog",
+      "description": "Open the blog list UI in this tab. Optionally filter by category or tag slug from list_blog_categories / search results.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "description": "Optional category slug hub to open."
+          },
+          "tag": {
+            "type": "string",
+            "description": "Optional tag slug hub to open. Ignored when category is set."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_page_context",
+      "description": "Return safe context for the open Pkaso tab: route slug, params, path, document title, locale, whether the user appears signed in (boolean only), unread message badge count, and PWA standalone mode. Call this first when planning actions.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_blog_categories",
+      "description": "List active blog categories with slugs and names. Use category slugs with search_blog_posts or browse_blog.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_mini_apps",
+      "description": "List public Pkaso mini-apps the user can open. Returns route slugs, titles, categories, and premium flags. Use before navigate_to_app when choosing a destination.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "navigate_to_app",
+      "description": "Navigate the open Pkaso tab to a public app or core page by route slug (for example home, blog, search, consultation). Prefer list_mini_apps or site_search to discover destinations. For blog posts use open_blog_post; for blog category/tag hubs use browse_blog. Call get_page_context when you need the current tab state.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Route slug such as home, blog, search, or a mini-app route from list_mini_apps."
+          }
+        },
+        "required": [
+          "slug"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "open_blog_post",
+      "description": "Open a published blog article in this tab by its post slug (from search_blog_posts).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Post slug, for example from search_blog_posts results."
+          }
+        },
+        "required": [
+          "slug"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_blog_posts",
+      "description": "Search published Pkaso blog posts by keyword and optional category/tag slug. Returns compact post summaries (slug, title, excerpt). Use open_blog_post to open one result in the tab.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string",
+            "description": "Search keywords (Persian or English). Optional; omit to list recent posts."
+          },
+          "category": {
+            "type": "string",
+            "description": "Optional category slug from list_blog_categories."
+          },
+          "tag": {
+            "type": "string",
+            "description": "Optional tag slug."
+          },
+          "page": {
+            "type": "integer",
+            "description": "1-based page number (10 posts per page). Default 1.",
+            "minimum": 1
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "site_search",
+      "description": "Universal Pkaso search across mini-apps, blog posts, courses, podcasts, forums, and shortcuts. Returns compact hits with an open hint: use open_blog_post or navigate_to_app as indicated; for method external only show the URL to the user (do not auto-open).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search keywords in Persian or English."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "pkaso.ir",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,126 @@
+{
+  "sponsio": 1,
+  "url": "https://aifoc.us/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "contact_paul",
+      "description": "Compose an email to Paul Kinlan (the author of aifoc.us) at paul@aifoc.us. Use this whenever the user wants to get in touch, ask a question, share feedback, or propose something. Opens the user's mail client with a pre-filled draft; the user reviews and sends it themselves.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "subject": {
+            "type": "string",
+            "description": "Subject line for the email."
+          },
+          "body": {
+            "type": "string",
+            "description": "Message body. Write it as the user would, in the first person."
+          }
+        },
+        "required": [
+          "subject",
+          "body"
+        ]
+      }
+    },
+    {
+      "name": "inspect_image_c2pa",
+      "description": "Fetch a single image (by CSS selector or URL) and return its fully decoded C2PA manifest store: every manifest's claim, assertions (e.g. c2pa.actions edit history, schema.org authorship), and the COSE signature details (algorithm and signing-certificate identity). Provide exactly one of `selector` or `url`. Note: the signature is decoded but NOT cryptographically verified.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "selector": {
+            "type": "string",
+            "maxLength": 8192,
+            "description": "CSS selector for an <img> element on the page."
+          },
+          "url": {
+            "type": "string",
+            "maxLength": 8192,
+            "description": "Image URL (absolute, or relative to the current page) to fetch and inspect."
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "list_articles",
+      "description": "List essays published on aifoc.us, most recent first. Use this to give the user an overview of available articles or to pick something to read in full with read_article.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "description": "Maximum number of articles to return (default 20).",
+            "minimum": 1,
+            "maximum": 100
+          }
+        }
+      }
+    },
+    {
+      "name": "read_article",
+      "description": "Fetch the full text of an article on aifoc.us given its URL (from list_articles or search_articles). Returns the article's title and body as plain text.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "Absolute or site-relative URL of the article, e.g. https://aifoc.us/a-link-is-all-you-need/ or /a-link-is-all-you-need/."
+          }
+        },
+        "required": [
+          "url"
+        ]
+      }
+    },
+    {
+      "name": "scan_images_c2pa",
+      "description": "Scan every <img> on the current page for C2PA Content Credentials (content provenance metadata) and return a per-image summary: whether a manifest is present, the claim generator (the tool that produced or edited the image), the title, and the signer name. Use this to find which images on a page carry provenance data. Note: provenance is decoded but NOT cryptographically verified.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 25,
+            "description": "Maximum number of images to fetch and scan (default 25, max 100)."
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "search_articles",
+      "description": "Search essays on aifoc.us by keyword. Matches against article titles and summaries. Returns titles, URLs, dates and short summaries — use read_article to fetch the full body of a match.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Free-text search query."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum number of matches to return (default 10).",
+            "minimum": 1,
+            "maximum": 50
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "aifoc.us",
+  "source": "webmcp.com/api/directory.json"
+}

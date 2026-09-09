@@ -1,0 +1,99 @@
+{
+  "sponsio": 1,
+  "url": "https://www.pyrra.net/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "get-blog-post",
+      "description": "Get the complete source Markdown of one Pyrra article. First call list-blog-posts to find a post, then pass the final filename segment without .html, for example \"vereinswebsite-erstellen\". Returns frontmatter and full text for accurate answers and citations.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Blog post slug without a path or file extension"
+          }
+        },
+        "required": [
+          "slug"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get-site-context",
+      "description": "Get authoritative Markdown context about Pyrra and Felix Hans. Use concise mode for site facts and URL discovery; use full mode only when the complete article corpus is needed.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "concise",
+              "full"
+            ],
+            "description": "concise returns llms.txt; full returns the complete Markdown corpus"
+          }
+        },
+        "required": [
+          "mode"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list-blog-posts",
+      "description": "List all writing published on pyrra.net — nonprofit website guides plus the clearly separated engineering and security notes in Felix’ Lab. Returns title, URL, publication date, category and summary as JSON.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "send-contact-message",
+      "description": "Send a message to Felix Hans (Pyrra web studio) by email — a project inquiry, a question about the BFSG accessibility check, a security disclosure or general contact. Felix replies to the provided email address. Only send after the user has confirmed the message content. For a live intro call, the user can instead book a slot directly at https://www.cal.eu/pyrra-pm76o3.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "description": "Name of the sender, between 1 and 100 characters"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 160,
+            "description": "Valid email address of the sender, at most 160 characters — replies go here"
+          },
+          "message": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 5000,
+            "description": "The message as plain text, between 1 and 5000 characters"
+          },
+          "topic": {
+            "type": "string",
+            "maxLength": 120,
+            "description": "Optional short topic, e.g. 'New website', 'BFSG check', 'Security finding'"
+          }
+        },
+        "required": [
+          "name",
+          "email",
+          "message"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "pyrra.net",
+  "source": "webmcp.com/api/directory.json"
+}

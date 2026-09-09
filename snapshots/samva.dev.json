@@ -1,0 +1,179 @@
+{
+  "sponsio": 1,
+  "url": "https://samva.dev/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "ask",
+      "description": "Answer one question from Samva's indexed public product, pricing, onboarding, and documentation pages. Optionally confine retrieval to one samva.dev route or URL. Returns the answer and supporting page URLs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "question": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000,
+            "description": "One question about Samva's public product, pricing, onboarding, or documentation"
+          },
+          "scope": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2048,
+                "description": "Optional samva.dev route or full URL that confines the answer to one indexed page"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "question"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_templates",
+      "description": "Search Samva's public email template gallery by template name, use case, category, industry, lifecycle stage, or style. Returns canonical samva.dev template URLs and does not read organization templates.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200,
+                "description": "Words describing the email template, use case, industry, stage, or style"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "facets": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "jobType": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "account-access",
+                        "commerce",
+                        "product-communication",
+                        "lifecycle",
+                        "publishing-campaigns"
+                      ]
+                    }
+                  },
+                  "lifecycle": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "acquisition",
+                        "activation",
+                        "engagement",
+                        "transaction",
+                        "retention",
+                        "recovery"
+                      ]
+                    }
+                  },
+                  "industry": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "saas",
+                        "ecommerce",
+                        "developer-tools",
+                        "newsletters-media"
+                      ]
+                    }
+                  },
+                  "season": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "evergreen",
+                        "seasonal"
+                      ]
+                    }
+                  },
+                  "audience": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "product-users",
+                        "customers",
+                        "members",
+                        "readers",
+                        "shoppers",
+                        "teams"
+                      ]
+                    }
+                  },
+                  "design": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "minimal",
+                        "branded",
+                        "editorial",
+                        "data-heavy",
+                        "single-cta"
+                      ]
+                    }
+                  },
+                  "brandProvenance": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "samva-original",
+                        "third-party-reference"
+                      ]
+                    }
+                  }
+                },
+                "additionalProperties": false,
+                "description": "Optional exact facets. Every selected value across job/type, lifecycle, industry, season, audience, design, and brand/provenance must match."
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "limit": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 20,
+                "description": "Maximum results (defaults to 8)"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "samva.dev",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,341 @@
+{
+  "sponsio": 1,
+  "url": "https://guavanumbers.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "cancel_number",
+      "description": "SENSITIVE: cancel a number at the end of its paid period. Requires login and confirm true after the customer said yes. The number works until cancel_at and reactivate_number undoes it before then.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Number id"
+          },
+          "confirm": {
+            "type": "boolean",
+            "description": "true once the customer confirmed the cancellation"
+          }
+        },
+        "required": [
+          "id",
+          "confirm"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_account_status",
+      "description": "Requires login. The customer's card on file, their numbers with status and renewal dates, failed payments with retry dates, and card_url for adding a card.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_number",
+      "description": "Requires login. One number by id.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Number id from list_numbers"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_plan_info",
+      "description": "Plan pricing, forwarding behaviour, cancellation policy, what the service does not do, and the support email. Public.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_quote",
+      "description": "Price a specific number before buying. Public. Returns total_cents, next_charge_on and the quote_token that purchase_number requires. Show the customer the total and the terms_url before purchasing.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "e164": {
+            "type": "string",
+            "description": "The number from search_numbers, e.g. +18559002272"
+          },
+          "interval": {
+            "type": "string",
+            "enum": [
+              "month",
+              "year"
+            ],
+            "description": "Billing interval"
+          },
+          "keyword": {
+            "type": "string",
+            "description": "The keyword, for the display form"
+          }
+        },
+        "required": [
+          "e164",
+          "interval"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_receipt",
+      "description": "Requires login. One receipt with its lines.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Invoice id from list_invoices"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_invoices",
+      "description": "Requires login. Charges and their status, newest first, with receipt urls.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_numbers",
+      "description": "Requires login. The customer's numbers with status, forwarding and renewal dates.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "logout",
+      "description": "Log the customer out of this browser.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "purchase_number",
+      "description": "SENSITIVE: charges the customer and activates the number. Requires login, a quote_token and total_cents from get_quote, accept_terms true and confirm true after the customer said yes to that exact charge. Pays with payment_token (a Stripe shared payment token from the customer's agent wallet) when given, otherwise the card on file; with neither, returns card_required with a card_url for the customer. A wallet-paid number has no card on file: the response says the date a card is needed by. requires_action means the bank wants the customer to authenticate: open handoff_url, then call again with attempt_id.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "e164": {
+            "type": "string",
+            "description": "The number to buy"
+          },
+          "keyword": {
+            "type": "string",
+            "description": "The keyword it spells"
+          },
+          "interval": {
+            "type": "string",
+            "enum": [
+              "month",
+              "year"
+            ],
+            "description": "Billing interval"
+          },
+          "quote_token": {
+            "type": "string",
+            "description": "From get_quote"
+          },
+          "total_cents": {
+            "type": "integer",
+            "description": "The total the customer agreed to, from get_quote"
+          },
+          "accept_terms": {
+            "type": "boolean",
+            "description": "true once the customer accepted the terms at terms_url"
+          },
+          "confirm": {
+            "type": "boolean",
+            "description": "true once the customer said yes to this exact charge"
+          },
+          "payment_token": {
+            "type": "string",
+            "description": "Optional Stripe shared payment token (spt_...) from the customer's agent wallet"
+          },
+          "attempt_id": {
+            "type": "string",
+            "description": "Only when resuming a requires_action or processing result"
+          }
+        },
+        "required": [
+          "e164",
+          "interval",
+          "quote_token",
+          "total_cents",
+          "accept_terms",
+          "confirm"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "reactivate_number",
+      "description": "Requires login. Undo a scheduled cancellation.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Number id"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "request_login_code",
+      "description": "Send a 6-digit login code to the customer's email. Logging in with a new email creates the account. Ask the customer for the code from their inbox, then call verify_login_code.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "The customer's email address"
+          }
+        },
+        "required": [
+          "email"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_numbers",
+      "description": "Search vanity phone numbers that spell a keyword. Public, no login. Returns local numbers near the zip (or the visitor's location) and toll-free numbers, each with e164, display, kind and available_now. Empty results include keyword suggestions.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "keyword": {
+            "type": "string",
+            "description": "2-7 letters or digits the number should spell, e.g. CASA"
+          },
+          "zip": {
+            "type": "string",
+            "description": "US zip code for local numbers; omit to use the visitor's location"
+          },
+          "region": {
+            "type": "string",
+            "enum": [
+              "US",
+              "PR"
+            ],
+            "description": "US (default) or PR for Puerto Rico"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "all",
+              "local",
+              "tollfree"
+            ],
+            "description": "Filter by kind; default all"
+          },
+          "show_all": {
+            "type": "boolean",
+            "description": "Return every match instead of the first five"
+          }
+        },
+        "required": [
+          "keyword"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_forwarding",
+      "description": "Requires login. Set where calls ring (a phone number) and where texts go (an email). Omit a field to leave it unchanged; pass an empty string to clear it.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Number id"
+          },
+          "forward_calls_to": {
+            "type": "string",
+            "description": "Phone number that should ring, e.g. (305) 555-0134"
+          },
+          "forward_sms_to": {
+            "type": "string",
+            "description": "Email that receives texts"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "verify_login_code",
+      "description": "Verify the 6-digit code the customer read from their inbox and log them in. After this every account tool works.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "The same email"
+          },
+          "code": {
+            "type": "string",
+            "description": "The 6-digit code"
+          }
+        },
+        "required": [
+          "email",
+          "code"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "guavanumbers.com",
+  "source": "webmcp.com/api/directory.json"
+}

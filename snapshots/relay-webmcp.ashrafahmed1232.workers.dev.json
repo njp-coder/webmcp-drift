@@ -1,0 +1,378 @@
+{
+  "sponsio": 1,
+  "url": "https://relay-webmcp.ashrafahmed1232.workers.dev/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "assign",
+      "description": "Assign a job to a driver and vehicle. Refuses if the driver lacks the job's required skill.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "jobId": {
+            "type": "string"
+          },
+          "driverId": {
+            "type": "string"
+          },
+          "vehicleId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "jobId",
+          "driverId",
+          "vehicleId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "bulk_reassign",
+      "description": "Reassign many jobs to one driver/vehicle at once. Requires human confirmation.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "jobIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "driverId": {
+            "type": "string"
+          },
+          "vehicleId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "jobIds",
+          "driverId",
+          "vehicleId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "create_job",
+      "description": "Create a new delivery job.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "windowStart": {
+            "type": "number",
+            "description": "Absolute Unix timestamp in milliseconds (e.g. Date.now()), not a time-of-day offset."
+          },
+          "windowEnd": {
+            "type": "number",
+            "description": "Absolute Unix timestamp in milliseconds, after windowStart."
+          },
+          "requiredSkill": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "title",
+          "address",
+          "windowStart",
+          "windowEnd"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "describe_view",
+      "description": "Get what the human currently has filtered or selected in the UI.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "find_coverage_gaps",
+      "description": "Find jobs with no driver assigned, distinguishing 'nobody assigned yet' from 'no qualified driver is currently available'.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_resource",
+      "description": "Get details of one driver or vehicle by id.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "driver",
+              "vehicle"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "kind"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_schedule",
+      "description": "Get all jobs on the schedule, with their assignment status and time windows.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_assignments",
+      "description": "List all currently assigned jobs with their driver and vehicle.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_conflicts",
+      "description": "List scheduling conflicts: a driver double-booked across overlapping time windows.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_drivers",
+      "description": "List all drivers with their skills and availability.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_jobs",
+      "description": "List jobs, optionally filtered by status.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "unassigned",
+              "assigned",
+              "in_transit",
+              "completed",
+              "cancelled"
+            ]
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_vehicles",
+      "description": "List all vehicles.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "optimize_schedule",
+      "description": "Propose driver/vehicle assignments to close coverage gaps. Returns proposals only — call assign or bulk_reassign to actually apply one.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "reschedule_assignment",
+      "description": "Change a job's time window.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "jobId": {
+            "type": "string"
+          },
+          "windowStart": {
+            "type": "number",
+            "description": "Absolute Unix timestamp in milliseconds (e.g. Date.now()), not a time-of-day offset."
+          },
+          "windowEnd": {
+            "type": "number",
+            "description": "Absolute Unix timestamp in milliseconds, after windowStart."
+          }
+        },
+        "required": [
+          "jobId",
+          "windowStart",
+          "windowEnd"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_availability",
+      "description": "Mark a driver as available or unavailable.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "driverId": {
+            "type": "string"
+          },
+          "available": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "driverId",
+          "available"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_status",
+      "description": "Change a job's status (e.g. mark in_transit, completed, or cancelled).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "jobId": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "unassigned",
+              "assigned",
+              "in_transit",
+              "completed",
+              "cancelled"
+            ]
+          }
+        },
+        "required": [
+          "jobId",
+          "status"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "simulate_change",
+      "description": "Dry-run a proposed change (assign, reschedule_assignment, swap_assignments, unassign, set_status, or bulk_reassign) and return what would change, without applying it. Use before a consequential change to preview the effect.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "actionType": {
+            "type": "string",
+            "enum": [
+              "assign",
+              "reschedule_assignment",
+              "swap_assignments",
+              "unassign",
+              "set_status",
+              "bulk_reassign"
+            ]
+          },
+          "payload": {
+            "type": "object",
+            "properties": {}
+          }
+        },
+        "required": [
+          "actionType",
+          "payload"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "swap_assignments",
+      "description": "Swap the driver/vehicle assignments between two jobs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "jobIdA": {
+            "type": "string"
+          },
+          "jobIdB": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "jobIdA",
+          "jobIdB"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "unassign",
+      "description": "Remove a job's current driver/vehicle assignment, returning it to unassigned.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "jobId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "jobId"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "relay-webmcp.ashrafahmed1232.workers.dev",
+  "source": "webmcp.com/api/directory.json"
+}

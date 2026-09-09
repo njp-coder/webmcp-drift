@@ -1,0 +1,111 @@
+{
+  "sponsio": 1,
+  "url": "https://www.switchai.it/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "calculate_energy_savings",
+      "description": "Confronta tariffe Luce/Gas e calcola il risparmio annuo con scenario analysis (PUN/PSV) ancorato al forward. Accetta bill_text oppure dati già estratti. MODALITÀ 1 (bolletta): passa commodity + bill_text — il tool estrae consumi, spesa, zona e tipo_tariffa. MODALITÀ 2 (dati noti): passa commodity + yearly_consumption_kwh + current_annual_spend + zone + tariff_type. ESEMPIO: {commodity:'LUCE', yearly_consumption_kwh:2700, zone:'NORD', current_annual_spend:850, tariff_type:'variabile'} RISPOSTA: tabella top3 + market_sensitivity (stable vs market_dependent con 3 scenari) + agent_summary. Se market_dependent, il risparmio CANONICO è Atteso a PUN forward (es. 322), NON lo storico 113 — DEVI dirlo e mostrare i 3 scenari con range; 113 è al PUN bolletta nel details. Se stable, il risparmio è garantito. Usa market_sensitivity.message e baseline per riconciliare. ALIAS CAMPI: consumazioneannuo/consumoannuo_kwh=yearly_consumption_kwh, spesaannua/spesaannua_eur=current_annual_spend, tipotariffa=tariff_type. TIPO TARIFFA: se sconosciuto ma spread/prezzo_vendita presente → market_dependent (mai stable). PAYLOAD: top3 sempre con tipo_tariffa (null se sconosciuto). UI: colonna Risparmio e headline usano market_sensitivity.scenarios[Atteso].savings_eur se market_dependent.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "commodity": {
+            "type": "string",
+            "enum": [
+              "LUCE",
+              "GAS"
+            ],
+            "description": "LUCE per elettricità o GAS per gas metano",
+            "default": "LUCE"
+          },
+          "bill_text": {
+            "type": "string",
+            "description": "(Solo se hai il testo della bolletta) Passa il testo completo per estrarre automaticamente i dati."
+          },
+          "yearly_consumption_kwh": {
+            "type": "number",
+            "description": "Consumo annuo in kWh (LUCE). Es: 2700.",
+            "default": 2700
+          },
+          "yearly_consumption_smc": {
+            "type": "number",
+            "description": "Consumo annuo in Smc (GAS). Es: 1000.",
+            "default": 1000
+          },
+          "zone": {
+            "type": "string",
+            "enum": [
+              "NORD",
+              "CENTRO",
+              "SUD"
+            ],
+            "description": "Zona tariffaria italiana.",
+            "default": "NORD"
+          },
+          "current_supplier": {
+            "type": "string",
+            "description": "Nome fornitore attuale es: 'Enel Energia'"
+          },
+          "current_annual_spend": {
+            "type": "number",
+            "description": "Spesa annua in € es: 850",
+            "default": 650
+          }
+        },
+        "required": [
+          "commodity"
+        ]
+      }
+    },
+    {
+      "name": "get_available_offers",
+      "description": "Recupera tutte le offerte disponibili per Luce o Gas in Italia. Restituisce nome fornitore, nome offerta, tipo (fisso/variabile), prezzo per unità e costo fisso mensile. Usa questo tool quando l'utente vuole vedere tutte le offerte disponibili senza fare un calcolo specifico.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "commodity": {
+            "type": "string",
+            "enum": [
+              "LUCE",
+              "GAS"
+            ],
+            "description": "LUCE per elettricità, GAS per gas metano"
+          }
+        },
+        "required": [
+          "commodity"
+        ]
+      }
+    },
+    {
+      "name": "get_market_indices",
+      "description": "Recupera PUN (prezzo energia elettrica all'ingrosso) e PSV (prezzo gas) correnti, aggiornati giornalmente dal sync ARERA notturno. Usa questo tool quando l'utente chiede il prezzo del kWh oggi, il prezzo del gas, o gli indici di mercato.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "parse_energy_bill",
+      "description": "Analizza il testo di una bolletta italiana (luce o gas) ed estrae: fornitore, POD/PDR, consumo annuo, spesa annua stimata, zona tariffaria. DOPO aver usato questo tool, usa calculate_energy_savings con i dati estratti per confrontare le offerte. ESEMPIO: l'utente incolla la bolletta → tu chiami parse_energy_bill → poi calculate_energy_savings con i risultati.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "bill_text": {
+            "type": "string",
+            "description": "Testo completo della bolletta da analizzare. Puoi estrarre il testo da un PDF."
+          }
+        },
+        "required": [
+          "bill_text"
+        ]
+      }
+    }
+  ],
+  "host": "switchai.it",
+  "source": "webmcp.com/api/directory.json"
+}

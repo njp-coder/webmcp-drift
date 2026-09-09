@@ -1,0 +1,79 @@
+{
+  "sponsio": 1,
+  "url": "https://tokenwatch.wyrdwerk.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "about_tokenwatch",
+      "description": "Read-only. Returns the TokenWatch WebMCP operating brief (rules and page capability map) plus the URL of the full skill. Call this before ranking, filtering, or comparing so you use {provider, id} identity and the live table correctly.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_catalog_info",
+      "description": "Read-only. Returns the image page name, pricing snapshot timestamp, catalog size, and distinct provider count. For operational details, call about_tokenwatch.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_view",
+      "description": "Read-only snapshot of the TokenWatch image calculator: current image count or budget mode, filters, active sort, rowCount, and the top ranked image offerings. By default, top is sorted by total cost ascending; use set_sort to change any table column and direction. Row identity is {provider, id}, never a row number. For operational details, call about_tokenwatch.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 25,
+            "description": "How many ranked rows to include in top (default 10)."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_sort",
+      "description": "Sets the active image-table sort and direction, then re-renders the same results. Sortable columns: org, model, cost_per_unit, and cost. Text fields sort alphabetically; numeric fields sort ascending or descending. Returns a fresh get_view snapshot. For operational details, call about_tokenwatch.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "by": {
+            "type": "string",
+            "enum": [
+              "org",
+              "model",
+              "cost_per_unit",
+              "cost"
+            ],
+            "description": "Column to sort by."
+          },
+          "dir": {
+            "type": "string",
+            "enum": [
+              "asc",
+              "desc"
+            ],
+            "description": "asc = low/alphabetical first; desc = high/reverse-alphabetical first."
+          }
+        },
+        "required": [
+          "by",
+          "dir"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "tokenwatch.wyrdwerk.com",
+  "source": "webmcp.com/api/directory.json"
+}

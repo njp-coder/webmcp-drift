@@ -1,0 +1,254 @@
+{
+  "sponsio": 1,
+  "url": "https://paperie-webmcp-greeting-cards.openai.chatgpt.site/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "apply_generated_artwork",
+      "description": "Place an agent-generated HTTPS or data-URL image directly onto the visible greeting-card canvas with accessible alternative text.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "imageUrl": {
+            "type": "string",
+            "description": "An HTTPS image URL or image data URL."
+          },
+          "alt": {
+            "type": "string",
+            "description": "Accessible image description."
+          },
+          "prompt": {
+            "type": "string",
+            "description": "Optional generation prompt."
+          }
+        },
+        "required": [
+          "imageUrl"
+        ]
+      }
+    },
+    {
+      "name": "get_card_state",
+      "description": "Read the currently visible greeting card, recipient context, print format, artwork, price, and whether checkout requires human review.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_print_options",
+      "description": "List the actual supported card sizes, dimensions, individual print prices, and the available envelope colors.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "review_and_print",
+      "description": "Open the visible human-review checkpoint for the card and print price. Never submits payment, places an order, or prints without human confirmation.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "select_card_template",
+      "description": "Choose a visible starting canvas, including create-your-own for an empty card that the agent can populate with generated artwork and a personal message.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "templateId": {
+            "type": "string",
+            "enum": [
+              "create-your-own",
+              "wildflower",
+              "birthday",
+              "thank-you",
+              "celebrate",
+              "love-note",
+              "thinking"
+            ]
+          }
+        },
+        "required": [
+          "templateId"
+        ]
+      }
+    },
+    {
+      "name": "set_card_design",
+      "description": "Update the card's visible paper color and accent color without replacing the agent-generated image or message.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "backgroundColor": {
+            "type": "string",
+            "description": "A CSS hex color, for example #f3e9df."
+          },
+          "accentColor": {
+            "type": "string",
+            "description": "A CSS hex color, for example #bb4f43."
+          }
+        }
+      }
+    },
+    {
+      "name": "set_card_message",
+      "description": "Update the small cover label, the front message, or the inside message. Cover labels are limited to 56 characters, cover messages to 140, and inside messages to 420 so every supported print format remains legible.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "eyebrowText": {
+            "type": "string",
+            "maxLength": 56,
+            "description": "The small editable line above the main card-cover message."
+          },
+          "frontMessage": {
+            "type": "string",
+            "maxLength": 140
+          },
+          "insideMessage": {
+            "type": "string",
+            "maxLength": 420
+          }
+        }
+      }
+    },
+    {
+      "name": "set_card_size",
+      "description": "Select a supported physical print size and portrait or landscape orientation, updating the visible preview and price.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "size": {
+            "type": "string",
+            "enum": [
+              "a2",
+              "a6",
+              "a7",
+              "square"
+            ]
+          },
+          "orientation": {
+            "type": "string",
+            "enum": [
+              "portrait",
+              "landscape"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "set_envelope",
+      "description": "Select the physical envelope color and optionally show or hide that envelope beside the live greeting-card preview.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "color": {
+            "type": "string",
+            "enum": [
+              "Oat milk",
+              "Rosewater",
+              "Sage",
+              "Butter"
+            ]
+          },
+          "show": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    {
+      "name": "set_preview",
+      "description": "Show the front, inside, or back of the card and independently show or hide its selected envelope in the live preview.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "side": {
+            "type": "string",
+            "enum": [
+              "front",
+              "inside",
+              "back"
+            ]
+          },
+          "showEnvelope": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    {
+      "name": "set_print_quantity",
+      "description": "Set the number of physical cards from 1 to 25 and immediately update the visible order total.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "quantity": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 25
+          }
+        },
+        "required": [
+          "quantity"
+        ]
+      }
+    },
+    {
+      "name": "set_recipient_context",
+      "description": "Bring the agent's knowledge of the recipient, relationship, occasion, memories, and desired tone into the visible card editor.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "recipient": {
+            "type": "string",
+            "description": "Recipient's display name."
+          },
+          "sender": {
+            "type": "string",
+            "description": "Sender's display name."
+          },
+          "occasion": {
+            "type": "string"
+          },
+          "relationship": {
+            "type": "string"
+          },
+          "personalContext": {
+            "type": "string",
+            "description": "A memory or detail the agent is authorized to use."
+          },
+          "tone": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "start_custom_card",
+      "description": "Reset the visible card to the empty Create your own canvas while preserving recipient context, print size, envelope, and quantity.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    }
+  ],
+  "host": "paperie-webmcp-greeting-cards.openai.chatgpt.site",
+  "source": "webmcp.com/api/directory.json"
+}

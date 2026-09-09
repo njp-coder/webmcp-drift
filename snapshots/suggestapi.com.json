@@ -1,0 +1,107 @@
+{
+  "sponsio": 1,
+  "url": "https://www.suggestapi.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "fetch_agent_skills_index",
+      "description": "Fetch the Agent Skills discovery index at /.well-known/agent-skills/index.json (RFC v0.2.0). Returns skill stubs with name, type, description, url, and sha256 digest for install/verify. Use this for structured skill listing; use fetch_agents_md for the prose integration map. Canonical pack: npx skills add suggestapi/skills.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "fetch_agents_md",
+      "description": "Fetch /agents.md as { format, content }. Markdown integration guide for Knowledge Gateway (agent.suggestapi.com) and search API discovery, including optional docs this page does not fetch (okg.json, ai-catalog.json, agent-card.json, openapi.yaml). Prefer fetch_api_catalog for hrefs, fetch_gateway_webmcp for gateway tool names/schemas/REST, and fetch_agent_skills_index for skill stubs and digests.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "fetch_api_catalog",
+      "description": "Fetch the RFC 9727 API catalog (application/linkset+json) from https://agent.suggestapi.com/.well-known/api-catalog. Returns hrefs only (webmcp, mcp, mcp-server, mcp-manifest) — not tool names or schemas. These commerce tools are not registered on www.suggestapi.com. After this, call fetch_gateway_webmcp for the tool list, then attach MCP at https://agent.suggestapi.com/mcp or POST/GET the REST endpoints with a tenant. Not search-API OpenAPI, app, or health.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "fetch_gateway_webmcp",
+      "description": "Fetch the Knowledge Gateway WebMCP manifest at https://agent.suggestapi.com/.well-known/webmcp. Returns name, origin, mcpEndpoint, and tools[] with inputSchema, REST endpoint, and method (search, recommend, compare, product_lookup). These tools run on agent.suggestapi.com — they are not registered in this page's modelContext. Invoke by attaching MCP at mcpEndpoint or calling each tool's REST endpoint with a tenant. Compact MCP name list: https://agent.suggestapi.com/.well-known/mcp-manifest.json. Other gateway docs (okg.json, ai-catalog.json, agent-card.json, openapi.yaml) are listed in fetch_agents_md, not fetched here.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "fetch_llms_txt",
+      "description": "Fetch /llms.txt as { format, content }. Plain-text site overview: product themes, Markdown page URLs, and discovery links. Prefer list_site_pages for a compact HTML nav list; prefer fetch_agents_md for the integration guide.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_page_info",
+      "description": "Return metadata about the current SuggestAPI page (title, URL, description, canonical).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_site_pages",
+      "description": "Return a short hardcoded nav list of key HTML marketing pages (path, title, url). Use for in-browser navigation. For a full prose map with Markdown URLs and gateway/API links, use fetch_llms_txt.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "navigate_to_page",
+      "description": "Navigate the browser to a public SuggestAPI marketing page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Path on www.suggestapi.com, e.g. \"/\" or \"/contact/\"."
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "scroll_to_signup",
+      "description": "Scroll to the signup section on the current page (if present) and return whether it was found.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "suggestapi.com",
+  "source": "webmcp.com/api/directory.json"
+}

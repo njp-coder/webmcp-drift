@@ -1,0 +1,115 @@
+{
+  "sponsio": 1,
+  "url": "https://startuparchive.io/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "get_faq",
+      "description": "Return Startup Archive's frequently asked questions and answers about captures, private sites, embeds, and availability.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_pricing_plans",
+      "description": "Return Startup Archive's credit packages and the capture features included with each snapshot.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_archived_startups",
+      "description": "List the latest public startup captures in Startup Archive. Results can be filtered by startup name, handle, or site URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "maxLength": 100,
+            "description": "Optional case-insensitive startup name, handle, or URL filter."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 32,
+            "default": 20,
+            "description": "Maximum number of startups to return."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "prepare_site_submission",
+      "description": "Prepare the new-site submission form for the user to review. This does not submit the site or consume a credit. The user must review the form, complete the security check, and submit it themselves.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "maxLength": 512,
+            "description": "The main public http or https URL to archive."
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64,
+            "description": "The project name displayed in Startup Archive."
+          },
+          "slug": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 64,
+            "pattern": "^[a-z0-9][a-z0-9-_]*[a-z0-9]$",
+            "description": "Optional preferred archive slug. If omitted, the submission form derives one from the URL."
+          },
+          "paths": {
+            "type": "array",
+            "maxItems": 5,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "description": "Optional routes on the same site, such as about or pricing. Use paths, not full URLs."
+          },
+          "originalUrl": {
+            "type": "string",
+            "maxLength": 512,
+            "description": "Optional original URL when the submitted URL is a replacement for an offline or redirecting domain."
+          },
+          "visibility": {
+            "type": "string",
+            "enum": [
+              "public",
+              "unlisted"
+            ],
+            "default": "public",
+            "description": "Public projects can appear in Explore. Unlisted projects are accessible by direct link."
+          },
+          "captureDarkMode": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether to prepare both light and dark mode captures."
+          }
+        },
+        "required": [
+          "url",
+          "name"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "startuparchive.io",
+  "source": "webmcp.com/api/directory.json"
+}

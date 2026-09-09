@@ -1,0 +1,82 @@
+{
+  "sponsio": 1,
+  "url": "https://webmcp.sh/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "app_gateway",
+      "description": "Application gateway - Get an overview of the app and available routes.\n\nUse this tool to understand what areas of the app exist and what you can do in each.\nWhen you navigate to a route, context-specific tools will become available automatically.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Optional: Search for a specific area (e.g., \"graph\", \"memory\", \"sql\")"
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "get_current_context",
+      "description": "Get the current application context including route, pathname, and search params.\n\nUseful for understanding where the user is and providing context-aware responses.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_all_routes",
+      "description": "Get a detailed list of all available routes in the application with their descriptions and parameters.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "navigate",
+      "description": "Navigate to a different route in the application using TanStack Router.\n\n=== WEBMCP APPLICATION NAVIGATION ===\n\nABOUT THIS APP\n──────────────\nWebMCP is a memory and knowledge management system with:\n• Memory blocks for persistent, always-in-context data\n• Entities for structured knowledge (facts, preferences, skills, etc.)\n• Knowledge graph for visualizing relationships\n• Direct SQL access for advanced queries\n\nIMPORTANT: When you navigate to a route, context-specific tools become available.\nFor example, entity CRUD tools appear on /entities, graph tools appear on /graph, etc.\n\nAVAILABLE ROUTES\n────────────────\n\n/\n  Landing page - WebMCP demo overview and documentation\n  What you can do here:\n    • View overview of WebMCP capabilities\n    • See tool code examples\n    • Quick navigation to demo pages\n\n/dashboard\n  Dashboard - Memory overview with stats, charts, and quick access\n  What you can do here:\n    • View memory blocks and entities counts\n    • See token usage charts by category and tier\n    • Browse audit log of database changes\n    • Quick create memory blocks and entities\n    • Get an overview of the entire memory system\n\n/entities\n  Entities page - Browse and manage all memory entities\n  What you can do here:\n    • View all entities in a searchable table\n    • Filter by category (fact, preference, skill, person, project, goal)\n    • Create, edit, and delete entities\n    • Search entities by name or description\n    • Sort and group entities\n\n/entities/$entityId\n  Entity detail page - View and edit a specific entity\n  What you can do here:\n    • View full entity details and metadata\n    • Edit entity properties\n    • See related entities and relationships\n    • Delete the entity\n  Required params: $entityId\n\n/graph\n  Knowledge graph - Visualize entity relationships\n  What you can do here:\n    • View entities as an interactive 2D or 3D graph\n    • Explore connections between entities\n    • Focus on specific nodes and highlight paths\n    • Run visual effects like camera tours and particle bursts\n    • Analyze graph patterns and statistics\n    • Execute SQL queries directly\n\n/memory-blocks\n  Memory blocks - Manage always-in-context core memories\n  What you can do here:\n    • View all memory blocks in a table\n    • Create new memory blocks\n    • Edit block content, labels, and priority\n    • Delete memory blocks\n    • Filter by block type (user_profile, agent_persona, current_goals, context)\n\n/sql-repl\n  SQL REPL - Execute direct database queries\n  What you can do here:\n    • Run SQL queries against the in-browser database\n    • Explore database schema and tables\n    • View formatted query results\n    • Access full database capabilities\n\n/sql-execution-log\n  SQL log - View query execution history\n  What you can do here:\n    • Browse complete SQL execution history\n    • See query performance metrics\n    • Track errors and issues\n    • Filter by source (AI vs manual)\n\n/about\n  About page - Technology stack and architecture info\n  What you can do here:\n    • Learn about the technology stack\n    • View architecture documentation\n\n/showcase\n  Showcase - UI component demos\n  What you can do here:\n    • Browse UI component library\n    • See interactive component demos\n\nNAVIGATION EXAMPLES\n───────────────────\n\n{ \"to\": \"/entities\" }                                    // Go to entities page\n{ \"to\": \"/entities/$entityId\", \"params\": { \"entityId\": \"abc-123\" } }  // View entity\n{ \"to\": \"/graph\" }                                       // Open knowledge graph\n{ \"to\": \"/memory-blocks\" }                               // Manage memory blocks\n\n\nThe tool will navigate the user to the specified route and return a confirmation message.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "to": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The route path to navigate to (e.g., \"/entities\", \"/graph\")"
+          },
+          "params": {
+            "type": "object",
+            "additionalProperties": {},
+            "description": "Route parameters (e.g., { \"entityId\": \"uuid-here\" }) for dynamic routes"
+          },
+          "search": {
+            "type": "object",
+            "additionalProperties": {},
+            "description": "URL search/query parameters (e.g., { \"filter\": \"skills\", \"page\": \"2\" })"
+          },
+          "hash": {
+            "type": "string",
+            "description": "URL hash fragment (e.g., \"section-1\")"
+          },
+          "replace": {
+            "type": "boolean",
+            "default": false,
+            "description": "If true, replaces current history entry instead of pushing new one"
+          }
+        },
+        "required": [
+          "to"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    }
+  ],
+  "host": "webmcp.sh",
+  "source": "webmcp.com/api/directory.json"
+}

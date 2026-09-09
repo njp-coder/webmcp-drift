@@ -1,0 +1,346 @@
+{
+  "sponsio": 1,
+  "url": "https://okok147.github.io/asympta-world/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "asympta_describe_capabilities",
+      "description": "Describe the WebMCP tool surface, workflows, agents, communication bridge, simulation disclosure and human-approval safety boundary.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "asympta_follow_agent",
+      "description": "Follow a foreground agent with the local map camera.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "agentId": {
+            "type": "string",
+            "enum": [
+              "agent-user",
+              "agent-customer",
+              "agent-business",
+              "agent-supplier",
+              "agent-operations",
+              "agent-finance",
+              "agent-logistics",
+              "agent-support",
+              "agent-quality",
+              "agent-market"
+            ]
+          }
+        },
+        "required": [
+          "agentId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "asympta_get_pending_approval",
+      "description": "Read the current human approval request, if any. This tool cannot approve or decline it.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "asympta_inspect_agent",
+      "description": "Read one foreground stakeholder agent and its current tasks without exposing synthetic map coordinates.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "agentId": {
+            "type": "string",
+            "enum": [
+              "agent-user",
+              "agent-customer",
+              "agent-business",
+              "agent-supplier",
+              "agent-operations",
+              "agent-finance",
+              "agent-logistics",
+              "agent-support",
+              "agent-quality",
+              "agent-market"
+            ]
+          }
+        },
+        "required": [
+          "agentId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "asympta_list_agent_messages",
+      "description": "Read the persistent structured communication state. Filter by participant or thread; each record keeps a human-readable body and optional machine-readable semantics.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "participantId": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "threadId": {
+            "type": "string",
+            "maxLength": 180
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "asympta_list_workflows",
+      "description": "List available multi-stakeholder workflows.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "asympta_observe_global_supply_network",
+      "description": "Read the aggregated world-scale food, material, merchandise, medicine, energy and transport simulation.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "asympta_observe_living_city",
+      "description": "Read the foreground workflow plus currently visible synthetic background agents.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "asympta_read_request",
+      "description": "Read the bounded status of one WebMCP request by its request ID. It does not list or expose other requests.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "requestId": {
+            "type": "string",
+            "pattern": "^request-[a-z0-9-]{8,100}$",
+            "description": "The exact requestId returned by asympta_submit_request."
+          }
+        },
+        "required": [
+          "requestId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "asympta_request_external_action",
+      "description": "Request a simulated consequential action; explicit user approval is required.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "reserve_capacity",
+              "authorize_payment",
+              "release_shipment",
+              "send_customer_update"
+            ]
+          },
+          "agentId": {
+            "type": "string",
+            "enum": [
+              "agent-user",
+              "agent-customer",
+              "agent-business",
+              "agent-supplier",
+              "agent-operations",
+              "agent-finance",
+              "agent-logistics",
+              "agent-support",
+              "agent-quality",
+              "agent-market"
+            ]
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 220
+          }
+        },
+        "required": [
+          "action",
+          "agentId",
+          "reason"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "asympta_request_workflow",
+      "description": "Request a workflow. It waits for explicit user approval.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "workflowId": {
+            "type": "string",
+            "enum": [
+              "custom-order",
+              "dinner-network",
+              "launch-stock",
+              "service-recovery"
+            ]
+          }
+        },
+        "required": [
+          "workflowId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "asympta_send_agent_message",
+      "description": "Send a human-readable message with optional machine-readable semantics. Only body is required; ordinary people do not need agent IDs, schemas or workflow knowledge. The default route is human → personal intent agent.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 800,
+            "description": "Plain-language message such as 'I need dinner around 7pm'."
+          },
+          "fromId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "description": "Optional participant ID. Defaults to human."
+          },
+          "toId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "description": "Optional recipient. Defaults to agent-user, the personal intent agent."
+          },
+          "fromKind": {
+            "type": "string",
+            "enum": [
+              "human",
+              "agent",
+              "business",
+              "organization",
+              "system"
+            ]
+          },
+          "toKind": {
+            "type": "string",
+            "enum": [
+              "human",
+              "agent",
+              "business",
+              "organization",
+              "system"
+            ]
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "request",
+              "offer",
+              "question",
+              "answer",
+              "update",
+              "confirmation",
+              "warning",
+              "handoff",
+              "plain"
+            ]
+          },
+          "subject": {
+            "type": "string",
+            "maxLength": 180
+          },
+          "threadId": {
+            "type": "string",
+            "maxLength": 180
+          },
+          "replyToId": {
+            "type": "string",
+            "maxLength": 180
+          },
+          "intent": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "action": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "entities": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 120
+            },
+            "maxItems": 16
+          },
+          "data": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "asympta_submit_request",
+      "description": "Create a bounded natural-language request for the person to review. This tool does not run the request, call an external service or approve a consequential action.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "intent": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 600,
+            "description": "The plain-language intention. Never include passwords, API keys or other credentials."
+          }
+        },
+        "required": [
+          "intent"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "okok147.github.io",
+  "source": "webmcp.com/api/directory.json"
+}

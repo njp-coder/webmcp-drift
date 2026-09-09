@@ -1,0 +1,107 @@
+{
+  "sponsio": 1,
+  "url": "https://www.xseek.io/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "agent_ready_scan",
+      "description": "Run an Agent-Ready scan on a public URL. Returns a readiness score plus per-check pass/fail breakdown (semantic HTML, schema markup, meta tags, content structure, accessibility for AI crawlers). Use this to check whether a page is well-structured enough for AI agents to cite.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Absolute URL of the page to scan, e.g. https://example.com/about"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      }
+    },
+    {
+      "name": "contact_xseek",
+      "description": "Submit a contact request to the xSeek team — for sales questions, demo requests, partnership inquiries, or pricing follow-ups. Personal email domains (gmail.com excluded — yahoo, outlook, hotmail, etc.) are rejected; the user must provide a work email. The xSeek team gets notified by email immediately. Use this when the user asks to 'book a demo', 'talk to sales', 'get in touch', or 'ask about pricing'.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Full name of the person reaching out."
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Work email (personal domains will be rejected)."
+          },
+          "message": {
+            "type": "string",
+            "description": "What the user wants — e.g. \"Demo for a 50-person SaaS\", \"pricing for 5 websites\", \"agency partner program\"."
+          },
+          "company": {
+            "type": "string",
+            "description": "Company / organization name."
+          },
+          "companySize": {
+            "type": "string",
+            "description": "Approximate headcount or revenue bracket if known (e.g. \"10-50\", \"$1M-10M ARR\")."
+          },
+          "howDidYouHear": {
+            "type": "string",
+            "description": "How they found xSeek — LinkedIn, referral, AI search result, etc. Optional."
+          },
+          "isAgency": {
+            "type": "boolean",
+            "description": "True if the contact represents a marketing / SEO agency (different sales motion)."
+          }
+        },
+        "required": [
+          "name",
+          "email",
+          "message"
+        ]
+      }
+    },
+    {
+      "name": "llms_txt_scan",
+      "description": "Inspect a site's llms.txt (the AI-equivalent of robots.txt for declaring what AI crawlers can use) and return a generated draft when none is present. Useful to diagnose why a brand isn't picked up by AI assistants, and to produce a ready-to-deploy llms.txt.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Absolute URL of the site to inspect, e.g. https://example.com"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      }
+    },
+    {
+      "name": "robots_txt_scan",
+      "description": "Analyze a site's robots.txt for AI crawler access. Returns which AI bots (GPTBot, ClaudeBot, PerplexityBot, Google-Extended, etc.) are allowed vs blocked, plus any general rules affecting AI agents. Common diagnostic for \"why am I not being cited by ChatGPT?\" — often the answer is robots.txt blocking the crawler.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Absolute URL of the site to inspect, e.g. https://example.com"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      }
+    }
+  ],
+  "host": "xseek.io",
+  "source": "webmcp.com/api/directory.json"
+}

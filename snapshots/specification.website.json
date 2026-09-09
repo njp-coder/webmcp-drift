@@ -1,0 +1,133 @@
+{
+  "sponsio": 1,
+  "url": "https://specification.website/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "get_topic",
+      "description": "Fetch the full Markdown for one spec page by its slug. Returns the rendered body with YAML frontmatter (title, status, sources). Use this after search_spec or list_topics to read the canonical guidance.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Kebab-case slug, as listed by list_topics or search_spec. Examples: 'content-security-policy', 'meta-robots', 'llms-txt'.",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "list_topics",
+      "description": "List spec topics, optionally filtered by category and/or status. Returns title, status, category, summary, and URL for each. Use this when the user wants the canonical list (e.g. \"all required SEO topics\").",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "enum": [
+              "foundations",
+              "seo",
+              "accessibility",
+              "security",
+              "well-known",
+              "agent-readiness",
+              "performance",
+              "privacy",
+              "resilience",
+              "i18n"
+            ],
+            "description": "Restrict to one category."
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "required",
+              "recommended",
+              "optional",
+              "avoid"
+            ],
+            "description": "Restrict to one status."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 200,
+            "description": "Cap the number of items returned."
+          }
+        }
+      }
+    },
+    {
+      "name": "open_checklist",
+      "description": "Navigate the user to the full spec checklist page. Optionally jumps to a category section via URL hash. UI action — does not return data.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "enum": [
+              "foundations",
+              "seo",
+              "accessibility",
+              "security",
+              "well-known",
+              "agent-readiness",
+              "performance",
+              "privacy",
+              "resilience",
+              "i18n"
+            ],
+            "description": "Optional category to scroll to."
+          }
+        }
+      }
+    },
+    {
+      "name": "open_search",
+      "description": "Open the on-page ⌘K search overlay so the user can search the spec interactively. Optionally pre-fills a query. UI action — does not return results; use search_spec for that.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Optional initial query to pre-fill."
+          }
+        }
+      }
+    },
+    {
+      "name": "search_spec",
+      "description": "Search The Website Specification for matching topics. Returns ranked results with title, status, category, canonical URL, and a one-line summary. Use this when the user asks about a topic by keyword (e.g. \"CSP\", \"alt text\", \"llms.txt\").",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Free-text query.",
+            "minLength": 1
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 25,
+            "default": 5
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "specification.website",
+  "source": "webmcp.com/api/directory.json"
+}

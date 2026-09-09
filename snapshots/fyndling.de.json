@@ -1,0 +1,489 @@
+{
+  "sponsio": 1,
+  "url": "https://fyndling.de/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "compose_menu",
+      "description": "Compose a multi-course historical menu from fyndling.de recipes, minimizing ingredient overlap between courses. Returns one recipe per requested course.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "courses": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "starter",
+                "main_beef",
+                "main_pork",
+                "main_poultry",
+                "main_game",
+                "main_fish",
+                "main_other",
+                "main_vegetarian",
+                "side",
+                "dessert",
+                "drink",
+                "cellar",
+                "condiment",
+                "other"
+              ]
+            },
+            "description": "Ordered course list, e.g. [\"starter\", \"main_poultry\", \"dessert\"]. Atomic values: starter, main_beef, main_pork, main_poultry, main_game, main_fish, main_other, main_vegetarian, side, dessert, drink, cellar, condiment, other (plus aliases main, main_meat, beverage)"
+          },
+          "persons": {
+            "type": "integer",
+            "description": "Number of persons (informational only)"
+          },
+          "max_difficulty": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 3,
+            "description": "Maximum recipe difficulty (1-3)"
+          },
+          "lagerkueche": {
+            "type": "boolean",
+            "description": "If true, only camp-cooking-suitable recipes"
+          },
+          "dietary": {
+            "type": "string",
+            "enum": [
+              "vegetarian",
+              "vegan"
+            ]
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "pasta",
+                "reis",
+                "brei",
+                "beilage",
+                "huelsenfruechte",
+                "brot",
+                "aspik",
+                "blancmanger",
+                "vegetarisch",
+                "fastenspeise",
+                "vegan",
+                "hofkueche",
+                "buergerlich",
+                "bauernkueche",
+                "met",
+                "methiglyn",
+                "bochet",
+                "hippocras",
+                "festtag"
+              ]
+            },
+            "description": "Applied to every course, e.g. [\"hofkueche\"] for a courtly banquet"
+          },
+          "epoch_from": {
+            "type": "integer"
+          },
+          "epoch_to": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "courses"
+        ]
+      }
+    },
+    {
+      "name": "find_events_near",
+      "description": "Find medieval markets, concerts, castle events, living-history events and renfaires near a geographic location, sorted by distance. Each result includes fyndling_url, the canonical event page link.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "lat": {
+            "type": "number",
+            "description": "Latitude of the search center"
+          },
+          "lon": {
+            "type": "number",
+            "description": "Longitude of the search center"
+          },
+          "radius_km": {
+            "type": "number",
+            "description": "Search radius in km (default 50, max 500)"
+          },
+          "types": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "market",
+                "concert",
+                "burg_event",
+                "living_history",
+                "renfaire"
+              ]
+            },
+            "description": "Category filter. Any of: market, concert, burg_event, living_history, renfaire"
+          },
+          "date_from": {
+            "type": "string",
+            "description": "Start date ISO 8601, e.g. 2026-06-01"
+          },
+          "date_to": {
+            "type": "string",
+            "description": "End date ISO 8601, e.g. 2026-08-31"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Max results, default 20, max 100"
+          }
+        },
+        "required": [
+          "lat",
+          "lon"
+        ]
+      }
+    },
+    {
+      "name": "get_event",
+      "description": "Get full details for a single fyndling.de event by its ID (as returned by find_events_near/list_events).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Event ID, e.g. \"a1b2c3d4e5f6a7b8\""
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "get_recipe",
+      "description": "Get full details of a single fyndling.de recipe (ingredients, annotations, transcript) by ID, as returned by search_recipes.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Recipe ID, e.g. \"hkb-001\", \"men-042\""
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "list_events",
+      "description": "List medieval markets, concerts, castle events, living-history events and renfaires on fyndling.de filtered by category, country and/or date range (no location needed). Each result includes fyndling_url, the canonical event page link.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "description": "Event category filter",
+            "enum": [
+              "market",
+              "concert",
+              "burg_event",
+              "living_history",
+              "renfaire"
+            ]
+          },
+          "country": {
+            "type": "string",
+            "description": "ISO 3166-1 alpha-2 country code, e.g. DE, AT, CH, FR"
+          },
+          "date_from": {
+            "type": "string",
+            "description": "Start date ISO 8601, e.g. 2026-06-01"
+          },
+          "date_to": {
+            "type": "string",
+            "description": "End date ISO 8601, e.g. 2026-08-31"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Max results, default 20, max 100"
+          }
+        }
+      }
+    },
+    {
+      "name": "report_event",
+      "description": "Report a new medieval market, concert, castle event, or living-history event to fyndling.de for review, or suggest a correction to an existing one (category 'Korrektur vorschlagen'). Submits to a moderated queue and does not appear on the map immediately. Pre-fills the form; the user must still click submit to send it.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "bot-field": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "markt",
+              "living-history",
+              "konzert",
+              "metkellerei",
+              "burg",
+              "gastronomie",
+              "meadery",
+              "renfaire",
+              "korrektur",
+              "sonstiges"
+            ]
+          },
+          "event_name": {
+            "type": "string",
+            "description": "e.g. Hanstein Castle Medieval Market"
+          },
+          "date_from": {
+            "type": "string"
+          },
+          "date_to": {
+            "type": "string"
+          },
+          "anmerkung": {
+            "type": "string",
+            "description": "Correction, notes, organiser, ..."
+          },
+          "country": {
+            "type": "string",
+            "enum": [
+              "DE",
+              "AT",
+              "CH",
+              "LU",
+              "NL",
+              "BE",
+              "FR",
+              "PL",
+              "CZ",
+              "DK",
+              "SE",
+              "NO",
+              "GB",
+              "IE",
+              "ES",
+              "PT",
+              "IT",
+              "LT",
+              "LV",
+              "EE",
+              "US"
+            ]
+          },
+          "plz": {
+            "type": "string",
+            "description": "12345"
+          },
+          "ort": {
+            "type": "string",
+            "description": "Town / village"
+          },
+          "website": {
+            "type": "string",
+            "description": "https://..."
+          },
+          "venue": {
+            "type": "string",
+            "description": "e.g. Hanstein Castle, City Park"
+          },
+          "email": {
+            "type": "string",
+            "description": "optional - for follow-up only"
+          },
+          "living_history": {
+            "type": "boolean"
+          },
+          "no_dogs": {
+            "type": "boolean"
+          },
+          "free_admission": {
+            "type": "boolean"
+          },
+          "event_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "category",
+          "event_name"
+        ]
+      }
+    },
+    {
+      "name": "search_recipes",
+      "description": "Search historical recipes (13th-17th century) on fyndling.de by course, difficulty, ingredients, tags and other criteria. Each result includes fyndling_url, the canonical recipe page link.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "course": {
+            "type": "string",
+            "description": "Course type. Atomic: starter, main_beef, main_pork, main_poultry, main_game, main_fish, main_other, main_vegetarian, side, dessert, drink, cellar, condiment, other (plus aliases main, main_meat, beverage). There is no bare \"main\" - always use one of the values above.",
+            "enum": [
+              "starter",
+              "main_beef",
+              "main_pork",
+              "main_poultry",
+              "main_game",
+              "main_fish",
+              "main_other",
+              "main_vegetarian",
+              "side",
+              "dessert",
+              "drink",
+              "cellar",
+              "condiment",
+              "other"
+            ]
+          },
+          "difficulty_max": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 3,
+            "description": "Maximum difficulty (1=easy, 2=medium, 3=advanced)"
+          },
+          "lagerkueche": {
+            "type": "boolean",
+            "description": "If true, only recipes suitable for outdoor camp cooking"
+          },
+          "source_key": {
+            "type": "string",
+            "description": "Filter by recipe source key (manuscript)",
+            "enum": [
+              "anonimo_toscano",
+              "bockenheim",
+              "buch-guter-speise",
+              "corema_b4",
+              "corema_k1",
+              "corema_ka1",
+              "corema_ka2",
+              "corema_so1",
+              "corema_w1",
+              "edelike_spijse",
+              "form-of-cury",
+              "harpestreng",
+              "koch_kellermeisterei",
+              "koenigsberger_kochbuch",
+              "martino",
+              "meister_eberhard",
+              "meister_hans",
+              "menagier",
+              "mondseer_kochbuch",
+              "muenchner_cgm349",
+              "muenchner_cgm384",
+              "muenchner_cgm467",
+              "muenchner_cgm725",
+              "muenchner_cgm811",
+              "muenchner_cgm5919",
+              "muenchner_clm15632",
+              "rheinfraenkisches_kochbuch",
+              "sabina_welserin",
+              "severin",
+              "tegernsee",
+              "viandier"
+            ]
+          },
+          "dietary": {
+            "type": "string",
+            "enum": [
+              "vegetarian",
+              "vegan"
+            ],
+            "description": "Dietary filter"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "pasta",
+                "reis",
+                "brei",
+                "beilage",
+                "huelsenfruechte",
+                "brot",
+                "aspik",
+                "blancmanger",
+                "vegetarisch",
+                "fastenspeise",
+                "vegan",
+                "hofkueche",
+                "buergerlich",
+                "bauernkueche",
+                "met",
+                "methiglyn",
+                "bochet",
+                "hippocras",
+                "festtag"
+              ]
+            },
+            "description": "Controlled-vocabulary tags (AND logic)"
+          },
+          "epoch_from": {
+            "type": "integer",
+            "description": "Earliest historical source year, e.g. 1350"
+          },
+          "epoch_to": {
+            "type": "integer",
+            "description": "Latest historical source year, e.g. 1450"
+          },
+          "ingredients": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "All listed ingredients must be present (German names preferred), e.g. [\"Zimt\", \"Macis\"]"
+          },
+          "exclude_courses": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "starter",
+                "main_beef",
+                "main_pork",
+                "main_poultry",
+                "main_game",
+                "main_fish",
+                "main_other",
+                "main_vegetarian",
+                "side",
+                "dessert",
+                "drink",
+                "cellar",
+                "condiment",
+                "other"
+              ]
+            },
+            "description": "Exclude these course types"
+          },
+          "exclude_ingredients": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Exclude recipes containing any of these ingredients"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Max results, default 20, max 100"
+          }
+        }
+      }
+    }
+  ],
+  "host": "fyndling.de",
+  "source": "webmcp.com/api/directory.json"
+}

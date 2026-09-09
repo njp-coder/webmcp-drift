@@ -1,0 +1,203 @@
+{
+  "sponsio": 1,
+  "url": "https://verdant-market-grocery.openai.chatgpt.site/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "add_to_cart",
+      "description": "Add a catalog product to the cart.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 110,
+            "description": "Catalog product ID."
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1,
+            "description": "Number of units to add."
+          }
+        },
+        "required": [
+          "product_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "browse_department",
+      "description": "Browse products in one supermarket department.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "department": {
+            "type": "string",
+            "enum": [
+              "Produce",
+              "Dairy & Eggs",
+              "Bakery",
+              "Pantry & Baking",
+              "Meat & Seafood",
+              "Deli & Prepared",
+              "Frozen",
+              "Beverages",
+              "Snacks",
+              "Household & Personal"
+            ],
+            "description": "Department to browse."
+          }
+        },
+        "required": [
+          "department"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_cart",
+      "description": "Read the current cart contents, item count, and subtotal.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_checkout_summary",
+      "description": "Call this after adding all desired items to the cart to review the final subtotal, delivery fee, and order total before checkout.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_product",
+      "description": "Fetch full details for one product by product_id.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 110,
+            "description": "Catalog product ID."
+          }
+        },
+        "required": [
+          "product_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_departments",
+      "description": "List the supermarket departments available to browse.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "remove_from_cart",
+      "description": "Remove one product from the cart.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 110,
+            "description": "Catalog product ID."
+          }
+        },
+        "required": [
+          "product_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Search catalog products by name, department, and organic status.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Case-insensitive product-name query."
+          },
+          "section": {
+            "type": "string",
+            "enum": [
+              "Produce",
+              "Dairy & Eggs",
+              "Bakery",
+              "Pantry & Baking",
+              "Meat & Seafood",
+              "Deli & Prepared",
+              "Frozen",
+              "Beverages",
+              "Snacks",
+              "Household & Personal"
+            ],
+            "description": "Optional department filter."
+          },
+          "organic": {
+            "type": "boolean",
+            "description": "When true, return organic products only."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 20,
+            "description": "Maximum products to return."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "update_cart_item",
+      "description": "Set the quantity of an existing cart item.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 110,
+            "description": "Catalog product ID."
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "New quantity; use 0 to remove the item."
+          }
+        },
+        "required": [
+          "product_id",
+          "quantity"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "verdant-market-grocery.openai.chatgpt.site",
+  "source": "webmcp.com/api/directory.json"
+}

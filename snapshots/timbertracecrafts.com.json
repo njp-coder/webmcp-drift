@@ -1,0 +1,135 @@
+{
+  "sponsio": 1,
+  "url": "https://timbertracecrafts.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "add_to_cart",
+      "description": "Add a Timber Trace Crafts product to the shopping cart, choosing a wood species variant, a quantity, and optional personalization text. On a product page the product is assumed; anywhere else pass the product slug from search_products. Use this once the shopper has picked a variant — call get_product first if you are unsure which variants exist or which are in stock. Returns the updated cart contents and item count, and the cart total in the header updates. This changes the cart only; it does not place an order or charge anything, and the item can be removed again.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product": {
+            "type": "string",
+            "description": "The product slug from search_products or get_product. Omit on a product page to add the product being viewed."
+          },
+          "variant": {
+            "type": "string",
+            "description": "The wood species, exactly as get_product lists it (e.g. \"Walnut\"). Optional when the product has only one option."
+          },
+          "quantity": {
+            "type": "integer",
+            "description": "How many to add, 1-99. Defaults to 1.",
+            "minimum": 1,
+            "maximum": 99
+          },
+          "personalization_text": {
+            "type": "string",
+            "description": "Engraving or personalization text, only for products that offer it."
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "ask_site",
+      "description": "Look up what Timber Trace Crafts' own pages say about materials, wood species, shipping, returns, custom and personalized orders, care instructions, the studio, or anything covered in the FAQ and journal articles. Use this for any question about the business, its process, or its policies instead of guessing. Returns the matching page sections as text with the source URL for each, or an explicit note when the site has nothing on that topic. Read-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "question": {
+            "type": "string",
+            "description": "The visitor's question, in their own words."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "How many sections to return, 1-10. Defaults to 4.",
+            "minimum": 1,
+            "maximum": 10
+          }
+        },
+        "required": [
+          "question"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "check_order_status",
+      "description": "Look up an existing Timber Trace Crafts order using its order number and the email address it was placed with — both are required, and the lookup is rate-limited. Use this when a customer asks where their order is or whether it has shipped. Returns the order status, the date it was placed, and tracking details when the order has shipped, then opens the full order page. Read-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "order_number": {
+            "type": "integer",
+            "description": "The order number from the confirmation email.",
+            "minimum": 1
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "The email address the order was placed with."
+          }
+        },
+        "required": [
+          "order_number",
+          "email"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_product",
+      "description": "Get the full details of one Timber Trace Crafts product: description, current price and any sale price, every variant with its wood species and stock level, whether personalization is offered and what it costs, and the product URL. Use this after search_products, or whenever the shopper asks about a specific item, before adding anything to the cart — the variant labels it returns are what add_to_cart expects. On a product page it describes the product being viewed and takes no arguments. Read-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "The product slug from search_products, e.g. \"butterfly-dangle-earrings\". Omit on a product page to describe the product being viewed."
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Find products in the Timber Trace Crafts catalog by keyword, wood species, style, price ceiling, or in-stock status. Use this when the shopper is looking for something (\"wooden earrings\", \"a gift under $40\", \"anything in walnut\") rather than naming an exact item. Returns up to 10 matches with name, price, stock status, and product URL, and shows the matching results on the shop page. Read-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Words to match against product names, descriptions, and tags."
+          },
+          "max_price": {
+            "type": "number",
+            "description": "Only return products at or below this price, in USD.",
+            "minimum": 0
+          },
+          "in_stock_only": {
+            "type": "boolean",
+            "description": "Only return products with at least one variant in stock."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "How many products to return, 1-10. Defaults to 10.",
+            "minimum": 1,
+            "maximum": 10
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "timbertracecrafts.com",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,75 @@
+{
+  "sponsio": 1,
+  "url": "https://thanks2go.securedme.ca/p/securedme",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "inspect_gratitude_profile",
+      "description": "Inspect the public control claims and enabled rails for the visible Thanks2Go profile. This does not verify a human identity.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "open_payment_handoff",
+      "description": "Focus the visible human approval panel. It never starts or captures payment.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "stage_gratitude_intent",
+      "description": "Stage a bounded gratitude mandate. This cannot approve, create, capture, or sign a payment.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "rail": {
+            "type": "string",
+            "enum": [
+              "paypal",
+              "solana-devnet"
+            ]
+          },
+          "solAmount": {
+            "type": "string",
+            "enum": [
+              "0.001",
+              "0.005",
+              "0.01"
+            ]
+          }
+        },
+        "required": [
+          "rail"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "verify_gratitude_receipt",
+      "description": "Verify a completed gratitude receipt credential without initiating payment.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "receipt": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "receipt"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "thanks2go.securedme.ca",
+  "source": "webmcp.com/api/directory.json"
+}

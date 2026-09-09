@@ -1,0 +1,280 @@
+{
+  "sponsio": 1,
+  "url": "https://ambios-ai.vercel.app/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "ambios.backend.get_status",
+      "description": "Read the current AmbiOS backend service status.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    },
+    {
+      "name": "ambios.console.list_agent_actions",
+      "description": "Read the authenticated workspace activity console actions.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    },
+    {
+      "name": "ambios.docs.get_doc",
+      "description": "Read documentation proposals for the authenticated AmbiOS workspace.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "docId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "docId"
+        ]
+      }
+    },
+    {
+      "name": "ambios.guardrails.evaluate_guardrails",
+      "description": "Evaluate an instruction against AmbiOS guardrails before execution.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "instruction": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          },
+          "environment": {
+            "type": "string",
+            "enum": [
+              "development",
+              "staging",
+              "production"
+            ]
+          }
+        },
+        "required": [
+          "instruction"
+        ]
+      }
+    },
+    {
+      "name": "ambios.identity.get_current_user",
+      "description": "Get the authenticated AmbiOS user, organization, and agent context.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    },
+    {
+      "name": "ambios.incident.get_incident_context",
+      "description": "Read the authenticated context for one incident before proposing a change.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "incidentId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "incidentId"
+        ]
+      }
+    },
+    {
+      "name": "ambios.incident.suggest_hotfixes",
+      "description": "Generate guardrail-evaluated hot-fix suggestions for one incident.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "incidentId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "incidentId"
+        ]
+      }
+    },
+    {
+      "name": "ambios.integrations.get_status",
+      "description": "Read connector readiness and sync status for the authenticated workspace.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    },
+    {
+      "name": "ambios.list_incidents",
+      "description": "Read open AmbiOS incidents for the authenticated workspace.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    },
+    {
+      "name": "ambios.nango.get_status",
+      "description": "Read authenticated connector status and workspace readiness.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    },
+    {
+      "name": "ambios.payments.check_budget",
+      "description": "Check the authenticated workspace budget and estimated action cost.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "estimatedCost": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000000
+          }
+        },
+        "required": [
+          "estimatedCost"
+        ]
+      }
+    },
+    {
+      "name": "ambios.workspace.get_current_context",
+      "description": "Read the authenticated AmbiOS workspace, agent, incidents, actions, and docs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_current_workspace_context",
+      "description": "Read the identity and scope of the authorized AmbiOS workspace.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_workspace_readiness",
+      "description": "Read readiness and connected-provider status for the authorized AmbiOS workspace.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    },
+    {
+      "name": "github.code-scanning.list_alerts",
+      "description": "Read code-scanning alerts.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "repo": {
+            "type": "string",
+            "pattern": "^[^/]+/[^/]+$"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "repo"
+        ]
+      }
+    },
+    {
+      "name": "github.dependabot.list_alerts",
+      "description": "Read Dependabot vulnerability alerts.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "repo": {
+            "type": "string",
+            "pattern": "^[^/]+/[^/]+$"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "repo"
+        ]
+      }
+    },
+    {
+      "name": "github.secret-scanning.list_alerts",
+      "description": "Read secret-scanning alerts.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "repo": {
+            "type": "string",
+            "pattern": "^[^/]+/[^/]+$"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "repo"
+        ]
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Search the public AmbiOS demo product catalog by name, category, or description.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "query": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "category": {
+            "type": "string",
+            "maxLength": 50
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20
+          }
+        }
+      }
+    }
+  ],
+  "host": "ambios-ai.vercel.app",
+  "source": "webmcp.com/api/directory.json"
+}

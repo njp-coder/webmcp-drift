@@ -1,0 +1,61 @@
+{
+  "sponsio": 1,
+  "url": "https://aiagent.app/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "aiagent.get_context",
+      "description": "Describe the current AI Agent page, signed-in state, workspace context, and the app surfaces available for navigation.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "aiagent.navigate",
+      "description": "Navigate to an AI Agent surface. Workspace surfaces use the current workspace unless a workspace slug or id is supplied. Navigation never bypasses normal authentication, onboarding, billing, or Labs visibility gates.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "surface": {
+            "type": "string",
+            "enum": [
+              "home",
+              "pricing",
+              "blog",
+              "dashboard",
+              "settings",
+              "billing",
+              "overview",
+              "board",
+              "inbox",
+              "chat",
+              "agents",
+              "workflows",
+              "connections",
+              "docs",
+              "brain",
+              "skills"
+            ],
+            "description": "Destination surface in AI Agent."
+          },
+          "workspace": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "description": "Optional workspace slug or id. Only needed when navigating to a workspace surface from outside a workspace."
+          }
+        },
+        "required": [
+          "surface"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "aiagent.app",
+  "source": "webmcp.com/api/directory.json"
+}

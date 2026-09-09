@@ -1,0 +1,98 @@
+{
+  "sponsio": 1,
+  "url": "https://fume.finance/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "read_page_as_markdown",
+      "description": "Return the current page as clean markdown instead of HTML, so it can be quoted or summarized without parsing the layout. Takes no arguments.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "search_fume_docs",
+      "description": "Search Fume's documentation — AI agents for fund operations, the tokenization whitepaper and user guides, OmniClear settlement, and the developer API reference. Returns ranked fragments with the page URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Words to search the documentation for."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "search_fund_service_providers",
+      "description": "Search Fume's directory of fund service providers — legal, fund administration, custody, exchange/broker, audit, AIFM and insurance. Returns JSON with the category list alongside the matches.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string",
+            "description": "Free-text search over name, description, specialty, tags and jurisdictions."
+          },
+          "category": {
+            "type": "string",
+            "description": "Category id to filter by: legal, fund-admin, custody, broker, auditor, aifm or insurance."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum providers to return (1-200). Defaults to 100.",
+            "minimum": 1,
+            "maximum": 200
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "search_tokenized_funds",
+      "description": "Search Fume's Tokenized Fund Registry — tokenized investment funds with their manager, strategy, asset class, AUM, chain, token standard, fees and jurisdiction. Returns JSON; every fund carries a `url` to its page on this site.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string",
+            "description": "Free-text search over name, manager, issuer, strategy and description."
+          },
+          "chain": {
+            "type": "string",
+            "description": "Blockchain to filter by, e.g. Ethereum, Arbitrum, Base."
+          },
+          "assetClass": {
+            "type": "string",
+            "description": "Asset class to filter by, e.g. Fixed Income, Private Credit."
+          },
+          "jurisdiction": {
+            "type": "string",
+            "description": "Jurisdiction to filter by, e.g. Luxembourg, Cayman Islands."
+          },
+          "status": {
+            "type": "string",
+            "description": "Fund status: live, upcoming or closed."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum funds to return (1-200). Defaults to 50.",
+            "minimum": 1,
+            "maximum": 200
+          }
+        },
+        "required": []
+      }
+    }
+  ],
+  "host": "fume.finance",
+  "source": "webmcp.com/api/directory.json"
+}

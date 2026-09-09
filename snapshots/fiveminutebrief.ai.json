@@ -1,0 +1,575 @@
+{
+  "sponsio": 1,
+  "url": "https://fiveminutebrief.ai/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "ask_this_brief",
+      "description": "Ask a question about the entitled Brief (5m current day for guests; Public preview only until follow; archive if canReadArchive). Returns a grounded answer + citations, then highlights matching stories/sources. Not a Brief digest (use get_latest_brief). No web search, no new Brief.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "topicId": {
+            "type": "string",
+            "description": "Topic id (e.g. topic:uuid). Defaults to the Topic on this page."
+          },
+          "question": {
+            "type": "string",
+            "description": "Question about this Brief’s clustered stories and cited sources."
+          },
+          "dateKey": {
+            "type": "string",
+            "description": "Archive day (YYYY-MM-DD). Followers / private owners only."
+          },
+          "briefId": {
+            "type": "string",
+            "description": "Specific Brief id. Followers / private owners only."
+          }
+        },
+        "required": [
+          "question"
+        ]
+      }
+    },
+    {
+      "name": "clear_highlights",
+      "description": "Remove agent paint and notes. Restores the page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "copy_share_link",
+      "description": "Return the canonical Topic URL to share. Read-only; does not send email.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "topicId": {
+            "type": "string",
+            "description": "Topic id (e.g. topic:uuid). Defaults to the Topic on this page."
+          }
+        }
+      }
+    },
+    {
+      "name": "create_topic",
+      "description": "Create a private custom Topic via the API (paid plan + 1 credit). Queues the first Brief; poll get_topic_generation_status. Free / no-credit fail like the app. Confirms in-page. Does not fill the /topics/new form (that is start_create_topic).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Topic name (required). Same field as the Create Topic form."
+          },
+          "whatToCover": {
+            "type": "string",
+            "description": "Optional: what to cover. Description is generated from the first Brief."
+          },
+          "voiceId": {
+            "type": "string",
+            "description": "Optional podcast voice id. Defaults to the site default."
+          }
+        },
+        "required": [
+          "name"
+        ]
+      }
+    },
+    {
+      "name": "explain_fiveminutebrief",
+      "description": "Explain FiveMinuteBrief (5m, Public, and Custom Topics) and return /public-topics, /plans, and /signup URLs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "follow_public_topic",
+      "description": "Follow a 5m or Public Topic (uses a follow slot). Guests must start_login. Slot limits return PLAN_LIMIT. Confirms in-page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "topicId": {
+            "type": "string",
+            "description": "Topic id (e.g. topic:uuid). Defaults to the Topic on this page."
+          }
+        }
+      }
+    },
+    {
+      "name": "get_brief_newsletter",
+      "description": "Shareable copy plus canonical URL. Full copy when entitled (5m current day, follow, or private owner). Preview copy if you are not following a Public Topic.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "topicId": {
+            "type": "string",
+            "description": "Topic id (e.g. topic:uuid). Defaults to the Topic on this page."
+          },
+          "dateKey": {
+            "type": "string",
+            "description": "Archive day (YYYY-MM-DD). Followers / private owners only; guests get current day."
+          },
+          "briefId": {
+            "type": "string",
+            "description": "Specific Brief id. Followers / private owners only."
+          }
+        }
+      }
+    },
+    {
+      "name": "get_latest_brief",
+      "description": "Full Brief digest + URL. 5m: current day for everyone; pass dateKey only if you follow (archive). Public: full only while following — otherwise use get_public_topic_preview. Private custom: owner only. No brief.debug.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "topicId": {
+            "type": "string",
+            "description": "Topic id (e.g. topic:uuid). Defaults to the Topic on this page."
+          },
+          "dateKey": {
+            "type": "string",
+            "description": "Archive day (YYYY-MM-DD). Followers / private owners only; guests get current day."
+          },
+          "briefId": {
+            "type": "string",
+            "description": "Specific Brief id. Followers / private owners only."
+          }
+        }
+      }
+    },
+    {
+      "name": "get_podcast_episode",
+      "description": "Latest episode this viewer may hear: title, date, duration, listen URL, enclosure. 5m guests get ?variant=public (ad). Followers/owners get the private file. Not the archive.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "topicId": {
+            "type": "string",
+            "description": "Topic id (e.g. topic:uuid). Defaults to the Topic on this page."
+          }
+        }
+      }
+    },
+    {
+      "name": "get_podcast_show",
+      "description": "Podcast RSS + per-app launch URLs (including Apple). 5m guests/non-followers (including admin who is not following): public ad show, no ?code=. Followers and private-Topic owners: private ad-free ?code= feed. Public Topic not followed: follow required (no code). Does not open an app (use open_podcast_app).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "topicId": {
+            "type": "string",
+            "description": "Topic id (e.g. topic:uuid). Defaults to the Topic on this page."
+          }
+        }
+      }
+    },
+    {
+      "name": "get_public_topic",
+      "description": "Topic metadata: description, cover, Brief/preview availability, archive + podcast access. Private Topics: owner only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "topicId": {
+            "type": "string",
+            "description": "Topic id (e.g. topic:uuid). Defaults to the Topic on this page."
+          }
+        }
+      }
+    },
+    {
+      "name": "get_public_topic_preview",
+      "description": "Preview a user-made Public Topic (not 5m): takeaway, top story titles, source count, follow CTA. Not the full Brief.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "topicId": {
+            "type": "string",
+            "description": "Topic id (e.g. topic:uuid). Defaults to the Topic on this page."
+          }
+        }
+      }
+    },
+    {
+      "name": "get_topic_generation_status",
+      "description": "queued / generating / ready / failed / sparse for a Topic’s first Brief. Poll after create_topic. Sign-in required.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "topicId": {
+            "type": "string",
+            "description": "Topic id (e.g. topic:uuid). Defaults to the Topic on this page."
+          }
+        }
+      }
+    },
+    {
+      "name": "highlight_brief_section",
+      "description": "Paint Top Stories, Quick Hits, What’s Next, or Today’s Take on the live Brief; dim other sections. Optional note. Preview viewers cannot paint What’s Next.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "topicId": {
+            "type": "string",
+            "description": "Topic id (e.g. topic:uuid). Defaults to the Topic on this page."
+          },
+          "section": {
+            "type": "string",
+            "enum": [
+              "topStories",
+              "quickHits",
+              "whatsNext",
+              "todaysTake"
+            ],
+            "description": "topStories | quickHits | whatsNext | todaysTake"
+          },
+          "note": {
+            "type": "string",
+            "description": "Optional short note shown as a sticky chip on the page."
+          }
+        },
+        "required": [
+          "section"
+        ]
+      }
+    },
+    {
+      "name": "highlight_coverage_note",
+      "description": "Light the sparse / special-single / expanding-coverage banner when explaining a thin day.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "topicId": {
+            "type": "string",
+            "description": "Topic id (e.g. topic:uuid). Defaults to the Topic on this page."
+          },
+          "note": {
+            "type": "string",
+            "description": "Optional short note shown as a sticky chip on the page."
+          }
+        }
+      }
+    },
+    {
+      "name": "highlight_plan_gate",
+      "description": "Outline credits, follow, or upgrade after create_topic / follow_public_topic was refused.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "gate": {
+            "type": "string",
+            "enum": [
+              "credits",
+              "follow",
+              "upgrade"
+            ],
+            "description": "Which refused control to point at."
+          },
+          "topicId": {
+            "type": "string",
+            "description": "Topic id (e.g. topic:uuid). Defaults to the Topic on this page."
+          },
+          "note": {
+            "type": "string",
+            "description": "Optional short note shown as a sticky chip on the page."
+          }
+        },
+        "required": [
+          "gate"
+        ]
+      }
+    },
+    {
+      "name": "highlight_podcast_moment",
+      "description": "Jump the in-page player (script marker or estimate) and highlight the matching story when audio exists.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "topicId": {
+            "type": "string",
+            "description": "Topic id (e.g. topic:uuid). Defaults to the Topic on this page."
+          },
+          "story": {
+            "type": "string",
+            "description": "Story id or title to highlight and seek toward."
+          },
+          "seekSec": {
+            "type": "number",
+            "description": "Optional exact timestamp in seconds."
+          },
+          "note": {
+            "type": "string",
+            "description": "Optional short note shown as a sticky chip on the page."
+          }
+        }
+      }
+    },
+    {
+      "name": "highlight_sources",
+      "description": "Glow publisher chips for a story (identity, not a URL dump). Preview: primary publisher of an on-screen story only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "topicId": {
+            "type": "string",
+            "description": "Topic id (e.g. topic:uuid). Defaults to the Topic on this page."
+          },
+          "story": {
+            "type": "string",
+            "description": "Story id or title. Defaults to the lead Top Story."
+          },
+          "sourceUrls": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Optional publisher names or source URLs. Defaults to that story’s sources."
+          },
+          "note": {
+            "type": "string",
+            "description": "Optional short note shown as a sticky chip on the page."
+          }
+        }
+      }
+    },
+    {
+      "name": "highlight_stories",
+      "description": "Outline 1–3 story cards by stable id (topChanges:0) or title. Dims siblings. Public preview: on-screen titles only. After pointing at a story, use highlight_sources for its publishers, then clear_highlights to restore the page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "topicId": {
+            "type": "string",
+            "description": "Topic id (e.g. topic:uuid). Defaults to the Topic on this page."
+          },
+          "stories": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "1–3 story ids or titles from get_latest_brief / preview."
+          },
+          "note": {
+            "type": "string",
+            "description": "Optional short note shown as a sticky chip on the page."
+          }
+        },
+        "required": [
+          "stories"
+        ]
+      }
+    },
+    {
+      "name": "highlight_topic_card",
+      "description": "Scroll to and outline one Topic card on the catalog or dashboard (5m, follow CTA, or queued state).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "topicId": {
+            "type": "string",
+            "description": "Topic id (e.g. topic:uuid). Defaults to the Topic on this page."
+          },
+          "note": {
+            "type": "string",
+            "description": "Optional short note shown as a sticky chip on the page."
+          }
+        },
+        "required": [
+          "topicId"
+        ]
+      }
+    },
+    {
+      "name": "list_my_topics",
+      "description": "Dashboard Topics you own or follow (private custom included): generation status and latest card take. Sign-in required.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_podcast_apps",
+      "description": "Podcast app buttons for a Topic (same set as Listen anywhere). Without topicId: the catalog of app ids. Private feeds: Apple, Overcast, Pocket Casts, Castro, Podcast Addict only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "topicId": {
+            "type": "string",
+            "description": "Topic id (e.g. topic:uuid). Defaults to the Topic on this page."
+          }
+        }
+      }
+    },
+    {
+      "name": "list_public_topics",
+      "description": "List 5m and Public Topics: name, id, topicKind, follower count, card take. When signed in: isFollowing and follow slots. No private Topics.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "login",
+      "description": "Fill the login form on this page. Does not submit credentials; the user must click Log in. Distinct from start_login, which only navigates here.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Email"
+          },
+          "password": {
+            "type": "string",
+            "description": "Password"
+          }
+        }
+      }
+    },
+    {
+      "name": "open_plans",
+      "description": "Navigate this tab to /plans. Does not open Stripe checkout.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "open_podcast_app",
+      "description": "Open a Topic’s show in a podcast app (topicId + app id). Opens a new tab/deep link; does not replace the page. Guests cannot open a private feed.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "topicId": {
+            "type": "string",
+            "description": "Topic id (e.g. topic:uuid). Defaults to the Topic on this page."
+          },
+          "app": {
+            "type": "string",
+            "enum": [
+              "apple",
+              "spotify",
+              "overcast",
+              "pocketcasts",
+              "amazon",
+              "castro",
+              "goodpods",
+              "metacast",
+              "castbox",
+              "podcastaddict",
+              "playerfm",
+              "deezer"
+            ],
+            "description": "Podcast app id from list_podcast_apps (apple, spotify, overcast, …)."
+          }
+        },
+        "required": [
+          "app"
+        ]
+      }
+    },
+    {
+      "name": "retry_first_brief",
+      "description": "Re-enqueue first Brief (same credit/lock rules as topic-page Try again). Does not wait. Paid + credit. Confirms in-page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "topicId": {
+            "type": "string",
+            "description": "Topic id (e.g. topic:uuid). Defaults to the Topic on this page."
+          }
+        }
+      }
+    },
+    {
+      "name": "signup",
+      "description": "Fill the signup form on this page. Does not submit credentials; the user must click Create account. Distinct from start_signup, which only navigates here.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "type": "string",
+            "description": "First name"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "Last name (optional)"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email"
+          },
+          "password": {
+            "type": "string",
+            "description": "Password (min 8 characters)"
+          }
+        },
+        "required": [
+          "firstName"
+        ]
+      }
+    },
+    {
+      "name": "start_login",
+      "description": "Navigate this tab to the login form. Does not fill or submit credentials. On /login the form is a separate declarative login tool.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "start_signup",
+      "description": "Navigate this tab to the signup form. Does not fill or submit credentials. On /signup the form is a separate declarative signup tool.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "unfollow_public_topic",
+      "description": "Unfollow a 5m or Public Topic. A Public Topic creator who unfollows gets preview only. Confirms in-page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "topicId": {
+            "type": "string",
+            "description": "Topic id (e.g. topic:uuid). Defaults to the Topic on this page."
+          }
+        }
+      }
+    }
+  ],
+  "host": "fiveminutebrief.ai",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,501 @@
+{
+  "sponsio": 1,
+  "url": "https://carwyapar.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "get_brand_models",
+      "description": "List public car models for one brand with pagination and sorting.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "brandSlug": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "The exact CarWyapar brand slug."
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1,
+            "description": "Page number, starting at 1."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 20,
+            "description": "Results per page. Maximum 100."
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "relevance",
+              "name-asc",
+              "name-desc",
+              "price-low-high",
+              "price-high-low",
+              "latest",
+              "oldest"
+            ],
+            "default": "relevance",
+            "description": "Model result order."
+          }
+        },
+        "required": [
+          "brandSlug"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_car_brand",
+      "description": "Get complete public details for one car brand by slug.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "brandSlug": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "The exact CarWyapar brand slug."
+          }
+        },
+        "required": [
+          "brandSlug"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_car_brands",
+      "description": "List or search public CarWyapar car brands with pagination and sorting.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "search": {
+            "type": "string",
+            "description": "Search brand name, slug, or description."
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1,
+            "description": "Page number, starting at 1."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 20,
+            "description": "Results per page. Maximum 100."
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "name-asc",
+              "name-desc",
+              "latest",
+              "oldest"
+            ],
+            "default": "name-asc",
+            "description": "Brand result order."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_car_model",
+      "description": "Get concise public model details. Request only the sections needed for the answer.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "modelSlug": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "The exact CarWyapar model slug."
+          },
+          "sections": {
+            "oneOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "about",
+                  "specs",
+                  "features",
+                  "images",
+                  "colors",
+                  "faqs"
+                ]
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "about",
+                    "specs",
+                    "features",
+                    "images",
+                    "colors",
+                    "faqs"
+                  ]
+                },
+                "minItems": 1,
+                "uniqueItems": true
+              }
+            ],
+            "description": "Required detail sections. Select only the sections needed for the answer."
+          }
+        },
+        "required": [
+          "modelSlug",
+          "sections"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_car_model_filters",
+      "description": "Get current model filters. Use value in API queries and label only for display.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_car_variant",
+      "description": "Get concise public variant details. Request only the sections needed for the answer.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "modelSlug": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "The exact CarWyapar model slug."
+          },
+          "variantSlug": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "The exact CarWyapar variant slug."
+          },
+          "sections": {
+            "oneOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "about",
+                  "specs",
+                  "features",
+                  "images",
+                  "colors",
+                  "faqs"
+                ]
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "about",
+                    "specs",
+                    "features",
+                    "images",
+                    "colors",
+                    "faqs"
+                  ]
+                },
+                "minItems": 1,
+                "uniqueItems": true
+              }
+            ],
+            "description": "Required detail sections. Select only the sections needed for the answer."
+          }
+        },
+        "required": [
+          "modelSlug",
+          "variantSlug",
+          "sections"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_car_variant_filters",
+      "description": "Get current variant filters. Use value in API queries and label only for display.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_model_variants",
+      "description": "List all public variants for one exact car model slug.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "modelSlug": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "The exact CarWyapar model slug."
+          }
+        },
+        "required": [
+          "modelSlug"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_car_models",
+      "description": "Search and filter public car models by brand, price, fuel, body type, transmission, drivetrain, or status.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "search": {
+            "type": "string",
+            "description": "Search model-related text."
+          },
+          "brand": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Brand filter value returned by model filter options."
+          },
+          "fuelType": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1
+              }
+            ],
+            "description": "Fuel filter value or values returned by model filter options."
+          },
+          "bodyType": {
+            "type": "string",
+            "description": "Body type filter value returned by model filter options."
+          },
+          "transmission": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1
+              }
+            ],
+            "description": "Transmission filter value or values returned by model filter options."
+          },
+          "drivetrain": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1
+              }
+            ],
+            "description": "Drivetrain filter value or values returned by model filter options."
+          },
+          "status": {
+            "type": "string",
+            "description": "Status filter value returned by model filter options."
+          },
+          "minPrice": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Minimum model price in INR."
+          },
+          "maxPrice": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Maximum model price in INR."
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1,
+            "description": "Page number, starting at 1."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 20,
+            "description": "Results per page. Maximum 100."
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "relevance",
+              "name-asc",
+              "name-desc",
+              "price-low-high",
+              "price-high-low",
+              "latest",
+              "oldest"
+            ],
+            "default": "relevance",
+            "description": "Model result order."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_car_variants",
+      "description": "Search and filter public car variants by model, brand, price, fuel, body type, transmission, drivetrain, sunroof, seating, airbags, or ADAS.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "search": {
+            "type": "string",
+            "description": "Search variant or model-related text."
+          },
+          "brand": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Brand filter value returned by variant filter options."
+          },
+          "modelSlug": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Model filter value returned by variant filter options."
+          },
+          "fuelType": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1
+              }
+            ],
+            "description": "Fuel filter value or values returned by variant filter options."
+          },
+          "bodyType": {
+            "type": "string",
+            "description": "Body type filter value returned by variant filter options."
+          },
+          "transmission": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1
+              }
+            ],
+            "description": "Transmission filter value or values returned by variant filter options."
+          },
+          "drivetrain": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1
+              }
+            ],
+            "description": "Drivetrain filter value or values returned by variant filter options."
+          },
+          "sunroof": {
+            "type": "string",
+            "description": "Sunroof filter value returned by variant filter options."
+          },
+          "seatingCapacity": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Filter by seating capacity."
+          },
+          "minAirbags": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Minimum number of airbags."
+          },
+          "adas": {
+            "type": "boolean",
+            "description": "Boolean ADAS value returned by variant filter options."
+          },
+          "minPrice": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Minimum variant price in INR."
+          },
+          "maxPrice": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Maximum variant price in INR."
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1,
+            "description": "Page number, starting at 1."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 20,
+            "description": "Results per page. Maximum 100."
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "relevance",
+              "name-asc",
+              "name-desc",
+              "price-low-high",
+              "price-high-low",
+              "latest",
+              "oldest"
+            ],
+            "default": "relevance",
+            "description": "Variant result order."
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "carwyapar.com",
+  "source": "webmcp.com/api/directory.json"
+}

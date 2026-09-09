@@ -1,0 +1,891 @@
+{
+  "sponsio": 1,
+  "url": "https://qotien.fr/simulateur-impot/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "fiscal_cehr",
+      "description": "Contribution exceptionnelle sur les hauts revenus (CEHR) — CEHR due sur le revenu fiscal de référence (art. 223 sexies CGI). Distincte de la CDHR.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "revenu_fiscal_reference"
+        ],
+        "properties": {
+          "revenu_fiscal_reference": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Revenu fiscal de référence du foyer (€)."
+          },
+          "situation": {
+            "type": "string",
+            "enum": [
+              "Célibataire",
+              "Marié(e)",
+              "Pacsé(e)",
+              "Divorcé(e)",
+              "Veuf(ve)"
+            ],
+            "default": "Célibataire",
+            "description": "Situation familiale (seuils célibataire 250 k / couple 500 k)."
+          }
+        }
+      }
+    },
+    {
+      "name": "fiscal_impot_revenu",
+      "description": "Impôt sur le revenu (barème 2026) — Impôt sur le revenu brut d'un foyer (barème progressif, quotient familial plafonné, décote). Revenus 2025.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "revenu_net_imposable"
+        ],
+        "properties": {
+          "revenu_net_imposable": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Revenu net imposable du foyer (€), après abattements."
+          },
+          "parts": {
+            "type": "number",
+            "minimum": 1,
+            "default": 1,
+            "description": "Nombre de parts de quotient familial."
+          },
+          "situation": {
+            "type": "string",
+            "enum": [
+              "Célibataire",
+              "Marié(e)",
+              "Pacsé(e)",
+              "Divorcé(e)",
+              "Veuf(ve)"
+            ],
+            "default": "Célibataire",
+            "description": "Situation familiale (détermine les parts de base pour le plafonnement du QF et la décote)."
+          }
+        }
+      }
+    },
+    {
+      "name": "fiscal_prelevements_sociaux",
+      "description": "Taux de prélèvements sociaux par nature de revenu — Taux de PS applicable (17,2 % dérogatoire ou 18,6 % droit commun post-LFSS 2026) selon la nature du revenu du capital. Renvoie une FRACTION 0-1 (unit RATE, ex. 0,172) + un champ \"pourcentage\" (17,2) — à distinguer de tmi qui renvoie des points de pourcentage (unit PERCENT, 0-100).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "type_revenu"
+        ],
+        "properties": {
+          "type_revenu": {
+            "type": "string",
+            "enum": [
+              "rf_location_nue",
+              "pv_immo_particuliers",
+              "assurance_vie",
+              "pel_cel",
+              "pep",
+              "fonds_euros",
+              "rcm_dividendes",
+              "rcm_interets",
+              "pv_mobiliere",
+              "pea_post_2018",
+              "bic_lmnp",
+              "sci_is_dividendes",
+              "per_assurantiel_gains",
+              "per_bancaire_gains",
+              "actifs_numeriques",
+              "epargne_salariale",
+              "exit_tax",
+              "aga_gain_acquisition",
+              "bspce",
+              "stock_options_gain_acquisition"
+            ],
+            "description": "Nature du revenu (ex. rf_location_nue, rcm_dividendes, bic_lmnp)."
+          }
+        }
+      }
+    },
+    {
+      "name": "fiscal_surtaxe_pv_immobiliere",
+      "description": "Surtaxe sur les plus-values immobilières — Taxe additionnelle sur les plus-values immobilières nettes imposables supérieures à 50 000 € (barème par tranches).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "plus_value"
+        ],
+        "properties": {
+          "plus_value": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Plus-value nette imposable (€)."
+          }
+        }
+      }
+    },
+    {
+      "name": "fiscal_tmi",
+      "description": "Taux marginal d'imposition (TMI) — Tranche marginale d'imposition du foyer au barème 2026, en tenant compte du plafonnement du quotient familial. Renvoie le taux en POINTS DE POURCENTAGE (unit PERCENT, ex. 30 = 30 %) — à distinguer de prelevements_sociaux qui renvoie une fraction (unit RATE, 0-1).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "revenu_net_imposable"
+        ],
+        "properties": {
+          "revenu_net_imposable": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Revenu net imposable du foyer (€)."
+          },
+          "parts": {
+            "type": "number",
+            "minimum": 1,
+            "default": 1,
+            "description": "Nombre de parts de quotient familial."
+          },
+          "situation": {
+            "type": "string",
+            "enum": [
+              "Célibataire",
+              "Marié(e)",
+              "Pacsé(e)",
+              "Divorcé(e)",
+              "Veuf(ve)"
+            ],
+            "default": "Célibataire",
+            "description": "Situation familiale."
+          }
+        }
+      }
+    },
+    {
+      "name": "qotien_capacites",
+      "description": "Capacités de Qotien (carte de planification) — Ce que le moteur sait faire et avec quelle fiabilité, par domaine — à appeler AVANT de choisir un outil, pour planifier et savoir quand hédger. Ne calcule rien.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    },
+    {
+      "name": "referentiel_recherche",
+      "description": "Recherche dans le référentiel — Liste les clés publiques du référentiel, filtrables par domaine (fiscal/retraite) et/ou par mot-clé. Renvoie un résumé par clé (valeur, libellé, fiabilité) ; utiliser referentiel_valeur pour le détail sourcé complet.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "domaine": {
+            "type": "string",
+            "enum": [
+              "fiscal",
+              "retraite",
+              "succession"
+            ],
+            "description": "Filtre par domaine."
+          },
+          "q": {
+            "type": "string",
+            "description": "Mot-clé cherché dans la clé publique ou le libellé."
+          }
+        }
+      }
+    },
+    {
+      "name": "referentiel_valeur",
+      "description": "Valeur du référentiel (sourcée + datée) — La valeur 2026 d'une constante fiscale ou retraite par sa clé publique stable, avec sa source primaire, sa référence légale, sa date de vérification et son niveau de fiabilité. Jamais un chiffre nu.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "cle"
+        ],
+        "properties": {
+          "cle": {
+            "type": "string",
+            "description": "Clé publique stable (liste via referentiel_recherche). Ex. pass, cehr_seuil_celibataire, reversion_plafond_couple, carmf_rcv_valeur_point."
+          }
+        }
+      }
+    },
+    {
+      "name": "referentiel_versions",
+      "description": "Versions et fraîcheur du référentiel — Millésime courant, historique des versions, cadence et prochaine revue globale, niveaux de fiabilité — pour savoir de quand datent les valeurs et quand elles seront re-vérifiées.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    },
+    {
+      "name": "retraite_estimation",
+      "description": "Estimation de pension (données partielles) — Pension approchée à partir du statut, du revenu, de l'âge et de l'âge de départ : carrière reconstituée, SAM plafonné au PASS, décote. Rend un point central, une fourchette et un niveau de confiance. Ce N'est PAS un calcul certain — il remplace un relevé de carrière (RIS) manquant, pas l'inverse.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "statut",
+          "revenu_net_imposable",
+          "age"
+        ],
+        "properties": {
+          "statut": {
+            "type": "string",
+            "description": "Statut (insensible à la casse et aux accents). Valeurs reconnues : \"salarié cadre\", \"salarié non-cadre\" (ou \"salarié\" seul = non-cadre), \"fonctionnaire\", \"profession libérale\" / \"TNS\" / \"indépendant\" (= libéral)."
+          },
+          "revenu_net_imposable": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Revenu net imposable annuel actuel (€)."
+          },
+          "age": {
+            "type": "number",
+            "minimum": 16,
+            "description": "Âge actuel (ans)."
+          },
+          "age_depart": {
+            "type": "number",
+            "minimum": 50,
+            "default": 64,
+            "description": "Âge de départ souhaité (défaut 64)."
+          },
+          "annee_debut_carriere": {
+            "type": "number",
+            "description": "Année de début de carrière — resserre la fourchette si fournie."
+          },
+          "trimestres_acquis": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Trimestres déjà acquis (RIS) — resserre la fourchette si fourni."
+          },
+          "traitement_indiciaire": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Fonctionnaire uniquement : dernier traitement indiciaire brut annuel, hors primes."
+          }
+        }
+      }
+    },
+    {
+      "name": "retraite_optimisation",
+      "description": "Optimisation de fin de carrière (menu classé des leviers) — À partir d'une situation (âge, trimestres, SAM, statut, enfants…), renvoie le MENU CLASSÉ des leviers d'optimisation retraite avec gain/ROI/confiance/sources : rachat de trimestres (2 options), surcote parentale, retraite progressive, âge de départ optimal, cumul emploi-retraite, optimisation du SAM, PER fin de carrière. PAS de total sommé (les leviers ne s'additionnent pas naïvement) — chaque levier chiffré séparément, classé par pertinence. Chaque montant porte sa confiance et sa source (Legifrance/BOFiP/service-public).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "age"
+        ],
+        "properties": {
+          "age": {
+            "type": "number",
+            "minimum": 16,
+            "description": "Âge actuel (ans)."
+          },
+          "age_legal": {
+            "type": "number",
+            "minimum": 60,
+            "default": 64,
+            "description": "Âge légal de départ (défaut 64)."
+          },
+          "date_naissance": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+            "description": "Date de naissance (YYYY-MM-DD) — recale le gel LFSS 2026 et la fenêtre surcote parentale."
+          },
+          "statut": {
+            "type": "string",
+            "description": "Statut (insensible à la casse/accents). Reconnus : \"salarié\" (défaut), \"fonctionnaire\", \"profession libérale\" / \"TNS\" / \"indépendant\"."
+          },
+          "sam": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Salaire annuel moyen (25 meilleures années) — active les gains chiffrés."
+          },
+          "trimestres_acquis": {
+            "type": "number",
+            "minimum": 0
+          },
+          "trimestres_requis": {
+            "type": "number",
+            "minimum": 1,
+            "default": 172
+          },
+          "trim_manquants": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Trimestres manquants pour le taux plein — active le levier rachat."
+          },
+          "pension_brute_annuelle": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Pension de base brute annuelle — active les gains nets."
+          },
+          "pension_complementaire_annuelle": {
+            "type": "number",
+            "minimum": 0
+          },
+          "nb_enfants": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Nombre d'enfants — active surcote parentale (MDA) + majoration ≥3."
+          },
+          "mda_parentale": {
+            "type": "boolean",
+            "description": "≥1 trimestre de majoration de durée d'assurance pour enfant."
+          },
+          "tmi": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "TMI en FRACTION 0-1 (ex. 0,30 pour 30 %) — chiffre l'économie d'IR du rachat / PER. ⚠️ l'outil \"tmi\" RENVOIE un pourcentage (30) ; ici on attend la fraction (0,30)."
+          },
+          "rfr": {
+            "type": "number",
+            "minimum": 0,
+            "description": "RFR — active le net (prélèvements sociaux)."
+          },
+          "parts": {
+            "type": "number",
+            "minimum": 1,
+            "default": 1
+          },
+          "quotite_travail": {
+            "type": "number",
+            "minimum": 0.1,
+            "maximum": 1,
+            "description": "Retraite progressive : quotité de temps partiel (0-1)."
+          },
+          "salaires_annuels": {
+            "type": "array",
+            "description": "Optionnel : carrière année par année pour l'optimisation du SAM.",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "annee",
+                "salaire_brut"
+              ],
+              "properties": {
+                "annee": {
+                  "type": "number",
+                  "description": "Année civile (ex. 2018)."
+                },
+                "salaire_brut": {
+                  "type": "number",
+                  "minimum": 0,
+                  "description": "Salaire brut de cette année (€)."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "retraite_pension_regime",
+      "description": "Pension d'un régime en points (Agirc-Arrco, complémentaires, bases CNAVPL) — Pension brute d'UN régime calculé en points (points × valeur de service 2026 × coefficient). Couvre Agirc-Arrco, Ircantec, RCI, RAFP, les 10 bases CNAVPL libérales et les complémentaires/ASV de caisse (CARMF, CIPAV, CARPIMKO, CARCDSF, CAVEC…). Contrôle de vraisemblance intégré (anti-erreur de sous-régime). Pour un régime en annuités/SAM (CNAV) ou en traitement (fonction publique), utiliser retraite_estimation.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "code_regime",
+          "points"
+        ],
+        "properties": {
+          "code_regime": {
+            "type": "string",
+            "enum": [
+              "agirc_arrco",
+              "ircantec",
+              "rci",
+              "rafp",
+              "cipav_base",
+              "carmf_base",
+              "carpimko_base",
+              "carcdsf_base",
+              "cavec_base",
+              "cavom_base",
+              "cavamac_base",
+              "carpv_base",
+              "cprn_base",
+              "cavp_base",
+              "cipav_comp",
+              "carmf_rcv",
+              "carmf_asv",
+              "carpimko_comp",
+              "carpimko_asv",
+              "carcdsf_comp",
+              "cnbf_comp",
+              "cavec_comp",
+              "cavom_comp",
+              "cavamac_comp",
+              "carpv_comp",
+              "cprn_b",
+              "cprn_c",
+              "ircec_raap"
+            ],
+            "description": "Code du régime (voir la capacité retraite_regimes pour la liste). Ex. agirc_arrco, carmf_rcv, cipav_base."
+          },
+          "points": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Nombre de points acquis dans ce régime (relevé de carrière / relevé de caisse)."
+          },
+          "age_depart": {
+            "type": "number",
+            "minimum": 50,
+            "description": "Âge de liquidation (ans). Défaut = taux plein (pas de décote ni de majoration). Un départ anticipé/reporté applique le coefficient du régime."
+          },
+          "age_legal": {
+            "type": "number",
+            "minimum": 60,
+            "default": 64,
+            "description": "Âge légal du régime (ancre du temps choisi). Défaut 64."
+          },
+          "trimestres_manquants": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Trimestres manquants pour le taux plein — décote sur les régimes qui l'appliquent (complémentaires salariés). Défaut 0."
+          },
+          "trimestres_acquis": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Bases CNAVPL uniquement : trimestres tous régimes acquis (pour le prorata/décote). Défaut 0."
+          },
+          "trimestres_requis": {
+            "type": "number",
+            "minimum": 1,
+            "default": 172,
+            "description": "Bases CNAVPL uniquement : trimestres requis pour le taux plein. Défaut 172."
+          }
+        }
+      }
+    },
+    {
+      "name": "retraite_pension_totale",
+      "description": "Pension totale consolidée (multi-régimes, le détail du RIS) — Somme les régimes EN POINTS d'un relevé (base CNAVPL + tous les complémentaires/ASV), splitte base/complémentaire, applique la couche brut→net (1 % maladie sur la seule part complémentaire). Le régime de base salarié (CNAV) et la fonction publique ne sont pas en points : les fournir via pensions_fournies (issues de retraite_estimation ou du RIS) pour un total réellement total. Chaque jambe est vraisemblance-vérifiée ; la confiance globale suit la jambe la plus faible.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "regimes"
+        ],
+        "properties": {
+          "regimes": {
+            "type": "array",
+            "description": "Régimes en points du relevé. Chaque item : { code_regime, points, [age_depart, age_legal, trimestres_manquants, trimestres_acquis, trimestres_requis] }.",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "code_regime",
+                "points"
+              ],
+              "properties": {
+                "code_regime": {
+                  "type": "string",
+                  "enum": [
+                    "agirc_arrco",
+                    "ircantec",
+                    "rci",
+                    "rafp",
+                    "cipav_base",
+                    "carmf_base",
+                    "carpimko_base",
+                    "carcdsf_base",
+                    "cavec_base",
+                    "cavom_base",
+                    "cavamac_base",
+                    "carpv_base",
+                    "cprn_base",
+                    "cavp_base",
+                    "cipav_comp",
+                    "carmf_rcv",
+                    "carmf_asv",
+                    "carpimko_comp",
+                    "carpimko_asv",
+                    "carcdsf_comp",
+                    "cnbf_comp",
+                    "cavec_comp",
+                    "cavom_comp",
+                    "cavamac_comp",
+                    "carpv_comp",
+                    "cprn_b",
+                    "cprn_c",
+                    "ircec_raap"
+                  ]
+                },
+                "points": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "age_depart": {
+                  "type": "number",
+                  "minimum": 50
+                },
+                "age_legal": {
+                  "type": "number",
+                  "minimum": 60
+                },
+                "trimestres_manquants": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "trimestres_acquis": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "trimestres_requis": {
+                  "type": "number",
+                  "minimum": 1
+                }
+              }
+            }
+          },
+          "pensions_fournies": {
+            "type": "array",
+            "description": "Jambes NON calculées par nous (ex. CNAV base, fonction publique) : { label, montant_annuel, [etage:\"base\"|\"complementaire\"] }. Additionnées telles quelles, flaggées « fourni » (confiance non assertée par le hub).",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "montant_annuel"
+              ],
+              "properties": {
+                "label": {
+                  "type": "string"
+                },
+                "montant_annuel": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "etage": {
+                  "type": "string",
+                  "enum": [
+                    "base",
+                    "complementaire"
+                  ]
+                }
+              }
+            }
+          },
+          "rfr": {
+            "type": "number",
+            "minimum": 0,
+            "description": "RFR 2024 du foyer — active le calcul du net (prélèvements sociaux). Sinon le total brut sert de proxy."
+          },
+          "parts": {
+            "type": "number",
+            "minimum": 1,
+            "default": 1,
+            "description": "Parts fiscales du foyer."
+          },
+          "inclure_net": {
+            "type": "boolean",
+            "default": true,
+            "description": "Calculer la pension nette après prélèvements sociaux (défaut true)."
+          }
+        }
+      }
+    },
+    {
+      "name": "retraite_progressive",
+      "description": "Retraite progressive (fraction de pension + temps partiel) — Fraction de pension perçue en travaillant à temps partiel en fin de carrière (art. L161-22-1-5). Depuis le 01/09/2025, accessible dès 60 ans (décret 2025-681) avec 150 trimestres. Fraction = 100 % − quotité travaillée (salarié 40-80 %, fonction publique 50-90 %, TNS : baisse de revenus 20-60 %). Continue d'acquérir des droits.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "age",
+          "trimestres",
+          "quotite_travail"
+        ],
+        "properties": {
+          "age": {
+            "type": "number",
+            "minimum": 55,
+            "description": "Âge actuel (≥ 60 depuis le 01/09/2025)."
+          },
+          "trimestres": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Trimestres acquis (≥ 150 requis)."
+          },
+          "quotite_travail": {
+            "type": "number",
+            "minimum": 0.1,
+            "maximum": 1,
+            "description": "Quotité de temps partiel (0-1). Salarié 0,40-0,80 ; FP 0,50-0,90."
+          },
+          "diminution_revenus": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "TNS uniquement : baisse de revenus (0,20-0,60) — alternative à quotite_travail."
+          },
+          "statut": {
+            "type": "string",
+            "description": "Statut (insensible à la casse/accents). Reconnus : \"salarié\" (défaut), \"fonctionnaire\", \"profession libérale\" / \"TNS\" / \"indépendant\". Détermine la plage de quotité."
+          },
+          "date_naissance": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+            "description": "YYYY-MM-DD — recale l'âge min pour une date d'effet < 01/09/2025."
+          },
+          "date_effet": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+            "description": "Date d'effet de la retraite progressive (YYYY-MM-DD)."
+          },
+          "pension_brute_annuelle": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Pension totale brute annuelle (base + comp.) — chiffre la fraction en €."
+          },
+          "rfr": {
+            "type": "number",
+            "minimum": 0
+          },
+          "parts": {
+            "type": "number",
+            "minimum": 1,
+            "default": 1
+          }
+        }
+      }
+    },
+    {
+      "name": "retraite_ps_pension",
+      "description": "Prélèvements sociaux sur une pension (brut → net) — CSG (taux 0/3,8/6,6/8,3 % selon le RFR et les parts) + CRDS + CASA + 1 % maladie sur la part de pension complémentaire. Rend la pension nette, la tranche CSG et le taux effectif. Barème 2026 (seuils RFR 2024).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "pension_annuelle_brute"
+        ],
+        "properties": {
+          "pension_annuelle_brute": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Pension annuelle brute totale (€)."
+          },
+          "rfr": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Revenu fiscal de référence 2024 du foyer (€) — détermine la tranche CSG. Si absent, la pension sert de proxy et la tranche est « estimée »."
+          },
+          "parts": {
+            "type": "number",
+            "minimum": 1,
+            "default": 1,
+            "description": "Parts fiscales du foyer (interpolation linéaire des seuils entre 1 et 2 parts)."
+          },
+          "montant_complementaire": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Part de la pension relevant d'un régime complémentaire (Agirc-Arrco, Ircantec, CRPN, comp. libéraux…), soumise en plus au 1 % maladie aux tranches médiane/normale. Défaut 0 = base seule."
+          }
+        }
+      }
+    },
+    {
+      "name": "retraite_rachat",
+      "description": "Rachat de trimestres (VPLR — coût, gain, ROI) — Coût et rentabilité d'un rachat de trimestres (versement pour la retraite, art. L351-14-1). Barème 2026 (Circulaire CNAV 2026-04) selon âge/option/revenu, 2 options (taux seul / taux et durée), coût net d'IR (déductible), gain de pension et ROI en années. Gère le rachat d'études (abattement ≤ 40 ans) et de stage (12 % PMSS). Plafond légal 12 trimestres tous motifs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "age",
+          "n_trim"
+        ],
+        "properties": {
+          "age": {
+            "type": "number",
+            "minimum": 20,
+            "maximum": 66,
+            "description": "Âge au rachat (20-66)."
+          },
+          "n_trim": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 12,
+            "description": "Nombre de trimestres à racheter (max 12 tous motifs)."
+          },
+          "option": {
+            "type": "string",
+            "enum": [
+              "taux",
+              "taux_duree"
+            ],
+            "default": "taux",
+            "description": "\"taux\" (taux seul) ou \"taux_duree\" (taux et durée). Le stage est taux seul uniquement."
+          },
+          "motif": {
+            "type": "string",
+            "enum": [
+              "etudes",
+              "incompletes",
+              "stage"
+            ],
+            "description": "Études (abattement ≤ 40 ans), années incomplètes, ou stage (12 % PMSS, ≤ 30 ans, max 2)."
+          },
+          "revenu_moyen": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Moyenne des revenus des 3 dernières années (D351-8) — détermine la tranche du barème."
+          },
+          "sam": {
+            "type": "number",
+            "minimum": 0,
+            "description": "SAM (25 meilleures années) — chiffre le gain de pension."
+          },
+          "tmi": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "TMI en FRACTION 0-1 (ex. 0,30 pour 30 %) — chiffre l'économie d'IR (rachat déductible). ⚠️ l'outil \"tmi\" RENVOIE un pourcentage (30) ; ici on attend la fraction (0,30)."
+          },
+          "trim_acquis": {
+            "type": "number",
+            "minimum": 0
+          },
+          "trim_requis": {
+            "type": "number",
+            "minimum": 1,
+            "default": 172
+          },
+          "trim_manquants": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Trimestres manquants pour le taux plein (pilote la décote et le gain)."
+          },
+          "pension_brute_annuelle": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Pension brute annuelle — chiffre le gain net."
+          },
+          "rfr": {
+            "type": "number",
+            "minimum": 0
+          },
+          "parts": {
+            "type": "number",
+            "minimum": 1,
+            "default": 1
+          }
+        }
+      }
+    },
+    {
+      "name": "retraite_regimes",
+      "description": "Liste des régimes de retraite calculables par points — Découverte : renvoie les régimes en points calculables via retraite_pension_regime (code, libellé, machine, étage, valeur de service 2026, taux de réversion). Filtrable par famille.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [],
+        "properties": {
+          "famille": {
+            "type": "string",
+            "enum": [
+              "salarie",
+              "independant",
+              "liberal",
+              "fonction_publique",
+              "agricole"
+            ],
+            "description": "Filtrer par famille (facultatif)."
+          }
+        }
+      }
+    },
+    {
+      "name": "retraite_surcote_parentale",
+      "description": "Surcote parentale (+1,25 %/trim, max 5 %) — Majoration de pension pour les parents au taux plein un an avant l'âge légal (art. L351-1-2-1). 1,25 % par trimestre travaillé dans la fenêtre [âge légal − 1 an ; âge légal), plafonné à 4 trimestres (5 %). Conditions : âge légal ≥ 63 ans, durée requise atteinte, ≥ 1 trimestre de majoration enfant (MDA). Gère le gel LFSS 2026.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [],
+        "properties": {
+          "date_naissance": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+            "description": "Date de naissance (YYYY-MM-DD) — détermine l'âge légal + le gel LFSS 2026."
+          },
+          "age_legal": {
+            "type": "number",
+            "minimum": 60,
+            "description": "Alternative à la date de naissance : âge légal en années."
+          },
+          "age": {
+            "type": "number",
+            "minimum": 16
+          },
+          "trimestres_acquis": {
+            "type": "number",
+            "minimum": 0
+          },
+          "trimestres_requis": {
+            "type": "number",
+            "minimum": 1,
+            "default": 172
+          },
+          "mda_parentale": {
+            "type": "boolean",
+            "description": "≥ 1 trimestre de MDA pour enfant (maternité/adoption/éducation)."
+          },
+          "nb_enfants": {
+            "type": "number",
+            "minimum": 0,
+            "description": "À défaut de mda_parentale : ≥ 1 enfant → hypothèse de MDA."
+          },
+          "trimestres_cotises_fenetre": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 4,
+            "description": "Trimestres cotisés dans la fenêtre [âge légal − 1 ; âge légal) — sinon estimé."
+          },
+          "pension_brute_annuelle": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Pension de base brute annuelle — chiffre le gain en €."
+          },
+          "rfr": {
+            "type": "number",
+            "minimum": 0
+          },
+          "parts": {
+            "type": "number",
+            "minimum": 1,
+            "default": 1
+          }
+        }
+      }
+    }
+  ],
+  "host": "qotien.fr",
+  "source": "webmcp.com/api/directory.json"
+}

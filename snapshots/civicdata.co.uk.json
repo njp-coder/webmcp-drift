@@ -1,0 +1,387 @@
+{
+  "sponsio": 1,
+  "url": "https://civicdata.co.uk/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "get_census_data",
+      "description": "Returns twelve official Census 2021 topic summaries for the LSOA containing a London postcode; no demographic score is produced. Output is {resultSchema, result}; result follows CensusDataResponse at https://api.civicdata.co.uk/openapi.json.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "postcode": {
+            "type": "string",
+            "description": "A UK postcode within London, for example E15 2NE.",
+            "minLength": 5,
+            "maxLength": 8,
+            "pattern": "^[A-Za-z]{1,2}[0-9][0-9A-Za-z]?\\s?[0-9][A-Za-z]{2}$"
+          }
+        },
+        "required": [
+          "postcode"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_connectivity_data",
+      "description": "Returns Ofcom postcode fixed-broadband aggregates and separately dated local-authority mobile coverage, not property-level availability. Output is {resultSchema, result}; result follows ConnectivityDataResponse at https://api.civicdata.co.uk/openapi.json.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "postcode": {
+            "type": "string",
+            "description": "A UK postcode within London, for example E15 2NE.",
+            "minLength": 5,
+            "maxLength": 8,
+            "pattern": "^[A-Za-z]{1,2}[0-9][0-9A-Za-z]?\\s?[0-9][A-Za-z]{2}$"
+          }
+        },
+        "required": [
+          "postcode"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_council_tax_rates",
+      "description": "Returns official annual band A to H charges for the postcode local authority; it does not infer a property band. Output is {resultSchema, result}; result follows CouncilTaxRatesResponse at https://api.civicdata.co.uk/openapi.json.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "postcode": {
+            "type": "string",
+            "description": "A UK postcode within London, for example E15 2NE.",
+            "minLength": 5,
+            "maxLength": 8,
+            "pattern": "^[A-Za-z]{1,2}[0-9][0-9A-Za-z]?\\s?[0-9][A-Za-z]{2}$"
+          }
+        },
+        "required": [
+          "postcode"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_deprivation_data",
+      "description": "Returns published English deprivation ranks and deciles for the containing LSOA; Civic Data adds no score. Output is {resultSchema, result}; result follows DeprivationDataResponse at https://api.civicdata.co.uk/openapi.json.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "postcode": {
+            "type": "string",
+            "description": "A UK postcode within London, for example E15 2NE.",
+            "minLength": 5,
+            "maxLength": 8,
+            "pattern": "^[A-Za-z]{1,2}[0-9][0-9A-Za-z]?\\s?[0-9][A-Za-z]{2}$"
+          }
+        },
+        "required": [
+          "postcode"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_epc_data",
+      "description": "Returns a published domestic EPC, including total floor area, using a full address or postcode plus building number. Output is {resultSchema, result}; result follows EpcDataResponse at https://api.civicdata.co.uk/openapi.json.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "description": "A full postal address, including postcode.",
+            "minLength": 5,
+            "maxLength": 300
+          },
+          "postcode": {
+            "type": "string",
+            "description": "A UK postcode within London, for example E15 2NE.",
+            "minLength": 5,
+            "maxLength": 8,
+            "pattern": "^[A-Za-z]{1,2}[0-9][0-9A-Za-z]?\\s?[0-9][A-Za-z]{2}$"
+          },
+          "building_number": {
+            "type": "string",
+            "description": "The building number or name, for example 192 or Flat 3.",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "include_history": {
+            "type": "boolean",
+            "description": "Include older certificates when true.",
+            "default": false
+          }
+        },
+        "additionalProperties": false,
+        "oneOf": [
+          {
+            "required": [
+              "address"
+            ]
+          },
+          {
+            "required": [
+              "postcode",
+              "building_number"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "get_fire_data",
+      "description": "Returns factual London Fire Brigade incident and response history around a postcode; it is not a risk score. Output is {resultSchema, result}; result follows FireDataResponse at https://api.civicdata.co.uk/openapi.json.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "postcode": {
+            "type": "string",
+            "description": "A UK postcode within London, for example E15 2NE.",
+            "minLength": 5,
+            "maxLength": 8,
+            "pattern": "^[A-Za-z]{1,2}[0-9][0-9A-Za-z]?\\s?[0-9][A-Za-z]{2}$"
+          },
+          "radius_metres": {
+            "type": "integer",
+            "description": "Search radius in metres, from 100 to 5000.",
+            "minimum": 100,
+            "maximum": 5000
+          },
+          "years": {
+            "type": "integer",
+            "description": "Rolling history period in years, from 1 to 15.",
+            "minimum": 1,
+            "maximum": 15
+          }
+        },
+        "required": [
+          "postcode"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_income_data",
+      "description": "Returns four ONS model-based mean household-income estimates and 95% confidence intervals for the containing 2021 MSOA; no household estimate or affluence score is produced. Output is {resultSchema, result}; result follows IncomeDataResponse at https://api.civicdata.co.uk/openapi.json.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "postcode": {
+            "type": "string",
+            "description": "A UK postcode within London, for example E15 2NE.",
+            "minLength": 5,
+            "maxLength": 8,
+            "pattern": "^[A-Za-z]{1,2}[0-9][0-9A-Za-z]?\\s?[0-9][A-Za-z]{2}$"
+          }
+        },
+        "required": [
+          "postcode"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_property_price_per_area",
+      "description": "Returns exact Price Paid-to-EPC joins and observed price-per-square-metre and price-per-square-foot quartiles; no estimate is produced. Output is {resultSchema, result}; result follows PropertyPricePerAreaResponse at https://api.civicdata.co.uk/openapi.json.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "postcode": {
+            "type": "string",
+            "description": "A UK postcode within London, for example E15 2NE.",
+            "minLength": 5,
+            "maxLength": 8,
+            "pattern": "^[A-Za-z]{1,2}[0-9][0-9A-Za-z]?\\s?[0-9][A-Za-z]{2}$"
+          },
+          "building_number": {
+            "type": "string",
+            "description": "The building number or name, for example 192 or Flat 3.",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "radius_metres": {
+            "type": "integer",
+            "description": "Use 0 for the exact postcode, or 100 to 5000 metres.",
+            "minimum": 0,
+            "maximum": 5000,
+            "default": 0
+          },
+          "date_from": {
+            "type": "string",
+            "format": "date",
+            "description": "An inclusive date in YYYY-MM-DD format."
+          },
+          "date_to": {
+            "type": "string",
+            "format": "date",
+            "description": "An inclusive date in YYYY-MM-DD format."
+          }
+        },
+        "required": [
+          "postcode"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_property_sales",
+      "description": "Returns Price Paid transactions and factual aggregates for an exact postcode or bounded radius; no valuation is produced. Output is {resultSchema, result}; result follows PropertySalesResponse at https://api.civicdata.co.uk/openapi.json.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "postcode": {
+            "type": "string",
+            "description": "A UK postcode within London, for example E15 2NE.",
+            "minLength": 5,
+            "maxLength": 8,
+            "pattern": "^[A-Za-z]{1,2}[0-9][0-9A-Za-z]?\\s?[0-9][A-Za-z]{2}$"
+          },
+          "radius_metres": {
+            "type": "integer",
+            "description": "Use 0 for the exact postcode, or 100 to 5000 metres.",
+            "minimum": 0,
+            "maximum": 5000,
+            "default": 0
+          },
+          "date_from": {
+            "type": "string",
+            "format": "date",
+            "description": "An inclusive date in YYYY-MM-DD format."
+          },
+          "date_to": {
+            "type": "string",
+            "format": "date",
+            "description": "An inclusive date in YYYY-MM-DD format."
+          }
+        },
+        "required": [
+          "postcode"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_property_tribunal_decisions",
+      "description": "Returns published Residential Property Tribunal index matches; text matching does not establish legal title or liability. Output is {resultSchema, result}; result follows TribunalDecisionsResponse at https://api.civicdata.co.uk/openapi.json.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "postcode": {
+            "type": "string",
+            "description": "A UK postcode within London, for example E15 2NE.",
+            "minLength": 5,
+            "maxLength": 8,
+            "pattern": "^[A-Za-z]{1,2}[0-9][0-9A-Za-z]?\\s?[0-9][A-Za-z]{2}$"
+          },
+          "building_number": {
+            "type": "string",
+            "description": "The building number or name, for example 192 or Flat 3.",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "date_from": {
+            "type": "string",
+            "format": "date",
+            "description": "An inclusive date in YYYY-MM-DD format."
+          },
+          "date_to": {
+            "type": "string",
+            "format": "date",
+            "description": "An inclusive date in YYYY-MM-DD format."
+          }
+        },
+        "required": [
+          "postcode"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_radon_data",
+      "description": "Returns the BGS indicative radon class for the 1 km grid square containing a London postcode centroid; it is not a property test or risk score. Output is {resultSchema, result}; result follows RadonDataResponse at https://api.civicdata.co.uk/openapi.json.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "postcode": {
+            "type": "string",
+            "description": "A UK postcode within London, for example E15 2NE.",
+            "minLength": 5,
+            "maxLength": 8,
+            "pattern": "^[A-Za-z]{1,2}[0-9][0-9A-Za-z]?\\s?[0-9][A-Za-z]{2}$"
+          }
+        },
+        "required": [
+          "postcode"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_source_info",
+      "description": "Lists official datasets, publishers, licences, coverage and freshness used by Civic Data. Output is {resultSchema, result}; result follows SourceInfoResponse at https://api.civicdata.co.uk/openapi.json.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "resolve_location",
+      "description": "Returns official geography and coordinates for a London postcode, with source provenance. Output is {resultSchema, result}; result follows ResolveLocationResponse at https://api.civicdata.co.uk/openapi.json.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "postcode": {
+            "type": "string",
+            "description": "A UK postcode within London, for example E15 2NE.",
+            "minLength": 5,
+            "maxLength": 8,
+            "pattern": "^[A-Za-z]{1,2}[0-9][0-9A-Za-z]?\\s?[0-9][A-Za-z]{2}$"
+          }
+        },
+        "required": [
+          "postcode"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "resolve_uprn",
+      "description": "Returns the coordinate published in OS Open UPRN; it does not return or infer an address or property attributes. Output is {resultSchema, result}; result follows UprnLocationResponse at https://api.civicdata.co.uk/openapi.json.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "uprn": {
+            "type": "string",
+            "description": "A numeric Unique Property Reference Number.",
+            "minLength": 1,
+            "maxLength": 12,
+            "pattern": "^\\d{1,12}$"
+          }
+        },
+        "required": [
+          "uprn"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "civicdata.co.uk",
+  "source": "webmcp.com/api/directory.json"
+}

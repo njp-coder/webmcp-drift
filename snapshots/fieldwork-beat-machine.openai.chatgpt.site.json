@@ -1,0 +1,1672 @@
+{
+  "sponsio": 1,
+  "url": "https://fieldwork-beat-machine.openai.chatgpt.site/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "clear_pattern",
+      "description": "Clear all 12 sequencer lanes, leaving a silent 16-step grid ready for an agent or performer to lay a new track.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "configure_instrument",
+      "description": "Load one of 24 categorized sound presets into a U I O / J K L instrument slot, or target a base voice. Sounds cover neon leads, pads, brass, strings, keys, bells, acid, reese, 808 and sub basses, noise, radio, and atmospheric FX.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slot": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 6
+          },
+          "sound": {
+            "type": "string",
+            "enum": [
+              "neon-lead",
+              "mono-arc",
+              "laser-fm",
+              "pixel-pulse",
+              "velvet-pad",
+              "prism-chord",
+              "brass-stack",
+              "horizon-strings",
+              "glass-pluck",
+              "felt-keys",
+              "crystal-bell",
+              "rubber-mallet",
+              "acid-wire",
+              "reese-engine",
+              "rubber-bass",
+              "buzz-cell",
+              "deep-sub",
+              "808-glide",
+              "hollow-sub",
+              "quake",
+              "ion-noise",
+              "radio-ghost",
+              "solar-wash",
+              "bit-spray"
+            ]
+          },
+          "voice": {
+            "type": "string",
+            "enum": [
+              "lead",
+              "chord",
+              "pluck",
+              "bass",
+              "sub",
+              "fx"
+            ]
+          }
+        },
+        "required": [
+          "slot"
+        ],
+        "anyOf": [
+          {
+            "required": [
+              "sound"
+            ]
+          },
+          {
+            "required": [
+              "voice"
+            ]
+          }
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "configure_instruments",
+      "description": "Atomically load sounds into 1 to 6 distinct U I O / J K L instrument slots. Results preserve input order; duplicate slots or any invalid item reject the whole batch without changing the current configuration.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "configurations": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 6,
+            "items": {
+              "type": "object",
+              "properties": {
+                "slot": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 6
+                },
+                "sound": {
+                  "type": "string",
+                  "enum": [
+                    "neon-lead",
+                    "mono-arc",
+                    "laser-fm",
+                    "pixel-pulse",
+                    "velvet-pad",
+                    "prism-chord",
+                    "brass-stack",
+                    "horizon-strings",
+                    "glass-pluck",
+                    "felt-keys",
+                    "crystal-bell",
+                    "rubber-mallet",
+                    "acid-wire",
+                    "reese-engine",
+                    "rubber-bass",
+                    "buzz-cell",
+                    "deep-sub",
+                    "808-glide",
+                    "hollow-sub",
+                    "quake",
+                    "ion-noise",
+                    "radio-ghost",
+                    "solar-wash",
+                    "bit-spray"
+                  ]
+                },
+                "voice": {
+                  "type": "string",
+                  "enum": [
+                    "lead",
+                    "chord",
+                    "pluck",
+                    "bass",
+                    "sub",
+                    "fx"
+                  ]
+                }
+              },
+              "required": [
+                "slot"
+              ],
+              "oneOf": [
+                {
+                  "required": [
+                    "sound"
+                  ]
+                },
+                {
+                  "required": [
+                    "voice"
+                  ]
+                }
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "configurations"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "export_project",
+      "description": "Create a portable JSON backup of the current project and optionally download it. This does not render audio; use export_track for WAV audio.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "download": {
+            "type": "boolean",
+            "default": true
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "export_track",
+      "description": "Render the current beat and synth arrangement to a stereo 48 kHz WAV file, make it available for preview, and optionally download it.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "bars": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 32,
+            "default": 4
+          },
+          "download": {
+            "type": "boolean",
+            "default": true
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_project",
+      "description": "Read the complete portable Fieldwork project document, including its name, pattern, notes, mix, musical key, and six instrument patches. Use it for backup or as input to load_project.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_state",
+      "description": "Read the current beat-machine preset, tempo, transport, musical key and scale, 24-sound library, six editable instrument slots and their complete sound-design parameters, selected pad bank, all 12 playable pads, plus the 12 by 16 velocity and MIDI-note patterns.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "load_project",
+      "description": "Validate and atomically replace the current local project with a Fieldwork project document. Stops playback and recording, preserves an undo step, and autosaves locally. Invalid documents leave the current project unchanged.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "document": {
+            "type": "object",
+            "properties": {
+              "format": {
+                "type": "string",
+                "const": "fieldwork-project"
+              },
+              "version": {
+                "type": "integer",
+                "const": 1
+              },
+              "project": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 64
+                  },
+                  "kit": {
+                    "type": "string",
+                    "enum": [
+                      "808-night",
+                      "909-warehouse",
+                      "linn-pop",
+                      "sp-dust",
+                      "mpc-swing",
+                      "acid-cell",
+                      "electro-break",
+                      "dub-orbit",
+                      "minimal-12"
+                    ]
+                  },
+                  "tempo": {
+                    "type": "integer",
+                    "minimum": 45,
+                    "maximum": 220
+                  },
+                  "swing": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 0.45
+                  },
+                  "tone": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  "space": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  "master": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  "humanize": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  "bars": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 32
+                  },
+                  "keyRoot": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 11
+                  },
+                  "scale": {
+                    "type": "string",
+                    "enum": [
+                      "minor",
+                      "major",
+                      "dorian",
+                      "pentatonic",
+                      "chromatic"
+                    ]
+                  },
+                  "activeSlot": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 6
+                  },
+                  "padBank": {
+                    "type": "string",
+                    "enum": [
+                      "all",
+                      "drum",
+                      "low",
+                      "synth"
+                    ]
+                  },
+                  "pattern": {
+                    "type": "object",
+                    "properties": {
+                      "kick": {
+                        "type": "array",
+                        "minItems": 16,
+                        "maxItems": 16,
+                        "items": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
+                        }
+                      },
+                      "snare": {
+                        "type": "array",
+                        "minItems": 16,
+                        "maxItems": 16,
+                        "items": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
+                        }
+                      },
+                      "clap": {
+                        "type": "array",
+                        "minItems": 16,
+                        "maxItems": 16,
+                        "items": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
+                        }
+                      },
+                      "hatClosed": {
+                        "type": "array",
+                        "minItems": 16,
+                        "maxItems": 16,
+                        "items": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
+                        }
+                      },
+                      "hatOpen": {
+                        "type": "array",
+                        "minItems": 16,
+                        "maxItems": 16,
+                        "items": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
+                        }
+                      },
+                      "perc": {
+                        "type": "array",
+                        "minItems": 16,
+                        "maxItems": 16,
+                        "items": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
+                        }
+                      },
+                      "sub": {
+                        "type": "array",
+                        "minItems": 16,
+                        "maxItems": 16,
+                        "items": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
+                        }
+                      },
+                      "bass": {
+                        "type": "array",
+                        "minItems": 16,
+                        "maxItems": 16,
+                        "items": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
+                        }
+                      },
+                      "chord": {
+                        "type": "array",
+                        "minItems": 16,
+                        "maxItems": 16,
+                        "items": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
+                        }
+                      },
+                      "lead": {
+                        "type": "array",
+                        "minItems": 16,
+                        "maxItems": 16,
+                        "items": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
+                        }
+                      },
+                      "pluck": {
+                        "type": "array",
+                        "minItems": 16,
+                        "maxItems": 16,
+                        "items": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
+                        }
+                      },
+                      "fx": {
+                        "type": "array",
+                        "minItems": 16,
+                        "maxItems": 16,
+                        "items": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
+                        }
+                      }
+                    },
+                    "required": [
+                      "kick",
+                      "snare",
+                      "clap",
+                      "hatClosed",
+                      "hatOpen",
+                      "perc",
+                      "sub",
+                      "bass",
+                      "chord",
+                      "lead",
+                      "pluck",
+                      "fx"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "notes": {
+                    "type": "object",
+                    "properties": {
+                      "kick": {
+                        "type": "array",
+                        "minItems": 16,
+                        "maxItems": 16,
+                        "items": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ],
+                          "minimum": 0,
+                          "maximum": 127
+                        }
+                      },
+                      "snare": {
+                        "type": "array",
+                        "minItems": 16,
+                        "maxItems": 16,
+                        "items": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ],
+                          "minimum": 0,
+                          "maximum": 127
+                        }
+                      },
+                      "clap": {
+                        "type": "array",
+                        "minItems": 16,
+                        "maxItems": 16,
+                        "items": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ],
+                          "minimum": 0,
+                          "maximum": 127
+                        }
+                      },
+                      "hatClosed": {
+                        "type": "array",
+                        "minItems": 16,
+                        "maxItems": 16,
+                        "items": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ],
+                          "minimum": 0,
+                          "maximum": 127
+                        }
+                      },
+                      "hatOpen": {
+                        "type": "array",
+                        "minItems": 16,
+                        "maxItems": 16,
+                        "items": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ],
+                          "minimum": 0,
+                          "maximum": 127
+                        }
+                      },
+                      "perc": {
+                        "type": "array",
+                        "minItems": 16,
+                        "maxItems": 16,
+                        "items": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ],
+                          "minimum": 0,
+                          "maximum": 127
+                        }
+                      },
+                      "sub": {
+                        "type": "array",
+                        "minItems": 16,
+                        "maxItems": 16,
+                        "items": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ],
+                          "minimum": 0,
+                          "maximum": 127
+                        }
+                      },
+                      "bass": {
+                        "type": "array",
+                        "minItems": 16,
+                        "maxItems": 16,
+                        "items": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ],
+                          "minimum": 0,
+                          "maximum": 127
+                        }
+                      },
+                      "chord": {
+                        "type": "array",
+                        "minItems": 16,
+                        "maxItems": 16,
+                        "items": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ],
+                          "minimum": 0,
+                          "maximum": 127
+                        }
+                      },
+                      "lead": {
+                        "type": "array",
+                        "minItems": 16,
+                        "maxItems": 16,
+                        "items": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ],
+                          "minimum": 0,
+                          "maximum": 127
+                        }
+                      },
+                      "pluck": {
+                        "type": "array",
+                        "minItems": 16,
+                        "maxItems": 16,
+                        "items": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ],
+                          "minimum": 0,
+                          "maximum": 127
+                        }
+                      },
+                      "fx": {
+                        "type": "array",
+                        "minItems": 16,
+                        "maxItems": 16,
+                        "items": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ],
+                          "minimum": 0,
+                          "maximum": 127
+                        }
+                      }
+                    },
+                    "required": [
+                      "kick",
+                      "snare",
+                      "clap",
+                      "hatClosed",
+                      "hatOpen",
+                      "perc",
+                      "sub",
+                      "bass",
+                      "chord",
+                      "lead",
+                      "pluck",
+                      "fx"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "muted": {
+                    "type": "object",
+                    "properties": {
+                      "kick": {
+                        "type": "boolean"
+                      },
+                      "snare": {
+                        "type": "boolean"
+                      },
+                      "clap": {
+                        "type": "boolean"
+                      },
+                      "hatClosed": {
+                        "type": "boolean"
+                      },
+                      "hatOpen": {
+                        "type": "boolean"
+                      },
+                      "perc": {
+                        "type": "boolean"
+                      },
+                      "sub": {
+                        "type": "boolean"
+                      },
+                      "bass": {
+                        "type": "boolean"
+                      },
+                      "chord": {
+                        "type": "boolean"
+                      },
+                      "lead": {
+                        "type": "boolean"
+                      },
+                      "pluck": {
+                        "type": "boolean"
+                      },
+                      "fx": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [],
+                    "additionalProperties": false
+                  },
+                  "instrumentSounds": {
+                    "type": "array",
+                    "minItems": 6,
+                    "maxItems": 6,
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "neon-lead",
+                        "mono-arc",
+                        "laser-fm",
+                        "pixel-pulse",
+                        "velvet-pad",
+                        "prism-chord",
+                        "brass-stack",
+                        "horizon-strings",
+                        "glass-pluck",
+                        "felt-keys",
+                        "crystal-bell",
+                        "rubber-mallet",
+                        "acid-wire",
+                        "reese-engine",
+                        "rubber-bass",
+                        "buzz-cell",
+                        "deep-sub",
+                        "808-glide",
+                        "hollow-sub",
+                        "quake",
+                        "ion-noise",
+                        "radio-ghost",
+                        "solar-wash",
+                        "bit-spray"
+                      ]
+                    }
+                  },
+                  "instrumentTones": {
+                    "type": "array",
+                    "minItems": 6,
+                    "maxItems": 6,
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "attack": {
+                          "type": "number",
+                          "minimum": 0.001,
+                          "maximum": 2
+                        },
+                        "decay": {
+                          "type": "number",
+                          "minimum": 0.01,
+                          "maximum": 3
+                        },
+                        "sustain": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
+                        },
+                        "release": {
+                          "type": "number",
+                          "minimum": 0.01,
+                          "maximum": 4
+                        },
+                        "cutoff": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
+                        },
+                        "resonance": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
+                        },
+                        "drive": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
+                        },
+                        "motion": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
+                        },
+                        "width": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
+                        },
+                        "octave": {
+                          "type": "integer",
+                          "minimum": -2,
+                          "maximum": 2
+                        },
+                        "wave": {
+                          "type": "string",
+                          "enum": [
+                            "sine",
+                            "triangle",
+                            "sawtooth",
+                            "square"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "attack",
+                        "decay",
+                        "sustain",
+                        "release",
+                        "cutoff",
+                        "resonance",
+                        "drive",
+                        "motion",
+                        "width",
+                        "octave",
+                        "wave"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "instrumentOrder": {
+                    "type": "array",
+                    "minItems": 6,
+                    "maxItems": 6,
+                    "items": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 6
+                    },
+                    "uniqueItems": true
+                  }
+                },
+                "required": [
+                  "name",
+                  "kit",
+                  "tempo",
+                  "swing",
+                  "tone",
+                  "space",
+                  "master",
+                  "humanize",
+                  "bars",
+                  "keyRoot",
+                  "scale",
+                  "activeSlot",
+                  "padBank",
+                  "pattern",
+                  "notes",
+                  "muted",
+                  "instrumentSounds",
+                  "instrumentTones",
+                  "instrumentOrder"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "format",
+              "version",
+              "project"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "document"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "mutate_pattern",
+      "description": "Create a musical variation or fill while keeping the core kick and sub pocket intact.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 0.9,
+            "default": 0.2
+          },
+          "seed": {
+            "type": "integer"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "randomize_instrument",
+      "description": "Create a playable sound-design variation for a U I O / J K L instrument slot. An optional seed makes the ADSR, filter, motion, waveform, and timbre result repeatable.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slot": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 6
+          },
+          "seed": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "slot"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "redo_edit",
+      "description": "Restore the most recently undone local project edit. Returns changed=false when no redo history remains.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "reset_instrument",
+      "description": "Restore a U I O / J K L instrument slot's current sound preset to its original ADSR, filter, drive, motion, width, octave, and waveform settings.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slot": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 6
+          }
+        },
+        "required": [
+          "slot"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "select_instrument",
+      "description": "Map the performance pads to all voices, a 12-pad drum bank, or one of six playable instrument slots using the selected key and scale. Slots are laid out U I O / J K L; instruments can be lead, chord, pluck, bass, sub, or tuned fx.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "group": {
+            "type": "string",
+            "enum": [
+              "all",
+              "drum",
+              "low",
+              "synth"
+            ]
+          },
+          "instrument": {
+            "type": "string",
+            "enum": [
+              "lead",
+              "chord",
+              "pluck",
+              "bass",
+              "sub",
+              "fx"
+            ]
+          },
+          "slot": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 6
+          }
+        },
+        "required": [
+          "group"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "select_kit",
+      "description": "Load one of the nine instrument and groove presets: 808-night, 909-warehouse, linn-pop, sp-dust, mpc-swing, acid-cell, electro-break, dub-orbit, or minimal-12.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "kit": {
+            "type": "string",
+            "enum": [
+              "808-night",
+              "909-warehouse",
+              "linn-pop",
+              "sp-dust",
+              "mpc-swing",
+              "acid-cell",
+              "electro-break",
+              "dub-orbit",
+              "minimal-12"
+            ]
+          },
+          "replacePattern": {
+            "type": "boolean",
+            "default": true
+          }
+        },
+        "required": [
+          "kit"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_controls",
+      "description": "Adjust the beat-machine mix and timing controls: tempo, swing, tone, space, master volume, humanize, and default export bars. Omitted controls stay unchanged.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tempo": {
+            "type": "number",
+            "minimum": 45,
+            "maximum": 220
+          },
+          "swing": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 45
+          },
+          "tone": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "space": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "master": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "humanize": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "bars": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 32
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_instrument_params",
+      "description": "Dial in an instrument slot with attack, decay, sustain, release, cutoff, resonance, drive, motion, stereo width, octave, and waveform. Omitted sound-design controls stay unchanged and changes apply to live playback and WAV export.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slot": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 6
+          },
+          "attack": {
+            "type": "number",
+            "minimum": 0.001,
+            "maximum": 2
+          },
+          "decay": {
+            "type": "number",
+            "minimum": 0.01,
+            "maximum": 3
+          },
+          "sustain": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "release": {
+            "type": "number",
+            "minimum": 0.01,
+            "maximum": 4
+          },
+          "cutoff": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "resonance": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "drive": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "motion": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "width": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "octave": {
+            "type": "integer",
+            "minimum": -2,
+            "maximum": 2
+          },
+          "wave": {
+            "type": "string",
+            "enum": [
+              "sine",
+              "triangle",
+              "sawtooth",
+              "square"
+            ]
+          }
+        },
+        "required": [
+          "slot"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_key",
+      "description": "Choose the musical root and scale used by all twelve melodic pads. Root accepts note names such as C, F#, Bb, or a pitch class from 0 to 11; scales are minor, major, dorian, pentatonic, and chromatic.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "root": {
+            "type": [
+              "string",
+              "integer"
+            ]
+          },
+          "scale": {
+            "type": "string",
+            "enum": [
+              "minor",
+              "major",
+              "dorian",
+              "pentatonic",
+              "chromatic"
+            ]
+          }
+        },
+        "required": [
+          "root"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_pattern",
+      "description": "Replace any number of voice lanes in the 16-step sequencer. Supply velocity lanes and, optionally, matching MIDI-note lanes to lay complete melodic tracks in one action; omitted lanes stay unchanged.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "lanes": {
+            "type": "object",
+            "properties": {
+              "kick": {
+                "type": "array",
+                "maxItems": 16,
+                "items": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                }
+              },
+              "snare": {
+                "type": "array",
+                "maxItems": 16,
+                "items": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                }
+              },
+              "clap": {
+                "type": "array",
+                "maxItems": 16,
+                "items": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                }
+              },
+              "hatClosed": {
+                "type": "array",
+                "maxItems": 16,
+                "items": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                }
+              },
+              "hatOpen": {
+                "type": "array",
+                "maxItems": 16,
+                "items": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                }
+              },
+              "perc": {
+                "type": "array",
+                "maxItems": 16,
+                "items": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                }
+              },
+              "sub": {
+                "type": "array",
+                "maxItems": 16,
+                "items": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                }
+              },
+              "bass": {
+                "type": "array",
+                "maxItems": 16,
+                "items": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                }
+              },
+              "chord": {
+                "type": "array",
+                "maxItems": 16,
+                "items": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                }
+              },
+              "lead": {
+                "type": "array",
+                "maxItems": 16,
+                "items": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                }
+              },
+              "pluck": {
+                "type": "array",
+                "maxItems": 16,
+                "items": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                }
+              },
+              "fx": {
+                "type": "array",
+                "maxItems": 16,
+                "items": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                }
+              }
+            },
+            "additionalProperties": false
+          },
+          "notes": {
+            "type": "object",
+            "properties": {
+              "kick": {
+                "type": "array",
+                "maxItems": 16,
+                "items": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 0,
+                  "maximum": 127
+                }
+              },
+              "snare": {
+                "type": "array",
+                "maxItems": 16,
+                "items": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 0,
+                  "maximum": 127
+                }
+              },
+              "clap": {
+                "type": "array",
+                "maxItems": 16,
+                "items": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 0,
+                  "maximum": 127
+                }
+              },
+              "hatClosed": {
+                "type": "array",
+                "maxItems": 16,
+                "items": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 0,
+                  "maximum": 127
+                }
+              },
+              "hatOpen": {
+                "type": "array",
+                "maxItems": 16,
+                "items": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 0,
+                  "maximum": 127
+                }
+              },
+              "perc": {
+                "type": "array",
+                "maxItems": 16,
+                "items": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 0,
+                  "maximum": 127
+                }
+              },
+              "sub": {
+                "type": "array",
+                "maxItems": 16,
+                "items": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 0,
+                  "maximum": 127
+                }
+              },
+              "bass": {
+                "type": "array",
+                "maxItems": 16,
+                "items": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 0,
+                  "maximum": 127
+                }
+              },
+              "chord": {
+                "type": "array",
+                "maxItems": 16,
+                "items": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 0,
+                  "maximum": 127
+                }
+              },
+              "lead": {
+                "type": "array",
+                "maxItems": 16,
+                "items": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 0,
+                  "maximum": 127
+                }
+              },
+              "pluck": {
+                "type": "array",
+                "maxItems": 16,
+                "items": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 0,
+                  "maximum": 127
+                }
+              },
+              "fx": {
+                "type": "array",
+                "maxItems": 16,
+                "items": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 0,
+                  "maximum": 127
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "lanes"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_recording",
+      "description": "Arm or disarm on-tempo grid recording. When armed, performance pads and trigger-pad actions can print at the playhead.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "armed": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "armed"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_step",
+      "description": "Write or clear a single sequencer step, optionally setting a MIDI note for a melodic lane. Steps are numbered 1 to 16; voices include kick, snare, clap, hatClosed, hatOpen, perc, sub, bass, chord, lead, pluck, and fx.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "voice": {
+            "type": "string",
+            "enum": [
+              "kick",
+              "snare",
+              "clap",
+              "hatClosed",
+              "hatOpen",
+              "perc",
+              "sub",
+              "bass",
+              "chord",
+              "lead",
+              "pluck",
+              "fx"
+            ]
+          },
+          "step": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 16
+          },
+          "enabled": {
+            "type": "boolean",
+            "default": true
+          },
+          "velocity": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "default": 1
+          },
+          "note": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 127
+          }
+        },
+        "required": [
+          "voice",
+          "step"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_swing",
+      "description": "Set sixteenth-note swing. Use a fraction from 0 to 0.45 or a percentage from 0 to 45.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 45
+          }
+        },
+        "required": [
+          "amount"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_tempo",
+      "description": "Set the beat-machine tempo in BPM (45 to 220).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "bpm": {
+            "type": "number",
+            "minimum": 45,
+            "maximum": 220
+          }
+        },
+        "required": [
+          "bpm"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_voice_mute",
+      "description": "Mute or unmute one instrument lane without deleting its sequencer steps.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "voice": {
+            "type": "string",
+            "enum": [
+              "kick",
+              "snare",
+              "clap",
+              "hatClosed",
+              "hatOpen",
+              "perc",
+              "sub",
+              "bass",
+              "chord",
+              "lead",
+              "pluck",
+              "fx"
+            ]
+          },
+          "muted": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "voice",
+          "muted"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "transport",
+      "description": "Start, stop, or toggle the beat-machine transport.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "play",
+              "stop",
+              "toggle"
+            ]
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "trigger_pad",
+      "description": "Audition a voice or one of the 12 currently mapped performance pads and optionally place it onto the current sequencer step. Melodic pads automatically print their note; an explicit MIDI note can override it.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "voice": {
+            "type": "string",
+            "enum": [
+              "kick",
+              "snare",
+              "clap",
+              "hatClosed",
+              "hatOpen",
+              "perc",
+              "sub",
+              "bass",
+              "chord",
+              "lead",
+              "pluck",
+              "fx"
+            ]
+          },
+          "pad": {
+            "type": [
+              "integer",
+              "string"
+            ],
+            "minimum": 1,
+            "maximum": 12
+          },
+          "velocity": {
+            "type": "number",
+            "minimum": 0.15,
+            "maximum": 1,
+            "default": 1
+          },
+          "place": {
+            "type": "boolean",
+            "default": false
+          },
+          "note": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 127
+          }
+        },
+        "anyOf": [
+          {
+            "required": [
+              "voice"
+            ]
+          },
+          {
+            "required": [
+              "pad"
+            ]
+          }
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "undo_edit",
+      "description": "Undo the most recent local project edit. Returns changed=false when no undo history remains.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "fieldwork-beat-machine.openai.chatgpt.site",
+  "source": "webmcp.com/api/directory.json"
+}

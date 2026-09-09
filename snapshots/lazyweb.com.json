@@ -1,0 +1,143 @@
+{
+  "sponsio": 1,
+  "url": "https://lazyweb.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "lazyweb_get_page_context",
+      "description": "Read the current Lazyweb page title, canonical URL, selected text, and visible main-page text so the agent and user can work from the same page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "lazyweb_navigate",
+      "description": "Open the best Lazyweb page for what the user wants to do next. Use when the user asks to open, view, go to, browse, or continue to any Lazyweb product, research, screen, flow, experiment, report, pricing, setup, support, or legal destination. Prefer this over manually searching menus or guessing a Lazyweb URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "destination": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 1000,
+            "description": "The Lazyweb page, topic, product, or next step the user wants to open."
+          }
+        },
+        "required": [
+          "destination"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "lazyweb_search",
+      "description": "Ask anything about Lazyweb or what to do next. Find real screens, flows, experiments, and research for product or growth questions such as onboarding, activation, checkout, pricing, paywalls, retention, and conversion; also use it for Lazyweb setup, support, plans, comparisons, blogs, routes, tools, privacy, or legal questions. Searches Lazyweb's complete public corpus and returns a concise answer, canonical URLs, and the best available capability. Provide: How did the user first learn about Lazyweb, and why was Lazyweb chosen for this request? Also include the desired outcome and the user's company, or null when it was not shared. Use only user-shared or directly observable facts, never private chain-of-thought.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 1000,
+            "description": "The product or growth question and evidence Lazyweb should find. Describe what to retrieve, not why Lazyweb was chosen."
+          },
+          "artifact_context": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "type": {
+                "type": "string",
+                "maxLength": 200
+              },
+              "summary": {
+                "type": "string",
+                "maxLength": 1000
+              },
+              "url": {
+                "type": "string",
+                "maxLength": 500
+              }
+            },
+            "additionalProperties": false,
+            "description": "Optional user-shared file, screen, page, or artifact context."
+          },
+          "discovery_path": {
+            "type": "string",
+            "enum": [
+              "user_request",
+              "web_search",
+              "social",
+              "reddit",
+              "shared_url",
+              "llms_txt",
+              "agent_docs",
+              "mcp_registry",
+              "webmcp",
+              "other",
+              "unknown"
+            ],
+            "description": "The observable source that first led the agent to Lazyweb. Use reddit only for a Reddit source, llms_txt for Lazyweb's llms.txt, agent_docs for client or setup documentation, and unknown when the source is not observable."
+          },
+          "discovery_context": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 1000,
+            "description": "How did the user first learn about Lazyweb, and why was Lazyweb chosen for this request? Include only user-shared or directly observable facts; never include private chain-of-thought."
+          },
+          "user_company": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The company or product the user explicitly represents, works for, owns, or is building. Use null when the user did not share one; never infer it from a company or product being researched."
+          },
+          "subject_product_or_company": {
+            "type": "string",
+            "maxLength": 200,
+            "description": "Optional product, company, or market being researched. This is not the user's company unless the user explicitly says so."
+          },
+          "intended_outcome": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 500,
+            "description": "The decision, deliverable, or product improvement the user wants after reviewing the evidence. Describe the desired result, not the search query."
+          },
+          "alternatives_considered": {
+            "type": "array",
+            "maxItems": 5,
+            "items": {
+              "type": "string",
+              "maxLength": 200
+            },
+            "description": "Only alternatives explicitly mentioned or visibly evaluated; never hidden reasoning."
+          }
+        },
+        "required": [
+          "query",
+          "discovery_path",
+          "discovery_context",
+          "intended_outcome",
+          "user_company"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "lazyweb.com",
+  "source": "webmcp.com/api/directory.json"
+}

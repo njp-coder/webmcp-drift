@@ -1,0 +1,196 @@
+{
+  "sponsio": 1,
+  "url": "https://sellerpao.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "calculate_profit_vat",
+      "description": "คำนวณกำไรจริงต่อเดือนของร้านค้าออนไลน์ หลังหักต้นทุน ค่าธรรมเนียมแพลตฟอร์ม ค่า COD ค่าขนส่ง ภาษีหัก ณ ที่จ่าย และ VAT 7%",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "price": {
+            "type": "number",
+            "minimum": 0
+          },
+          "cost": {
+            "type": "number",
+            "minimum": 0
+          },
+          "platform_fee_pct": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "cod_fee_pct": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "shipping": {
+            "type": "number",
+            "minimum": 0
+          },
+          "qty": {
+            "type": "number",
+            "minimum": 1
+          },
+          "vat_registered": {
+            "type": "boolean"
+          },
+          "wht_pct": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100,
+            "description": "ภาษีหัก ณ ที่จ่าย 0/2/3"
+          }
+        },
+        "required": [
+          "price",
+          "cost",
+          "qty"
+        ]
+      }
+    },
+    {
+      "name": "calculate_roi",
+      "description": "คำนวณว่าใช้ระบบหลังบ้านคุ้มไหม จากชั่วโมงที่ประหยัดได้ต่อเดือน เทียบค่าใช้ระบบ",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "hours_per_month": {
+            "type": "number",
+            "minimum": 0
+          },
+          "wage_per_hour": {
+            "type": "number",
+            "minimum": 0
+          },
+          "saved_percent": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "system_cost": {
+            "type": "number",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "hours_per_month"
+        ]
+      }
+    },
+    {
+      "name": "estimate_shipping",
+      "description": "เปรียบเทียบค่าส่งรายเดือนระหว่างไปรษณีย์ไทย, Flash Express, J&T และ Kerry Express โดยคิดจากเรทต่อกล่องและค่าธรรมเนียม COD ที่กรอก",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "parcels": {
+            "type": "number",
+            "minimum": 1,
+            "description": "จำนวนออเดอร์/กล่องต่อเดือน"
+          },
+          "thaipost_rate": {
+            "type": "number",
+            "minimum": 0,
+            "description": "เรทค่าส่งไปรษณีย์ไทยต่อกล่อง (บาท)"
+          },
+          "flash_rate": {
+            "type": "number",
+            "minimum": 0,
+            "description": "เรทค่าส่ง Flash Express ต่อกล่อง (บาท)"
+          },
+          "jt_rate": {
+            "type": "number",
+            "minimum": 0,
+            "description": "เรทค่าส่ง J&T ต่อกล่อง (บาท)"
+          },
+          "kerry_rate": {
+            "type": "number",
+            "minimum": 0,
+            "description": "เรทค่าส่ง Kerry Express ต่อกล่อง (บาท)"
+          },
+          "order_value": {
+            "type": "number",
+            "minimum": 0,
+            "description": "ยอดขายเฉลี่ยต่อกล่อง (บาท) ใช้คูณค่าธรรมเนียม COD"
+          },
+          "cod_rate_pct": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100,
+            "description": "ค่าธรรมเนียม COD ต่อกล่อง (%)"
+          }
+        },
+        "required": [
+          "parcels"
+        ]
+      }
+    },
+    {
+      "name": "get_pricing",
+      "description": "ดูราคาและแพ็กเกจของ Seller Pao (Free 0, Growth 590, Pro 1490 บาท/เดือน) พร้อมฟีเจอร์หลัก",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "login_account",
+      "description": "เปิดหน้าล็อกอิน Seller Pao (oms.sellerpao.com/login) และแจ้งวิธีเข้าสู่ระบบด้วยเบอร์โทร + OTP",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "registration_requirements",
+      "description": "แจ้งสิ่งที่ต้องเตรียมก่อนสมัคร Seller Pao: เบอร์โทร, รหัส OTP, แผนทดลองใช้ฟรี",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "start_registration",
+      "description": "เริ่มสมัคร Seller Pao: คืนรายการสิ่งที่ต้องเตรียม (เบอร์โทร + OTP) และขั้นตอนสมัคร แล้วเปิดหน้าสมัคร oms.sellerpao.com/register เพื่อให้ผู้ใช้กรอกเอง",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "track_parcel",
+      "description": "ให้ลิงก์หน้าติดตามพัสดุของทุกขนส่ง (ไปรษณีย์ไทย, SPX, Ninja Van, DHL, Kerry, Flash, J&T, BEST, Lazada LEX) สำหรับเลขพัสดุที่ระบุ",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tracking_number": {
+            "type": "string",
+            "minLength": 1,
+            "description": "เลขพัสดุที่ต้องการติดตาม (เช่น ไปรษณีย์ไทย S10 13 หลัก)"
+          }
+        },
+        "required": [
+          "tracking_number"
+        ]
+      }
+    }
+  ],
+  "host": "sellerpao.com",
+  "source": "webmcp.com/api/directory.json"
+}

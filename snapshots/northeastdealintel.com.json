@@ -1,0 +1,253 @@
+{
+  "sponsio": 1,
+  "url": "https://northeastdealintel.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "get_market_benchmarks",
+      "description": "Cap rate benchmarks by state and property type for the Northeast US. Returns market range (low/high), strong-buy threshold, and analyst notes. Updated quarterly from 100,000+ closed comps. Requires API key.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "state": {
+            "type": "string",
+            "enum": [
+              "CT",
+              "MA",
+              "NJ",
+              "NY",
+              "PA",
+              "RI",
+              "NH",
+              "VT",
+              "ME"
+            ],
+            "description": "2-letter state code. Omit to get all 9 states."
+          },
+          "api_key": {
+            "type": "string",
+            "description": "NDI API key"
+          }
+        },
+        "required": [
+          "api_key"
+        ]
+      }
+    },
+    {
+      "name": "get_market_summary",
+      "description": "High-level commercial real estate market summary for the Northeast US: total active listings, breakdown by state, top submarkets by volume, and cap rate ranges by property type. No API key required.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_sell_signal",
+      "description": "Predict the probability a commercial property will transact in the next 6 months. Combines ownership aging signals (100K+ deed comps), days on market, distress tier classification, and deal score momentum. Returns probability 0-100, label, and specific reasons. Requires API key.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "address": {
+            "type": "string",
+            "description": "Full property street address"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "CT",
+              "MA",
+              "NJ",
+              "NY",
+              "PA",
+              "RI",
+              "NH",
+              "VT",
+              "ME"
+            ],
+            "description": "2-letter state code"
+          },
+          "dom": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Days on market — improves signal accuracy"
+          },
+          "score": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 10,
+            "description": "Known deal score 1-10"
+          },
+          "text": {
+            "type": "string",
+            "description": "Listing description text for distress keyword detection"
+          },
+          "api_key": {
+            "type": "string",
+            "description": "NDI API key"
+          }
+        },
+        "required": [
+          "address",
+          "api_key"
+        ]
+      }
+    },
+    {
+      "name": "score_deal",
+      "description": "Submit a commercial property for AI-powered deal scoring. Returns score 1-10 with green flags, red flags, comp-backed benchmarks, and investor lens breakdown. Uses 57,700+ closed comps. Weights: cap rate 30%, price/SF 25%, location 20%, value-add 15%, 1031 suitability 10%. Requires agent_pro API key.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "address": {
+            "type": "string",
+            "maxLength": 300,
+            "description": "Full property address"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "CT",
+              "MA",
+              "NJ",
+              "NY",
+              "PA",
+              "RI",
+              "NH",
+              "VT",
+              "ME"
+            ],
+            "description": "2-letter state code"
+          },
+          "property_type": {
+            "type": "string",
+            "enum": [
+              "industrial",
+              "retail",
+              "office",
+              "multifamily",
+              "land",
+              "development"
+            ],
+            "description": "Commercial property type"
+          },
+          "asking_price": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Asking price in dollars"
+          },
+          "cap_rate": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100,
+            "description": "Cap rate as percentage e.g. 7.2 for 7.2%"
+          },
+          "price_per_sf": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Price per square foot"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 2000,
+            "description": "Property description: tenant quality, lease terms, condition, value-add notes"
+          },
+          "api_key": {
+            "type": "string",
+            "description": "NDI agent_pro API key"
+          }
+        },
+        "required": [
+          "address",
+          "state",
+          "property_type",
+          "api_key"
+        ]
+      }
+    },
+    {
+      "name": "search_deals",
+      "description": "Search 20,000+ active scored commercial real estate listings across 9 Northeast US states. Filter by state, property type, cap rate, price, deal score, submarket, and 1031 suitability. Returns scored deals with green flags, red flags, cap rates, and listing links. Requires API key.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "state": {
+            "type": "string",
+            "enum": [
+              "CT",
+              "MA",
+              "NJ",
+              "NY",
+              "PA",
+              "RI",
+              "NH",
+              "VT",
+              "ME"
+            ],
+            "description": "2-letter Northeast state code"
+          },
+          "property_type": {
+            "type": "string",
+            "enum": [
+              "industrial",
+              "multifamily",
+              "retail",
+              "office",
+              "land",
+              "development",
+              "mixed-use"
+            ],
+            "description": "Commercial property type"
+          },
+          "min_score": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 10,
+            "description": "Minimum deal score (7 = strong, 9 = exceptional)"
+          },
+          "min_price": {
+            "type": "integer",
+            "description": "Minimum asking price in dollars"
+          },
+          "max_price": {
+            "type": "integer",
+            "description": "Maximum asking price in dollars"
+          },
+          "is_1031": {
+            "type": "boolean",
+            "description": "If true, only return 1031 exchange candidates"
+          },
+          "submarket": {
+            "type": "string",
+            "description": "Submarket name e.g. \"Hartford Metro\", \"Fairfield County\", \"Lehigh Valley\""
+          },
+          "limit": {
+            "type": "integer",
+            "default": 25,
+            "maximum": 200,
+            "description": "Results per page"
+          },
+          "api_key": {
+            "type": "string",
+            "description": "NDI API key — get one at northeastdealintel.com/agent-api.html"
+          }
+        },
+        "required": [
+          "api_key"
+        ]
+      }
+    }
+  ],
+  "host": "northeastdealintel.com",
+  "source": "webmcp.com/api/directory.json"
+}

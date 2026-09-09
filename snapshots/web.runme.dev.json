@@ -1,0 +1,363 @@
+{
+  "sponsio": 1,
+  "url": "https://web.runme.dev/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "CancelExecuteCodeOperation",
+      "description": "Request cancellation of an ExecuteCode sandbox operation. Cancellation is idempotent and does not guarantee that a downstream notebook, deployment, or cloud operation also stopped.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "operationId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "afterSequence": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Return output events after this sequence number. Defaults to 0."
+          },
+          "maxBytes": {
+            "type": "integer",
+            "minimum": 16384,
+            "maximum": 262144,
+            "description": "Maximum retained output bytes to return with the cancellation result. Minimum 16384; defaults to 65536."
+          }
+        },
+        "required": [
+          "operationId"
+        ]
+      }
+    },
+    {
+      "name": "createDriveNotebook",
+      "description": "Create a new notebook file directly in a Google Drive folder, initialize its Runme mirror, and open it. Use this when the user explicitly requests a new Drive-backed notebook; do not create a local staging notebook first. Reuse the idempotency key for same-profile retries, and do not issue the same create concurrently from unrelated browser profiles.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "folderIdOrUri": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Google Drive folder ID or folder URI."
+          },
+          "fileName": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Notebook file name. Use .ipynb for Jupyter or .json for Runme JSON."
+          },
+          "idempotencyKey": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "description": "Stable caller-generated token for this intended notebook. Reuse it when retrying the same creation and use a new token for a distinct notebook."
+          },
+          "cells": {
+            "type": "array",
+            "description": "Optional initial notebook cells, in document order.",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "code",
+                    "markup"
+                  ]
+                },
+                "languageId": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "string"
+                },
+                "metadata": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": [
+                "kind"
+              ]
+            }
+          }
+        },
+        "required": [
+          "folderIdOrUri",
+          "fileName",
+          "idempotencyKey"
+        ]
+      }
+    },
+    {
+      "name": "dismissTour",
+      "description": "Dismiss the currently visible Runme UI tour annotation.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    },
+    {
+      "name": "ExecuteCode",
+      "description": "Start JavaScript in the Runme AppKernel sandbox and return a JSON operation snapshot. Read notebooks with notebooks.get({ uri }) and access cells through doc.notebook.cells; notebooks.read is not an API. Call await notebooks.help() when uncertain. Fast work completes inline. Long work continues by default after timeoutMs and can be polled with GetExecuteCodeOperation. Every accepted request returns a Runme-assigned operationId.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "AppKernel JavaScript. For notebook reads, use await notebooks.get({ uri }) and doc.notebook.cells. Do not call notebooks.read; it does not exist. Use await notebooks.help() to inspect the live API."
+          },
+          "timeoutMs": {
+            "type": "integer",
+            "minimum": 1000,
+            "maximum": 60000,
+            "description": "Optional initial response wait budget in milliseconds. Defaults to 15000 and is capped at 60000. It is not the hard execution deadline."
+          },
+          "timeoutBehavior": {
+            "type": "string",
+            "enum": [
+              "continue",
+              "cancel"
+            ],
+            "default": "continue",
+            "description": "What to do when timeoutMs expires. continue returns a running operation for later polling; cancel aborts the sandbox. Defaults to continue."
+          },
+          "maxRuntimeMs": {
+            "type": "integer",
+            "minimum": 1000,
+            "maximum": 3600000,
+            "default": 600000,
+            "description": "Hard runtime limit for the operation in milliseconds. Defaults to 600000 and is capped at 3600000."
+          },
+          "idempotencyKey": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "description": "Optional caller token for safely deduplicating a retried request. Runme still assigns the operationId."
+          }
+        },
+        "required": [
+          "code"
+        ]
+      }
+    },
+    {
+      "name": "getDocumentation",
+      "description": "Codex, Claude, and other AI agents should invoke this read-only function with a name returned by listDocumentation to get that Runme documentation page as Markdown.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      }
+    },
+    {
+      "name": "GetExecuteCodeOperation",
+      "description": "Poll an ExecuteCode operation by its Runme-assigned operationId. Use afterSequence to retrieve only new stdout/stderr events and waitMs for bounded long polling.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "operationId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "afterSequence": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Return output events after this sequence number. Defaults to 0."
+          },
+          "waitMs": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 30000,
+            "description": "Wait up to this many milliseconds for new output or a state change. Defaults to 0."
+          },
+          "maxBytes": {
+            "type": "integer",
+            "minimum": 16384,
+            "maximum": 262144,
+            "description": "Maximum retained output bytes to return in this poll. Minimum 16384; defaults to 65536."
+          }
+        },
+        "required": [
+          "operationId"
+        ]
+      }
+    },
+    {
+      "name": "listDocumentation",
+      "description": "Codex, Claude, and other AI agents should invoke this read-only function to discover the Runme documentation available for this exact app version. It returns a compact JSON list of document names and descriptions; use getDocumentation to read only the pages needed for the task.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    },
+    {
+      "name": "listDriveFolder",
+      "description": "List one bounded page of children in an accessible Google Drive folder. Use this to inspect a known folder or disambiguate search results without mounting it.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "folderIdOrUri": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Google Drive folder ID or folder URI."
+          },
+          "pageSize": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 25
+          },
+          "pageToken": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Opaque token returned by the previous page."
+          }
+        },
+        "required": [
+          "folderIdOrUri"
+        ]
+      }
+    },
+    {
+      "name": "mountDriveFolder",
+      "description": "Validate, mirror, and add a specific Google Drive folder to the Runme workspace explorer. Pass only a folder ID or folder URL selected from user input or an unambiguous search result. The operation is idempotent for an already-mounted folder.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "folderIdOrUri": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Google Drive folder ID or folder URI from the user or an unambiguous search result."
+          }
+        },
+        "required": [
+          "folderIdOrUri"
+        ]
+      }
+    },
+    {
+      "name": "readInstructionsForAIAgents",
+      "description": "AI agents should invoke this function to get Markdown instructions, similar to skills, for how they can safely control this Runme instance with WebMCP. This operation doesn't modify the page and can be safely invoked by AI agents as needed.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    },
+    {
+      "name": "searchDriveItems",
+      "description": "Search accessible Google Drive files and folders by name. Use this before mounting when the user gives a folder name instead of an ID or URL. Prefer itemType \"folder\" and exactName true for a quoted folder name. Do not mount when multiple candidates remain; return them so the user or agent can disambiguate.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "description": "File or folder name to search for."
+          },
+          "itemType": {
+            "type": "string",
+            "enum": [
+              "any",
+              "file",
+              "folder"
+            ],
+            "default": "any",
+            "description": "Restrict matches to files, folders, or either."
+          },
+          "exactName": {
+            "type": "boolean",
+            "default": false,
+            "description": "Match the complete name instead of searching for a contained phrase."
+          },
+          "parentFolderIdOrUri": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Optional parent folder ID or URI used to scope the search."
+          },
+          "pageSize": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 25
+          },
+          "pageToken": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Opaque token returned by the previous page."
+          }
+        },
+        "required": [
+          "name"
+        ]
+      }
+    },
+    {
+      "name": "showTourStep",
+      "description": "Highlight a registered Runme UI target and show a short explanatory annotation beside it. Use tour.listTargets() through ExecuteCode to discover target IDs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "target": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "placement": {
+            "type": "string",
+            "enum": [
+              "auto",
+              "top",
+              "right",
+              "bottom",
+              "left"
+            ]
+          }
+        },
+        "required": [
+          "target",
+          "message"
+        ]
+      }
+    }
+  ],
+  "host": "web.runme.dev",
+  "source": "webmcp.com/api/directory.json"
+}

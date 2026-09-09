@@ -1,0 +1,114 @@
+{
+  "sponsio": 1,
+  "url": "https://demo.cartwright.app/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "calculate_brew_ratio",
+      "description": "Calculate this roastery's recommended pour-over recipe: cups of coffee → grams of ground coffee and grams of water. Uses the shop's own brewing guide (1 cup = 200 g water; strong 1:15, balanced 1:16, bright 1:17). Pure, instant calculation.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "cups": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12,
+            "description": "How many cups to brew (1–12). One cup = 2 dl."
+          },
+          "strength": {
+            "type": "string",
+            "enum": [
+              "strong",
+              "balanced",
+              "bright"
+            ],
+            "description": "strong = 1:15, balanced = 1:16, bright = 1:17. Defaults to balanced."
+          }
+        },
+        "required": [
+          "cups"
+        ]
+      }
+    },
+    {
+      "name": "get_cart",
+      "description": "Read the current shopping cart: line items with ids (usable with the cart page's update and remove tools — navigate to '/en/cart' to use them), quantities, per-line and total prices with currency, and stock ceilings.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "navigate",
+      "description": "Navigate the browser to an internal page on this store, e.g. '/en/produkter', '/en/produkter?q=oak', or '/en/product/<slug>'. Accepts same-origin paths beginning with '/'.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "An internal path beginning with '/'."
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    },
+    {
+      "name": "newsletter_signup",
+      "description": "Subscribe an email address to this store's newsletter. Asks the user to confirm before submitting.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "you@example.com"
+          }
+        }
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Search this store's product catalogue by free text and return matching products (id, title, minor-unit price, formatted price, currency, url, stock). Returns results directly without changing the page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Free-text search, e.g. 'sunglasses' or 'oak table'."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "description": "Max results to return. Defaults to 10."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "site_search",
+      "description": "Search this store's product catalogue and open the results page.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search coffee & gear…"
+          }
+        }
+      }
+    }
+  ],
+  "host": "demo.cartwright.app",
+  "source": "webmcp.com/api/directory.json"
+}

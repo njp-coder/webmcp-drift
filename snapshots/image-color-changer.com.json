@@ -1,0 +1,101 @@
+{
+  "sponsio": 1,
+  "url": "https://image-color-changer.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "answer_faq",
+      "description": "Look up the site's own answer to a question about image-color-changer.com — pricing, privacy, supported formats, accounts, what happens to uploaded images. Returns the closest published answers rather than one guess, so pick the one that fits.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "question": {
+            "type": "string",
+            "description": "The user's question."
+          }
+        },
+        "required": [
+          "question"
+        ]
+      }
+    },
+    {
+      "name": "get_pricing",
+      "description": "What image-color-changer.com costs: the free allowance, one-time credit packs, and the subscription tiers, plus what a credit is spent on. Prices are in EUR.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_image_tools",
+      "description": "List every single-purpose image tool on the site — resize, recolour, make transparent, crop, convert format, extract a palette, and so on. Each entry names the page slug to pass to open_tool. Pass a category to get the full description and parameters for a smaller set.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "enum": [
+              "Color",
+              "Edit",
+              "Effects",
+              "Convert",
+              "Generate",
+              "Logo",
+              "Icon",
+              "Signature",
+              "Stamp",
+              "Palette"
+            ],
+            "description": "Restrict to one category and include full detail for each tool."
+          }
+        }
+      }
+    },
+    {
+      "name": "open_tool",
+      "description": "Navigate the current tab to a page on this site by slug — anything search_site or list_image_tools returned. Once a tool page is open it registers its own tools for setting options and downloading the result.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Page slug, e.g. \"replace-color-in-image\"."
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "search_site",
+      "description": "Search image-color-changer.com for the page that does a given job. Accepts plain English (\"make my logo white\", \"cut out the background\", \"instagram banner\"). Returns ranked pages with their URLs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "What the user wants to do, in plain English."
+          },
+          "limit": {
+            "type": "number",
+            "description": "Maximum results. Default 8.",
+            "minimum": 1,
+            "maximum": 25
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "image-color-changer.com",
+  "source": "webmcp.com/api/directory.json"
+}

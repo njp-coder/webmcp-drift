@@ -1,0 +1,89 @@
+{
+  "sponsio": 1,
+  "url": "https://videokurs.pl/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "add_course_to_cart",
+      "description": "Dodaje pełny kurs online do koszyka. Ponowne wywołanie nie doda duplikatu i nigdy nie składa zamówienia.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "course_id": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Identyfikator kursu zwrócony przez search_courses."
+          }
+        },
+        "required": [
+          "course_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_cart_summary",
+      "description": "Zwraca pozycje i subtotal koszyka w PLN. Subtotal nie uwzględnia rabatów ani ewentualnego kosztu dostawy.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_course_details",
+      "description": "Zwraca aktualne szczegóły dostępnego kursu online oraz skrócony konspekt maksymalnie 10 lekcji.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "course_id": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Identyfikator kursu zwrócony przez search_courses."
+          }
+        },
+        "required": [
+          "course_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_courses",
+      "description": "Wyszukuje dostępne pełne kursy online VideoKurs.pl. Może ograniczyć wyniki do podanej maksymalnej ceny w PLN.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 120,
+            "description": "Temat lub nazwa kursu, np. Python albo JavaScript."
+          },
+          "max_price": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Opcjonalna maksymalna cena kursu w PLN."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 8,
+            "default": 5,
+            "description": "Maksymalna liczba wyników od 1 do 8."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "videokurs.pl",
+  "source": "webmcp.com/api/directory.json"
+}

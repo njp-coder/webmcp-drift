@@ -1,0 +1,188 @@
+{
+  "sponsio": 1,
+  "url": "https://www.adspirer.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "ask_site",
+      "description": "Searches Adspirer's authoritative product, integrations, documentation, pricing, and setup indexes. Use when a visitor asks what Adspirer supports, how to set it up, how a feature works, or where to find guidance. Returns ranked excerpts with source URLs; it excludes blog content and does not manage ad accounts or campaigns.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 300,
+            "description": "The visitor's natural-language question about Adspirer."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5,
+            "default": 5,
+            "description": "Maximum number of ranked sources to return."
+          },
+          "surface": {
+            "type": "string",
+            "enum": [
+              "all",
+              "product",
+              "docs",
+              "integrations",
+              "pricing",
+              "setup"
+            ],
+            "default": "all",
+            "description": "Optional content area: all, product, docs, integrations, pricing, or setup."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_adspirer_agent_context",
+      "description": "Returns a concise, machine-readable map of Adspirer's product, browser WebMCP scope, authenticated server MCP, supported setup surfaces, and canonical links. Use when an agent needs to understand how to work with Adspirer or choose the correct integration path. Returns product boundaries and URLs; it makes no account or campaign changes.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_pricing",
+      "description": "Returns Adspirer's current public plans, included monthly task allowances, monthly or annual USD pricing, highlights, and canonical signup links. Use for pricing, free-plan, plan-comparison, or usage-limit questions. It is read-only and never starts checkout or changes a subscription.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "plan": {
+            "type": "string",
+            "enum": [
+              "all",
+              "free",
+              "plus",
+              "pro",
+              "max",
+              "enterprise"
+            ],
+            "default": "all",
+            "description": "Optional plan filter: all, free, plus, pro, max, or enterprise."
+          },
+          "billing_interval": {
+            "type": "string",
+            "enum": [
+              "all",
+              "monthly",
+              "annual"
+            ],
+            "default": "all",
+            "description": "Price view to return: all, monthly, or annual."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_setup_guide",
+      "description": "Returns the exact public setup sequence for connecting Adspirer to a supported AI client, including commands, browser handoffs, the MCP endpoint, and the canonical guide URL. Use after the visitor names ChatGPT, Claude, Claude Code, Cursor, Codex, Windsurf, or OpenClaw. It is read-only and never runs commands, signs in, or completes OAuth.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "client": {
+            "type": "string",
+            "enum": [
+              "chatgpt",
+              "claude",
+              "claude_code",
+              "cursor",
+              "codex",
+              "windsurf",
+              "openclaw"
+            ],
+            "description": "AI client to configure: chatgpt, claude, claude_code, cursor, codex, windsurf, or openclaw."
+          }
+        },
+        "required": [
+          "client"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_integrations",
+      "description": "Returns Adspirer's supported advertising-platform and AI-client integrations with concise capabilities and canonical integration and documentation URLs. Use to check whether Adspirer supports a platform or client, or to choose an integration path. It is read-only and does not connect an account or begin OAuth.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "enum": [
+              "all",
+              "ad_platform",
+              "ai_client"
+            ],
+            "default": "all",
+            "description": "Optional category filter: all, ad_platform, or ai_client."
+          },
+          "integration": {
+            "type": "string",
+            "enum": [
+              "all",
+              "google_ads",
+              "meta_ads",
+              "tiktok_ads",
+              "linkedin_ads",
+              "amazon_ads",
+              "chatgpt_ads",
+              "chatgpt",
+              "claude",
+              "claude_code",
+              "cursor",
+              "codex",
+              "windsurf",
+              "openclaw"
+            ],
+            "default": "all",
+            "description": "Optional exact integration filter, such as google_ads, amazon_ads, chatgpt, claude_code, or codex."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "open_adspirer_destination",
+      "description": "Opens a supported Adspirer page for the visitor. Use after identifying that the next step is documentation, integrations, MCP setup, pricing, signup, or the demo-booking page. Returns the opened destination and URL; it never signs up, books a meeting, starts OAuth, or completes payment. Navigation to proxied documentation or integration pages removes these homepage tools.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "destination": {
+            "type": "string",
+            "enum": [
+              "docs",
+              "integrations",
+              "pricing",
+              "signup",
+              "book_demo",
+              "mcp_setup"
+            ],
+            "description": "Destination to open: docs, integrations, pricing, signup, book_demo, or mcp_setup."
+          }
+        },
+        "required": [
+          "destination"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "adspirer.com",
+  "source": "webmcp.com/api/directory.json"
+}

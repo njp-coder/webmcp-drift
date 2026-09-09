@@ -1,0 +1,139 @@
+{
+  "sponsio": 1,
+  "url": "https://rachelthegreat.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "get_page",
+      "description": "Fetch and read the full text of any page on this site by URL - the comic transcript, the author's commentary note, and archived comments - without navigating away from the current page. Use this when a search excerpt is too short to answer a question. Same-site URLs only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "A same-site URL or path to read (e.g. \"/comics/stupid-male-incident-1-page-3/\")"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      }
+    },
+    {
+      "name": "list_characters",
+      "description": "List the recurring characters in the comics, each with a short bio and how many pages they appear on.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "list_comics",
+      "description": "Get a list of all available comics in the archive",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "list_storylines",
+      "description": "List all storylines/story arcs across the comics, each with its comic, page count, and the URL of its first page (useful for starting a storyline from the beginning).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "next_page",
+      "description": "Navigate to the next page of the archive (older content). This navigates the browser away from the current page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "open_comic_page",
+      "description": "Navigate directly to a page on this site by its URL, such as a url returned by list_comics or search_comics. This navigates the browser away from the current page. Only same-site URLs are allowed.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "A same-site URL or path to navigate to (e.g. \"/other-comics/crow-princess-page-28/\")"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      }
+    },
+    {
+      "name": "search_by_character",
+      "description": "List the comic pages a given character appears on, looked up by character slug (e.g. \"tuna\") or name (e.g. \"Tuna\"). Each result has url, title, page_number, storyline, and date.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "character": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Character slug (e.g. \"tuna\") or display name (e.g. \"Tuna\"). Use list_characters to see valid options."
+          }
+        },
+        "required": [
+          "character"
+        ]
+      }
+    },
+    {
+      "name": "search_comics",
+      "description": "Search comic transcripts, author commentary, and comments for matching content. Returns a page of results (each with page_number, storyline, and date) plus the total match count so you can page through with offset. Use sort to order chronologically, e.g. to find the earliest matching page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The search query to find in comic transcripts, commentary, and comments"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 25,
+            "description": "Maximum number of results to return (default 10, max 25)"
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Number of results to skip, for paging through large result sets (default 0)"
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "relevance",
+              "newest",
+              "oldest"
+            ],
+            "description": "Result ordering: \"relevance\" (default), \"newest\" first, or \"oldest\" first (use \"oldest\" to find the earliest/first matching page)."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "rachelthegreat.com",
+  "source": "webmcp.com/api/directory.json"
+}

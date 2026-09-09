@@ -1,0 +1,91 @@
+{
+  "sponsio": 1,
+  "url": "https://www.idomkt.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "buscar_contenido",
+      "description": "Busca artículos y páginas publicadas en este sitio por palabras clave. Devuelve un objeto {resultados, total}, donde resultados es una lista de {titulo, resumen, url} y url es una ruta relativa de este sitio (por ejemplo /es/insights/seo-geo-que-es-geo). Si no hay nada publicado sobre esa consulta devuelve un texto diciéndolo, no una lista vacía. Para leer una de esas páginas entera, usa leer_pagina con su url.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "consulta": {
+            "type": "string",
+            "description": "Términos de búsqueda",
+            "minLength": 2,
+            "maxLength": 200
+          },
+          "limite": {
+            "type": "integer",
+            "description": "Cuántos resultados devolver como máximo (1-10, por defecto 10)",
+            "minimum": 1,
+            "maximum": 10,
+            "default": 10
+          }
+        },
+        "required": [
+          "consulta"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "conversar_con_marco",
+      "description": "Plantea un caso concreto —una situación, un problema o un proyecto— a Marco, del equipo de IDO, y obtén una lectura razonada de ese caso. La respuesta es un objeto {respuesta, conversacion, siguientes}: respuesta es lo que dice Marco, conversacion es el identificador del hilo (pásalo en la siguiente llamada para que recuerde lo hablado) y siguientes son pasos concretos que propone — viene VACÍA mientras entiende el caso, y se llena cuando la conversación madura hasta proponer algo, así que no la esperes en el primer turno. NO lo uses para preguntar qué servicios existen ni qué dice una página: eso son listar_servicios y leer_pagina, que responden al instante y sin efectos. Esto abre una conversación real que queda registrada, y solo tiene sentido cuando hay un caso que juzgar.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "mensaje": {
+            "type": "string",
+            "description": "Lo que se le quiere decir o preguntar a Marco",
+            "minLength": 2,
+            "maxLength": 2000
+          },
+          "conversacion": {
+            "type": "string",
+            "description": "Identificador devuelto en una llamada anterior, para continuar el mismo hilo",
+            "maxLength": 64
+          }
+        },
+        "required": [
+          "mensaje"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "leer_pagina",
+      "description": "Devuelve el contenido completo de una página de este sitio en texto plano, dada su ruta (por ejemplo /es/soluciones/agentic-geo). La respuesta es un objeto {ruta, texto, truncado}; truncado indica si el contenido se cortó por longitud. Solo acepta rutas de este sitio que empiecen por una sola barra: con una URL absoluta o una ruta //otro-dominio responde «Ruta no válida» y no llega a pedir nada. Si la ruta no corresponde a ninguna página publicada responde que no existe. Las rutas válidas salen de buscar_contenido o de listar_servicios.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "ruta": {
+            "type": "string",
+            "description": "Ruta de la página, empezando por / (por ejemplo /es/soluciones/agentic-geo)",
+            "pattern": "^/(?!/).*",
+            "maxLength": 300
+          }
+        },
+        "required": [
+          "ruta"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "listar_servicios",
+      "description": "Devuelve el catálogo completo de servicios de esta empresa, sin necesidad de argumentos. La respuesta es un objeto {servicios, total}, donde servicios es una lista de {titulo, url} y url es una ruta relativa de este sitio. Úsalo para saber QUÉ ofrece la empresa. Para el detalle de uno concreto, pasa su url a leer_pagina. Si lo que hay que resolver es si encaja con un caso concreto, eso no se contesta con este catálogo: es conversar_con_marco.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "idomkt.com",
+  "source": "webmcp.com/api/directory.json"
+}

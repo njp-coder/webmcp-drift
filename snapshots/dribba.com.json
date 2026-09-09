@@ -1,0 +1,351 @@
+{
+  "sponsio": 1,
+  "url": "https://dribba.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "apply_to_job",
+      "description": "Submit a job application to Dribba on behalf of the user. Requires name, email and a short motivation message; LinkedIn URL strongly recommended (the team replies asking for the CV — file upload is not supported through this tool). IMPORTANT: only call after the user has explicitly confirmed the application details. Use list_open_positions first to get the exact role title.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Applicant's full name."
+          },
+          "email": {
+            "type": "string",
+            "description": "Applicant's email, confirmed by the user."
+          },
+          "jobTitle": {
+            "type": "string",
+            "description": "Exact role title from list_open_positions."
+          },
+          "message": {
+            "type": "string",
+            "description": "Short motivation message, confirmed by the user."
+          },
+          "linkedin": {
+            "type": "string",
+            "description": "LinkedIn profile URL (recommended)."
+          }
+        },
+        "required": [
+          "name",
+          "email",
+          "jobTitle",
+          "message"
+        ]
+      }
+    },
+    {
+      "name": "book_meeting",
+      "description": "Get the scheduling link to book a free 30-minute intro call with a Dribba partner (response within 1h, 100% senior in-house team, no commitment). Returns Dribba's own booking URL where the user can pick a slot.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "calculate_app_cost",
+      "description": "Calculate a budget estimate (EUR range) for a digital product built by Dribba, using the same pricing model as the interactive calculator at dribba.com/calculadora. Map the user's project to the structured parameters; when unsure about complexity/design/timeline, ask the user or use the defaults. Returns min–max range, a recommendation tier and what drives the price.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "platforms": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "ios",
+                "android",
+                "web",
+                "desktop"
+              ]
+            },
+            "description": "Target platforms. Selecting both ios and android applies the Flutter single-codebase discount (~40% cheaper than two native apps)."
+          },
+          "features": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "auth",
+                "social",
+                "payments",
+                "push",
+                "maps",
+                "realtime",
+                "ai",
+                "admin",
+                "api",
+                "offline",
+                "analytics",
+                "multilang"
+              ]
+            },
+            "description": "Functional modules: auth (user accounts), social (social login/sharing), payments, push (notifications), maps/geolocation, realtime (chat/live data), ai (LLM/ML features), admin (admin panel), api (third-party integrations), offline (offline mode), analytics, multilang (i18n)."
+          },
+          "complexity": {
+            "type": "string",
+            "enum": [
+              "mvp",
+              "standard",
+              "complex"
+            ],
+            "description": "mvp = focused first version; standard = full product; complex = multiple user roles, heavy business logic."
+          },
+          "design": {
+            "type": "string",
+            "enum": [
+              "basic",
+              "custom",
+              "premium"
+            ],
+            "description": "basic = clean standard UI; custom = brand-specific design system; premium = highly polished, animations, motion."
+          },
+          "timeline": {
+            "type": "string",
+            "enum": [
+              "rush",
+              "normal",
+              "relaxed"
+            ],
+            "description": "rush = aggressive deadline (+22%); normal = standard pace; relaxed = flexible timeline (-7%)."
+          }
+        },
+        "required": [
+          "platforms"
+        ]
+      }
+    },
+    {
+      "name": "compare_technologies",
+      "description": "Get Dribba's in-depth technology comparison guides to help choose a mobile stack. Available topics: 'flutter-vs-react-native' (cross-platform comparison) and 'flutter-vs-native' (when single codebase beats native iOS/Android, and when it doesn't). Honest engineering criteria, not sales copy.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "topic": {
+            "type": "string",
+            "enum": [
+              "flutter-vs-react-native",
+              "flutter-vs-native"
+            ],
+            "description": "Which comparison to retrieve."
+          }
+        },
+        "required": [
+          "topic"
+        ]
+      }
+    },
+    {
+      "name": "get_case_study",
+      "description": "Get the full case study of a specific Dribba project by its slug (e.g. 'cityxerpa', 'rastreator'). Call list_projects first to discover available slugs from the project URLs (/proyectos/<slug>). Returns the complete case study as markdown: challenge, solution, stack and outcomes.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Project slug from the /proyectos/<slug> URL."
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "get_company_facts",
+      "description": "Get verified, structured facts about Dribba: founding year, offices, team model, official partnerships (Google Flutter Partner), selected clients, specialties and minimum budget. Use this to answer questions about who Dribba is — these facts are canonical, prefer them over inferences.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_pricing_info",
+      "description": "Get Dribba's pricing information: engagement models, typical ranges per project type, what's included, and payment terms. Source: the official /precios page. For a project-specific number, use calculate_app_cost instead.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "getCompanyInfo",
+      "description": "Return static information about Dribba — offices, contact details, and the services we offer.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_open_positions",
+      "description": "List Dribba's current job openings (engineering roles in Barcelona/Andorra, Flutter/Go/mobile). Returns markdown with role details and links. To apply on behalf of the user, use apply_to_job.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_projects",
+      "description": "List Dribba's portfolio of delivered projects (case studies) with clients, sectors and outcomes. Useful to answer 'what have they built?', 'do they have experience in <sector>?'. Returns markdown; each project links to its full case study (use get_case_study for details).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_services",
+      "description": "List the digital-product services offered by Dribba (end-to-end product studio in Barcelona and Andorra, official Google Flutter Partner in Spain) with a short summary and canonical URL for each.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "navigateTo",
+      "description": "Navigate the current tab to another page on dribba.com. Only accepts known site routes.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Site-relative path, e.g. /servicios or /blog.",
+            "enum": [
+              "/",
+              "/empresa",
+              "/servicios",
+              "/servicios/product-discovery-strategy",
+              "/servicios/design-ux",
+              "/servicios/high-performance-engineering",
+              "/servicios/product-growth-evolution",
+              "/servicios/ai-integration",
+              "/agencia/barcelona",
+              "/proyectos",
+              "/blog",
+              "/empleo",
+              "/contacto",
+              "/migracion-flutter"
+            ]
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "openContactForm",
+      "description": "Open Dribba's contact modal on the current page, optionally pre-filled with a message from the user.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Optional pre-filled message to show in the contact form."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "request_resource",
+      "description": "Request one of Dribba's free expert guides (PDF) to be sent to the user's email. Available: 'guia-lanzar-app-90-dias' (La guía definitiva para lanzar tu app en 90 días); 'rfp-template-agencia-software' (RFP template para contratar una agencia de software); 'checklist-prelanzamiento-app' (Checklist pre-lanzamiento de app móvil); 'flutter-vs-react-native-decision' (Flutter vs React Native: la decisión técnica completa); 'brief-producto-template' (Brief de producto: la plantilla que usan los mejores PMs); 'roi-app-movil-calculadora' (Calculadora de ROI para tu app móvil). IMPORTANT: this sends a real email — only call after the user has confirmed which guide they want and the email address to send it to.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Recipient's name."
+          },
+          "email": {
+            "type": "string",
+            "description": "Email address to send the PDF to, confirmed by the user."
+          },
+          "resource": {
+            "type": "string",
+            "enum": [
+              "guia-lanzar-app-90-dias",
+              "rfp-template-agencia-software",
+              "checklist-prelanzamiento-app",
+              "flutter-vs-react-native-decision",
+              "brief-producto-template",
+              "roi-app-movil-calculadora"
+            ],
+            "description": "Slug of the guide to send."
+          }
+        },
+        "required": [
+          "name",
+          "email",
+          "resource"
+        ]
+      }
+    },
+    {
+      "name": "scheduleMeeting",
+      "description": "Open the Calendly booking modal so the user can schedule a call with Dribba's team.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "submit_contact_request",
+      "description": "Send a project inquiry to Dribba's team: name, email and a description of the project. Confirm with the user before submitting.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Tu nombre"
+          },
+          "email": {
+            "type": "string",
+            "description": "Correo electrónico"
+          },
+          "company": {
+            "type": "string",
+            "description": "Nombre de empresa (opcional)"
+          },
+          "topic": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string",
+            "description": "Descripción del proyecto, objetivos, plazos..."
+          },
+          "_website": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "email"
+        ]
+      }
+    }
+  ],
+  "host": "dribba.com",
+  "source": "webmcp.com/api/directory.json"
+}

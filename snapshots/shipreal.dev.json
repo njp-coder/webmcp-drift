@@ -1,0 +1,88 @@
+{
+  "sponsio": 1,
+  "url": "https://shipreal.dev/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "get_course_summary",
+      "description": "What ShipReal is, who it is for, and who it is not for. Returns the markdown twin of this page, which carries the full fit guidance.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_enrollment_link",
+      "description": "Return the ShipReal checkout link and the total for a plan, a seat count and a billing country, without opening anything. Use to answer \"what would N seats cost and where do we pay\"; the visitor still presses the button to buy.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "plan": {
+            "type": "string",
+            "enum": [
+              "complete",
+              "teams"
+            ],
+            "description": "complete is the single course, teams is per seat on one invoice."
+          },
+          "seats": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Seat count for the teams plan. Ignored for complete."
+          },
+          "country": {
+            "type": "string",
+            "description": "ISO 3166-1 alpha-2 code the buyer pays from, e.g. IL or US. Omit to use this visitor's own country."
+          }
+        },
+        "required": [
+          "plan"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_pricing",
+      "description": "Current ShipReal plans and prices for the visitor's billing region, read from the live pricing table on this page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_curriculum",
+      "description": "List the ShipReal course curriculum: every part and the modules inside it, as shown on this page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "start_checkout",
+      "description": "Open the ShipReal checkout for the Complete course, routed to the right payment provider for the visitor's country. Opens a hosted payment overlay; it does not complete a purchase.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "start_seat_checkout",
+      "description": "Open the ShipReal per-seat checkout for teams, routed to the right payment provider for the visitor's country. Opens a hosted payment overlay; it does not complete a purchase.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    }
+  ],
+  "host": "shipreal.dev",
+  "source": "webmcp.com/api/directory.json"
+}

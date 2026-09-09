@@ -1,0 +1,184 @@
+{
+  "sponsio": 1,
+  "url": "https://networkthinking.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "ask_site",
+      "description": "Read-only search of Network Thinking Solutions services, locations, and knowledge-base guidance. Returns matching excerpts and source URLs without navigating, changing page state, or submitting a form.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 300
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 8,
+            "default": 5
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "browse_services",
+      "description": "Read-only lookup of Network Thinking Solutions services and industry offerings for a business need. Returns matching offerings and URLs without navigating or changing page state.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "need": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 300
+          }
+        },
+        "required": [
+          "need"
+        ]
+      }
+    },
+    {
+      "name": "calculate_m365_quote",
+      "description": "Read-only Microsoft 365 planning estimate using current U.S. list prices and catalog SKU IDs. Returns priced line items, validation guidance, totals, and a shareable calculator URL without navigating, purchasing, or submitting a quote.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 30,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "sku_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 100
+                },
+                "quantity": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 10000
+                }
+              },
+              "required": [
+                "sku_id",
+                "quantity"
+              ]
+            }
+          },
+          "billing_term": {
+            "type": "string",
+            "enum": [
+              "annual",
+              "monthly"
+            ],
+            "default": "annual"
+          }
+        },
+        "required": [
+          "items"
+        ]
+      }
+    },
+    {
+      "name": "defang_or_refang_url",
+      "description": "Read-only local text transformation between clickable URLs or domains and safely defanged hxxp and [.] notation. Returns transformed text without navigating, fetching the URL, or changing page state.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 10000
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "defang",
+              "refang"
+            ],
+            "default": "defang"
+          }
+        },
+        "required": [
+          "text"
+        ]
+      }
+    },
+    {
+      "name": "format_route53_dkim_record",
+      "description": "Read-only local formatting of a DKIM public key into quoted Route 53 TXT-record segments within DNS length limits. Returns the formatted value and chunks without connecting to Route 53 or modifying DNS.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "public_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 12000
+          }
+        },
+        "required": [
+          "public_key"
+        ]
+      }
+    },
+    {
+      "name": "navigate_to_service",
+      "description": "Navigate the visible website to the strongest Network Thinking Solutions service match for a business need. Changes only the current page and does not submit a form or create a commitment.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "need": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 300
+          }
+        },
+        "required": [
+          "need"
+        ]
+      }
+    },
+    {
+      "name": "open_m365_calculator",
+      "description": "Open a calculator URL returned by calculate_m365_quote in the visible website. Navigates the current page but does not purchase licenses, capture a lead, or submit a firm quote.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "calculator_url": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000
+          }
+        },
+        "required": [
+          "calculator_url"
+        ]
+      }
+    }
+  ],
+  "host": "networkthinking.com",
+  "source": "webmcp.com/api/directory.json"
+}

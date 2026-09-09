@@ -1,0 +1,103 @@
+{
+  "sponsio": 1,
+  "url": "https://match-day.nl/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "find_service_page",
+      "description": "Maps a public B2B sales or lead generation question to the most relevant public Match-Day page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "topic": {
+            "type": "string",
+            "description": "Topic or buyer question, for example outbound sales, B2B leadgeneratie, sales outsourcing, HubSpot, sales training, AI leadgeneratie or Leadinfo follow-up."
+          },
+          "language": {
+            "type": "string",
+            "enum": [
+              "nl",
+              "en",
+              "de",
+              "fr"
+            ],
+            "default": "nl"
+          }
+        },
+        "required": [
+          "topic"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_company_profile",
+      "description": "Returns public entity facts for Match-Day, including positioning, location, contact details and core services.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_intake_links",
+      "description": "Returns public URLs where a user can contact Match-Day, plan an appointment, start an assessment or register for public programmes.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "intent": {
+            "type": "string",
+            "enum": [
+              "contact",
+              "appointment",
+              "assessment",
+              "academy",
+              "hybrid_sales_development"
+            ],
+            "default": "contact"
+          },
+          "language": {
+            "type": "string",
+            "enum": [
+              "nl",
+              "en",
+              "de",
+              "fr"
+            ],
+            "default": "nl"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_knowledge_sources",
+      "description": "Returns public knowledge sources that agents can read or cite for B2B sales, lead generation and outbound sales context.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "topic": {
+            "type": "string"
+          },
+          "language": {
+            "type": "string",
+            "enum": [
+              "nl",
+              "en",
+              "de",
+              "fr"
+            ],
+            "default": "nl"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "match-day.nl",
+  "source": "webmcp.com/api/directory.json"
+}

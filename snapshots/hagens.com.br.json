@@ -1,0 +1,85 @@
+{
+  "sponsio": 1,
+  "url": "https://hagens.com.br/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "fetch_article_markdown",
+      "description": "Carrega o corpo de um artigo em markdown via GET /llms/artigo-{slug}.md.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Slug do artigo, com ou sem prefixo artigo-."
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "fetch_articles",
+      "description": "Lista artigos publicados a partir de /llms.txt (titulo, slug, url, markdown). Equivale a fetch_blog_posts.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Filtro opcional por título ou slug."
+          }
+        }
+      }
+    },
+    {
+      "name": "fetch_page_markdown",
+      "description": "Carrega o markdown público da página (GET /llms/{slug}.md). Sem page, usa a rota atual. Slugs: home, infobip, sobre, seo-geo, artigo-{slug}, etc.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "string",
+            "description": "Slug do markdown: home, sobre, contato, valores, seo-geo, artigo-{slug}, etc."
+          }
+        }
+      }
+    },
+    {
+      "name": "list_services",
+      "description": "Lista os serviços públicos da Hagens (título, slug e path).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "start_contact",
+      "description": "Abre o formulário de contato no tipo pedido (cliente, trabalhe ou parcerias). Não envia dados.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "cliente",
+              "trabalhe",
+              "parcerias"
+            ],
+            "description": "Funil do modal."
+          }
+        },
+        "required": [
+          "type"
+        ]
+      }
+    }
+  ],
+  "host": "hagens.com.br",
+  "source": "webmcp.com/api/directory.json"
+}

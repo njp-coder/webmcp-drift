@@ -1,0 +1,130 @@
+{
+  "sponsio": 1,
+  "url": "https://www.giantmarkdown.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "convert_document_to_markdown",
+      "description": "Convert one supported document supplied as base64 into Markdown. Use after get_conversion_capabilities when the user wants one document converted. Supported filename extensions: CSV, DOC, DOCM, DOCX, EPUB, ODS, ODP, ODT, PDF, POT, PPT, PPTM, PPTX, PPS, PPSM, PPSX, RTF, XLS, XLSB, XLSM, XLSX. The schema enforces the filename extension, valid base64 syntax, and a 25 MiB WebMCP payload limit. Returns filename, Markdown text, conversion route, and a deletion and privacy note. Embedded images are not analysed by a vision model, OCR is not run, and images are not included in the Markdown. Formal result JSON Schema: {\"type\":\"object\",\"properties\":{\"filename\":{\"type\":\"string\"},\"markdown\":{\"type\":\"string\",\"description\":\"Converted Markdown containing text and document structure only.\"},\"conversion\":{\"type\":\"string\",\"enum\":[\"on-device\",\"cloud\"]},\"note\":{\"type\":\"string\"}},\"required\":[\"filename\",\"markdown\",\"conversion\",\"note\"],\"additionalProperties\":false}. Machine-readable copy: https://www.giantmarkdown.com/webmcp-output-schemas.json#/$defs/convert_document_to_markdown.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "filename": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 255,
+            "pattern": ".+(?:\\.[cC][sS][vV]|\\.[dD][oO][cC]|\\.[dD][oO][cC][mM]|\\.[dD][oO][cC][xX]|\\.[eE][pP][uU][bB]|\\.[oO][dD][sS]|\\.[oO][dD][pP]|\\.[oO][dD][tT]|\\.[pP][dD][fF]|\\.[pP][oO][tT]|\\.[pP][pP][tT]|\\.[pP][pP][tT][mM]|\\.[pP][pP][tT][xX]|\\.[pP][pP][sS]|\\.[pP][pP][sS][mM]|\\.[pP][pP][sS][xX]|\\.[rR][tT][fF]|\\.[xX][lL][sS]|\\.[xX][lL][sS][bB]|\\.[xX][lL][sS][mM]|\\.[xX][lL][sS][xX])$",
+            "description": "Document filename ending in one of these supported extensions: CSV, DOC, DOCM, DOCX, EPUB, ODS, ODP, ODT, PDF, POT, PPT, PPTM, PPTX, PPS, PPSM, PPSX, RTF, XLS, XLSB, XLSM, XLSX."
+          },
+          "content_base64": {
+            "type": "string",
+            "minLength": 4,
+            "maxLength": 34952536,
+            "pattern": "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$",
+            "contentEncoding": "base64",
+            "description": "Raw base64 document bytes without a data URL prefix. The decoded document must be no larger than 25 MiB."
+          }
+        },
+        "required": [
+          "filename",
+          "content_base64"
+        ],
+        "minProperties": 2,
+        "maxProperties": 2,
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "convert_documents_to_markdown",
+      "description": "Convert 2 to 5 supported documents supplied as base64 into Markdown in one request. Use for a small batch; use convert_document_to_markdown for one file or files above the WebMCP batch limits. Supported filename extensions: CSV, DOC, DOCM, DOCX, EPUB, ODS, ODP, ODT, PDF, POT, PPT, PPTM, PPTX, PPS, PPSM, PPSX, RTF, XLS, XLSB, XLSM, XLSX. The schema enforces supported filename extensions, valid base64 syntax, a 25 MiB per-file limit, and batch count; the runtime enforces a 100 MiB decoded batch limit. Embedded images are not analysed or included. Formal result JSON Schema: {\"type\":\"object\",\"properties\":{\"requested\":{\"type\":\"integer\",\"minimum\":2,\"maximum\":5},\"succeeded\":{\"type\":\"integer\",\"minimum\":0,\"maximum\":5},\"failed\":{\"type\":\"integer\",\"minimum\":0,\"maximum\":5},\"images_processed\":{\"type\":\"boolean\",\"const\":false},\"results\":{\"type\":\"array\",\"minItems\":2,\"maxItems\":5,\"items\":{\"oneOf\":[{\"type\":\"object\",\"properties\":{\"status\":{\"type\":\"string\",\"const\":\"complete\"},\"filename\":{\"type\":\"string\"},\"markdown\":{\"type\":\"string\",\"description\":\"Converted Markdown containing text and document structure only.\"},\"conversion\":{\"type\":\"string\",\"enum\":[\"on-device\",\"cloud\"]},\"note\":{\"type\":\"string\"}},\"required\":[\"status\",\"filename\",\"markdown\",\"conversion\",\"note\"],\"additionalProperties\":false},{\"type\":\"object\",\"properties\":{\"status\":{\"type\":\"string\",\"const\":\"error\"},\"filename\":{\"type\":\"string\"},\"error\":{\"type\":\"string\"}},\"required\":[\"status\",\"filename\",\"error\"],\"additionalProperties\":false}]}}},\"required\":[\"requested\",\"succeeded\",\"failed\",\"images_processed\",\"results\"],\"additionalProperties\":false}. Machine-readable copy: https://www.giantmarkdown.com/webmcp-output-schemas.json#/$defs/convert_documents_to_markdown.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "documents": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 5,
+            "items": {
+              "type": "object",
+              "properties": {
+                "filename": {
+                  "type": "string",
+                  "minLength": 5,
+                  "maxLength": 255,
+                  "pattern": ".+(?:\\.[cC][sS][vV]|\\.[dD][oO][cC]|\\.[dD][oO][cC][mM]|\\.[dD][oO][cC][xX]|\\.[eE][pP][uU][bB]|\\.[oO][dD][sS]|\\.[oO][dD][pP]|\\.[oO][dD][tT]|\\.[pP][dD][fF]|\\.[pP][oO][tT]|\\.[pP][pP][tT]|\\.[pP][pP][tT][mM]|\\.[pP][pP][tT][xX]|\\.[pP][pP][sS]|\\.[pP][pP][sS][mM]|\\.[pP][pP][sS][xX]|\\.[rR][tT][fF]|\\.[xX][lL][sS]|\\.[xX][lL][sS][bB]|\\.[xX][lL][sS][mM]|\\.[xX][lL][sS][xX])$",
+                  "description": "Document filename ending in one of these supported extensions: CSV, DOC, DOCM, DOCX, EPUB, ODS, ODP, ODT, PDF, POT, PPT, PPTM, PPTX, PPS, PPSM, PPSX, RTF, XLS, XLSB, XLSM, XLSX."
+                },
+                "content_base64": {
+                  "type": "string",
+                  "minLength": 4,
+                  "maxLength": 34952536,
+                  "pattern": "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$",
+                  "contentEncoding": "base64",
+                  "description": "Raw base64 document bytes without a data URL prefix. The decoded document must be no larger than 25 MiB."
+                }
+              },
+              "required": [
+                "filename",
+                "content_base64"
+              ],
+              "minProperties": 2,
+              "maxProperties": 2,
+              "additionalProperties": false
+            },
+            "description": "Documents to convert in their desired output order."
+          }
+        },
+        "required": [
+          "documents"
+        ],
+        "minProperties": 1,
+        "maxProperties": 1,
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_conversion_capabilities",
+      "description": "Check GiantMarkdown's current conversion contract before sending documents. Use to learn supported filename extensions, live per-format upload limits, enforced WebMCP payload limits, privacy behaviour, the deliberate exclusion of image and OCR processing, and known conversion limitations. Formal result JSON Schema: {\"type\":\"object\",\"properties\":{\"supported_extensions\":{\"type\":\"array\",\"description\":\"The complete current filename-extension allowlist.\",\"items\":{\"type\":\"string\",\"enum\":[\".csv\",\".doc\",\".docm\",\".docx\",\".epub\",\".ods\",\".odp\",\".odt\",\".pdf\",\".pot\",\".ppt\",\".pptm\",\".pptx\",\".pps\",\".ppsm\",\".ppsx\",\".rtf\",\".xls\",\".xlsb\",\".xlsm\",\".xlsx\"]},\"minItems\":21,\"maxItems\":21,\"uniqueItems\":true},\"size_limits_bytes\":{\"type\":\"object\",\"properties\":{\"pdf_and_reducible_office\":{\"type\":\"integer\",\"minimum\":1},\"other_documents\":{\"type\":\"integer\",\"minimum\":1}},\"required\":[\"pdf_and_reducible_office\",\"other_documents\"],\"additionalProperties\":false},\"webmcp_limits\":{\"type\":\"object\",\"properties\":{\"max_file_bytes\":{\"type\":\"integer\",\"minimum\":1},\"max_batch_files\":{\"type\":\"integer\",\"const\":5},\"max_batch_bytes\":{\"type\":\"integer\",\"minimum\":1},\"base64_required\":{\"type\":\"boolean\",\"const\":true},\"limits_enforced_by_schema_and_runtime\":{\"type\":\"boolean\",\"const\":true}},\"required\":[\"max_file_bytes\",\"max_batch_files\",\"max_batch_bytes\",\"base64_required\",\"limits_enforced_by_schema_and_runtime\"],\"additionalProperties\":false},\"processing\":{\"type\":\"object\",\"properties\":{\"preferred\":{\"type\":\"string\",\"const\":\"on-device\"},\"cloud_fallback\":{\"type\":\"boolean\",\"const\":true},\"cloud_jobs_deleted_after_markdown_readback\":{\"type\":\"boolean\",\"const\":true}},\"required\":[\"preferred\",\"cloud_fallback\",\"cloud_jobs_deleted_after_markdown_readback\"],\"additionalProperties\":false},\"limitations\":{\"type\":\"object\",\"properties\":{\"images_processed\":{\"type\":\"boolean\",\"const\":false},\"images_included\":{\"type\":\"boolean\",\"const\":false},\"vision_model_used\":{\"type\":\"boolean\",\"const\":false},\"ocr_supported\":{\"type\":\"boolean\",\"const\":false},\"note\":{\"type\":\"string\"}},\"required\":[\"images_processed\",\"images_included\",\"vision_model_used\",\"ocr_supported\",\"note\"],\"additionalProperties\":false},\"next_tools\":{\"type\":\"object\",\"properties\":{\"one_document\":{\"type\":\"string\"},\"small_batch\":{\"type\":\"string\"}},\"required\":[\"one_document\",\"small_batch\"],\"additionalProperties\":false}},\"required\":[\"supported_extensions\",\"size_limits_bytes\",\"webmcp_limits\",\"processing\",\"limitations\",\"next_tools\"],\"additionalProperties\":false}. Machine-readable copy: https://www.giantmarkdown.com/webmcp-output-schemas.json#/$defs/get_conversion_capabilities.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "maxProperties": 0,
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_giantmarkdown_project_information",
+      "description": "Find answers in GiantMarkdown's own project and FAQ information. Use only for general questions about the site's purpose, interface, author, licensing, or how to contact the operator. Do not use for supported formats, size limits, conversion behaviour, privacy, retention, embedded images, OCR, or vision models; use get_conversion_capabilities on the converter page for that complete contract. It does not answer from the open web. Formal result JSON Schema: {\"type\":\"object\",\"properties\":{\"query\":{\"type\":\"string\"},\"matches\":{\"type\":\"array\",\"maxItems\":5,\"items\":{\"type\":\"object\",\"properties\":{\"heading\":{\"type\":\"string\"},\"source_url\":{\"type\":\"string\",\"format\":\"uri\"},\"content\":{\"type\":\"string\"}},\"required\":[\"heading\",\"source_url\",\"content\"],\"additionalProperties\":false}},\"source_bundle\":{\"type\":\"string\",\"format\":\"uri\"},\"site_authored_content\":{\"type\":\"boolean\",\"const\":true}},\"required\":[\"query\",\"matches\",\"source_bundle\",\"site_authored_content\"],\"additionalProperties\":false}. Machine-readable copy: https://www.giantmarkdown.com/webmcp-output-schemas.json#/$defs/search_giantmarkdown_project_information.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 500,
+            "description": "A focused question about GiantMarkdown."
+          },
+          "max_results": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5,
+            "default": 3,
+            "description": "Maximum number of relevant site sections to return."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "minProperties": 1,
+        "maxProperties": 2,
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "giantmarkdown.com",
+  "source": "webmcp.com/api/directory.json"
+}

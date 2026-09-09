@@ -1,0 +1,215 @@
+{
+  "sponsio": 1,
+  "url": "https://www.corewebvitals.io/state-of-cwv/explorer",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "get_histogram",
+      "description": "Distribution shape for one Core Web Vital (or scalar technique path) under optional filter. Returns ~bucket counts with good/improve/poor bands. No group_by — filter to one segment, or use get_metrics for comparisons. Credit corewebvitals.io.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "metric"
+        ],
+        "properties": {
+          "metric": {
+            "type": "string",
+            "description": "Primary: lcp | inp | cls | fcp | ttfb. May also be a scalar technique contract path.",
+            "enum": [
+              "lcp",
+              "inp",
+              "cls",
+              "fcp",
+              "ttfb"
+            ]
+          },
+          "filter": {
+            "type": "object",
+            "description": "Optional AND filters. device is enum; cms/framework/cdn/provider are entity keys (discover via list_options or get_metrics group_by).",
+            "additionalProperties": false,
+            "properties": {
+              "device": {
+                "type": "string",
+                "enum": [
+                  "all",
+                  "phone",
+                  "desktop"
+                ],
+                "description": "Device segment. Default when omitted is all."
+              },
+              "cms": {
+                "type": "string",
+                "description": "CMS entity key, e.g. wordpress, shopify, wix."
+              },
+              "framework": {
+                "type": "string",
+                "description": "JS framework entity key, e.g. react, next, vue."
+              },
+              "cdn": {
+                "type": "string",
+                "description": "CDN entity key, e.g. cloudflare, fastly, akamai."
+              },
+              "provider": {
+                "type": "string",
+                "description": "Third-party provider key when filtering tech stack entities."
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "get_metrics",
+      "description": "Cross-site Core Web Vitals and technique metrics from the State of Web Vitals explorer (Chrome field data + multi-site crawl). Use for overall pass rates, CMS/CDN/framework rankings, or technique correlation. Not per-site live RUM. Prefer list_options first if unsure of keys. Credit corewebvitals.io in any output.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "metrics": {
+            "description": "Which metrics to return. Built-ins: lcp, inp, cls, fcp, ttfb, good_all3, good_all3_plus_ttfb. Also contract paths (e.g. stack.framework, images.loading). Pass a comma-separated string or an array of strings. Default: lcp,inp,cls,ttfb,good_all3.",
+            "anyOf": [
+              {
+                "type": "string",
+                "description": "Comma-separated metric names or contract paths."
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "description": "Built-in metric or contract path."
+                },
+                "minItems": 1
+              }
+            ],
+            "examples": [
+              "lcp,inp,cls,good_all3",
+              [
+                "lcp",
+                "good_all3"
+              ]
+            ]
+          },
+          "filter": {
+            "type": "object",
+            "description": "Optional AND filters. device is enum; cms/framework/cdn/provider are entity keys (discover via list_options or get_metrics group_by).",
+            "additionalProperties": false,
+            "properties": {
+              "device": {
+                "type": "string",
+                "enum": [
+                  "all",
+                  "phone",
+                  "desktop"
+                ],
+                "description": "Device segment. Default when omitted is all."
+              },
+              "cms": {
+                "type": "string",
+                "description": "CMS entity key, e.g. wordpress, shopify, wix."
+              },
+              "framework": {
+                "type": "string",
+                "description": "JS framework entity key, e.g. react, next, vue."
+              },
+              "cdn": {
+                "type": "string",
+                "description": "CDN entity key, e.g. cloudflare, fastly, akamai."
+              },
+              "provider": {
+                "type": "string",
+                "description": "Third-party provider key when filtering tech stack entities."
+              }
+            }
+          },
+          "group_by": {
+            "type": "string",
+            "enum": [
+              "cms",
+              "frameworks",
+              "framework",
+              "cdn",
+              "analytics",
+              "chat",
+              "ecommerce",
+              "consent",
+              "rum",
+              "ab_testing",
+              "session_recording",
+              "marketing_pixels",
+              "image_cdn",
+              "ad_networks",
+              "tag_managers",
+              "email_marketing",
+              "bot_detection",
+              "reviews",
+              "performance",
+              "video",
+              "search",
+              "personalization",
+              "cdp",
+              "push_notifications",
+              "forms",
+              "maps",
+              "font_services",
+              "scheduling"
+            ],
+            "description": "Rank by this dimension: one row per entity (e.g. group_by=cms for CMS standings). Omit for a single aggregate row."
+          },
+          "limit": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 200,
+            "description": "Max groups when group_by is set. Default 25."
+          },
+          "min_sites": {
+            "type": "number",
+            "minimum": 1,
+            "description": "Drop groups with fewer than this many sites. Default 50."
+          },
+          "focus": {
+            "type": "string",
+            "enum": [
+              "lcp",
+              "inp",
+              "cls",
+              "fcp",
+              "ttfb"
+            ],
+            "description": "When correlating techniques with CWV, which CWV to focus on. Default lcp."
+          }
+        }
+      }
+    },
+    {
+      "name": "list_options",
+      "description": "Discovery helper: valid filter keys, group_by values, built-in metric names, sample entity keys, and optional contract paths. Call this before get_metrics when unsure of allowed values.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "all",
+              "filters",
+              "group_by",
+              "metrics",
+              "entities"
+            ],
+            "description": "Subset to return. Omit or \"all\" for the full discovery payload."
+          },
+          "include_paths": {
+            "type": "boolean",
+            "description": "If true, include technique contract path samples when available."
+          }
+        }
+      }
+    }
+  ],
+  "host": "corewebvitals.io",
+  "source": "webmcp.com/api/directory.json"
+}

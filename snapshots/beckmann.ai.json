@@ -1,0 +1,193 @@
+{
+  "sponsio": 1,
+  "url": "https://beckmann.ai/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "askBlogQuestion",
+      "description": "Stellt eine Frage an die Inhalte von Beckmann und erhält eine kurze, quellenbasierte Antwort (RAG) mit Artikel-Links.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "question": {
+            "type": "string",
+            "description": "Frage in natürlicher Sprache (max. 200 Zeichen)"
+          },
+          "lang": {
+            "type": "string",
+            "enum": [
+              "de",
+              "en"
+            ],
+            "description": "Antwortsprache (Default: de)"
+          }
+        },
+        "required": [
+          "question"
+        ]
+      }
+    },
+    {
+      "name": "getCurrentPage",
+      "description": "Liest die aktuell geöffnete Seite von beckmann.ai aus: Titel, Beschreibung, Sprache, kanonische URL und – auf Artikelseiten – den Artikeltext.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "getPostContent",
+      "description": "Liefert den Volltext eines Beckmann-Beitrags als Klartext (Eingabe: die Artikel-URL, z. B. aus searchPosts oder listLatestPosts).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "Kanonische Artikel-URL"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      }
+    },
+    {
+      "name": "listLatestPosts",
+      "description": "Listet die neuesten Beiträge von Beckmann (Titel, URL, Datum, Ressort, Zusammenfassung).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "lang": {
+            "type": "string",
+            "enum": [
+              "de",
+              "en"
+            ],
+            "description": "Optional: Sprache filtern"
+          },
+          "limit": {
+            "type": "number",
+            "description": "Max. Beiträge (Default 10)"
+          }
+        }
+      }
+    },
+    {
+      "name": "openPage",
+      "description": "Navigiert im Browser zu einer Seite auf beckmann.ai (nur interne Pfade oder beckmann.ai-URLs).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "Interner Pfad (\"/geo/…\") oder https://beckmann.ai/…-URL"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      }
+    },
+    {
+      "name": "requestConsultation",
+      "description": "Sendet eine Beratungs-/Kontaktanfrage an Brian Beckmann (beckmann.ai) – z. B. zu KI-Agenten, GEO/SEO, Automatisierung oder MCP. Die Anfrage wird gespeichert; Antwort kommt per E-Mail, üblicherweise innerhalb von 1–2 Werktagen.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name der anfragenden Person oder Firma (max. 120 Zeichen)"
+          },
+          "email": {
+            "type": "string",
+            "description": "E-Mail-Adresse für die Antwort"
+          },
+          "topic": {
+            "type": "string",
+            "enum": [
+              "ki-agenten",
+              "geo-seo",
+              "automatisierung",
+              "mcp",
+              "sonstiges"
+            ],
+            "description": "Themenfeld der Anfrage (Default: sonstiges)"
+          },
+          "timeline": {
+            "type": "string",
+            "description": "Optional: gewünschter Zeitrahmen, z. B. \"Q3 2026\""
+          },
+          "message": {
+            "type": "string",
+            "description": "Anliegen im Klartext (max. 4000 Zeichen)"
+          }
+        },
+        "required": [
+          "name",
+          "email",
+          "message"
+        ]
+      }
+    },
+    {
+      "name": "searchBlogPosts",
+      "description": "Durchsucht das KI-Fachmagazin Beckmann (Volltextsuche über den lokalen Pagefind-Index; alternativ liefert die toolaction-URL semantische RAG-Treffer als JSON). Menschliche Nutzer öffnen beim Absenden den besten Treffer; Agent-Submits zeigen die Trefferliste an (Human-in-the-Loop).",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string",
+            "description": "Search articles …"
+          }
+        }
+      }
+    },
+    {
+      "name": "searchPosts",
+      "description": "Semantische Suche über alle Beiträge des KI-Fachmagazins Beckmann (DE/EN). Liefert passende Artikel mit Titel, URL und Snippet.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Suchanfrage (2–200 Zeichen)"
+          },
+          "lang": {
+            "type": "string",
+            "enum": [
+              "de",
+              "en"
+            ],
+            "description": "Optional: Sprache filtern"
+          },
+          "limit": {
+            "type": "number",
+            "description": "Max. Treffer (1–20, Default 8)"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "switchLanguage",
+      "description": "Wechselt zur deutschen Version der aktuellen Seite.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    }
+  ],
+  "host": "beckmann.ai",
+  "source": "webmcp.com/api/directory.json"
+}

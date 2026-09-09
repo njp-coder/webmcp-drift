@@ -1,0 +1,97 @@
+{
+  "sponsio": 1,
+  "url": "https://jarrettstanley.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "get_page",
+      "description": "Read the full Markdown text of one page on jarrettstanley.com by its path, for example \"/speaking\" or \"/insights/glossary/ai-lead-scoring\".",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Site path beginning with \"/\"."
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    },
+    {
+      "name": "list_content",
+      "description": "List every published page in one section of jarrettstanley.com with its title, summary, and canonical URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "section": {
+            "type": "string",
+            "enum": [
+              "all",
+              "site",
+              "blog",
+              "glossary",
+              "tools",
+              "examples",
+              "solutions"
+            ],
+            "default": "all"
+          }
+        },
+        "required": [
+          "section"
+        ]
+      }
+    },
+    {
+      "name": "search_content",
+      "description": "Search everything published on jarrettstanley.com - articles on AI in mortgage marketing, glossary definitions, AI tool roundups, campaign teardowns, role playbooks, and Jarrett Stanley's speaking and consulting pages. Returns ranked matches with snippets and canonical URLs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search terms, for example \"AI lead scoring\"."
+          },
+          "section": {
+            "type": "string",
+            "enum": [
+              "all",
+              "site",
+              "blog",
+              "glossary",
+              "tools",
+              "examples",
+              "solutions"
+            ],
+            "default": "all"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 25,
+            "default": 8
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "subscribe_to_the_signal",
+      "description": "Subscribe an email address to The Signal, Jarrett Stanley's weekly newsletter on AI and mortgage marketing. Requires first name, last name, and email. Only submit with the person's explicit consent.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    }
+  ],
+  "host": "jarrettstanley.com",
+  "source": "webmcp.com/api/directory.json"
+}

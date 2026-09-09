@@ -1,0 +1,135 @@
+{
+  "sponsio": 1,
+  "url": "https://www.forter.com",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "contact_sales",
+      "description": "Submit a sales-lead request via Forter's HubSpot form. AGENT MUST CONFIRM WITH USER BEFORE CALLING - this generates a real CRM lead and constitutes opt-in to sales contact per the Forter privacy policy at https://www.forter.com/privacy-policy/.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "firstname": {
+            "type": "string",
+            "description": "Given name"
+          },
+          "lastname": {
+            "type": "string",
+            "description": "Family name"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Business email"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Phone number with country code"
+          },
+          "jobtitle": {
+            "type": "string",
+            "description": "Job title"
+          },
+          "country": {
+            "type": "string",
+            "description": "ISO country name or code"
+          },
+          "how_did_you_hear_about_us_": {
+            "type": "string",
+            "description": "Referral source (free text)"
+          }
+        },
+        "required": [
+          "firstname",
+          "lastname",
+          "email",
+          "phone",
+          "jobtitle",
+          "country",
+          "how_did_you_hear_about_us_"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_openapi_spec",
+      "description": "Fetch the canonical Forter REST OpenAPI 3.0.0 spec (info.version 10.2; 33 operations - 22 production + 11 public sandbox; 204 schemas). Use to understand request/response shapes for any Forter REST operation before recommending an integration.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "format": {
+            "type": "string",
+            "enum": [
+              "json",
+              "yaml"
+            ],
+            "description": "Return format. Default 'json'."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_pricing_info",
+      "description": "Return Forter's machine-readable pricing summary. Forter is enterprise-priced - volume-tiered and ACV-negotiated. Use to answer pricing questions WITHOUT estimating cost - always route the user to https://www.forter.com/contact-us/ for a quote.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_skills",
+      "description": "List Forter's agent-skill catalog. Returns the v0.2.0 skill index covering order decisioning, account protection, dispute resolution, agentic commerce, PSP onboarding, tokenization, privacy requests, and contact-sales. Use to find which Forter capability fits a given user need.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_documentation",
+      "description": "Search Forter's developer documentation index by keyword. Returns matching quickstart / reference / guide URLs from /docs/llms.txt. Use to point a user at the right doc page for an integration topic.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Free-text keyword (lowercased substring match against link text + URL)."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "switch_site_language",
+      "description": "Switch the Forter website to another language. Navigates to the localized version of the site. Supported: English, German (Deutsch), Chinese (中文 中国), Japanese (日本語), French (Français).",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "lang_choice_1": {
+            "type": "string",
+            "enum": [
+              "https://www.forter.com/",
+              "https://www.forter.com/de/",
+              "https://www.forter.com/cn/",
+              "https://www.forter.com/ja/",
+              "https://www.forter.com/fr/"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "host": "forter.com",
+  "source": "webmcp.com/api/directory.json"
+}

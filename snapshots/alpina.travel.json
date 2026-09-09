@@ -1,0 +1,210 @@
+{
+  "sponsio": 1,
+  "url": "https://alpina.travel/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "check_samspitze_availability",
+      "description": "Check live Samspitze 4 availability and pricing, and return the result to you directly without changing the page. Read-only: it does not hold dates, create a booking session, or take payment. Prefer this when you consume the answer yourself. If the person is watching the page and should see the dates filled in and the result rendered in the page's own form, use prepare_samspitze_availability_check instead — both call the same endpoint and return the same data, so the only difference is whether the person sees it happen. Clients with no browsing context should use check_booking_availability on the MCP server.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "checkIn": {
+            "type": "string",
+            "format": "date"
+          },
+          "checkOut": {
+            "type": "string",
+            "format": "date"
+          },
+          "adults": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 6
+          },
+          "childrenAges": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 14
+            },
+            "maxItems": 5,
+            "default": []
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "EUR"
+            ],
+            "default": "EUR"
+          },
+          "locale": {
+            "type": "string",
+            "enum": [
+              "en",
+              "de",
+              "it"
+            ],
+            "default": "en"
+          }
+        },
+        "required": [
+          "checkIn",
+          "checkOut",
+          "adults"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_lungau_itineraries",
+      "description": "Return governed Lungau itineraries, optionally filtered by season and duration.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "season": {
+            "type": "string"
+          },
+          "durationDays": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 14
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_lungau_places",
+      "description": "Return governed Alpina.travel place records, optionally filtered by season and family suitability.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "season": {
+            "type": "string",
+            "description": "Season such as summer, autumn, winter, or spring"
+          },
+          "goodWithKids": {
+            "type": "boolean",
+            "description": "When set, filter by family suitability"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 20
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "prepare_samspitze_availability_check",
+      "description": "Fill the visible availability form and run a live EUR price and availability check for Samspitze 4, so the person sees the dates and the result on the page. Use this when someone is watching. For a check whose result you consume directly without changing the page, use check_samspitze_availability — both call the same endpoint and return the same data.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "checkIn": {
+            "type": "string"
+          },
+          "checkOut": {
+            "type": "string"
+          },
+          "adults": {
+            "type": "number"
+          },
+          "childrenAges": {
+            "type": "string",
+            "description": "e.g. 8, 12"
+          }
+        },
+        "required": [
+          "checkIn",
+          "checkOut",
+          "adults"
+        ]
+      }
+    },
+    {
+      "name": "search_lungau",
+      "description": "Search Alpina.travel's published Lungau knowledge graph. This is read-only and does not create bookings or modify content.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "description": "Natural-language travel question"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "start_samspitze_checkout",
+      "description": "After the user chooses to continue, show a browser confirmation, recheck live availability, and create a BookingNests checkout handoff. This does not hold dates, reserve the apartment, or take payment. Never report the stay as booked until BookingNests returns a reservation confirmation.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "checkIn": {
+            "type": "string",
+            "format": "date"
+          },
+          "checkOut": {
+            "type": "string",
+            "format": "date"
+          },
+          "adults": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 6
+          },
+          "childrenAges": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 14
+            },
+            "maxItems": 5,
+            "default": []
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "EUR"
+            ],
+            "default": "EUR"
+          },
+          "locale": {
+            "type": "string",
+            "enum": [
+              "en",
+              "de",
+              "it"
+            ],
+            "default": "en"
+          }
+        },
+        "required": [
+          "checkIn",
+          "checkOut",
+          "adults"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "alpina.travel",
+  "source": "webmcp.com/api/directory.json"
+}

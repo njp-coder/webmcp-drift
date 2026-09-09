@@ -1,0 +1,635 @@
+{
+  "sponsio": 1,
+  "url": "https://qrcodecrafter.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "create_app_store_qr_code",
+      "description": "Create an app download QR code for App Store, Google Play, package, app ID, or universal app landing page input.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "appLink": {
+            "type": "string",
+            "description": "https://apps.apple.com/app/... / https://play.google.com/store/apps/details?id=..."
+          },
+          "appName": {
+            "type": "string",
+            "description": "Other"
+          }
+        }
+      }
+    },
+    {
+      "name": "create_blik_payment_link_qr_code",
+      "description": "Create a static QR code for a verified BLIK-enabled checkout URL, PSP payment request, invoice page, donation page, or provider-approved destination.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "blik_confirm": {
+            "type": "string"
+          },
+          "form_submission_time": {
+            "type": "string"
+          },
+          "paymentProvider": {
+            "type": "string"
+          },
+          "paymentLink": {
+            "type": "string",
+            "description": "https://pay.example.pl/blik/..."
+          }
+        }
+      }
+    },
+    {
+      "name": "create_bulk_static_qr_codes",
+      "description": "Create a browser-local ZIP archive of up to 250 static QR code files from pasted rows or CSV spreadsheet content.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "rowsOrCsv": {
+            "type": "string",
+            "description": "homepage,https://example.com\nsupport,mailto:support@example.com\nmenu,https://example.com/menu"
+          },
+          "format": {
+            "type": "string",
+            "enum": [
+              "svg",
+              "png",
+              "jpg",
+              "webp",
+              "pdf",
+              "eps"
+            ]
+          },
+          "size": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    {
+      "name": "create_business_card_qr_code",
+      "description": "Create a compact vCard QR code for printed business cards, badges, and networking follow-up.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "fullName": {
+            "type": "string",
+            "description": "Name"
+          },
+          "workEmail": {
+            "type": "string",
+            "description": "jordan@example.com"
+          },
+          "phone": {
+            "type": "string",
+            "description": "+1 555 123 4567"
+          },
+          "jobTitle": {
+            "type": "string",
+            "description": "Job title"
+          },
+          "company": {
+            "type": "string",
+            "description": "Company"
+          },
+          "website": {
+            "type": "string",
+            "description": "example.com"
+          }
+        }
+      }
+    },
+    {
+      "name": "create_dynamic_qr",
+      "description": "Create an editable public HTTPS redirect and return its stable QR URL plus a one-time private management capability.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "destination": {
+            "type": "string",
+            "format": "uri",
+            "pattern": "^https://",
+            "minLength": 1,
+            "maxLength": 2048,
+            "description": "Public HTTPS destination. Private, local, credential-bearing, and sensitive-token URLs are rejected."
+          },
+          "label": {
+            "type": "string",
+            "maxLength": 80,
+            "description": "Optional private label for identifying the managed redirect."
+          }
+        },
+        "required": [
+          "destination"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "create_dynamic_qr_campaign",
+      "description": "Sequentially create up to five editable HTTPS redirects and return a private manifest with explicit partial failures and one-time management capabilities.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "rows": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 5,
+            "description": "One to five dynamic redirect records. Creation is sequential and partial failures are returned without automatic retry.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "destination": {
+                  "type": "string",
+                  "format": "uri",
+                  "pattern": "^https://",
+                  "minLength": 1,
+                  "maxLength": 2048,
+                  "description": "Public HTTPS destination. Private, local, credential-bearing, and sensitive-token URLs are rejected."
+                },
+                "label": {
+                  "type": "string",
+                  "maxLength": 80,
+                  "description": "Optional private label for identifying the managed redirect."
+                },
+                "placement": {
+                  "type": "string",
+                  "maxLength": 120,
+                  "description": "Optional private placement note retained only in the returned manifest."
+                },
+                "filename": {
+                  "type": "string",
+                  "maxLength": 64,
+                  "description": "Optional local asset filename retained only in the returned manifest."
+                }
+              },
+              "required": [
+                "destination"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "rows"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "create_qr_vault",
+      "description": "Create a private capability-managed vault for up to 50 dynamic QR redirects. Empty vaults expire after six hours; adding a QR makes the project durable.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 80
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "create_static_qr_code",
+      "description": "Create a static QR code from URL, text, Wi-Fi, email, SMS, phone, WhatsApp, or vCard input.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "contentType": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string",
+            "description": "example.com"
+          }
+        }
+      }
+    },
+    {
+      "name": "generate_bulk_qr",
+      "description": "Generate a ZIP archive of up to 50 static QR code files from CSV or row objects. Use for labels, classrooms, packaging, menus, and agent batch workflows.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "rows": {
+            "oneOf": [
+              {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 50,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 2048,
+                      "description": "Exact QR payload for this file."
+                    },
+                    "filename": {
+                      "type": "string",
+                      "maxLength": 64,
+                      "description": "Optional filename stem for this generated QR file."
+                    }
+                  },
+                  "required": [
+                    "value"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              {
+                "type": "string",
+                "maxLength": 220000,
+                "description": "CSV rows such as filename,value or value,filename."
+              }
+            ],
+            "description": "Rows to include in the ZIP archive. Use up to 50 rows per request."
+          },
+          "format": {
+            "type": "string",
+            "enum": [
+              "svg",
+              "png",
+              "jpg",
+              "webp",
+              "pdf",
+              "eps"
+            ],
+            "default": "svg",
+            "description": "Shared output format for every generated file. Prefer svg for large batches."
+          },
+          "size": {
+            "type": "integer",
+            "minimum": 256,
+            "maximum": 4096,
+            "default": 1024,
+            "description": "Shared QR output size."
+          },
+          "margin": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 16,
+            "default": 4,
+            "description": "Shared quiet-zone margin."
+          },
+          "fgColor": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$",
+            "default": "#111111",
+            "description": "Shared foreground hex color."
+          },
+          "bgColor": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$",
+            "default": "#ffffff",
+            "description": "Shared background hex color."
+          },
+          "errorCorrectionLevel": {
+            "type": "string",
+            "enum": [
+              "L",
+              "M",
+              "Q",
+              "H"
+            ],
+            "default": "H",
+            "description": "Shared QR error correction level."
+          }
+        },
+        "required": [
+          "rows"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "generate_qr",
+      "description": "Generate a static QR code in SVG, PNG, JPG, WebP, PDF, or EPS format and return file metadata.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string"
+          },
+          "format": {
+            "type": "string",
+            "enum": [
+              "svg",
+              "png",
+              "jpg",
+              "webp",
+              "pdf",
+              "eps"
+            ]
+          },
+          "contentType": {
+            "type": "string",
+            "enum": [
+              "url",
+              "appstore",
+              "social",
+              "text",
+              "wifi",
+              "email",
+              "sms",
+              "phone",
+              "whatsapp",
+              "vcard",
+              "event",
+              "location",
+              "crypto",
+              "pix",
+              "upi",
+              "phonepe",
+              "swish",
+              "sepa",
+              "ideal",
+              "mobilepayvipps",
+              "qris",
+              "paypal",
+              "venmo",
+              "cashapp",
+              "promptpay",
+              "vietqr",
+              "swissqr"
+            ]
+          },
+          "size": {
+            "type": "number"
+          },
+          "margin": {
+            "type": "number"
+          },
+          "fgColor": {
+            "type": "string"
+          },
+          "bgColor": {
+            "type": "string"
+          },
+          "errorCorrectionLevel": {
+            "type": "string",
+            "enum": [
+              "L",
+              "M",
+              "Q",
+              "H"
+            ]
+          },
+          "logo": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      }
+    },
+    {
+      "name": "generate_verified_qr",
+      "description": "Generate a static QR asset, structurally review its payload, assess quiet zone and contrast settings, decode the final SVG, PNG, JPG, or WebP file, compare payload hashes, and return an evidence-linked receipt. Asset bytes are returned only when final-file decoding matches the requested payload.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2048,
+            "description": "Exact QR payload to encode, such as an HTTPS URL, WIFI payload, vCard, calendar event, payment URI, or text."
+          },
+          "format": {
+            "type": "string",
+            "enum": [
+              "svg",
+              "png",
+              "jpg",
+              "webp"
+            ],
+            "default": "png",
+            "description": "Output format to generate and decode. Verification supports SVG, PNG, JPG, and WebP."
+          },
+          "contentType": {
+            "type": "string",
+            "enum": [
+              "url",
+              "appstore",
+              "social",
+              "text",
+              "wifi",
+              "email",
+              "sms",
+              "phone",
+              "whatsapp",
+              "vcard",
+              "event",
+              "location",
+              "crypto",
+              "pix",
+              "upi",
+              "phonepe",
+              "swish",
+              "sepa",
+              "ideal",
+              "mobilepayvipps",
+              "qris",
+              "paypal",
+              "venmo",
+              "cashapp",
+              "promptpay",
+              "vietqr",
+              "swissqr"
+            ],
+            "description": "Optional hint describing the QR payload type. This does not change generation behavior but helps agents choose examples and validation."
+          },
+          "size": {
+            "type": "integer",
+            "minimum": 256,
+            "maximum": 4096,
+            "default": 1024,
+            "description": "Requested output size in pixels for raster/SVG output or points for PDF/EPS."
+          },
+          "margin": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 16,
+            "default": 4,
+            "description": "Quiet-zone margin around the QR code."
+          },
+          "fgColor": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$",
+            "default": "#000000",
+            "description": "Foreground color as a six-digit hex value."
+          },
+          "bgColor": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$",
+            "default": "#ffffff",
+            "description": "Background color as a six-digit hex value."
+          },
+          "errorCorrectionLevel": {
+            "type": "string",
+            "enum": [
+              "L",
+              "M",
+              "Q",
+              "H"
+            ],
+            "default": "H",
+            "description": "QR error correction level. Use H when embedding logos."
+          },
+          "logo": {
+            "type": "string",
+            "maxLength": 1398230,
+            "pattern": "^data:image\\/(png|jpe?g|webp);base64,[A-Za-z0-9+/]+={0,2}$",
+            "description": "Optional PNG, JPG, or WebP data URL for a centered logo. Keep source files under 1MB."
+          }
+        },
+        "required": [
+          "value"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "manage_dynamic_qr",
+      "description": "Read, update, pause, resume, rotate, or permanently delete a dynamic QR redirect using its private capability. Changes fetch the current ETag first.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "read",
+              "update",
+              "pause",
+              "resume",
+              "rotate",
+              "delete"
+            ],
+            "default": "read",
+            "description": "Read, update, pause, resume, rotate, or permanently delete the dynamic QR redirect."
+          },
+          "slug": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{22}$",
+            "description": "Public 22-character identifier from the redirect or management URL."
+          },
+          "managementToken": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{43}$",
+            "description": "Private 43-character bearer capability. Never include it in public QR artwork."
+          },
+          "destination": {
+            "type": "string",
+            "format": "uri",
+            "pattern": "^https://",
+            "maxLength": 2048,
+            "description": "Replacement public HTTPS destination, required when updating the URL."
+          },
+          "label": {
+            "type": "string",
+            "maxLength": 80,
+            "description": "Optional replacement private label for an update action."
+          }
+        },
+        "required": [
+          "action",
+          "slug",
+          "managementToken"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "manage_qr_vault",
+      "description": "Read analytics, rename, delete, or manage project-owned dynamic QR redirects using one private vault capability. Mutations fetch the current ETag first.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "action",
+          "vaultId",
+          "managementToken"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "read",
+              "read_analytics",
+              "rename",
+              "delete",
+              "create_qr",
+              "update_qr",
+              "pause_qr",
+              "resume_qr",
+              "delete_qr"
+            ]
+          },
+          "vaultId": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{22}$"
+          },
+          "managementToken": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{43}$"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 80
+          },
+          "slug": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{22}$"
+          },
+          "destination": {
+            "type": "string",
+            "format": "uri",
+            "pattern": "^https://",
+            "maxLength": 2048
+          },
+          "label": {
+            "type": "string",
+            "maxLength": 80
+          },
+          "folder": {
+            "type": "string",
+            "maxLength": 40
+          },
+          "tags": {
+            "type": "array",
+            "maxItems": 8,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 24
+            }
+          }
+        }
+      }
+    }
+  ],
+  "host": "qrcodecrafter.com",
+  "source": "webmcp.com/api/directory.json"
+}

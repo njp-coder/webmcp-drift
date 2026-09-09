@@ -1,0 +1,236 @@
+{
+  "sponsio": 1,
+  "url": "https://buyandrentrobots.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "compare_robot_types",
+      "description": "Compare two robot categories side by side: 2026 rental and purchase price ranges plus their typical use cases. Read-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "type_a": {
+            "type": "string",
+            "description": "First category, e.g. humanoid."
+          },
+          "type_b": {
+            "type": "string",
+            "description": "Second category, e.g. delivery."
+          }
+        },
+        "required": [
+          "type_a",
+          "type_b"
+        ]
+      }
+    },
+    {
+      "name": "get_company_profile",
+      "description": "Get the full public profile for ONE robot company by its slug (e.g. \"dma-events\"). Returns description, robot types, use cases, location, partner tier, verified/claimed status, website, profile URL, and its robot listings (paid tiers). Read-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Company slug from a profile URL, e.g. \"dma-events\" (the part after /companies/)."
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "get_directory_stats",
+      "description": "Get live directory totals: number of published companies, robot listings, and distinct countries served. Read-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_robot_pricing",
+      "description": "Return verified 2026 market price ranges (daily rental and purchase, USD) for robot categories. Pass robot_type for one category, or omit to get the whole table. Estimates only — actual quotes come from companies via an inquiry. Read-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "robot_type": {
+            "type": "string",
+            "description": "Category to price, e.g. humanoid, service, delivery, security, cleaning, entertainment, educational, medical_surgical, warehouse, agricultural, drone_aerial, greeter, telepresence, quadruped. Omit for all."
+          }
+        }
+      }
+    },
+    {
+      "name": "list_robot_types",
+      "description": "List the robot categories in the directory that have editorial guide pages, each with its /robot-types/ page URL, the search filter value, and its 2026 price range. Read-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_use_cases",
+      "description": "List the use-case categories with their /use-cases/ guide page URLs and the value to pass as use_case to search_robot_companies. Read-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "prepare_inquiry",
+      "description": "STEP 1 of 2 (no send). Validate an inquiry and resolve the target company, then return a human-readable summary of exactly what would be sent. It does NOT submit anything and captures no name/email. The agent MUST show this summary to the user and get explicit confirmation before calling submit_inquiry. Inputs: company_slug, inquiry_type (rent|buy), robot_type (accepted enum), event_location (city/region + timing), and an optional message.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "company_slug": {
+            "type": "string",
+            "description": "Target company slug (from /companies/<slug>)."
+          },
+          "inquiry_type": {
+            "type": "string",
+            "enum": [
+              "rent",
+              "buy"
+            ],
+            "description": "Whether the buyer wants to rent or buy."
+          },
+          "robot_type": {
+            "type": "string",
+            "description": "Robot category — must be an accepted enum value (call list_robot_types / get_robot_pricing for names; strict values include humanoid, delivery, security, cleaning, service_hospitality, medical_surgical, warehouse, agricultural, entertainment, educational)."
+          },
+          "event_location": {
+            "type": "string",
+            "description": "Where/when the robot is needed, e.g. \"Toronto, Canada — Aug 2026\"."
+          },
+          "message": {
+            "type": "string",
+            "description": "Optional note describing the buyer's needs."
+          }
+        },
+        "required": [
+          "company_slug",
+          "inquiry_type",
+          "robot_type",
+          "event_location"
+        ]
+      }
+    },
+    {
+      "name": "search_robot_companies",
+      "description": "Search the BuyAndRentRobots directory of robot COMPANIES. Filter by robot type, use case, and/or country. Returns company name, robot types offered, location, partner tier, verified status, and a profile link. Read-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "robot_type": {
+            "type": "string",
+            "description": "Category, e.g. humanoid, delivery, service, security, cleaning, entertainment, educational, medical_surgical, agricultural, greeter, telepresence, quadruped, industrial."
+          },
+          "use_case": {
+            "type": "string",
+            "description": "Use, e.g. events, hotels, restaurants, retail, healthcare, education, logistics (warehouses)."
+          },
+          "country": {
+            "type": "string",
+            "description": "Country name, e.g. \"China\", \"United States\"."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Max companies (1-25, default 5)."
+          }
+        }
+      }
+    },
+    {
+      "name": "search_robots",
+      "description": "Search individual ROBOT listings in the BuyAndRentRobots directory. Filter by robot type and/or country. Returns each robot's name, type, availability, and the company offering it with a profile link. Read-only. (Note: this endpoint does not filter by use case.)",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "robot_type": {
+            "type": "string",
+            "description": "Category, e.g. humanoid, delivery, service, security, cleaning, entertainment, educational, greeter, telepresence, quadruped, industrial."
+          },
+          "country": {
+            "type": "string",
+            "description": "Country name to filter the offering company by."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Max robots (1-25, default 5)."
+          }
+        }
+      }
+    },
+    {
+      "name": "submit_inquiry",
+      "description": "STEP 2 of 2 — SENDS a real inquiry (a lead). Call this ONLY after prepare_inquiry AND after the user has reviewed the prepared summary and explicitly confirmed. Requires the buyer's REAL name, a valid email, a message, and the confirmed target (company_slug, inquiry_type, robot_type, event_location). NEVER invent or default the name or email — if you don't have them from the user, ask first. Agent-submitted inquiries are NOT sent to any company directly (not even Verified partners): they are routed to the BuyAndRentRobots team (info@) for manual review and forwarding. The endpoint rate-limits agent inquiries to 3 per hour and rejects missing/invalid name, email, message, or an unknown target company.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "customer_name": {
+            "type": "string",
+            "description": "Buyer's real full name (provided by the user)."
+          },
+          "customer_email": {
+            "type": "string",
+            "description": "Buyer's real email (provided by the user)."
+          },
+          "message": {
+            "type": "string",
+            "description": "The inquiry message describing what the buyer needs."
+          },
+          "company_slug": {
+            "type": "string",
+            "description": "Confirmed target company slug."
+          },
+          "inquiry_type": {
+            "type": "string",
+            "enum": [
+              "rent",
+              "buy"
+            ],
+            "description": "Confirmed rent or buy."
+          },
+          "robot_type": {
+            "type": "string",
+            "description": "Confirmed robot category (accepted enum value)."
+          },
+          "event_location": {
+            "type": "string",
+            "description": "Confirmed where/when the robot is needed."
+          },
+          "customer_phone": {
+            "type": "string",
+            "description": "Optional buyer phone."
+          },
+          "customer_company": {
+            "type": "string",
+            "description": "Optional buyer's organization."
+          }
+        },
+        "required": [
+          "customer_name",
+          "customer_email",
+          "message",
+          "company_slug",
+          "inquiry_type",
+          "robot_type",
+          "event_location"
+        ]
+      }
+    }
+  ],
+  "host": "buyandrentrobots.com",
+  "source": "webmcp.com/api/directory.json"
+}

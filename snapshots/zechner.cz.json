@@ -1,0 +1,76 @@
+{
+  "sponsio": 1,
+  "url": "https://zechner.cz/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "get_contact",
+      "description": "Čte potvrzený e-mail, LinkedIn, veřejné identifikační údaje autora a URL kontaktu. Zprávu neodesílá a neotevírá poštovní aplikaci.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_topic",
+      "description": "Čte úplný veřejný text známého tématu, jeho rodiče, podtémata a konkrétní souvislosti. Nemění stránku.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Stabilní ID z list_topics. Pouze existující téma, nikoli URL."
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_topics",
+      "description": "Čte hlavní témata nebo děti tématu podle parent_id. S query prohledá názvy, přísliby a veřejné texty; bez parent_id při hledání prochází celý obsah. Nemění stránku.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "parent_id": {
+            "type": "string",
+            "description": "Stabilní ID z list_topics. Pouze existující téma, nikoli URL."
+          },
+          "query": {
+            "type": "string",
+            "maxLength": 200
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "open_topic",
+      "description": "Otevře známé téma. Mění URL, historii, focus a pohled mapy stejnou navigací jako běžný odkaz. Nepřijímá URL a neotevírá e-mail ani externí aplikaci.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Stabilní ID z list_topics. Pouze existující téma, nikoli URL."
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "zechner.cz",
+  "source": "webmcp.com/api/directory.json"
+}

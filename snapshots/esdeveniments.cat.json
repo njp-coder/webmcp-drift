@@ -1,0 +1,94 @@
+{
+  "sponsio": 1,
+  "url": "https://esdeveniments.cat",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "get-categories",
+      "description": "List all available event categories (concerts, theatre, exhibitions, festivals, etc.).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get-event-details",
+      "description": "Get full details for a single event by its slug. Returns title, description, dates, location, image, and category.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Event slug identifier (from event URL)"
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "get-events-by-place",
+      "description": "Get cultural events for a specific place (city or town) in Catalonia. Supports filtering by category and date range.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "place": {
+            "type": "string",
+            "description": "Place slug (e.g. barcelona, girona, tarragona)"
+          },
+          "category": {
+            "type": "string",
+            "description": "Category slug to filter by (e.g. concerts, teatre, exposicions)"
+          },
+          "page": {
+            "type": "integer",
+            "description": "Page number (0-indexed, default 0)"
+          }
+        },
+        "required": [
+          "place"
+        ]
+      }
+    },
+    {
+      "name": "get-places",
+      "description": "List available places (cities and towns) in Catalonia that have events.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "search-events",
+      "description": "Search for cultural events in Catalonia by keyword. Returns a list of matching events with title, date, location, and URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search keywords (e.g. jazz Barcelona)"
+          },
+          "page": {
+            "type": "integer",
+            "description": "Page number (0-indexed, default 0)"
+          },
+          "size": {
+            "type": "integer",
+            "description": "Results per page (default 15, max 50)"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "esdeveniments.cat",
+  "source": "webmcp.com/api/directory.json"
+}

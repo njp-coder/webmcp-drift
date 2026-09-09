@@ -1,0 +1,115 @@
+{
+  "sponsio": 1,
+  "url": "https://exagard.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "create_exagard_signup_payment_link",
+      "description": "Create or retrieve the checkout link for a verified Exagard signup that requires payment.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "signUpId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "description": "Signup ID returned by start_exagard_signup."
+          }
+        },
+        "required": [
+          "signUpId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_exagard_info",
+      "description": "Get concise information about Exagard workplace safety training, compliance capabilities, and trial links.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_exagard_signup_status",
+      "description": "Get the verification, payment, and completion status of an Exagard signup.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "signUpId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "description": "Signup ID returned by start_exagard_signup."
+          }
+        },
+        "required": [
+          "signUpId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "start_exagard_signup",
+      "description": "Start Exagard signup for an organisation. Sends a verification code to the supplied contact email.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "organisationName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "description": "Organisation name, up to 200 characters."
+          },
+          "contactEmail": {
+            "type": "string",
+            "format": "email",
+            "minLength": 3,
+            "maxLength": 254,
+            "description": "Contact email that receives the verification code."
+          }
+        },
+        "required": [
+          "organisationName",
+          "contactEmail"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "verify_exagard_signup",
+      "description": "Verify an Exagard signup using the six-digit code sent to the contact email.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "signUpId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "description": "Signup ID returned by start_exagard_signup."
+          },
+          "code": {
+            "type": "string",
+            "minLength": 6,
+            "maxLength": 6,
+            "pattern": "^\\d{6}$",
+            "description": "Six-digit verification code from the contact email."
+          }
+        },
+        "required": [
+          "signUpId",
+          "code"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "exagard.com",
+  "source": "webmcp.com/api/directory.json"
+}

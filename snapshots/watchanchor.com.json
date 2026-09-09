@@ -1,0 +1,250 @@
+{
+  "sponsio": 1,
+  "url": "https://www.watchanchor.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "exploreWatches",
+      "description": "Browse watches using structured attribute filters (brand, dial colour, case material, movement type, size/water-resistance ranges, etc.). Values must match exactly — call getFilterOptions first for valid values. Does NOT do free-text or calibre/complication search — use searchByMovement for those. Returns paginated results and navigates to the filtered catalog.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "brand": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Exact brand names as returned by getFilterOptions (e.g. \"Omega\", \"Rolex\")"
+          },
+          "dial_colour": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Exact dial colour values as returned by getFilterOptions (e.g. \"Blue\", \"Black\")"
+          },
+          "case_material": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Exact case material values as returned by getFilterOptions (e.g. \"Steel\", \"Gold\")"
+          },
+          "bracelet_material": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Exact bracelet material values as returned by getFilterOptions"
+          },
+          "bracelet_colour": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Exact bracelet colour values as returned by getFilterOptions"
+          },
+          "movement_type": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Exact movement type values as returned by getFilterOptions (e.g. \"MECHANICAL_AUTOMATIC\", \"QUARTZ\")"
+          },
+          "calibre": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Exact calibre names as returned by getFilterOptions (e.g. \"Miyota 8215\", \"ETA 2824-2\")"
+          },
+          "complications": {
+            "type": "string",
+            "description": "Free-text complication search (e.g. \"moonphase\", \"chronograph\", \"GMT\") — uses substring matching"
+          },
+          "case_back": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Exact case back type values as returned by getFilterOptions"
+          },
+          "case_size_min": {
+            "type": "number",
+            "description": "Minimum case diameter in millimetres"
+          },
+          "case_size_max": {
+            "type": "number",
+            "description": "Maximum case diameter in millimetres"
+          },
+          "water_resistance_min": {
+            "type": "number",
+            "description": "Minimum water resistance in metres"
+          },
+          "water_resistance_max": {
+            "type": "number",
+            "description": "Maximum water resistance in metres"
+          },
+          "limited": {
+            "type": "boolean",
+            "description": "Set to true to show only limited edition watches, false for only non-limited"
+          },
+          "page": {
+            "type": "number",
+            "description": "Page number for pagination, starts at 1"
+          }
+        }
+      }
+    },
+    {
+      "name": "getFilterOptions",
+      "description": "Retrieve the available filter values and their counts for the watch catalog. Use this tool to discover valid values before calling exploreWatches. Optionally pass current filter selections to see how counts update when filters are combined. Returns brands, dial colours, case materials, bracelet materials, bracelet colours, movement types, case back types, and numeric ranges for case size and water resistance. This tool is data-only and does not navigate the page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "brand": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Brand names already selected — counts will reflect this selection"
+          },
+          "dial_colour": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Dial colours already selected"
+          },
+          "case_material": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Case materials already selected"
+          },
+          "bracelet_material": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Bracelet materials already selected"
+          },
+          "bracelet_colour": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Bracelet colours already selected"
+          },
+          "movement_type": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Movement types already selected"
+          },
+          "case_back": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Case back types already selected"
+          },
+          "case_size_min": {
+            "type": "number",
+            "description": "Minimum case size already selected"
+          },
+          "case_size_max": {
+            "type": "number",
+            "description": "Maximum case size already selected"
+          },
+          "water_resistance_min": {
+            "type": "number",
+            "description": "Minimum water resistance already selected"
+          },
+          "water_resistance_max": {
+            "type": "number",
+            "description": "Maximum water resistance already selected"
+          },
+          "limited": {
+            "type": "boolean",
+            "description": "Limited edition filter already selected"
+          }
+        }
+      }
+    },
+    {
+      "name": "getWatchDetails",
+      "description": "Retrieve full specifications for a single watch and navigate to its detail page. Use this tool when the user wants to see complete information about a specific watch. The slug parameter comes from a previous searchWatches or exploreWatches result. Returns brand, model, reference, case size, case material, crystal, dial colour, bracelet material and colour, movement details (calibre, power reserve, frequency, complications), water resistance, and photo.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "The watch slug identifier from a previous searchWatches or exploreWatches result"
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "searchByMovement",
+      "description": "Search for watches by movement calibre name or complication. Use this when the user asks about a specific calibre (e.g. \"miyota 8215\", \"ETA 2824\", \"Sellita SW200\", \"Valjoux 7750\") or a movement complication (e.g. \"moonphase\", \"chronograph\", \"tourbillon\", \"GMT\", \"perpetual calendar\", \"minute repeater\"). Returns watches whose movement matches the query by calibre name or complication.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Calibre name or complication to search for (e.g. \"moonphase\", \"8215\", \"Valjoux 7750\")"
+          },
+          "page": {
+            "type": "number",
+            "description": "Page number for pagination, starts at 1"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "searchWatches",
+      "description": "Search the watch catalog by free-text keyword across brand, model, and reference number. When given a reference number, search with the reference ALONE (no brand). If no results, retry shorter: reference only, brand only, or model only. Do NOT use for calibre names or complications — use searchByMovement. Returns paginated results (brand, model, reference, photo, slug) and navigates the page to show them.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "A single search term: a brand name, model name, or reference number. Use the reference number alone when one is provided."
+          },
+          "page": {
+            "type": "number",
+            "description": "Page number for pagination, starts at 1"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "signIn",
+      "description": "Navigate the user to the sign-in page. Use this tool when the user wants to perform an action that requires authentication — such as adding a watch to a collection, managing a wishlist, saving warranty information, or any collection management task — but the required tools are not available because they are not signed in.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    }
+  ],
+  "host": "watchanchor.com",
+  "source": "webmcp.com/api/directory.json"
+}

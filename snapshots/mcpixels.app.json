@@ -1,0 +1,236 @@
+{
+  "sponsio": 1,
+  "url": "https://mcpixels.app/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "draw_pixel_art",
+      "description": "Draw editable pixel art on the live canvas; x and y run -512..511, y downward. rows place one-character palette entries from origin; \".\" keeps a cell and \"-\" erases it. Set format:\"rle\" to send those rows as runs instead (\"12k8r.\" is twelve k, eight r, one dot), which fits a whole large scene in one call. ops are \";\"-separated: c COLOR; px x y...; line x0 y0 x1 y1; rect/ellipse x0 y0 x1 y1 [f]; poly x0 y0 x1 y1 x2 y2... [f]; path x0 y0 x1 y1...; fill x0 y0 x1 y1 checker|dither A B [n]; bucket x y; recolor from to x0 y0 x1 y1. COLOR is a palette key, hex, or \"-\"; f fills. poly closes back to its first point and path does not, so poly ... f is any filled polygon — a roof, a mountain, a fin. fill writes a two-color pattern over a whole rectangle: checker takes a square size, dither an ordered-dither percent of B. Ops use absolute coordinates. Rows run first and later writes win. Off-canvas clips. One call is one undo step; invalid input changes nothing.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "origin": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": -512,
+              "maximum": 511
+            },
+            "minItems": 2,
+            "maxItems": 2,
+            "description": "Canvas position of the top-left cell of rows."
+          },
+          "palette": {
+            "type": "object",
+            "description": "Character to color, e.g. {\"k\":\"#161616\",\"r\":\"#ff5c35\"}. Up to 64 entries. \".\" and \"-\" are reserved.",
+            "additionalProperties": {
+              "type": "string",
+              "pattern": "^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$"
+            }
+          },
+          "rows": {
+            "type": "array",
+            "description": "Picture rows, top to bottom. As \"chars\": at most 256 rows of 256 characters and 32768 cells per call, counted as widest row x row count — so 256x256 is over the limit. As \"rle\": at most 1024 rows of 1024 characters decoding to 262144 cells, which covers a 512x512 picture in one call.",
+            "items": {
+              "type": "string",
+              "maxLength": 1024
+            },
+            "maxItems": 1024
+          },
+          "format": {
+            "type": "string",
+            "enum": [
+              "chars",
+              "rle"
+            ],
+            "description": "How rows are encoded. Default \"chars\", one character per cell; \"rle\" reads them as runs, as above. Digits are run counts in \"rle\", so no palette key may be a digit there."
+          },
+          "ops": {
+            "type": "string",
+            "description": "Command string, up to 128 ops and 4000 characters. px takes up to 500 x y pairs, poly and path up to 64 points; one shape or fill covers up to 50000 pixels. Ops are not counted against the rows cell limit, so large flat geometry is cheapest here.",
+            "maxLength": 4000
+          },
+          "mirror": {
+            "type": "string",
+            "enum": [
+              "left-right",
+              "top-bottom",
+              "both"
+            ],
+            "description": "Also mirror everything this call draws across the canvas center."
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "Validate and price the call without drawing: same counts, bounds, warnings and hint, no pixels changed and no undo step. Worth one call before a big or expensive draw."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "edit",
+      "description": "Step through the shared edit history — the person's edits and yours are one timeline — or wipe the canvas. op=undo, op=redo, or op=clear-canvas, which erases everything and is itself undoable.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "op": {
+            "type": "string",
+            "enum": [
+              "undo",
+              "redo",
+              "clear-canvas"
+            ]
+          },
+          "steps": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "description": "How many undo or redo steps. Default 1."
+          }
+        },
+        "required": [
+          "op"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "export_pixel_art",
+      "description": "Save part of the canvas as a PNG in the person's downloads. Defaults to everything painted. scale turns each canvas pixel into a scale by scale block and is reduced automatically so the file stays within 4096 pixels per side.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "region": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": -512,
+              "maximum": 511
+            },
+            "minItems": 4,
+            "maxItems": 4,
+            "description": "[x0, y0, x1, y1] to export, corners in any order. Defaults to everything painted."
+          },
+          "scale": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 64,
+            "description": "Pixels per cell. Default 8."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "read_canvas",
+      "description": "Read the canvas back in the same {origin, palette, rows} format draw_pixel_art accepts, so you can read, edit the rows and draw them straight back. Here \".\" marks an empty cell, but drawn back it preserves the destination — use \"-\" to erase. Omit region for an overview of everything painted, downscaled to at most 48 characters a side; name a region for native resolution up to 64x64. A larger region comes back exact as \"format\":\"rle\" runs when it compresses well enough — up to 262144 cells — and is block-downscaled only when it does not. Always check \"format\" before reading the rows. \"exact\" is true only when scale is 1 AND the region holds at most 52 distinct colors; rarer colors fold into the nearest kept one. When it is false the rows are an approximation: read smaller regions in turn before relying on them. Every read also reports the state you need to plan with — \"painted\"/\"empty\"/\"colors\" counts that stay exact however coarse the rows are, plus \"art\", \"selection\", \"view\", \"history\" and the full \"limits\" table. Read once before a large draw and you will not have to learn a cap by hitting it.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "region": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": -512,
+              "maximum": 511
+            },
+            "minItems": 4,
+            "maxItems": 4,
+            "description": "[x0, y0, x1, y1] rectangle to read, inclusive, corners in any order. Defaults to everything painted."
+          },
+          "shade": {
+            "type": "boolean",
+            "description": "Also return \"shaded\": a thumbnail at most 48 characters a side, drawn \".:-=+*#%@\" dark to light with space for empty. It shows how light each cell is rather than which color it is, so you can see the composition instead of decoding it. For looking at, not for drawing back."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "selection",
+      "description": "Rearrange existing art without resending pixels. region defaults to the visible selection. duplicate stamps a copy at absolute \"to\" (\"times\" repeats the offset for a row); move also clears the source; erase clears region; flip-left-right, flip-top-bottom and rotate transform in place (rotate is 90° clockwise, swapping w/h); copy/cut use the app clipboard and paste stamps at \"to\"; set/dismiss only change the marquee. Pixel-changing ops are one undo step; set, dismiss and copy add none.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "op": {
+            "type": "string",
+            "enum": [
+              "set",
+              "dismiss",
+              "erase",
+              "duplicate",
+              "move",
+              "copy",
+              "cut",
+              "paste",
+              "flip-left-right",
+              "flip-top-bottom",
+              "rotate"
+            ]
+          },
+          "region": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": -512,
+              "maximum": 511
+            },
+            "minItems": 4,
+            "maxItems": 4,
+            "description": "[x0, y0, x1, y1], corners in any order. Defaults to the rectangle the person has selected."
+          },
+          "to": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": -512,
+              "maximum": 511
+            },
+            "minItems": 2,
+            "maxItems": 2,
+            "description": "Absolute [x, y] canvas position for the target's top-left corner, not an offset."
+          },
+          "times": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 64,
+            "description": "duplicate only: how many copies, each repeating the offset of the first. Default 1."
+          }
+        },
+        "required": [
+          "op"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "view",
+      "description": "Frame a canvas region for the person without changing any pixels. Omit region to frame all painted art. Edits already bring themselves on screen, so this is only for navigation the person asked for.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "region": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": -512,
+              "maximum": 511
+            },
+            "minItems": 4,
+            "maxItems": 4,
+            "description": "[x0, y0, x1, y1] to frame, corners in any order. Defaults to everything painted."
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "mcpixels.app",
+  "source": "webmcp.com/api/directory.json"
+}

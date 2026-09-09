@@ -1,0 +1,183 @@
+{
+  "sponsio": 1,
+  "url": "https://wodira.app/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "get_wodira_page_context",
+      "description": "Returns the current WODira page title, safe route path, language, and main visible heading.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "navigate_wodira",
+      "description": "Navigates the visible WODira app to one supported high-level destination. Use the semantic destination instead of inventing a URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "destination": {
+            "type": "string",
+            "enum": [
+              "home",
+              "events",
+              "nearby_events",
+              "calendar",
+              "sign_in",
+              "sign_up",
+              "create_organization",
+              "organizer_dashboard",
+              "athlete_dashboard",
+              "athlete_tickets",
+              "athlete_purchases",
+              "athlete_bookmarks",
+              "athlete_calendar",
+              "athlete_profile",
+              "athlete_settings",
+              "programming_marketplace",
+              "athlete_programming"
+            ],
+            "description": "The supported WODira destination to display."
+          }
+        },
+        "required": [
+          "destination"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_wodira_events",
+      "description": "Opens the WODira event results UI with validated public filters. It never chooses an event or starts a purchase.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120,
+            "description": "Event, competition, sport, or organizer name."
+          },
+          "location": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120,
+            "description": "City, region, or country shown in the event search UI."
+          },
+          "dateFrom": {
+            "type": "string",
+            "format": "date",
+            "description": "Inclusive start date. dateTo is required when this is provided."
+          },
+          "dateTo": {
+            "type": "string",
+            "format": "date",
+            "description": "Inclusive end date. dateFrom is required when this is provided."
+          },
+          "eventTypes": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "enum": [
+                "HYBRID",
+                "CROSSTRAINING",
+                "OCR",
+                "SWIMMING",
+                "WEIGHTLIFTING",
+                "RUNNING",
+                "TRIATHLON",
+                "DUATHLON",
+                "CYCLING",
+                "CANICROSS",
+                "TRAILRUNNING",
+                "AQUATHLON",
+                "OTHER"
+              ]
+            },
+            "description": "Sport types to show in the results UI."
+          },
+          "modalities": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "enum": [
+                "OPEN",
+                "SCALED",
+                "RX",
+                "ELITE",
+                "MASTERS",
+                "TEENS",
+                "ADAPTIVE"
+              ]
+            },
+            "description": "Athlete modalities or divisions to show, such as OPEN, RX, or MASTERS."
+          },
+          "maxPrice": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100000,
+            "description": "Maximum public event price in the event currency."
+          },
+          "teamSize": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "description": "Required number of athletes in an event category."
+          },
+          "sortBy": {
+            "type": "string",
+            "enum": [
+              "date",
+              "price",
+              "name",
+              "distanceMeters",
+              "relevance",
+              "registrations"
+            ],
+            "description": "Visible result ordering."
+          },
+          "sortOrder": {
+            "type": "string",
+            "enum": [
+              "asc",
+              "desc"
+            ],
+            "description": "Ascending or descending result ordering."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "start_wodira_account_creation",
+      "description": "Opens the real WODira sign-up form. It never supplies credentials, accepts terms, or creates the user automatically.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "start_wodira_event_creation",
+      "description": "Opens the existing event form for the current organization, or organization onboarding when needed. It never saves or publishes an event.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "wodira.app",
+  "source": "webmcp.com/api/directory.json"
+}

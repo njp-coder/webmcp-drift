@@ -1,0 +1,366 @@
+{
+  "sponsio": 1,
+  "url": "https://letshum.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "get_marketplace_state",
+      "description": "Read the verified service address, qualification status, visible checkout step, non-sensitive cart contents, totals, and missing fields in the current Hum internet marketplace.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_order_options",
+      "description": "Read the structured choices for the current order-options or installation step, including opaque IDs, selections, quantities, inclusion rules, and dependencies. After an option step is set, call this again for the next category.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_internet_plans",
+      "description": "List internet plans for the verified address, including provider, price, speed, technology, fees, promotions, and whether Hum can complete checkout.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "open_internet_marketplace",
+      "description": "Open Hum’s home internet marketplace, optionally after validating a US service address with Smarty. If an address is ambiguous, returns up to five short-lived candidates for clarification instead of guessing. A unique multi-unit building may be opened without choosing a unit.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 240,
+            "description": "A US street address, ideally including city, two-letter state, and ZIP code."
+          },
+          "candidateId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "description": "A short-lived candidateId returned by an earlier ambiguous call on this page."
+          },
+          "unit": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 30,
+            "description": "Optional apartment, suite, or unit to validate at the selected building."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "place_internet_service_order",
+      "description": "PURCHASE: Submit a real internet-service order for the exact contents previously returned by review_internet_order. Call only after the user explicitly approves that reviewed order. Requires the current reviewId and rejects any changed, stale, or already-submitted order. Success is reported only with a visible confirmed order number; submission_unconfirmed must not be retried.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "reviewId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          }
+        },
+        "required": [
+          "reviewId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "review_internet_order",
+      "description": "Validate the current order, move the visible widget to Order Summary, and return an exact non-sensitive summary plus a short-lived reviewId. This tool never submits or purchases anything.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "select_internet_plan",
+      "description": "Select an orderable Hum internet plan using the opaque planId from list_internet_plans and begin final availability verification. Provider-site-only plans cannot be selected.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "planId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          }
+        },
+        "required": [
+          "planId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_customer_information",
+      "description": "Merge non-sensitive customer contact and mailing address into the visible Hum checkout using the same validation as human entry. This tool does not accept date of birth or account PIN.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50
+          },
+          "lastName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50
+          },
+          "email": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 254
+          },
+          "phoneNumber": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 30
+          },
+          "mailingAddressSameAsService": {
+            "type": "boolean"
+          },
+          "mailingAddress": {
+            "type": "object",
+            "properties": {
+              "line1": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 100
+              },
+              "line2": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 50
+              },
+              "city": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 50
+              },
+              "state": {
+                "type": "string",
+                "pattern": "^[A-Za-z]{2}$",
+                "maxLength": 2
+              },
+              "zip": {
+                "type": "string",
+                "pattern": "^\\d{5}(?:-\\d{4})?$",
+                "maxLength": 10
+              }
+            },
+            "required": [
+              "line1",
+              "city",
+              "state",
+              "zip"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_installation_preferences",
+      "description": "Set the desired service-start date and self or professional installation in the visible checkout. The start date must be within the next 30 days beginning tomorrow.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "desiredStartDate": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+            "maxLength": 10
+          },
+          "installationType": {
+            "type": "string",
+            "enum": [
+              "self",
+              "professional"
+            ]
+          }
+        },
+        "required": [
+          "desiredStartDate"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_internet_needs",
+      "description": "Answer the marketplace questions about home size, connected devices, and internet uses so Hum can reveal and rank recommendations. Use the choices exposed by the current marketplace state.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "bedrooms": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50
+          },
+          "devices": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50
+          },
+          "intendedUse": {
+            "type": "array",
+            "maxItems": 10,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_order_options",
+      "description": "Replace the currently visible option category in the Hum cart and advance to the next checkout step. Use the opaque IDs from get_order_options. Omitted categories stay unchanged; an empty array clears removable selections. Included items, dependencies, radio choices, and quantity limits are enforced.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "internetAddons": {
+            "type": "array",
+            "maxItems": 25,
+            "items": {
+              "type": "object",
+              "properties": {
+                "optionId": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                },
+                "quantity": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 99,
+                  "default": 1
+                }
+              },
+              "required": [
+                "optionId"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "tvProducts": {
+            "type": "array",
+            "maxItems": 25,
+            "items": {
+              "type": "object",
+              "properties": {
+                "optionId": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                },
+                "quantity": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 99,
+                  "default": 1
+                }
+              },
+              "required": [
+                "optionId"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "tvAddons": {
+            "type": "array",
+            "maxItems": 25,
+            "items": {
+              "type": "object",
+              "properties": {
+                "optionId": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                },
+                "quantity": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 99,
+                  "default": 1
+                }
+              },
+              "required": [
+                "optionId"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_sensitive_order_information",
+      "description": "Set date of birth and/or a four-digit account PIN in the visible Hum order. Before calling, tell the user these values are sensitive and explicitly offer the choice to enter them privately in the visible form instead. Returns only whether each value was provided and never returns the values.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "dateOfBirth": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+            "maxLength": 10
+          },
+          "accountPin": {
+            "type": "string",
+            "pattern": "^\\d{4}$",
+            "maxLength": 4
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_service_unit",
+      "description": "Validate and add or change an apartment, suite, or unit at the currently verified building, then rerun the Hum marketplace for that unit. If no exact unit exists, returns choices for clarification instead of guessing.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "unit": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 30
+          }
+        },
+        "required": [
+          "unit"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "letshum.com",
+  "source": "webmcp.com/api/directory.json"
+}

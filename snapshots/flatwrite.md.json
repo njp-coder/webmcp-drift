@@ -1,0 +1,360 @@
+{
+  "sponsio": 1,
+  "url": "https://flatwrite.md/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "assist_document",
+      "description": "Rewrite, shorten, fix grammar, or apply a custom instruction to markdown via FlatWrite Assist (Morph: Reflex + Router + Compact + Fast Models). Returns full markdown plus the edited piece. Does not modify the editor — apply with update_document_content if desired. When selectionStart and selectionEnd are provided, only that span is rewritten.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "markdown": {
+            "type": "string",
+            "description": "Full markdown document. Optional in the browser WebMCP path (defaults to the active editor). Required for server MCP."
+          },
+          "mode": {
+            "type": "string",
+            "description": "Assist mode.",
+            "enum": [
+              "custom",
+              "rewrite",
+              "shorten",
+              "fix_grammar"
+            ]
+          },
+          "instruction": {
+            "type": "string",
+            "description": "Freeform instruction. Required when mode is \"custom\"."
+          },
+          "selectionStart": {
+            "type": "number",
+            "description": "Optional selection start index (inclusive) within markdown.",
+            "minimum": 0
+          },
+          "selectionEnd": {
+            "type": "number",
+            "description": "Optional selection end index (exclusive) within markdown.",
+            "minimum": 0
+          },
+          "selectionText": {
+            "type": "string",
+            "description": "Optional selection text (defaults to markdown.slice(start, end))."
+          }
+        },
+        "required": [
+          "markdown"
+        ]
+      }
+    },
+    {
+      "name": "create_document",
+      "description": "Create a new blank document in the FlatWrite editor, optionally with initial markdown content. Use this to start a new document; use open_document to load an existing one from a URL or share link.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "markdown": {
+            "type": "string",
+            "description": "Optional initial markdown content for the new document."
+          },
+          "title": {
+            "type": "string",
+            "description": "Optional title for the new document."
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "create_share_link",
+      "description": "Create a shareable URL for the active document and copy it to the clipboard. Use this to share the document; the link expires after 30 days. Use get_document_state to check canShare before calling.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "export_document_html",
+      "description": "Export the active document as a self-contained HTML file. The export opens in a new browser tab for human users. Completes synchronously. Use export_document_pdf for print-ready output.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "export_document_pdf",
+      "description": "Export the active document as a PDF by triggering the browser print dialog with the rendered preview. Completes synchronously. The print dialog opens for human users. Use export_document_html for a downloadable HTML file.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "get_document_state",
+      "description": "Return the current state of the active document in the FlatWrite editor: title, word count, render mode, unsaved changes flag, and available export formats. Use this before export or share tools to check readiness; use update_document_content to change the content.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "list_recent_documents",
+      "description": "Return a list of recently opened documents from the editor session. Use this to discover what the user has been working on; use open_document to load one.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "list_render_options",
+      "description": "Return the supported fonts, UI frameworks, document engines, page sizes, orientations, margins, and surface modes for the render_markdown tool. Call this before rendering if you need to know which enum values are valid; call render_markdown when you have the options and are ready to render.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "open_document",
+      "description": "Open an existing document from a URL or share link in the FlatWrite editor. Use this to load a remote markdown file or a previously shared document; use create_document to start blank.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "URL of the markdown file or FlatWrite share link to open."
+          }
+        },
+        "required": [
+          "url"
+        ]
+      }
+    },
+    {
+      "name": "render_markdown",
+      "description": "Render markdown into FlatWrite-styled HTML <head> and <body> fragments, with optional typography and page-layout controls. Provide either the raw markdown inline (`markdown`) or an allowlisted URL (`markdownUrl`) pointing to raw markdown content. Use this when you need the rendered HTML artifacts.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "markdown": {
+            "type": "string",
+            "description": "Raw markdown content to render."
+          },
+          "markdownUrl": {
+            "type": "string",
+            "description": "URL pointing to raw markdown content. Must be on an allowlisted host (raw.githubusercontent.com, raw.gitlab.com, bitbucket.org), http(s) only, and <=1 MB. Host validation is enforced server-side."
+          },
+          "font": {
+            "type": "string",
+            "description": "Font family — must be a bundled family.",
+            "enum": [
+              "Inter",
+              "JetBrains Mono",
+              "Lato",
+              "Lora",
+              "Merriweather",
+              "Playfair Display",
+              "Comfortaa",
+              "Unbounded"
+            ]
+          },
+          "appFramework": {
+            "type": "string",
+            "description": "UI framework applied when surfaceMode=\"app\".",
+            "enum": [
+              "spectre",
+              "poshui",
+              "pico",
+              "milligram",
+              "chota"
+            ]
+          },
+          "size": {
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "Scale token (e.g. \"-1\", \"0\", \"1\")"
+              },
+              {
+                "type": "number",
+                "description": "Absolute pixel value (8..72)"
+              }
+            ],
+            "description": "Font size as a scale token (e.g. \"-1\", \"0\", \"1\").",
+            "minimum": 8,
+            "maximum": 72
+          },
+          "weight": {
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "Scale token (e.g. \"-1\", \"0\")"
+              },
+              {
+                "type": "number",
+                "description": "Absolute weight (100..900, multiples of 100)"
+              }
+            ],
+            "description": "Font weight as a scale token (e.g. \"-1\", \"0\").",
+            "minimum": 100,
+            "maximum": 900
+          },
+          "line": {
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "Scale token (e.g. \"-1\", \"0\", \"1\")"
+              },
+              {
+                "type": "number",
+                "description": "Absolute multiplier (0.8..4.0)"
+              }
+            ],
+            "description": "Line height as a scale token (e.g. \"-1\", \"0\", \"1\").",
+            "minimum": 0.8,
+            "maximum": 4
+          },
+          "uiZoom": {
+            "type": "number",
+            "description": "UI zoom level (1.0 = default; >1 zooms in, <1 zooms out).",
+            "minimum": 0.25,
+            "maximum": 4
+          },
+          "pageSize": {
+            "type": "string",
+            "description": "Page size for paged output. Only effective when docEngine is pagedjs or vivliostyle.",
+            "enum": [
+              "A0",
+              "A1",
+              "A2",
+              "A3",
+              "A4",
+              "A5",
+              "Letter",
+              "Legal"
+            ]
+          },
+          "orientation": {
+            "type": "string",
+            "description": "Page orientation.",
+            "enum": [
+              "portrait",
+              "landscape"
+            ]
+          },
+          "marginsLR": {
+            "type": "string",
+            "description": "Left/right page margin preset. Only effective when docEngine is pagedjs or vivliostyle.",
+            "enum": [
+              "narrow",
+              "normal",
+              "wide"
+            ]
+          },
+          "marginsTB": {
+            "type": "string",
+            "description": "Top/bottom page margin preset. Only effective when docEngine is pagedjs or vivliostyle.",
+            "enum": [
+              "narrow",
+              "normal",
+              "wide"
+            ]
+          },
+          "footer": {
+            "type": "boolean",
+            "description": "Include a page-number footer in paged output."
+          },
+          "width": {
+            "type": "number",
+            "description": "Content width in pixels (400..1400). Only effective when docEngine=\"none\".",
+            "minimum": 400,
+            "maximum": 1400
+          },
+          "docEngine": {
+            "type": "string",
+            "description": "Document engine — \"none\" emits plain CSS; \"pagedjs\"/\"vivliostyle\" wrap the output in @page rules.",
+            "enum": [
+              "none",
+              "pagedjs",
+              "vivliostyle"
+            ]
+          },
+          "surfaceMode": {
+            "type": "string",
+            "description": "Surface mode hint. \"app\" unlocks the appFramework picker; otherwise this is metadata only.",
+            "enum": [
+              "doc",
+              "app"
+            ]
+          },
+          "theme": {
+            "type": "string",
+            "description": "Theme identifier rendered as body[data-theme=\"...\"] so consumer CSS can theme via attribute selectors. Free-form (alphanumeric, dash, underscore) — common values are \"light\" and \"dark\"."
+          }
+        },
+        "required": [],
+        "oneOf": [
+          {
+            "required": [
+              "markdown"
+            ]
+          },
+          {
+            "required": [
+              "markdownUrl"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "render_markdown_preview",
+      "description": "Triggers the editor's built-in preview pane. No HTML is returned — this tool produces a visual side-effect only. Agents that need HTML output must use render_markdown instead.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "markdown": {
+            "type": "string",
+            "description": "Optional markdown to preview. If omitted, previews the current editor content."
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "update_document_content",
+      "description": "Update the markdown content of the active document in the FlatWrite editor. Use this to edit the document programmatically; use get_document_state to inspect the result.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "markdown": {
+            "type": "string",
+            "description": "New markdown content for the document."
+          }
+        },
+        "required": [
+          "markdown"
+        ]
+      }
+    }
+  ],
+  "host": "flatwrite.md",
+  "source": "webmcp.com/api/directory.json"
+}

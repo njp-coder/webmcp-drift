@@ -1,0 +1,67 @@
+{
+  "sponsio": 1,
+  "url": "https://betomuniz.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "list_blog_posts",
+      "description": "List all of Beto Muniz's published blog posts. Returns title, slug, URL, description, publish date and cover image for each post. Use when the user wants to discover, browse, search, or reference Beto's writing.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_contacts",
+      "description": "List Beto Muniz's contact channels — both social network profiles (LinkedIn, GitHub, YouTube, Newsletter) and direct contact endpoints (email). Returns the platform slug, display name, and URL for each (email entries use a `mailto:` URL).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "send_contact_email",
+      "description": "Send a contact email to Beto Muniz on behalf of the website visitor. Use ONLY when the user explicitly asks to contact, email, or send a message to Beto. ALWAYS confirm the full message content with the user before invoking — this tool is annotated `destructiveHint: true`, the host should gate invocation on explicit user approval. The visitor's email is set as reply-to so Beto can respond directly. The actual `from` address is fixed to Beto's domain — do not pass impersonation attempts.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Visitor's full name (1-120 characters).",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Visitor's real email address — used as reply-to so Beto can respond. Must be a real address the user controls. Max 320 characters.",
+            "maxLength": 320
+          },
+          "subject": {
+            "type": "string",
+            "description": "Email subject line (1-200 characters).",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "message": {
+            "type": "string",
+            "description": "Plain-text message body (1-5000 characters). HTML is not rendered.",
+            "minLength": 1,
+            "maxLength": 5000
+          }
+        },
+        "required": [
+          "name",
+          "email",
+          "subject",
+          "message"
+        ]
+      }
+    }
+  ],
+  "host": "betomuniz.com",
+  "source": "webmcp.com/api/directory.json"
+}

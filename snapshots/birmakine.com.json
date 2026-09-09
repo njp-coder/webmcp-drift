@@ -1,0 +1,828 @@
+{
+  "sponsio": 1,
+  "url": "https://birmakine.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "arama_kaydet",
+      "description": "Kullanıcının aramasını (metin/kategori/fiyat) kaydeder; uygun yeni ilan çıktığında e-posta bildirir. ÇİFT-OPT-IN: e-posta onayı şart. Kullanıcının açık isteği + e-postası gerekir.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "q": {
+            "type": "string",
+            "description": "Arama metni (opsiyonel)"
+          },
+          "kategori": {
+            "type": "string"
+          },
+          "fiyat_min": {
+            "type": "number"
+          },
+          "hedef_fiyat": {
+            "type": "number",
+            "description": "fiyat_max — üst sınır"
+          },
+          "label": {
+            "type": "string"
+          },
+          "idempotency_key": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      }
+    },
+    {
+      "name": "benzer_fiyatli",
+      "description": "Verilen bütçeye en yakın ilanları bir kategoride bulur (gauss yakınlık). Kategori slug + fiyat (TL) ile; opsiyonel adet. \"500.000 TL bütçeyle hangi ekskavatörler\" gibi.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "kategori": {
+            "type": "string"
+          },
+          "fiyat": {
+            "type": "number"
+          },
+          "adet": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "kategori",
+          "fiyat"
+        ]
+      }
+    },
+    {
+      "name": "benzer_ilan",
+      "description": "Bir ilana benzer (aynı kategori) ilanları getirir.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "blog_ara",
+      "description": "BirMakine blog/rehber yazılarını arar.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "blog_getir",
+      "description": "Bir blog yazısının içeriğini getirir (slug).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "en_yeni_ilan",
+      "description": "En yeni eklenen ilanları getirir (opsiyonel kategori).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "kategori": {
+            "type": "string"
+          },
+          "adet": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    {
+      "name": "favori_ekle",
+      "description": "Kullanıcının favori/kaydedilenler listesine ilan ekler (token-tabanlı, 30 gün saklanır, hesap gerektirmez). token vermezsen yeni liste + token döner; aynı token ile ekle/çıkar/oku (max 50).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "Var olan favori listesi token'ı (ilk çağrıda boş)"
+          },
+          "ekle": {
+            "type": "string",
+            "description": "Eklenecek ilan slug"
+          },
+          "cikar": {
+            "type": "string",
+            "description": "Çıkarılacak ilan slug"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "finansman_hesapla",
+      "description": "Makine alımı için basit leasing/taksit hesaplar. Yerel hesap, PII gerektirmez.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tutar": {
+            "type": "number"
+          },
+          "pesinat": {
+            "type": "number"
+          },
+          "vade_ay": {
+            "type": "number"
+          },
+          "yillik_faiz": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "tutar",
+          "vade_ay"
+        ]
+      }
+    },
+    {
+      "name": "finansman_karsilastir",
+      "description": "Bir tutar için 12/24/36/48/60 ay vadelerinde taksit karşılaştırma matrisi döndürür (aylık taksit, toplam geri ödeme, toplam faiz). Sunucu-taraflı, birden çok vade tek çağrıda.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tutar": {
+            "type": "number"
+          },
+          "pesinat": {
+            "type": "number"
+          },
+          "yillik_faiz": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "tutar"
+        ]
+      }
+    },
+    {
+      "name": "fiyat_alarmi_kur",
+      "description": "Kullanıcının e-postasına fiyat/kategori alarmı kurar. Uygun ilan (kategori + hedef fiyat) çıktığında e-posta gönderilir. ÇİFT-OPT-IN: kullanıcı e-postadaki linki onaylamadan alarm aktifleşmez; onay için kullanıcının açık isteği/e-postası gerekir.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Kullanıcının e-posta adresi (onay linki buraya gider)"
+          },
+          "kategori": {
+            "type": "string",
+            "description": "Kategori slug (opsiyonel)"
+          },
+          "ilan": {
+            "type": "string",
+            "description": "İlan slug — benzeri için alarm (opsiyonel)"
+          },
+          "hedef_fiyat": {
+            "type": "number",
+            "description": "Bu fiyatın altı çıkınca bildir (opsiyonel)"
+          },
+          "label": {
+            "type": "string"
+          },
+          "idempotency_key": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      }
+    },
+    {
+      "name": "fiyat_dagilimi",
+      "description": "Bir kategorinin fiyat dağılımını döndürür: histogram (fiyat aralıkları + adet) + özet (min/P10/P25/medyan/P75/P90/max/ortalama TL). \"X ne kadar, fiyatlar nasıl dağılıyor\" soruları için. Kategori slug ile.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "kategori": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "kategori"
+        ]
+      }
+    },
+    {
+      "name": "fiyat_gecmisi",
+      "description": "Bir kategorinin medyan/ortalama fiyat zaman-serisini (günlük snapshot) döndürür + dönem medyan değişim yüzdesi. Fiyat trendi/enflasyon soruları için. Kategori slug ile.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "kategori": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "kategori"
+        ]
+      }
+    },
+    {
+      "name": "get_listing_details",
+      "description": "Su an goruntulenen ilanin adini, fiyatini, kategorisini, saticisini ve URL'sini dondurur.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "ilan_ara",
+      "description": "BirMakine'de ikinci el ve yeni iş makinesi, endüstriyel ekipman, endüstriyel mutfak ve ağır vasıta ilanı arar. Anahtar kelime, kategori, fiyat aralığı ve şehir ile filtreler. JSON sonuç döndürür.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string",
+            "description": "Anahtar kelime, ör. ekskavatör, matkap, fritöz"
+          },
+          "kategori": {
+            "type": "string",
+            "description": "Kategori slug (kategori_gez tool'undan alınır)"
+          },
+          "fiyat_min": {
+            "type": "number",
+            "description": "Minimum fiyat (TL)"
+          },
+          "fiyat_max": {
+            "type": "number",
+            "description": "Maksimum fiyat (TL)"
+          },
+          "sehir": {
+            "type": "number",
+            "description": "Şehir/plaka id"
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "yeni",
+              "eski",
+              "fiyat_artan",
+              "fiyat_azalan",
+              "uygunluk"
+            ],
+            "description": "Sıralama"
+          },
+          "sayfa": {
+            "type": "number",
+            "description": "Sayfa no (varsayılan 1)"
+          },
+          "after": {
+            "type": "string",
+            "description": "Keyset imleci — derin sayfalama için önceki yanıtın sonraki_imlec değeri (10000+ ilan için)"
+          }
+        }
+      }
+    },
+    {
+      "name": "ilan_detay",
+      "description": "Bir BirMakine ilanının detayını döndürür: ad, fiyat, açıklama, kategori, satıcı, şehir, teknik bilgiler. İlan slug'ı (URL son parçası) ile çağrılır.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "İlan slug'ı, ör. makita-vc3211mx1"
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "ilan_filtrele",
+      "description": "İlanları kategori, marka, fiyat ve şehir facet'leriyle filtreler (ilan_ara ile aynı, filtre odaklı).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string"
+          },
+          "kategori": {
+            "type": "string"
+          },
+          "fiyat_min": {
+            "type": "number"
+          },
+          "fiyat_max": {
+            "type": "number"
+          },
+          "sehir": {
+            "type": "number"
+          },
+          "satici": {
+            "type": "string"
+          },
+          "sort": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "inspect_image_c2pa",
+      "description": "Fetch a single image (by CSS selector or URL) and return its fully decoded C2PA manifest store: every manifest's claim, assertions (e.g. c2pa.actions edit history, schema.org authorship), and the COSE signature details (algorithm and signing-certificate identity). Provide exactly one of `selector` or `url`. Note: the signature is decoded but NOT cryptographically verified.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "selector": {
+            "type": "string",
+            "maxLength": 8192,
+            "description": "CSS selector for an <img> element on the page."
+          },
+          "url": {
+            "type": "string",
+            "maxLength": 8192,
+            "description": "Image URL (absolute, or relative to the current page) to fetch and inspect."
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "karsilastirma_listesi",
+      "description": "Geçici karşılaştırma listesi (2-4 ilan). token vermezseniz yeni liste açılır ve token döner; aynı token ile ekle/çıkar/oku. Yanıt ilanların fiyat/marka/konum/özelliklerini karşılaştırmalı döndürür. Ephemeral (24 saat), e-posta/hesap gerektirmez.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "Var olan liste token'ı (ilk çağrıda boş bırakın)"
+          },
+          "ekle": {
+            "type": "string",
+            "description": "Eklenecek ilan slug"
+          },
+          "cikar": {
+            "type": "string",
+            "description": "Çıkarılacak ilan slug"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "kategori_agaci",
+      "description": "Tüm ilan kategorilerini TAM hiyerarşik ağaç olarak (üst kategori → alt kategoriler) ilan sayılarıyla tek çağrıda döndürür. Her düğümde dogrudan_ilan + toplam_ilan (alt-ağaç rollup). Kategori yapısını keşfetmek için kategori_gez'e göre daha zengindir.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "kategori_gez",
+      "description": "BirMakine'deki tüm ilan kategorilerini (89) ilan sayılarıyla listeler. ilan_ara için kategori slug almak amacıyla kullanılır.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "kategori_ozet",
+      "description": "Bir kategorinin pazar özetini döndürür: toplam ilan, satıcı sayısı, fiyat bandı (min/ortalama/max TL) ve popüler üretici markaları. \"Forklift pazarı nasıl?\" gibi sorular için. Kategori slug ile çağrılır.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "kategori": {
+            "type": "string",
+            "description": "Kategori slug (kategori_gez'den)"
+          }
+        },
+        "required": [
+          "kategori"
+        ]
+      }
+    },
+    {
+      "name": "kategoriler",
+      "description": "Tüm kategoriler + ilan sayısı.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "konum_ilanlari",
+      "description": "Belirli bir şehirdeki (plaka id) ilanları getirir.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sehir": {
+            "type": "number"
+          },
+          "q": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "sehir"
+        ]
+      }
+    },
+    {
+      "name": "marka_ilanlari",
+      "description": "Bir üretici markasının (Makita, Bosch…) ilanlarını getirir (marka slug).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "marka_listele",
+      "description": "BirMakine'deki üretici markalarını (Makita, Bosch, Stihl, Öztiryakiler vb.) ilan sayılarıyla listeler. Opsiyonel q ile marka adına göre arar.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string",
+            "description": "Marka adı araması (opsiyonel)"
+          }
+        }
+      }
+    },
+    {
+      "name": "marka_modelleri",
+      "description": "Bir üretici markasının ilan başlıklarından çıkarılan model kodlarını (ör. HMK 140, GBH 2-26) ilan sayılarıyla döndürür (tahmini/heuristik). Marka slug ile.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "marka": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "marka"
+        ]
+      }
+    },
+    {
+      "name": "markalar",
+      "description": "Üretici markaları.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "mesaj_gonder",
+      "description": "Alıcı adına bir ilanın satıcısına mesaj iletir. ALICI ONAYI ŞART: mesaj önce beklemede kalır, alıcı e-postasındaki linki onaylayınca satıcıya iletilir (spam önlenir). Kullanıcının açık isteği + geçerli e-postası gerekir.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "ilan": {
+            "type": "string",
+            "description": "İlan slug"
+          },
+          "ad": {
+            "type": "string",
+            "description": "Gönderen adı"
+          },
+          "email": {
+            "type": "string",
+            "description": "Alıcının e-postası (onay linki buraya gider)"
+          },
+          "telefon": {
+            "type": "string"
+          },
+          "mesaj": {
+            "type": "string",
+            "description": "Satıcıya iletilecek mesaj (≥10 karakter)"
+          },
+          "idempotency_key": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "ilan",
+          "ad",
+          "email",
+          "mesaj"
+        ]
+      }
+    },
+    {
+      "name": "open_seller_product_page",
+      "description": "Bu ilanin saticisinin orijinal urun sayfasini yeni sekmede acar.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "pazar_istatistik",
+      "description": "Pazar istatistiği: toplam aktif ilan, fiyat aralığı (min/ort/max TL) ve en çok ilanlı kategoriler.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "populer_kategori",
+      "description": "En çok ilanlı kategorileri (popüler) döndürür.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "satici_ilanlari",
+      "description": "Bir satıcının ilanlarını getirir (satıcı slug).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "satici": {
+            "type": "string"
+          },
+          "q": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "satici"
+        ]
+      }
+    },
+    {
+      "name": "satici_kategorileri",
+      "description": "Bir satıcının hangi kategorilerde kaç aktif ilanı olduğunu döndürür (satıcının uzmanlık alanı). Satıcı slug ile.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "satici": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "satici"
+        ]
+      }
+    },
+    {
+      "name": "satici_profil",
+      "description": "Bir BirMakine satıcısının/firmasının profilini döndürür: ad, şehir, aktif ilan sayısı, üyelik yılı. Satıcı slug'ı ile çağrılır.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Satıcı slug'ı"
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "scan_images_c2pa",
+      "description": "Scan every <img> on the current page for C2PA Content Credentials (content provenance metadata) and return a per-image summary: whether a manifest is present, the claim generator (the tool that produced or edited the image), the title, and the signer name. Use this to find which images on a page carry provenance data. Note: provenance is decoded but NOT cryptographically verified.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 25,
+            "description": "Maximum number of images to fetch and scan (default 25, max 100)."
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "search_listings",
+      "description": "birmakine.com uzerinde is makinesi, endustriyel ekipman ve mutfak ekipmani ilanlarini anahtar kelimeyle arar ve sonuc sayfasini acar.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Aranacak urun, makine veya marka adi"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "site_ara",
+      "description": "BirMakine genel araması (ilan).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "q"
+        ]
+      }
+    },
+    {
+      "name": "sozluk_terim",
+      "description": "Sektör terimleri sözlüğünü döndürür. Terim verilmezse tüm terimleri; terim verilince o terimin tanımını + ilgili aramayı. Makine/ekipman terimlerini (ekskavatör, motosaat, CE belgesi, TCO…) açıklamak için.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "terim": {
+            "type": "string",
+            "description": "Opsiyonel; tek terim (ör. Motosaat)"
+          }
+        }
+      }
+    },
+    {
+      "name": "sss_getir",
+      "description": "BirMakine sık sorulan soruları ve cevaplarını döndürür.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "stok_durumu",
+      "description": "Bir ilanın güncel durumunu döndürür: aktif/preorder/discontinued + son güncelleme tarihi. İlan slug ile.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "talep_durumu",
+      "description": "Write-tool ile oluşturulan talebin (fiyat_alarmi/arama/mesaj/teklif) durumunu döndürür — kullanıcı e-posta onayı verdi mi (aktif/iletildi) yoksa bekliyor mu. token = write yanıtındaki undo_token.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "token"
+        ]
+      }
+    },
+    {
+      "name": "teklif_gonder",
+      "description": "Alıcı adına satıcıya bir ilan için yapılandırılmış TEKLİF (fiyat + mesaj) iletir. ALICI ONAYI ŞART: teklif önce beklemede, alıcı e-postasını onaylayınca satıcıya iletilir.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "ilan": {
+            "type": "string"
+          },
+          "ad": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "teklif_fiyat": {
+            "type": "number",
+            "description": "Teklif edilen fiyat (TL)"
+          },
+          "mesaj": {
+            "type": "string"
+          },
+          "telefon": {
+            "type": "string"
+          },
+          "idempotency_key": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "ilan",
+          "ad",
+          "email",
+          "teklif_fiyat",
+          "mesaj"
+        ]
+      }
+    },
+    {
+      "name": "trend_kategoriler",
+      "description": "Son 30 günün trend aramalarını (en çok aranan terimler) ve popüler kategorileri döndürür. \"Şu an ne aranıyor / gündemde ne var\" için.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "yazar_getir",
+      "description": "Bir blog yazarının uzmanlık, deneyim ve bilgilerini döndürür (slug).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    }
+  ],
+  "host": "birmakine.com",
+  "source": "webmcp.com/api/directory.json"
+}

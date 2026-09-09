@@ -1,0 +1,159 @@
+{
+  "sponsio": 1,
+  "url": "https://www.ejaj.cz/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "add_tool_to_favorites",
+      "description": "Přidá nástroj do oblíbených uživatele na ejaj.cz. Oblíbené se ukládají jen lokálně v prohlížeči (bez účtu) a jsou vidět na ejaj.cz/oblibene.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Slug nástroje, který se má přidat do oblíbených."
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "get_ai_news",
+      "description": "Vrátí denně aktualizované české AI zpravodajství z ejaj.cz/novinky - titulky, shrnutí a odkazy na jednotlivé zprávy.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "number",
+            "description": "Počet zpráv, 1 až 15, výchozí 8."
+          },
+          "query": {
+            "type": "string",
+            "description": "Hledaný výraz v titulku nebo textu zprávy."
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "get_ai_tool",
+      "description": "Vrátí detail jednoho AI nástroje z katalogu ejaj.cz podle jeho slugu - popis, cenu, funkce a odkaz na web.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Slug nástroje, např. z výsledků search_ai_tools nebo z URL /nastroj/<slug>/."
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "get_newest_ai_tools",
+      "description": "Vrátí nejnověji přidané AI nástroje do katalogu ejaj.cz, seřazené od nejnovějšího.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "number",
+            "description": "Počet nástrojů, 1 až 25, výchozí 10."
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "list_ai_tool_categories",
+      "description": "Vrátí seznam všech kategorií AI nástrojů v katalogu ejaj.cz včetně počtu nástrojů v každé z nich.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "list_favorite_tools",
+      "description": "Vrátí seznam nástrojů, které si uživatel uložil do oblíbených na ejaj.cz (uložené lokálně v jeho prohlížeči).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "open_in_catalog",
+      "description": "Otevře v prohlížeči uživatele stránku konkrétního nástroje (podle slugu) nebo výsledky hledání (podle dotazu) na ejaj.cz. Zadejte alespoň jeden z parametrů.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Slug nástroje - otevře přímo jeho stránku."
+          },
+          "query": {
+            "type": "string",
+            "description": "Hledaný výraz - otevře výsledky hledání, když slug není znám."
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "search_ai_tools",
+      "description": "Hledá v katalogu 4600+ AI nástrojů na ejaj.cz podle textového dotazu, kategorie a cenového modelu. Vrací seznam nástrojů s krátkým popisem a odkazem.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Hledaný výraz - název nebo popis nástroje."
+          },
+          "category": {
+            "type": "string",
+            "description": "Slug kategorie z list_ai_tool_categories, např. \"obecne-psani\" nebo \"copywriting\"."
+          },
+          "price": {
+            "type": "string",
+            "enum": [
+              "free",
+              "freemium",
+              "free_trial",
+              "paid",
+              "contact"
+            ],
+            "description": "Filtr podle cenového modelu."
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "popular",
+              "newest",
+              "name"
+            ],
+            "description": "Řazení výsledků, výchozí je popular."
+          },
+          "limit": {
+            "type": "number",
+            "description": "Počet výsledků, 1 až 25, výchozí 10."
+          }
+        },
+        "required": []
+      }
+    }
+  ],
+  "host": "ejaj.cz",
+  "source": "webmcp.com/api/directory.json"
+}

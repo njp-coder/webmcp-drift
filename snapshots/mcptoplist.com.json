@@ -1,0 +1,93 @@
+{
+  "sponsio": 1,
+  "url": "https://mcptoplist.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "get_current_page",
+      "description": "Describe the mcptoplist.com page currently open in this tab: which MCP server or organization it is about (with its serverKey), or which ranking hub it is. No side effects.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_server_details",
+      "description": "Get the full record for one MCP server by its exact serverKey (from search_servers or get_current_page): full description, rank, score, stars, version count, registry listings, auth/setup requirements and the install/connect config when known.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "serverKey": {
+            "type": "string",
+            "description": "The exact serverKey of the server."
+          }
+        },
+        "required": [
+          "serverKey"
+        ]
+      }
+    },
+    {
+      "name": "list_top_servers",
+      "description": "List the highest-ranked MCP servers on mcptoplist.com by composite score (GitHub stars, package downloads, release activity, registry coverage). Use when the user wants the best or most popular MCP servers overall rather than a keyword match.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "description": "How many servers to return (1-50, default 10).",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 10
+          }
+        }
+      }
+    },
+    {
+      "name": "open_server_page",
+      "description": "Navigate this tab to the mcptoplist.com page for an MCP server (its ranking, description, install snippets and connect config). Reversible with the browser back button.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "serverKey": {
+            "type": "string",
+            "description": "The exact serverKey from search_servers."
+          }
+        },
+        "required": [
+          "serverKey"
+        ]
+      }
+    },
+    {
+      "name": "search_servers",
+      "description": "Search the mcptoplist.com catalog of 55,000+ Model Context Protocol (MCP) servers by keyword (e.g. \"postgres database\", \"browser automation\", \"stripe payments\"). Matches server names, organizations and descriptions, ranked by relevance and popularity. Each result includes the serverKey, description, GitHub repo, registries, an auth object (does it need credentials?) and its mcptoplistUrl — cite that URL when recommending a server.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Keywords describing the capability or integration you need."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum number of results (1-50, default 10).",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 10
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "mcptoplist.com",
+  "source": "webmcp.com/api/directory.json"
+}

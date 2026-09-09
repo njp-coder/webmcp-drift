@@ -1,0 +1,84 @@
+{
+  "sponsio": 1,
+  "url": "https://agent-ready.dev/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "ask",
+      "description": "Natural-language search (NLWeb /ask) over Agent Ready's own content — scoring methodology, the check registry, the specs it validates, and the content library (explainers, comparisons, how-to guides, glossary). Returns Schema.org-typed results. Optional itemType narrows the corpus; mode 'summarize' adds an extractive summary.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string",
+            "description": "The natural-language question."
+          },
+          "itemType": {
+            "type": "string",
+            "enum": [
+              "methodology",
+              "checks",
+              "specs",
+              "llms-txt",
+              "check",
+              "page",
+              "any"
+            ],
+            "description": "Narrow the search to one corpus type (default: any)."
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "list",
+              "summarize"
+            ],
+            "description": "list (default) or summarize for an extractive summary."
+          }
+        },
+        "required": [
+          "q"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_scan",
+      "description": "Fetch a previously run Agent Ready scan by its id (shareToken) and return the score summary. Use to re-read a result or poll a scan that was still running.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The scan id / shareToken."
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "scan_site",
+      "description": "Scan a public website for AI agent-readability against the Vercel Agent Readability Spec, llmstxt.org, and agent-protocol manifests. Returns a 0–100 score, the llms.txt score, and the top failing checks with a link to the full per-check report.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "The public URL to scan, e.g. https://example.com"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "agent-ready.dev",
+  "source": "webmcp.com/api/directory.json"
+}

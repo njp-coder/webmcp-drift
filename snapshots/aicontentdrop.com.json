@@ -1,0 +1,210 @@
+{
+  "sponsio": 1,
+  "url": "https://aicontentdrop.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "estimate_credit_cost",
+      "description": "Estimate the credit cost of generating with a specific model, optionally for a batch of several generations.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "model_id": {
+            "type": "string",
+            "description": "Model ID, e.g. \"kling_3_0\" or \"veo_3_fast\"."
+          },
+          "quantity": {
+            "type": "number",
+            "description": "How many generations. Defaults to 1."
+          }
+        },
+        "required": [
+          "model_id"
+        ]
+      }
+    },
+    {
+      "name": "generate_video",
+      "description": "Start generating an AI video on the authenticated account. Returns a job id immediately — poll get_generation until status is 'completed'. Charges credits only on success. Call estimate_credit_cost first if the cost matters. REQUIRES AN API KEY: add \"Authorization: Bearer acd_live_…\" to this MCP server; a key is created by a signed-in human at https://aicontentdrop.com/settings/integrations.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "description": "What the video should show. Detailed prompts produce better results."
+          },
+          "model": {
+            "type": "string",
+            "description": "Model ID from list_models, e.g. \"kling_3_0\". Omitted means the platform picks a suitable one."
+          },
+          "duration": {
+            "type": "number",
+            "description": "Length in seconds. Defaults to 5."
+          },
+          "aspect_ratio": {
+            "type": "string",
+            "enum": [
+              "16:9",
+              "9:16",
+              "1:1"
+            ],
+            "description": "Defaults to 16:9."
+          },
+          "image_url": {
+            "type": "string",
+            "description": "Optional public image URL to animate (image-to-video)."
+          }
+        },
+        "required": [
+          "prompt"
+        ]
+      }
+    },
+    {
+      "name": "get_account",
+      "description": "Credit balance and plan for the authenticated account. Check this before a batch of generations. REQUIRES AN API KEY: add \"Authorization: Bearer acd_live_…\" to this MCP server; a key is created by a signed-in human at https://aicontentdrop.com/settings/integrations.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "get_article",
+      "description": "Fetch the full text of one published article as markdown, by slug.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Article slug, e.g. \"kling-vs-sora-comparison\"."
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "get_generation",
+      "description": "Check one generation by id: status ('generating', 'completed', 'failed'), the finished video URL, and credits charged. REQUIRES AN API KEY: add \"Authorization: Bearer acd_live_…\" to this MCP server; a key is created by a signed-in human at https://aicontentdrop.com/settings/integrations.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The id returned by generate_video."
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "inspect_image_c2pa",
+      "description": "Fetch a single image (by CSS selector or URL) and return its fully decoded C2PA manifest store: every manifest's claim, assertions (e.g. c2pa.actions edit history, schema.org authorship), and the COSE signature details (algorithm and signing-certificate identity). Provide exactly one of `selector` or `url`. Note: the signature is decoded but NOT cryptographically verified.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "selector": {
+            "type": "string",
+            "maxLength": 8192,
+            "description": "CSS selector for an <img> element on the page."
+          },
+          "url": {
+            "type": "string",
+            "maxLength": 8192,
+            "description": "Image URL (absolute, or relative to the current page) to fetch and inspect."
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "list_generations",
+      "description": "List recent generations on the authenticated account, newest first. REQUIRES AN API KEY: add \"Authorization: Bearer acd_live_…\" to this MCP server; a key is created by a signed-in human at https://aicontentdrop.com/settings/integrations.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "number",
+            "description": "How many to return (1-50). Defaults to 10."
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "list_models",
+      "description": "List the AI video or image models available on AI Content Drop with their flat credit cost per generation.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "video",
+              "image"
+            ],
+            "description": "Model family to list. Defaults to video."
+          },
+          "max_credits": {
+            "type": "number",
+            "description": "Only return models costing this many credits or fewer."
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "scan_images_c2pa",
+      "description": "Scan every <img> on the current page for C2PA Content Credentials (content provenance metadata) and return a per-image summary: whether a manifest is present, the claim generator (the tool that produced or edited the image), the title, and the signer name. Use this to find which images on a page carry provenance data. Note: provenance is decoded but NOT cryptographically verified.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 25,
+            "description": "Maximum number of images to fetch and scan (default 25, max 100)."
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "search_articles",
+      "description": "Search AI Content Drop's published guides and model comparisons about AI video generation, prompting, and ad creative.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Keywords, e.g. 'kling vs sora' or 'ugc hooks'."
+          },
+          "limit": {
+            "type": "number",
+            "description": "Maximum results (1-25). Defaults to 10."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "aicontentdrop.com",
+  "source": "webmcp.com/api/directory.json"
+}

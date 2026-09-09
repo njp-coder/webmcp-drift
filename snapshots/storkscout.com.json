@@ -1,0 +1,177 @@
+{
+  "sponsio": 1,
+  "url": "https://storkscout.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "compare_products",
+      "description": "Open StorkScout's side-by-side comparison for two to four products from the current live result set and return the same structured product fields. Call find_baby_products first.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "product_ids": {
+            "type": "array",
+            "description": "Two to four product IDs returned by find_baby_products.",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
+            },
+            "minItems": 2,
+            "maxItems": 4,
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "product_ids"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "find_baby_products",
+      "description": "Search Shopify's live catalog for baby products, apply optional budget, stage, rating, feature, exclusion, and sort filters, and show the current results on StorkScout. Returns structured product IDs, prices, ratings, sellers, and shopping URLs for follow-up tools.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "The shopper's core request in natural language.",
+            "minLength": 2,
+            "maxLength": 300
+          },
+          "product_type": {
+            "type": "string",
+            "description": "Optional product family, such as stroller, swaddle, high chair, or monitor.",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "baby_stage": {
+            "type": "string",
+            "description": "Optional age or family stage, such as newborn, 6-12 months, toddler, or parent.",
+            "minLength": 1,
+            "maxLength": 40
+          },
+          "max_price_usd": {
+            "type": "number",
+            "description": "Optional maximum price in US dollars.",
+            "minimum": 1,
+            "maximum": 100000
+          },
+          "minimum_rating": {
+            "type": "number",
+            "description": "Optional minimum product rating.",
+            "enum": [
+              4,
+              4.5
+            ]
+          },
+          "must_have_features": {
+            "type": "array",
+            "description": "Zero to six required materials, capabilities, or style details.",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80
+            },
+            "maxItems": 6,
+            "uniqueItems": true
+          },
+          "exclude_features": {
+            "type": "array",
+            "description": "Zero to six materials, capabilities, or style details to avoid.",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80
+            },
+            "maxItems": 6,
+            "uniqueItems": true
+          },
+          "sort": {
+            "type": "string",
+            "description": "How StorkScout should order the visible results.",
+            "enum": [
+              "relevance",
+              "rating",
+              "reviews",
+              "price-asc",
+              "price-desc",
+              "name-asc"
+            ],
+            "default": "relevance"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_baby_product_details",
+      "description": "Return structured details for one product from the current live StorkScout search, including seller, numeric price, rating, category, sponsorship status, and the exact shopping URL. Call find_baby_products first.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "string",
+            "description": "A product ID returned by find_baby_products.",
+            "minLength": 1,
+            "maxLength": 512
+          }
+        },
+        "required": [
+          "product_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_current_shortlist",
+      "description": "Return every product currently saved in StorkScout's visible shortlist, including current prices, ratings, sellers, and shopping URLs. This tool does not change the page or shortlist.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "save_products_to_shortlist",
+      "description": "Add one to four products from the current live search to StorkScout's visible shortlist. The shortlist is capped at four; only durable Shopify product IDs persist, and product details are requested live when restored.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "product_ids": {
+            "type": "array",
+            "description": "Product IDs returned by find_baby_products.",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
+            },
+            "minItems": 1,
+            "maxItems": 4,
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "product_ids"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "storkscout.com",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,141 @@
+{
+  "sponsio": 1,
+  "url": "https://seedthink.ai/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "about_seedthink",
+      "description": "Explain what Seedthink is, list the tools this page exposes, and say which ones need a signed-in account. Call this first if you are unsure which tool to use. No arguments, no sign-in, no tokens.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "ask_seedthink",
+      "description": "Ask the main Seedthink chat — the platform's own reasoning. Routes the question across the signed-in user's Seeds and the public knowledge graph, grounds the answer in verified facts, and returns the finished answer as text. Use this for decisions, comparisons, judgement calls or 'what should I do' questions. Works without sign-in on a small daily token allowance; costs 1 token (3 with research: true). Prefer ask_seed when the answer must come from one specific Seed only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "question": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 4000,
+            "description": "The question or decision to put to Seedthink."
+          },
+          "research": {
+            "type": "boolean",
+            "default": false,
+            "description": "True runs the deeper multi-source research pass: slower and costs 3 tokens instead of 1."
+          }
+        },
+        "required": [
+          "question"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "open_seedthink_page",
+      "description": "Navigate the open Seedthink tab to a known destination so the user can see what you did. Pass target: \"seed\" together with seed_id to open one Seed's dashboard; every other target ignores seed_id. Costs no tokens and changes no data.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "target": {
+            "type": "string",
+            "enum": [
+              "seed",
+              "my_seeds",
+              "marketplace",
+              "chat",
+              "billing",
+              "agent_integrations",
+              "pricing",
+              "agi_progress"
+            ],
+            "description": "Where to go. Use \"seed\" (with seed_id) for a single Seed dashboard."
+          },
+          "seed_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Required only when target is \"seed\"."
+          }
+        },
+        "required": [
+          "target"
+        ],
+        "additionalProperties": false,
+        "oneOf": [
+          {
+            "properties": {
+              "target": {
+                "const": "seed"
+              }
+            },
+            "required": [
+              "target",
+              "seed_id"
+            ]
+          },
+          {
+            "properties": {
+              "target": {
+                "enum": [
+                  "my_seeds",
+                  "marketplace",
+                  "chat",
+                  "billing",
+                  "agent_integrations",
+                  "pricing",
+                  "agi_progress"
+                ]
+              }
+            },
+            "required": [
+              "target"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "search_seedthink_marketplace",
+      "description": "Search the public Seedthink marketplace of published Seeds and Models by keyword or niche. No sign-in needed and no tokens spent. Returns in-app paths you can hand to open_seedthink_page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "maxLength": 120,
+            "description": "Keyword or niche to match. Omit to list everything published."
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "any",
+              "seed",
+              "model"
+            ],
+            "default": "any",
+            "description": "Restrict results to Seeds, Models, or both."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 25,
+            "default": 10,
+            "description": "Max results per kind (1–25)."
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "seedthink.ai",
+  "source": "webmcp.com/api/directory.json"
+}

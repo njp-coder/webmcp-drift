@@ -1,0 +1,131 @@
+{
+  "sponsio": 1,
+  "url": "https://www.miroshark.xyz/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "ask_miroshark",
+      "description": "Ask a natural-language question about MiroShark and get ranked, cited resources from its pages (what it is, how to run it, pricing, docs, ecosystem). Same ranking as the public /ask endpoint.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "The natural-language question."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "default": 8,
+            "description": "Maximum number of results."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_ecosystem",
+      "description": "The projects and partners building with MiroShark, parsed from the canonical ECOSYSTEM.md.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_health",
+      "description": "MiroShark site readiness: whether the process booted and which feature areas are configured (booleans only, never secret values).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "miroshark_overview",
+      "description": "What MiroShark is and when to use it. Returns a short description of the swarm-simulation engine and the kinds of questions it answers.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "miroshark_resources",
+      "description": "Key MiroShark developer resources: machine contract (OpenAPI), integration docs, authentication, MCP server, site map, and socials.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "miroshark_run",
+      "description": "How to run a MiroShark simulation, including the price and the x402 payment flow.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "open_run_panel",
+      "description": "Open MiroShark's run panel with a scenario pre-loaded, and take the user there. Use this to act on a user's request to run/simulate something: pass a seed (prompt, url, OR article; prompt wins if several are given) and, optionally, a prediction-market question. This is a handoff, not a purchase - it stops at the panel so the user reviews the scenario and authorizes the paid $1 x402 run themselves. Call suggest_scenarios first if the user's idea is still vague. Returns where it opened and the seed kind loaded.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "description": "A scenario prompt to simulate."
+          },
+          "url": {
+            "type": "string",
+            "description": "An article URL to seed the simulation from."
+          },
+          "article": {
+            "type": "string",
+            "description": "Raw article text to seed the simulation from."
+          },
+          "market_question": {
+            "type": "string",
+            "description": "Optional prediction-market question to pin to the run."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "suggest_scenarios",
+      "description": "Turn a vague topic into up to 5 concrete, launchable MiroShark scenarios (title, pitch, ready-to-run prompt, angle). A free pre-flight before paying for a run - use it to help a user go from a fuzzy idea to a seed prompt worth simulating. Pair with open_run_panel (in-page) to load a chosen idea into the run panel.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "topic": {
+            "type": "string",
+            "minLength": 6,
+            "maxLength": 400,
+            "description": "The rough topic or question to expand into scenario ideas."
+          }
+        },
+        "required": [
+          "topic"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "miroshark.xyz",
+  "source": "webmcp.com/api/directory.json"
+}

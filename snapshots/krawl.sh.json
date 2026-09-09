@@ -1,0 +1,93 @@
+{
+  "sponsio": 1,
+  "url": "https://krawl.sh/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "ask_krawl",
+      "description": "Ask a natural-language question about Krawl's research capabilities and get a routed answer pointing to the right tool or endpoint.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "A natural-language question about what you want to research or how to use Krawl.",
+            "minLength": 2
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "quick_search",
+      "description": "Search a single source and return raw, structured results without synthesis. Faster and cheaper than `research`; use when you want links/snippets from one provider rather than a written report.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "The search query.",
+            "minLength": 2
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "exa",
+              "x",
+              "github",
+              "crypto",
+              "web",
+              "academic"
+            ],
+            "default": "exa",
+            "description": "Which source to search (exa=general web, x=Twitter, etc.)."
+          },
+          "num_results": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 30,
+            "default": 8,
+            "description": "Max results to return."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "research",
+      "description": "Run an autonomous deep-research agent over a topic and return a comprehensive markdown report with 50+ verified sources and inline citations. Searches the web, X/Twitter, GitHub, academic papers, and crypto/DeFi data in parallel, then synthesizes a cited answer.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "The research question or topic to investigate.",
+            "minLength": 3
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "deep",
+              "quick",
+              "crypto"
+            ],
+            "default": "deep",
+            "description": "deep = exhaustive multi-source search; quick = fast shallow answer; crypto = on-chain/DeFi-specialized research."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "krawl.sh",
+  "source": "webmcp.com/api/directory.json"
+}

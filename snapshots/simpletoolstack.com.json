@@ -1,0 +1,1322 @@
+{
+  "sponsio": 1,
+  "url": "https://simpletoolstack.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "ai_text_cleaner",
+      "description": "Cleans AI-generated pasted text in the browser: invisible characters, unicode spaces, dash/quote/ellipsis normalization, optional markdown stripping. Pass text (1–100000 chars) and optional flags from config. Variant URLs are not a second machine Tool — pass flags explicitly. Do not use this as a general whitespace/HTML cleaner (that is text_cleaner) or to rewrite meaning.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "removeInvisible": {
+            "type": "boolean",
+            "default": true
+          },
+          "normalizeUnicodeSpaces": {
+            "type": "boolean",
+            "default": true
+          },
+          "emDash": {
+            "type": "string",
+            "enum": [
+              "keep",
+              "hyphen",
+              "comma",
+              "space",
+              "remove"
+            ],
+            "default": "hyphen"
+          },
+          "enDash": {
+            "type": "string",
+            "enum": [
+              "keep",
+              "hyphen"
+            ],
+            "default": "hyphen"
+          },
+          "straightenQuotes": {
+            "type": "boolean",
+            "default": true
+          },
+          "expandEllipsis": {
+            "type": "boolean",
+            "default": true
+          },
+          "stripMarkdown": {
+            "type": "boolean",
+            "default": true
+          },
+          "codeBlocks": {
+            "type": "string",
+            "enum": [
+              "unwrap",
+              "keep",
+              "remove"
+            ],
+            "default": "unwrap"
+          },
+          "removeEmojiBullets": {
+            "type": "boolean",
+            "default": true
+          },
+          "collapseSpaces": {
+            "type": "boolean",
+            "default": true
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100000
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "business_days",
+      "description": "Counts working days between two ISO dates or adds/subtracts business days from one date, excluding weekends and US/UK holidays in the browser. Pass mode count with start and end, or mode addSubtract with start and n (0–100000). Dates are YYYY-MM-DD (exactly 10 chars). Variant URLs are not a second machine Tool — pass country and mode explicitly. Do not use this for calendar duration including weekends (that is date_duration).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "count",
+              "addSubtract"
+            ],
+            "default": "count"
+          },
+          "country": {
+            "type": "string",
+            "enum": [
+              "US",
+              "UK",
+              "generic"
+            ],
+            "default": "generic"
+          },
+          "direction": {
+            "type": "string",
+            "enum": [
+              "add",
+              "subtract"
+            ],
+            "default": "add"
+          },
+          "start": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 10,
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          },
+          "end": {
+            "$ref": "#/properties/start"
+          },
+          "n": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100000
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "case_converter",
+      "description": "Converts text case only: upper, lower, title, or camel. mode must be passed explicitly (default upper) — there is no Variant URL that implies a mode. Use this when the letters should change case and the words should stay. Do not use it to produce a URL slug (that is slug_generator) or to clean whitespace, HTML, or duplicate lines (that is text_cleaner).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100000
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "upper",
+              "lower",
+              "title",
+              "camel"
+            ],
+            "default": "upper"
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "circle_crop",
+      "description": "Crop one raster into a circular transparent PNG in the browser. Pass image { mime, base64 } (max 12 MiB decoded). size is the output square edge (16–4096, default 512). zoom 1–8 and offsetX/offsetY pan in output pixels; omitted zoom/offsets mean cover-centered. Variant URLs are not a second machine Tool — pass size explicitly for discord (512) or twitter (400). Do not upload.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "size": {
+            "type": "integer",
+            "minimum": 16,
+            "maximum": 4096,
+            "default": 512
+          },
+          "label": {
+            "type": "string",
+            "enum": [
+              "generic",
+              "discord",
+              "twitter"
+            ],
+            "default": "generic"
+          },
+          "image": {
+            "type": "object",
+            "properties": {
+              "mime": {
+                "type": "string",
+                "enum": [
+                  "image/jpeg",
+                  "image/png",
+                  "image/webp",
+                  "image/avif",
+                  "image/heic",
+                  "image/heif",
+                  "image/jxl"
+                ]
+              },
+              "base64": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 16777220
+              }
+            },
+            "required": [
+              "mime",
+              "base64"
+            ],
+            "additionalProperties": false
+          },
+          "zoom": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 8,
+            "default": 1
+          },
+          "offsetX": {
+            "type": "number",
+            "default": 0
+          },
+          "offsetY": {
+            "type": "number",
+            "default": 0
+          }
+        },
+        "required": [
+          "image"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "crop_image",
+      "description": "Crop one JPEG, PNG, WebP or AVIF raster in the browser to an explicit source-pixel rectangle (sx, sy, sw, sh). Pass image { mime, base64 } (max 12 MiB decoded). ratio locks the UI for humans; the machine must still send the rectangle in source pixels. Variant URLs are not a second machine Tool. Missing rect is invalid — do not guess a crop. Do not upload.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "ratio": {
+            "type": "string",
+            "enum": [
+              "free",
+              "1:1",
+              "16:9",
+              "4:5",
+              "9:16",
+              "4:3",
+              "3:2"
+            ],
+            "default": "free"
+          },
+          "label": {
+            "type": "string",
+            "enum": [
+              "generic",
+              "square",
+              "widescreen",
+              "instagram"
+            ],
+            "default": "generic"
+          },
+          "image": {
+            "type": "object",
+            "properties": {
+              "mime": {
+                "type": "string",
+                "enum": [
+                  "image/jpeg",
+                  "image/png",
+                  "image/webp",
+                  "image/avif",
+                  "image/heic",
+                  "image/heif",
+                  "image/jxl"
+                ]
+              },
+              "base64": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 16777220
+              }
+            },
+            "required": [
+              "mime",
+              "base64"
+            ],
+            "additionalProperties": false
+          },
+          "sx": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "sy": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "sw": {
+            "type": "integer",
+            "exclusiveMinimum": 0
+          },
+          "sh": {
+            "type": "integer",
+            "exclusiveMinimum": 0
+          }
+        },
+        "required": [
+          "image",
+          "sx",
+          "sy",
+          "sw",
+          "sh"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "discover_tools",
+      "description": "List live Simple Tools callable via WebMCP. Optional category and q. Returns machineName, href, category, categoryHref, description. Open href for that tool only, or categoryHref to call every live tool in the category. File tools use { mime, base64 }. Does not upload.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string"
+          },
+          "q": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "exif_remover",
+      "description": "Strip or view raster metadata (EXIF, GPS, XMP, IPTC) entirely in the browser. JPEG, PNG and WebP can be stripped without re-encoding pixels. HEIC can be viewed but not stripped — convert to JPEG first. Pass the file as image { mime, base64 } (max 12 MiB decoded). mode is strip or view; scope is all or gps-only (JPEG only; other formats full-strip). keepOrientation and keepColorProfile apply to JPEG. Variant URLs are not a second machine Tool — pass mode and scope explicitly. Do not use this to compress or convert formats.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "strip",
+              "view"
+            ],
+            "default": "strip"
+          },
+          "scope": {
+            "type": "string",
+            "enum": [
+              "all",
+              "gps-only"
+            ],
+            "default": "all"
+          },
+          "keepOrientation": {
+            "type": "boolean",
+            "default": true
+          },
+          "keepColorProfile": {
+            "type": "boolean",
+            "default": true
+          },
+          "image": {
+            "type": "object",
+            "properties": {
+              "mime": {
+                "type": "string",
+                "enum": [
+                  "image/jpeg",
+                  "image/png",
+                  "image/webp",
+                  "image/avif",
+                  "image/heic",
+                  "image/heif",
+                  "image/jxl"
+                ]
+              },
+              "base64": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 16777220
+              }
+            },
+            "required": [
+              "mime",
+              "base64"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "image"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "find_and_replace",
+      "description": "Finds and replaces in pasted text in the browser: plain, regex, or bulk pairs applied in order. Pass text (1–100000 chars). For plain or regex pass find and replace; for bulk pass pairs (1–50 objects with find and replace). Variant URLs are not a second machine Tool — pass mode explicitly. Do not use this to diff two strings (that is text_diff) or to count words (that is word_counter).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "plain",
+              "regex",
+              "bulk"
+            ],
+            "default": "plain"
+          },
+          "caseSensitive": {
+            "type": "boolean",
+            "default": true
+          },
+          "wholeWord": {
+            "type": "boolean",
+            "default": false
+          },
+          "multiline": {
+            "type": "boolean",
+            "default": false
+          },
+          "dotAll": {
+            "type": "boolean",
+            "default": false
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100000
+          },
+          "find": {
+            "type": "string",
+            "maxLength": 100000
+          },
+          "replace": {
+            "type": "string",
+            "maxLength": 100000
+          },
+          "pairs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "find": {
+                  "type": "string",
+                  "maxLength": 100000
+                },
+                "replace": {
+                  "type": "string",
+                  "maxLength": 100000
+                }
+              },
+              "required": [
+                "find",
+                "replace"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 1,
+            "maxItems": 50
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "image_compress",
+      "description": "Compress one JPEG, PNG or WebP image in the browser. Pass image { mime, base64 } (max 12 MiB decoded). mode is quality, target-size, or email; quality 1–100; targetKB 5–10240; output original|jpeg|webp|avif; allowDownscale; emailProvider gmail|outlook. HEIC is not supported here — use image_convert first. Variant URLs are not a second machine Tool — pass mode and targetKB explicitly. Do not upload.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "quality",
+              "target-size",
+              "email"
+            ],
+            "default": "quality"
+          },
+          "quality": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 80
+          },
+          "targetKB": {
+            "type": "integer",
+            "minimum": 5,
+            "maximum": 10240,
+            "default": 100
+          },
+          "output": {
+            "type": "string",
+            "enum": [
+              "original",
+              "jpeg",
+              "webp",
+              "avif"
+            ],
+            "default": "original"
+          },
+          "allowDownscale": {
+            "type": "boolean",
+            "default": false
+          },
+          "emailProvider": {
+            "type": "string",
+            "enum": [
+              "gmail",
+              "outlook"
+            ],
+            "default": "gmail"
+          },
+          "image": {
+            "type": "object",
+            "properties": {
+              "mime": {
+                "type": "string",
+                "enum": [
+                  "image/jpeg",
+                  "image/png",
+                  "image/webp",
+                  "image/avif",
+                  "image/heic",
+                  "image/heif",
+                  "image/jxl"
+                ]
+              },
+              "base64": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 16777220
+              }
+            },
+            "required": [
+              "mime",
+              "base64"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "image"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "image_convert",
+      "description": "Convert one raster between JPEG, PNG, WebP, AVIF, JXL and HEIC in the browser. Pass image { mime, base64 } (max 12 MiB decoded). source is a filter hint; sniffing governs decode. target is jpeg|png|webp|avif|jxl; quality 1–100 ignored for png. Variant URLs are not a second machine Tool — pass source and target explicitly. Do not upload. WASM stays in-page; abort must stop work.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "source": {
+            "type": "string",
+            "enum": [
+              "auto",
+              "heic",
+              "webp",
+              "avif",
+              "jxl",
+              "jpeg",
+              "png"
+            ],
+            "default": "auto"
+          },
+          "target": {
+            "type": "string",
+            "enum": [
+              "jpeg",
+              "png",
+              "webp",
+              "avif",
+              "jxl"
+            ],
+            "default": "jpeg"
+          },
+          "quality": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 90
+          },
+          "image": {
+            "type": "object",
+            "properties": {
+              "mime": {
+                "type": "string",
+                "enum": [
+                  "image/jpeg",
+                  "image/png",
+                  "image/webp",
+                  "image/avif",
+                  "image/heic",
+                  "image/heif",
+                  "image/jxl"
+                ]
+              },
+              "base64": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 16777220
+              }
+            },
+            "required": [
+              "mime",
+              "base64"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "image"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "image_resize",
+      "description": "Resize one raster in the browser by pixels, percent, or preset (discord-emoji, youtube-thumbnail, full-hd). Pass image { mime, base64 } (max 12 MiB decoded). HEIC, JXL and AVIF are not supported here. Variant URLs are not a second machine Tool — pass mode and preset explicitly. Do not upload.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "pixels",
+              "percent",
+              "preset"
+            ],
+            "default": "pixels"
+          },
+          "width": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20000
+          },
+          "height": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20000
+          },
+          "lockAspect": {
+            "type": "boolean",
+            "default": true
+          },
+          "percent": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 400,
+            "default": 50
+          },
+          "preset": {
+            "type": "string",
+            "enum": [
+              "discord-emoji",
+              "youtube-thumbnail",
+              "full-hd"
+            ]
+          },
+          "fit": {
+            "type": "string",
+            "enum": [
+              "cover",
+              "contain"
+            ],
+            "default": "cover"
+          },
+          "padColor": {
+            "type": "string",
+            "default": "transparent"
+          },
+          "output": {
+            "type": "string",
+            "enum": [
+              "auto",
+              "png",
+              "jpeg",
+              "webp"
+            ],
+            "default": "auto"
+          },
+          "quality": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 90
+          },
+          "image": {
+            "type": "object",
+            "properties": {
+              "mime": {
+                "type": "string",
+                "enum": [
+                  "image/jpeg",
+                  "image/png",
+                  "image/webp",
+                  "image/avif",
+                  "image/heic",
+                  "image/heif",
+                  "image/jxl"
+                ]
+              },
+              "base64": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 16777220
+              }
+            },
+            "required": [
+              "mime",
+              "base64"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "image"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "jpg_to_pdf",
+      "description": "Builds one PDF from 1 to 8 JPEG or PNG images in the browser. Pass images as machine documents (mime image/jpeg or image/png, base64, no data URL prefix, 12 MiB decoded each) plus optional pageMode, orientation, and flavor. WebP and HEIC are rejected — convert first with image_convert. Variant URLs are not a second machine Tool — pass pageMode explicitly. Do not use this to merge PDFs (that is pdf_merge).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "pageMode": {
+            "type": "string",
+            "enum": [
+              "fit-image",
+              "a4"
+            ],
+            "default": "fit-image"
+          },
+          "orientation": {
+            "type": "string",
+            "enum": [
+              "portrait",
+              "landscape"
+            ],
+            "default": "portrait"
+          },
+          "flavor": {
+            "type": "string",
+            "enum": [
+              "generic",
+              "png"
+            ],
+            "default": "generic"
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "mime": {
+                  "type": "string",
+                  "enum": [
+                    "image/jpeg",
+                    "image/png",
+                    "image/webp",
+                    "image/avif",
+                    "image/heic",
+                    "image/heif",
+                    "image/jxl"
+                  ]
+                },
+                "base64": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 16777220
+                }
+              },
+              "required": [
+                "mime",
+                "base64"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 1,
+            "maxItems": 8
+          }
+        },
+        "required": [
+          "images"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "pdf_merge",
+      "description": "Merges 2 to 8 PDF files into one PDF in the browser. Pass files as application/pdf machine documents (base64, no data URL prefix, 12 MiB decoded each) plus optional useCase. Order is array order. Variant URLs are not a second machine Tool — pass useCase explicitly. Do not use this to extract pages (that is pdf_split) or to convert images to PDF (that is jpg_to_pdf).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "useCase": {
+            "type": "string",
+            "enum": [
+              "generic",
+              "job-application"
+            ],
+            "default": "generic"
+          },
+          "files": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "mime": {
+                  "type": "string",
+                  "const": "application/pdf"
+                },
+                "base64": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 16777220
+                }
+              },
+              "required": [
+                "mime",
+                "base64"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 2,
+            "maxItems": 8
+          }
+        },
+        "required": [
+          "files"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "pdf_organize",
+      "description": "Reorders or drops pages of one PDF in the browser by sending the 0-based indices to keep, in order. Pass pdf as an application/pdf machine document (base64, no data URL prefix, 12 MiB decoded) and keptOrder (1–200 indices). Duplicates are allowed. No blank-page detection. Variant URLs are not a second machine Tool. Do not use this to rotate pages (that is pdf_rotate) or to extract a range string (that is pdf_split).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "pdf": {
+            "type": "object",
+            "properties": {
+              "mime": {
+                "type": "string",
+                "const": "application/pdf"
+              },
+              "base64": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 16777220
+              }
+            },
+            "required": [
+              "mime",
+              "base64"
+            ],
+            "additionalProperties": false
+          },
+          "keptOrder": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "minItems": 1,
+            "maxItems": 200
+          }
+        },
+        "required": [
+          "pdf",
+          "keptOrder"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "pdf_rotate",
+      "description": "Rotates pages of one PDF by 90, 180 or 270 degrees clockwise in the browser and writes the rotation into the file. Pass pdf as an application/pdf machine document (base64, no data URL prefix, 12 MiB decoded), delta, and scope kind all or pages with 0-based indices (max 200). Variant URLs are not a second machine Tool — pass delta and scope explicitly. Do not use this to reorder pages (that is pdf_organize) or to extract a range (that is pdf_split).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "pdf": {
+            "type": "object",
+            "properties": {
+              "mime": {
+                "type": "string",
+                "const": "application/pdf"
+              },
+              "base64": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 16777220
+              }
+            },
+            "required": [
+              "mime",
+              "base64"
+            ],
+            "additionalProperties": false
+          },
+          "delta": {
+            "type": "number",
+            "enum": [
+              90,
+              180,
+              270
+            ]
+          },
+          "scope": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "type": "string",
+                    "const": "all"
+                  }
+                },
+                "required": [
+                  "kind"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "type": "string",
+                    "const": "pages"
+                  },
+                  "indices": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "maxItems": 200
+                  }
+                },
+                "required": [
+                  "kind",
+                  "indices"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          }
+        },
+        "required": [
+          "pdf",
+          "delta",
+          "scope"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "pdf_split",
+      "description": "Extracts a page range from one PDF into a single PDF in the browser. Pass pdf as an application/pdf machine document (base64, no data URL prefix, 12 MiB decoded) and spec (1–200 chars, 1-based ranges like 1-3,5). One output PDF only — not one file per page. Variant URLs are not a second machine Tool. Do not use this to merge PDFs (that is pdf_merge) or to reorder pages (that is pdf_organize).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "pdf": {
+            "type": "object",
+            "properties": {
+              "mime": {
+                "type": "string",
+                "const": "application/pdf"
+              },
+              "base64": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 16777220
+              }
+            },
+            "required": [
+              "mime",
+              "base64"
+            ],
+            "additionalProperties": false
+          },
+          "spec": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          }
+        },
+        "required": [
+          "pdf",
+          "spec"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "pdf_to_jpg",
+      "description": "Renders each page of one PDF to JPEG or PNG images in the browser (max 30 pages). Pass pdf as an application/pdf machine document (base64, no data URL prefix, 12 MiB decoded) plus optional format, dpi (72, 96, 150, or 300), and quality. Variant URLs are not a second machine Tool — pass format explicitly. Do not use this to build a PDF from images (that is jpg_to_pdf) or to extract PDF pages (that is pdf_split).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "format": {
+            "type": "string",
+            "enum": [
+              "jpeg",
+              "png"
+            ],
+            "default": "jpeg"
+          },
+          "dpi": {
+            "type": "number",
+            "enum": [
+              72,
+              96,
+              150,
+              300
+            ],
+            "default": 150
+          },
+          "quality": {
+            "type": "number",
+            "minimum": 0.1,
+            "maximum": 1,
+            "default": 0.92
+          },
+          "pdf": {
+            "type": "object",
+            "properties": {
+              "mime": {
+                "type": "string",
+                "const": "application/pdf"
+              },
+              "base64": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 16777220
+              }
+            },
+            "required": [
+              "mime",
+              "base64"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "pdf"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "slug_generator",
+      "description": "Produces a URL slug from title text: lowercase, ASCII-transliterated, optional stop-word removal, hyphen or underscore separator, and optional maxLength (0 means no extra user cap; wordpress flavor still applies a 200-character cap and shopify 255 via existing generateSlug). Use this Tool when an agent needs a permalink or CMS handle. Do not use it to change letter case (that is case_converter) or to clean or rewrite prose (that is text_cleaner). flavor must be passed explicitly as generic, wordpress, or shopify — Variant URLs such as /text/slug-generator/wordpress or shopify-handle are not a second machine Tool and do not imply flavor.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "flavor": {
+            "type": "string",
+            "enum": [
+              "generic",
+              "wordpress",
+              "shopify"
+            ],
+            "default": "generic"
+          },
+          "separator": {
+            "type": "string",
+            "enum": [
+              "-",
+              "_"
+            ],
+            "default": "-"
+          },
+          "removeStopWords": {
+            "type": "boolean",
+            "default": false
+          },
+          "maxLength": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 500,
+            "default": 0
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100000
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "text_cleaner",
+      "description": "Cleans and normalizes pasted text in one pass: whitespace, line breaks, duplicate lines, optional HTML stripping and quote straightening. Operations are combinable via input flags (lineBreaks, collapseSpaces, stripHtmlTags, and the other configSchema fields) — they are not separate machine Tools. Variant URLs such as remove-line-breaks or remove-duplicate-lines are not extra machine names. Use this when the text should keep its meaning. Do not use it to rewrite content, to make a URL slug (that is slug_generator), or to change letter case only (that is case_converter).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "lineBreaks": {
+            "type": "string",
+            "enum": [
+              "keep",
+              "remove-single",
+              "remove-all"
+            ],
+            "default": "keep"
+          },
+          "lineBreakReplacement": {
+            "type": "string",
+            "enum": [
+              "space",
+              "none"
+            ],
+            "default": "space"
+          },
+          "collapseSpaces": {
+            "type": "boolean",
+            "default": true
+          },
+          "normalizeUnicodeSpaces": {
+            "type": "boolean",
+            "default": true
+          },
+          "trimLines": {
+            "type": "boolean",
+            "default": true
+          },
+          "removeBlankLines": {
+            "type": "boolean",
+            "default": false
+          },
+          "removeDuplicateLines": {
+            "type": "boolean",
+            "default": false
+          },
+          "dedupeIgnoreCase": {
+            "type": "boolean",
+            "default": false
+          },
+          "dedupeConsecutiveOnly": {
+            "type": "boolean",
+            "default": false
+          },
+          "sortLines": {
+            "type": "boolean",
+            "default": false
+          },
+          "straightenQuotes": {
+            "type": "boolean",
+            "default": false
+          },
+          "stripHtmlTags": {
+            "type": "boolean",
+            "default": false
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100000
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "text_diff",
+      "description": "Computes a sequential diff of two pasted strings in the browser (character, word, or line granularity). Pass left and right (each 0–100000 chars) plus optional granularity, ignoreCase, and whitespace. Variant URLs and the file-picker source are not a second machine Tool — pass left and right as strings. Do not use this to find-and-replace in one string (that is find_and_replace) or to count words (that is word_counter).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "granularity": {
+            "type": "string",
+            "enum": [
+              "char",
+              "word",
+              "line"
+            ],
+            "default": "word"
+          },
+          "ignoreCase": {
+            "type": "boolean",
+            "default": false
+          },
+          "whitespace": {
+            "type": "string",
+            "enum": [
+              "sensitive",
+              "ignore"
+            ],
+            "default": "sensitive"
+          },
+          "mono": {
+            "type": "boolean",
+            "default": false
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "text",
+              "file"
+            ],
+            "default": "text"
+          },
+          "left": {
+            "type": "string",
+            "maxLength": 100000
+          },
+          "right": {
+            "type": "string",
+            "maxLength": 100000
+          }
+        },
+        "required": [
+          "left",
+          "right"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "word_counter",
+      "description": "Counts words, graphemes, sentences, paragraphs, lines and reading time for pasted text in the browser. Pass text (1–100000 chars) and optional platform for limit checks. Variant URLs are not a second machine Tool — pass platform explicitly. Do not use this to clean or rewrite prose (that is text_cleaner) or to diff two strings (that is text_diff).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "platform": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "twitter-post",
+                  "twitter-bio",
+                  "instagram-bio",
+                  "instagram-caption",
+                  "linkedin-headline",
+                  "linkedin-post",
+                  "meta-description",
+                  "facebook-post"
+                ]
+              },
+              {
+                "type": "string",
+                "const": "none"
+              }
+            ],
+            "default": "none"
+          },
+          "shownLimits": {
+            "type": "array",
+            "items": {
+              "$ref": "#/properties/platform/anyOf/0"
+            },
+            "default": [
+              "twitter-post",
+              "instagram-bio",
+              "linkedin-headline",
+              "meta-description"
+            ]
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100000
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    }
+  ],
+  "host": "simpletoolstack.com",
+  "source": "webmcp.com/api/directory.json"
+}

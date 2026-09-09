@@ -1,0 +1,114 @@
+{
+  "sponsio": 1,
+  "url": "https://spreadfront.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "copy_template_sheet",
+      "description": "FIRST step for a new merchant who does not have a product sheet yet: navigates this page to Google’s \"Make a copy\" screen for the SpreadFront product-sheet template, so one click puts the template into the user’s own Google Drive (SpreadFront never gets Drive access - the copy happens entirely on Google’s side). Use start_free_store instead when the user already has a product sheet or only wants to sign in. Call WITHOUT confirm first for a no-side-effect preview; call with confirm: true (after the user agrees) to actually navigate. Returns JSON: {preview, navigatingTo, agentInstructions: string[] (ordered steps for YOU, the agent, to carry through after this page and its tools are gone - read and keep them), note}.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "confirm": {
+            "type": "boolean",
+            "default": false,
+            "description": "true = actually navigate (do this only after the user agreed). false/omitted = preview: returns what would happen, navigates nowhere."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_plans_and_pricing",
+      "description": "SpreadFront subscription plans with prices in EUR and USD, limits and included features. Filter to one plan and/or one currency, or omit both for the full table. Free plan is free forever; paid plans bill annually with a 14-day trial plus a 14-day refund window. Returns JSON: {plans: [{name, priceMonthly: {eur?, usd?}, priceYearly: {eur?, usd?}, billing, limits: {stores, productsPerStore, ordersPerMonth, storage}, highlights[], notIncluded[]}], payments: string, currency?: string}.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "plan": {
+            "type": "string",
+            "enum": [
+              "free",
+              "pro",
+              "business"
+            ],
+            "description": "Return only this plan. Omit for all three."
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "eur",
+              "usd"
+            ],
+            "description": "Return prices only in this currency. Omit for both."
+          }
+        }
+      }
+    },
+    {
+      "name": "get_spreadfront_info",
+      "description": "Information about the SpreadFront platform (turn a Google Sheet into a hosted online store). Pick a topic to get just that section, or \"all\" for everything: overview (what it is, principles, signup + live demo store URL), how_it_works (3-step setup), agentic_commerce (how stores support AI agents), payments (how merchants get paid, 0% commission), docs (guide/manual/terms links). Returns JSON with the requested sections: {topic, product?: {name, url, what, signupUrl, demoStoreUrl, principles[]}, howItWorks?: string[], agentic?: string, payments?: string, docs?: {guide, manual, terms, refunds}}.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "topic": {
+            "type": "string",
+            "enum": [
+              "overview",
+              "how_it_works",
+              "agentic_commerce",
+              "payments",
+              "docs",
+              "all"
+            ],
+            "description": "Which section to return. Default \"overview\"."
+          }
+        }
+      }
+    },
+    {
+      "name": "search_docs",
+      "description": "Search the SpreadFront documentation (the merchant manual and the setup guide) for how a feature works: sheet columns, payments, subscriptions, digital products, custom domains, shipping, coupons, languages, agentic commerce and more. Returns JSON: {totalMatches, results: [{heading, excerpt, page (URL of the docs page)}]}.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "What to look for, e.g. \"subscription products\", \"custom domain SSL\", \"options variants column\"."
+          },
+          "max_results": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "default": 5,
+            "description": "Maximum sections to return."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "start_free_store",
+      "description": "The sign-in step: navigate this page to the SpreadFront sign-in so the human can create their free account and store. Use when the user already has a product sheet or just wants an account; use copy_template_sheet first when they still need the product-sheet template. This action does NOT create an account - account creation always requires the human (Google sign-in or a confirmed email link); there is deliberately no automated signup. Call WITHOUT confirm first for a no-side-effect preview; call with confirm: true (after the user agrees) to actually navigate. Returns JSON: {preview, navigatingTo, note, nextSteps: string[]}.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "confirm": {
+            "type": "boolean",
+            "default": false,
+            "description": "true = actually navigate (do this only after the user agreed). false/omitted = preview: returns what would happen, navigates nowhere."
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "spreadfront.com",
+  "source": "webmcp.com/api/directory.json"
+}

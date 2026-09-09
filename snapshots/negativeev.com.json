@@ -1,0 +1,55 @@
+{
+  "sponsio": 1,
+  "url": "https://negativeev.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "check_bet",
+      "description": "Check a specific sports bet against thousands of play-by-play game simulations: each leg's simulated probability, the sportsbook's implied probability, and the edge. Send the bet as plain text - teams or players, market, line, odds. A parlay in one string is graded leg by leg and priced as a whole. Call this first; nothing has to be set up, and a missing slate, an unrecognized bet, or an unsupported market comes back as a plain `status` without spending a check. It prices a bet the caller names and never suggests one, so there is nothing to send for \"what should I bet tonight\". Every result leads with `status` and `check_spent` and says whether re-wording would change anything; when it says no, it means no. Covers MLB, WNBA, PGA, and ATP. A game that already started still checks, against the simulations from before it began.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "bet": {
+            "type": "string",
+            "description": "The bet text, e.g. 'Shohei Ohtani over 1.5 total bases -120'"
+          }
+        },
+        "required": [
+          "bet"
+        ]
+      }
+    },
+    {
+      "name": "get_slate",
+      "description": "Which of MLB, WNBA, PGA, and ATP have a checkable slate right now - at least one simulated game that has not started. Pass `sport` for one; omit it for all. Free, spends no check. It is not required before `check_bet`, which reports a missing slate itself at no cost. Call it to answer \"what can be checked today\", or after a `no_slate` or `ungraded` result, which mean the game is not on the simulated slate rather than that the bet was worded wrong.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sport": {
+            "type": "string",
+            "enum": [
+              "MLB",
+              "WNBA",
+              "PGA",
+              "ATP"
+            ],
+            "description": "One of: MLB, WNBA, PGA, ATP. Omit to get every live sport."
+          }
+        }
+      }
+    },
+    {
+      "name": "get_usage",
+      "description": "How many bet checks the caller has left and when the next one frees up — the daily allowance for anonymous callers, the hourly pace window for accounts. Call it before grading several bets in one turn, to know how many will fit, and after a check is refused for quota, to know when to retry. It reports the budget only; `check_bet` is what spends it. Free — spends no check.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    }
+  ],
+  "host": "negativeev.com",
+  "source": "webmcp.com/api/directory.json"
+}

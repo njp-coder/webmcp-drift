@@ -1,0 +1,93 @@
+{
+  "sponsio": 1,
+  "url": "https://esimc.top/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "ask_site",
+      "description": "Answer a visitor's question about eSIM Connect's travel eSIM catalog, coverage, plan data and validity, purchasing, wallet top-ups, accounts, or order management from the site's own content. Use when the visitor asks for site information rather than requesting a catalog search or account action. Returns matching content sections and source paths, or an explicit no-match note.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "The visitor question about the site"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_esim_plan_details",
+      "description": "Get the current details for one eSIM plan, including destination, data, validity, speed, coverage, price, and supported locations. Use when a visitor asks for more information about a specific plan before purchasing. Returns the plan details and source.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "planId": {
+            "type": "string",
+            "description": "The plan package code, id, or slug"
+          }
+        },
+        "required": [
+          "planId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_esim_plans",
+      "description": "Search the site's current travel eSIM catalog by destination, region, plan name, data allowance, or validity. Use when a visitor wants to find plans before opening a country page or starting a purchase. Returns matching plan summaries with identifiers, pricing, coverage, and destination paths; it does not purchase a plan.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Destination, region, plan name, data, or validity to search for"
+          },
+          "maxResults": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "default": 20
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "start_esim_checkout",
+      "description": "Start secure checkout for a single-country eSIM plan and its quantity. Use after choosing a plan when the visitor is ready to pay; sign-in is required and this hands off to the site's own Stripe checkout without charging the payment in this call. Returns the checkout session and pending-payment status.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "planId": {
+            "type": "string",
+            "description": "The plan package code, id, or slug"
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "default": 1
+          }
+        },
+        "required": [
+          "planId"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "esimc.top",
+  "source": "webmcp.com/api/directory.json"
+}

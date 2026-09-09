@@ -1,0 +1,244 @@
+{
+  "sponsio": 1,
+  "url": "https://docs.getsuperbee.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "superbee_describe_bundle",
+      "description": "Describe this published Superbee Portal artifact: artifact and snapshot identity, audience, exposure, record counts, available document scopes, presentation identity, adapter capabilities, and the search algorithm version. Read-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    },
+    {
+      "name": "superbee_get_document",
+      "description": "Read one document by id: identity, selected metadata, a bounded UTF-8 body slice with its continuation offset, relationship counts, and the validated raw path. Read-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 16384
+          },
+          "bodyOffset": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "bodyBytes": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 32768
+          },
+          "includeFrontmatter": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    {
+      "name": "superbee_get_relationships",
+      "description": "List outgoing, incoming, or both-direction canonical relationship rows for one document, with returned and total page counts. Read-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 16384
+          },
+          "direction": {
+            "enum": [
+              "both",
+              "incoming",
+              "outgoing"
+            ]
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50
+          },
+          "cursor": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2048
+          }
+        }
+      }
+    },
+    {
+      "name": "superbee_list_document_facets",
+      "description": "List bounded, paginated exact type or tag filter values with document counts and returned and total page counts. Facets can cover the complete publication or the reader-facing presented scope. Presented scope follows the client presentation policy and is not a privacy boundary. Read-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "facet"
+        ],
+        "properties": {
+          "facet": {
+            "enum": [
+              "type",
+              "tag"
+            ]
+          },
+          "scope": {
+            "enum": [
+              "complete",
+              "presented"
+            ]
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50
+          },
+          "cursor": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2048
+          }
+        }
+      }
+    },
+    {
+      "name": "superbee_list_documents",
+      "description": "List the published document inventory with optional exact type and tag filters and an explicit complete or reader-facing presented scope, in canonical id order, with returned and total page counts. Presented scope follows the client presentation policy and is not a privacy boundary. Read-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "type": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2048
+          },
+          "tag": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2048
+          },
+          "scope": {
+            "enum": [
+              "complete",
+              "presented"
+            ]
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50
+          },
+          "cursor": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2048
+          }
+        }
+      }
+    },
+    {
+      "name": "superbee_list_views",
+      "description": "List the Views this artifact admits, with bounded metadata, access mode, entry identity, and returned and total page counts. View code is never executed. Read-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50
+          },
+          "cursor": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2048
+          }
+        }
+      }
+    },
+    {
+      "name": "superbee_search_documents",
+      "description": "Rank documents against a query with optional exact type and tag filters and an explicit complete or reader-facing presented scope. Default auto matching tries every normalized term, then falls back to any meaningful term. Set match to all or any for explicit semantics. Presented scope follows the client presentation policy and is not a privacy boundary. Returns bounded rows with excerpts, raw paths, per-term match evidence, and returned and total page counts. Read-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "query"
+        ],
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1024
+          },
+          "match": {
+            "enum": [
+              "auto",
+              "all",
+              "any"
+            ]
+          },
+          "type": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2048
+          },
+          "tag": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2048
+          },
+          "scope": {
+            "enum": [
+              "complete",
+              "presented"
+            ]
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50
+          },
+          "cursor": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2048
+          },
+          "excerptBytes": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1024
+          }
+        }
+      }
+    }
+  ],
+  "host": "docs.getsuperbee.com",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,123 @@
+{
+  "sponsio": 1,
+  "url": "http://karoleloi.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "book_meeting",
+      "description": "Agenda a conversa de nivelamento num horário retornado por get_available_slots. Requer submit_nivelamento bem-sucedido nesta sessão.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slotId": {
+            "type": "string",
+            "description": "Horário ISO 8601 exato retornado por get_available_slots. Não invente horários; use um valor da lista."
+          }
+        },
+        "required": [
+          "slotId"
+        ]
+      }
+    },
+    {
+      "name": "fill_nivelamento_answer",
+      "description": "Responde uma pergunta do formulário de nivelamento em nome do usuário (com consentimento dele). Perguntas e opções válidas: nivel (\"Como você avalia o seu inglês hoje?\"): iniciante | basico | intermediario | avancado; idade (\"Qual a sua idade?\"): menor | maior; objetivo (\"Qual é o seu maior objetivo com o inglês?\"): profissional | viagens | morar | prova | outro; renda (\"Qual é a sua faixa de renda familiar mensal?\"): r2 | r3 | r4; dificuldade (\"Qual é a sua maior dificuldade com o inglês hoje?\"): travo | teoria | vergonha | rapido | desisto | zero | outro; quando (\"Quando você gostaria de começar?\"): agora | semana | espera. Opção \"outro\" exige freeText.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "questionId": {
+            "type": "string",
+            "enum": [
+              "nivel",
+              "idade",
+              "objetivo",
+              "renda",
+              "dificuldade",
+              "quando"
+            ],
+            "description": "Id da pergunta a responder. Ver a lista de perguntas e ids na descrição desta tool."
+          },
+          "optionId": {
+            "type": "string",
+            "description": "Id da opção escolhida para essa pergunta (um dos ids válidos listados na descrição). A opção 'outro' exige o campo freeText."
+          },
+          "freeText": {
+            "type": "string",
+            "description": "Texto livre do usuário. Obrigatório quando optionId = 'outro'; ignorado caso contrário."
+          }
+        },
+        "required": [
+          "questionId",
+          "optionId"
+        ]
+      }
+    },
+    {
+      "name": "get_available_slots",
+      "description": "Lista horários livres (ISO 8601, fuso America/Sao_Paulo) para a conversa de nivelamento de 30 minutos.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "fromDate": {
+            "type": "string",
+            "description": "Data inicial no formato YYYY-MM-DD (opcional). Sem valor, começa de hoje."
+          }
+        }
+      }
+    },
+    {
+      "name": "get_placement_test",
+      "description": "Retorna o link do teste de nivelamento (Flexge) que o usuário deve fazer antes da conversa, com as instruções (ambiente calmo, sem barulho; a duração varia com o conhecimento). Disponível após book_meeting bem-sucedido nesta sessão.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_program_info",
+      "description": "Informações da Karol Elói Language Learning: método, diferenciais, fundadora e como funciona a conversa de nivelamento.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "submit_nivelamento",
+      "description": "Envia o formulário de nivelamento preenchido. Requer todas as perguntas respondidas (fill_nivelamento_answer), nome completo, WhatsApp (brasileiro com DDD ou internacional com +código do país) e e-mail (para o convite da conversa).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "nome": {
+            "type": "string",
+            "description": "Nome completo do usuário."
+          },
+          "whatsapp": {
+            "type": "string",
+            "description": "WhatsApp do usuário. Brasil: com DDD, ex: (11) 99999-9999. Fora do Brasil: formato internacional com o código do país, ex: +351 912 345 678. Usado para o contato da equipe."
+          },
+          "email": {
+            "type": "string",
+            "description": "E-mail do usuário, usado para enviar o convite da conversa (com o link do Zoom)."
+          },
+          "instagram": {
+            "type": "string",
+            "description": "@ do Instagram do usuário (opcional)."
+          }
+        },
+        "required": [
+          "nome",
+          "whatsapp",
+          "email"
+        ]
+      }
+    }
+  ],
+  "host": "karoleloi.com",
+  "source": "webmcp.com/api/directory.json"
+}

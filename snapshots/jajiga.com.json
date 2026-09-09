@@ -1,0 +1,86 @@
+{
+  "sponsio": 1,
+  "url": "https://www.jajiga.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "get_room",
+      "description": "Get detailed information about a specific room by its numeric ID. Returns room details including title, description, price, rating, photos, host info, features, and location. Use this when the user wants details about a specific room they already know the ID of.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "room_id": {
+            "type": "integer",
+            "description": "Numeric room ID, e.g. 12345",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "room_id"
+        ]
+      }
+    },
+    {
+      "name": "search_rooms",
+      "description": "Search for rental rooms and accommodations on jajiga. Returns a structured list of matching rooms with price, rating, photo, and URL. Use this when the user wants to find a place to stay in a specific city or location.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "city": {
+            "type": "string",
+            "description": "City or location name to search in, e.g. \"شیراز\" or \"Shiraz\""
+          },
+          "checkin": {
+            "type": "string",
+            "description": "Check-in date as ISO 8601 (YYYY-MM-DD), e.g. \"2026-07-01\""
+          },
+          "checkout": {
+            "type": "string",
+            "description": "Check-out date as ISO 8601 (YYYY-MM-DD). Defaults to checkin + 1 day if omitted."
+          },
+          "guests": {
+            "type": "integer",
+            "description": "Number of guests",
+            "minimum": 1
+          },
+          "min_price": {
+            "type": "number",
+            "description": "Minimum price per night in Tomans"
+          },
+          "max_price": {
+            "type": "number",
+            "description": "Maximum price per night in Tomans"
+          },
+          "order": {
+            "type": "string",
+            "enum": [
+              "similarity",
+              "popularity",
+              "rating",
+              "low_price",
+              "high_price",
+              "books",
+              "discount",
+              "newest"
+            ],
+            "description": "Sort order for results"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Feature tags: pool, jacuzzi, breakfast, scenic, waterfront, luxury, economic, instant, plus, pet, mountain, ecolog, ruralhome, swiss_cottage, wooden_cottage, etc."
+          }
+        },
+        "required": [
+          "city"
+        ]
+      }
+    }
+  ],
+  "host": "jajiga.com",
+  "source": "webmcp.com/api/directory.json"
+}

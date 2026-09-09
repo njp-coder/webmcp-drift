@@ -1,0 +1,768 @@
+{
+  "sponsio": 1,
+  "url": "https://tryportego.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "device.bind",
+      "description": "Bind or rebind one designed device to a compatible discovered hardware endpoint. Both sides can have only one active binding.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "deviceLabel": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "endpointLabel": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          }
+        },
+        "required": [
+          "deviceLabel",
+          "endpointLabel"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "device.set_state",
+      "description": "Set a supported power or brightness state for one named device bound to reachable hardware. Portego waits for the gateway to confirm the resulting physical state.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "deviceLabel": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80,
+            "description": "Exact visible device name."
+          },
+          "on": {
+            "type": "boolean"
+          },
+          "brightness": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          }
+        },
+        "required": [
+          "deviceLabel"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "device.unbind",
+      "description": "Disconnect one designed device from its physical hardware endpoint.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "deviceLabel": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          }
+        },
+        "required": [
+          "deviceLabel"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "home.add_device",
+      "description": "Add one configured light, switch, plug, or sensor to an existing room on the visible canvas. Honor any placement the user describes. When no placement is specified, omit position so Portego chooses a sensible free location away from other devices. Never stack device symbols on top of one another. When autoBind is enabled, Portego binds the first available hardware endpoint that provides every required capability.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "roomLabel": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80,
+            "description": "Exact visible room name."
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80,
+            "description": "Human-facing device name."
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "light",
+              "switch",
+              "plug",
+              "sensor"
+            ]
+          },
+          "config": {
+            "type": "object",
+            "description": "Type-specific configuration: lights use mounting, dimmable, and colorTemperature; switches use mode and channels; plugs use energyMonitoring; sensors use measures.",
+            "properties": {
+              "mounting": {
+                "type": "string",
+                "enum": [
+                  "ceiling",
+                  "wall",
+                  "table",
+                  "floor"
+                ]
+              },
+              "dimmable": {
+                "type": "boolean"
+              },
+              "colorTemperature": {
+                "type": "boolean"
+              },
+              "mode": {
+                "type": "string",
+                "enum": [
+                  "toggle",
+                  "momentary",
+                  "dimmer"
+                ]
+              },
+              "channels": {
+                "type": "number",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "energyMonitoring": {
+                "type": "boolean"
+              },
+              "measures": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "temperature",
+                    "occupancy",
+                    "contact"
+                  ]
+                }
+              }
+            },
+            "additionalProperties": false
+          },
+          "autoBind": {
+            "type": "boolean",
+            "description": "Bind the first compatible unbound endpoint when available."
+          },
+          "position": {
+            "type": "object",
+            "description": "Optional position in the 1000 by 650 floor-plan space. Use it when the user requests a location (for example, near the right wall). Inspect home.get_document first and keep device centers separated from existing devices; otherwise omit this field for automatic placement.",
+            "properties": {
+              "x": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1000
+              },
+              "y": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 650
+              }
+            },
+            "required": [
+              "x",
+              "y"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "roomLabel",
+          "label",
+          "type"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "home.add_opening",
+      "description": "Add a door or window to a named room wall. A door can optionally connect the room to another named room, making the relationship explicit.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "roomLabel": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "connectsToRoomLabel": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "door",
+              "window"
+            ]
+          },
+          "wall": {
+            "type": "string",
+            "enum": [
+              "top",
+              "right",
+              "bottom",
+              "left"
+            ]
+          },
+          "offset": {
+            "type": "number",
+            "minimum": 0.1,
+            "maximum": 0.9
+          }
+        },
+        "required": [
+          "roomLabel",
+          "type",
+          "wall"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "home.add_room",
+      "description": "Add one rectangular room to a floor of the Portego home. The change is applied immediately.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80,
+            "description": "The human-facing room name, such as Kitchen."
+          },
+          "floor": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80,
+            "description": "Floor name, such as Ground floor or Attic. Defaults to Ground floor."
+          },
+          "x": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 900
+          },
+          "y": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 620
+          },
+          "width": {
+            "type": "number",
+            "minimum": 120,
+            "maximum": 900
+          },
+          "height": {
+            "type": "number",
+            "minimum": 100,
+            "maximum": 620
+          }
+        },
+        "required": [
+          "label"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "home.apply_changes",
+      "description": "Apply up to 50 room, device, binding, or opening changes as one atomic edit. Coordinate room and device geometry as a complete layout: honor locations stated by the user, distribute unspecified devices sensibly inside their rooms, and do not place device symbols on top of one another. Omit add_device positions when automatic placement is appropriate. If any change fails, none are saved and one undo reverses the entire set.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "changes": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 50,
+            "items": {
+              "type": "object",
+              "properties": {
+                "op": {
+                  "type": "string",
+                  "enum": [
+                    "add_room",
+                    "update_room",
+                    "remove_room",
+                    "add_device",
+                    "update_device",
+                    "remove_device",
+                    "bind_device",
+                    "unbind_device",
+                    "add_opening",
+                    "remove_opening"
+                  ]
+                },
+                "input": {
+                  "type": "object"
+                }
+              },
+              "required": [
+                "op",
+                "input"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "changes"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "home.get_document",
+      "description": "Read the current visible Portego home document, including rooms, devices, bindings, gateway status, and reported device state. This does not change anything.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "home.move_device",
+      "description": "Move one named device within its room on the visible Portego canvas. Coordinates use the 1000 by 650 floor-plan space. Honor the user's requested location. Otherwise inspect home.get_document, choose a sensible position inside the room, and keep the device center about 70 coordinate units from other device centers so symbols do not overlap.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "deviceLabel": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80,
+            "description": "Exact visible device name."
+          },
+          "x": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1000
+          },
+          "y": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 650
+          },
+          "roomLabel": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80,
+            "description": "Optional destination room name."
+          }
+        },
+        "required": [
+          "deviceLabel",
+          "x",
+          "y"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "home.redo",
+      "description": "Redo the most recently undone edit to the pre-login home.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "home.remove_device",
+      "description": "Remove one named device and its physical-device binding.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "deviceLabel": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          }
+        },
+        "required": [
+          "deviceLabel"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "home.remove_floor",
+      "description": "Remove one named floor and every room, device, binding, door, and window assigned to it.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "floorName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          }
+        },
+        "required": [
+          "floorName"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "home.remove_opening",
+      "description": "Remove one labeled door or window from the home model.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          }
+        },
+        "required": [
+          "label"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "home.remove_room",
+      "description": "Remove one named room, its designed devices, their bindings, and any doors or windows connected to it.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "roomLabel": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          }
+        },
+        "required": [
+          "roomLabel"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "home.reset_demo",
+      "description": "Remove all rooms, devices, and bindings from this Portego demo. This is destructive but affects only the temporary home.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "home.undo",
+      "description": "Undo the most recent user or chatbot edit to the pre-login home.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "home.update_details",
+      "description": "Rename the Portego home or update its description, type, total area, and notes.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "homeType": {
+            "type": "string",
+            "maxLength": 80
+          },
+          "areaM2": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "notes": {
+            "type": "string",
+            "maxLength": 1000
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "home.update_device",
+      "description": "Rename, reconfigure, change the type of, or move a device. When changing its room or coordinates, honor the user's requested location and otherwise inspect home.get_document to avoid overlapping another device. An incompatible physical binding is removed automatically.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "deviceLabel": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "light",
+              "switch",
+              "plug",
+              "sensor"
+            ]
+          },
+          "config": {
+            "type": "object",
+            "properties": {
+              "mounting": {
+                "type": "string",
+                "enum": [
+                  "ceiling",
+                  "wall",
+                  "table",
+                  "floor"
+                ]
+              },
+              "dimmable": {
+                "type": "boolean"
+              },
+              "colorTemperature": {
+                "type": "boolean"
+              },
+              "mode": {
+                "type": "string",
+                "enum": [
+                  "toggle",
+                  "momentary",
+                  "dimmer"
+                ]
+              },
+              "channels": {
+                "type": "number",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "energyMonitoring": {
+                "type": "boolean"
+              },
+              "measures": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "temperature",
+                    "occupancy",
+                    "contact"
+                  ]
+                }
+              }
+            },
+            "additionalProperties": false
+          },
+          "roomLabel": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "x": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1000
+          },
+          "y": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 650
+          }
+        },
+        "required": [
+          "deviceLabel"
+        ],
+        "anyOf": [
+          {
+            "required": [
+              "label"
+            ]
+          },
+          {
+            "required": [
+              "type"
+            ]
+          },
+          {
+            "required": [
+              "config"
+            ]
+          },
+          {
+            "required": [
+              "roomLabel"
+            ]
+          },
+          {
+            "required": [
+              "x"
+            ]
+          },
+          {
+            "required": [
+              "y"
+            ]
+          }
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "home.update_floor_details",
+      "description": "Rename one floor or update its description, area, and notes. Renaming also moves its rooms to the new floor name.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "floorName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "areaM2": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "notes": {
+            "type": "string",
+            "maxLength": 1000
+          }
+        },
+        "required": [
+          "floorName"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "home.update_room",
+      "description": "Rename, move, or resize one named room on the visible Portego canvas. Coordinates use the 1000 by 650 floor-plan space.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "roomLabel": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80,
+            "description": "Exact visible room name."
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80,
+            "description": "A new human-facing room name."
+          },
+          "x": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 900
+          },
+          "y": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 620
+          },
+          "width": {
+            "type": "number",
+            "minimum": 120,
+            "maximum": 900
+          },
+          "height": {
+            "type": "number",
+            "minimum": 100,
+            "maximum": 620
+          }
+        },
+        "required": [
+          "roomLabel"
+        ],
+        "anyOf": [
+          {
+            "required": [
+              "label"
+            ]
+          },
+          {
+            "required": [
+              "x"
+            ]
+          },
+          {
+            "required": [
+              "y"
+            ]
+          },
+          {
+            "required": [
+              "width"
+            ]
+          },
+          {
+            "required": [
+              "height"
+            ]
+          }
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "tryportego.com",
+  "source": "webmcp.com/api/directory.json"
+}

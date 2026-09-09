@@ -1,0 +1,1149 @@
+{
+  "sponsio": 1,
+  "url": "https://www.persona-chat.dev/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "add_element",
+      "description": "Add one element (text box, rectangle, ellipse, line, or image) to a slide. Lines draw from the top-left to the bottom-right corner of their bounding box. Returns the new element id.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "slideId": {
+            "type": "string",
+            "description": "Target slide id; defaults to the slide open in the editor."
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "text",
+              "rect",
+              "ellipse",
+              "line",
+              "image"
+            ]
+          },
+          "x": {
+            "type": "number",
+            "description": "Slide units; the canvas is 960 wide x 540 tall, origin at the top-left."
+          },
+          "y": {
+            "type": "number"
+          },
+          "w": {
+            "type": "number"
+          },
+          "h": {
+            "type": "number"
+          },
+          "rotation": {
+            "type": "number",
+            "description": "Degrees clockwise."
+          },
+          "z": {
+            "type": "number",
+            "description": "Stacking order; higher renders on top."
+          },
+          "text": {
+            "type": "string",
+            "description": "Text elements only. Use \\n for line breaks."
+          },
+          "fontSize": {
+            "type": "number"
+          },
+          "fontFamily": {
+            "type": "string",
+            "description": "Font stack, or a theme token: 'theme.heading' / 'theme.body'. Prefer tokens."
+          },
+          "fontWeight": {
+            "type": "number",
+            "description": "400 normal, 700 bold."
+          },
+          "color": {
+            "type": "string",
+            "description": "CSS color (e.g. '#0f172a') or a theme token: 'theme.background', 'theme.surface', 'theme.text', 'theme.accent', 'theme.accentText'. Prefer tokens so the deck restyles when the theme changes."
+          },
+          "align": {
+            "type": "string",
+            "enum": [
+              "left",
+              "center",
+              "right"
+            ]
+          },
+          "fill": {
+            "type": "string",
+            "description": "CSS color (e.g. '#0f172a') or a theme token: 'theme.background', 'theme.surface', 'theme.text', 'theme.accent', 'theme.accentText'. Prefer tokens so the deck restyles when the theme changes."
+          },
+          "stroke": {
+            "type": "string",
+            "description": "CSS color (e.g. '#0f172a') or a theme token: 'theme.background', 'theme.surface', 'theme.text', 'theme.accent', 'theme.accentText'. Prefer tokens so the deck restyles when the theme changes."
+          },
+          "strokeWidth": {
+            "type": "number"
+          },
+          "src": {
+            "type": "string",
+            "description": "Image URL, or 'placeholder' for a styled placeholder block."
+          }
+        }
+      }
+    },
+    {
+      "name": "add_slide",
+      "description": "Insert a new slide from a layout. 'title' = centered title + subtitle; 'title-body' = heading + body text; 'two-col' = heading + two text columns (body fills the left, right starts empty); 'blank' = empty. Returns the new slide id and its element ids so you can refine them with update_element.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "layout"
+        ],
+        "properties": {
+          "layout": {
+            "type": "string",
+            "enum": [
+              "title",
+              "title-body",
+              "two-col",
+              "blank"
+            ]
+          },
+          "title": {
+            "type": "string",
+            "description": "Slide heading text."
+          },
+          "body": {
+            "type": "string",
+            "description": "Body text. Use \\n for line breaks, • for bullets."
+          },
+          "position": {
+            "type": "number",
+            "description": "1-based position to insert at; defaults to the end of the deck."
+          }
+        }
+      }
+    },
+    {
+      "name": "add_to_cart",
+      "description": "Add a product to the shopper's cart by SKU (from search_products results). Returns the updated cart so you can confirm the running total.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sku": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "sku"
+        ]
+      }
+    },
+    {
+      "name": "align_elements",
+      "description": "Align elements to the slide or to their shared bounding box, and/or space them evenly along an axis (distribute needs 3+ elements; the first/last stay put). Same shape as align_selection. Returns the new positions.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "elementIds"
+        ],
+        "properties": {
+          "elementIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1
+          },
+          "alignment": {
+            "type": "string",
+            "enum": [
+              "left",
+              "center-x",
+              "right",
+              "top",
+              "center-y",
+              "bottom"
+            ]
+          },
+          "distribute": {
+            "type": "string",
+            "enum": [
+              "horizontal",
+              "vertical"
+            ],
+            "description": "Space the elements evenly along this axis; needs 3+ elements."
+          },
+          "relativeTo": {
+            "type": "string",
+            "enum": [
+              "slide",
+              "selection-bounds"
+            ],
+            "description": "Default 'slide'. 'selection-bounds' aligns within the group's own bounding box."
+          }
+        }
+      }
+    },
+    {
+      "name": "apply_preset",
+      "description": "Apply a complete built-in preset, replacing theme tokens. Call get_theme_overview to list preset ids.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "presetId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "presetId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "apply_promo",
+      "description": "Apply a promo code to the cart (e.g. TRAIL10, TRAILVIP, SUMMIT20). Returns whether it was accepted and the updated cart with the discount applied.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "code"
+        ]
+      }
+    },
+    {
+      "name": "apply_theme",
+      "description": "Switch the deck's theme. Every element using theme tokens ('theme.accent', 'theme.heading', …) restyles across ALL slides.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "themeId"
+        ],
+        "properties": {
+          "themeId": {
+            "type": "string",
+            "description": "A theme id from list_themes."
+          }
+        }
+      }
+    },
+    {
+      "name": "assign_color_role",
+      "description": "Recolor a widget region by role, palette family, and intensity.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "string",
+            "description": "Role, e.g. header or user-messages."
+          },
+          "family": {
+            "type": "string",
+            "enum": [
+              "primary",
+              "secondary",
+              "accent",
+              "neutral"
+            ]
+          },
+          "intensity": {
+            "type": "string",
+            "enum": [
+              "solid",
+              "soft"
+            ],
+            "description": "Default: solid."
+          }
+        },
+        "required": [
+          "role",
+          "family"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "check_contrast",
+      "description": "Run WCAG checks over key text/background pairs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "level": {
+            "type": "string",
+            "enum": [
+              "AA",
+              "AAA"
+            ],
+            "description": "Default: AA."
+          },
+          "variant": {
+            "type": "string",
+            "enum": [
+              "light",
+              "dark",
+              "both"
+            ],
+            "description": "Default: both."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "configure_widget",
+      "description": "Toggle launcher position, feature flags, and message layout.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "launcherPosition": {
+            "type": "string",
+            "enum": [
+              "bottom-right",
+              "bottom-left",
+              "top-right",
+              "top-left"
+            ]
+          },
+          "features": {
+            "type": "object",
+            "properties": {
+              "voice": {
+                "type": "boolean"
+              },
+              "artifacts": {
+                "type": "boolean"
+              },
+              "attachments": {
+                "type": "boolean"
+              },
+              "toolCalls": {
+                "type": "boolean"
+              },
+              "reasoning": {
+                "type": "boolean"
+              },
+              "feedback": {
+                "type": "boolean"
+              }
+            },
+            "additionalProperties": false
+          },
+          "layout": {
+            "type": "object",
+            "properties": {
+              "avatars": {
+                "type": "boolean"
+              },
+              "timestamps": {
+                "type": "boolean"
+              },
+              "showHeader": {
+                "type": "boolean"
+              },
+              "messageStyle": {
+                "type": "string",
+                "enum": [
+                  "bubble",
+                  "flat",
+                  "minimal"
+                ]
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "create_event",
+      "description": "Create a calendar event and render it on the page. startDate/endDate are LOCAL wall-clock times in the calendar timezone, formatted YYYY-MM-DDTHH:mm: never append \"Z\" or a UTC offset (any offset is ignored and the stated clock time is used as-is). Use a userId from get_calendar_state.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Event title."
+          },
+          "description": {
+            "type": "string",
+            "description": "Optional event notes."
+          },
+          "startDate": {
+            "type": "string",
+            "description": "Event start as local wall-clock time, e.g. 2026-06-11T08:00. No \"Z\" or UTC offset."
+          },
+          "endDate": {
+            "type": "string",
+            "description": "Event end as local wall-clock time, e.g. 2026-06-11T09:00. No \"Z\" or UTC offset."
+          },
+          "userId": {
+            "type": "string",
+            "description": "Owner/attendee user ID from get_calendar_state."
+          },
+          "color": {
+            "type": "string",
+            "enum": [
+              "blue",
+              "green",
+              "purple",
+              "amber",
+              "rose"
+            ],
+            "description": "Event color."
+          },
+          "location": {
+            "type": "string",
+            "description": "Optional location or video link."
+          }
+        },
+        "required": [
+          "title",
+          "startDate",
+          "endDate"
+        ]
+      }
+    },
+    {
+      "name": "delete_elements",
+      "description": "Permanently remove one or more elements by id.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "elementIds"
+        ],
+        "properties": {
+          "elementIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "name": "delete_event",
+      "description": "Delete an event from the calendar by eventId.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "eventId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "eventId"
+        ]
+      }
+    },
+    {
+      "name": "delete_slide",
+      "description": "Permanently remove a slide and all its elements.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slideId": {
+            "type": "string"
+          },
+          "position": {
+            "type": "number",
+            "description": "1-based slide position."
+          }
+        }
+      }
+    },
+    {
+      "name": "duplicate_slide",
+      "description": "Copy a slide (and all its elements) right after the original. Returns the new slide id.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slideId": {
+            "type": "string"
+          },
+          "position": {
+            "type": "number",
+            "description": "1-based position of the slide to copy."
+          }
+        }
+      }
+    },
+    {
+      "name": "enter_presenter_mode",
+      "description": "Enter full-screen presenter mode. NOTE: this replaces your editing tools with presentation controls (next_slide, prev_slide, jump_to_slide, exit_presenter_mode) until the show ends.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "position": {
+            "type": "number",
+            "description": "1-based slide to start from; defaults to slide 1."
+          }
+        }
+      }
+    },
+    {
+      "name": "find_availability",
+      "description": "Find open slots on a date, optionally for a single user. Workday is 9am-5pm local time. Returned slot times are local wall-clock times in the calendar timezone.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "description": "Date to inspect, e.g. 2026-06-10."
+          },
+          "durationMinutes": {
+            "type": "number",
+            "description": "Desired meeting duration in minutes."
+          },
+          "userId": {
+            "type": "string",
+            "description": "Optional user ID to check."
+          }
+        }
+      }
+    },
+    {
+      "name": "get_calendar_state",
+      "description": "Read the current calendar state: current local date-time, selected date, visible week, timezone, total event count, visible events, and the valid users (with the userIds create_event accepts). Call this before creating or editing events. All event times are local wall-clock times in the calendar timezone.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_deck_overview",
+      "description": "Read the deck: title, active theme, slide count, and per-slide {id, position, title, elementCount}. Call this first to orient yourself; positions are 1-based.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_events",
+      "description": "List calendar events. Optionally filter by month in YYYY-MM format, userId, or a text search over title/description/location.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "month": {
+            "type": "string",
+            "description": "Optional month filter, e.g. 2026-06."
+          },
+          "userId": {
+            "type": "string",
+            "description": "Optional owner/attendee user ID."
+          },
+          "search": {
+            "type": "string",
+            "description": "Optional text search."
+          }
+        }
+      }
+    },
+    {
+      "name": "get_selection",
+      "description": "Read the elements the user currently has selected on the canvas: ids, types, geometry, and styles. Use this whenever the user says 'this', 'these', or refers to something they clicked.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_slide",
+      "description": "Read one slide's full contents: every element with its id, geometry, and style. Call this before editing a slide's elements. Defaults to the slide open in the editor.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slideId": {
+            "type": "string",
+            "description": "Slide id from get_deck_overview."
+          },
+          "position": {
+            "type": "number",
+            "description": "1-based slide position (alternative to slideId)."
+          }
+        }
+      }
+    },
+    {
+      "name": "get_theme_overview",
+      "description": "Read theme summary, presets, and editable levers. Call before editing.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "verbosity": {
+            "type": "string",
+            "enum": [
+              "summary",
+              "full"
+            ],
+            "description": "'full' includes the field-id index."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "goto_slide",
+      "description": "Open a slide in the editor (navigation only: changes nothing).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slideId": {
+            "type": "string"
+          },
+          "position": {
+            "type": "number",
+            "description": "1-based slide position."
+          }
+        }
+      }
+    },
+    {
+      "name": "list_themes",
+      "description": "List the available deck themes with their palettes and fonts.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "manage_session",
+      "description": "Undo, redo, reset defaults, or export the theme snapshot.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "undo",
+              "redo",
+              "reset",
+              "export"
+            ]
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "remove_from_cart",
+      "description": "Remove a product from the cart by SKU, or reduce its quantity. Omit quantity to remove the line entirely. Returns the updated cart.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sku": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "sku"
+        ]
+      }
+    },
+    {
+      "name": "reorder_slides",
+      "description": "Move a slide to a new 1-based position. Returns the resulting slide order.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "slideId",
+          "position"
+        ],
+        "properties": {
+          "slideId": {
+            "type": "string"
+          },
+          "position": {
+            "type": "number",
+            "description": "1-based target position."
+          }
+        }
+      }
+    },
+    {
+      "name": "screenshot_preview",
+      "description": "Capture the current rendered state of the theme preview as an image: exactly what the user sees. Returns one JPEG per visible preview frame (two when a compare mode is active, labeled e.g. Light/Dark). Call after applying a batch of theme changes to verify the visual result, especially when matching a reference image.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Search the product catalog by free-text query (e.g. 'waterproof trail shoe', 'blue running', 'jacket'). Returns matching products with SKU, title, brand, color, price, imageUrl, and imageAlt.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Free-text search query."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "select_date",
+      "description": "Move the calendar UI to a specific date without creating an event.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "description": "Date to select, e.g. 2026-06-10."
+          }
+        },
+        "required": [
+          "date"
+        ]
+      }
+    },
+    {
+      "name": "set_brand_colors",
+      "description": "Set primary, secondary, and/or accent colors. Generates shade scales and accepts hex, rgb/rgba, or CSS names.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "primary": {
+            "type": "string",
+            "description": "Hex, rgb/rgba, or CSS name."
+          },
+          "secondary": {
+            "type": "string",
+            "description": "Hex, rgb/rgba, or CSS name."
+          },
+          "accent": {
+            "type": "string",
+            "description": "Hex, rgb/rgba, or CSS name."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_color_scheme",
+      "description": "Set light/dark/auto color scheme and optional edit target.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "scheme": {
+            "type": "string",
+            "enum": [
+              "light",
+              "dark",
+              "auto"
+            ]
+          },
+          "editTarget": {
+            "type": "string",
+            "enum": [
+              "light",
+              "dark",
+              "both"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_copy_and_suggestions",
+      "description": "Set welcome copy, input placeholder, send label, and suggestion chips.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "subtitle": {
+            "type": "string"
+          },
+          "placeholder": {
+            "type": "string"
+          },
+          "sendLabel": {
+            "type": "string"
+          },
+          "suggestions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_deck_title",
+      "description": "Set the deck's title.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "title"
+        ],
+        "properties": {
+          "title": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "set_roundness",
+      "description": "Set roundness by style or granular radius values.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "style": {
+            "type": "string",
+            "enum": [
+              "sharp",
+              "default",
+              "rounded",
+              "pill"
+            ]
+          },
+          "radius": {
+            "type": "object",
+            "description": "Granular px or CSS length overrides.",
+            "properties": {
+              "sm": {
+                "type": [
+                  "string",
+                  "number"
+                ]
+              },
+              "md": {
+                "type": [
+                  "string",
+                  "number"
+                ]
+              },
+              "lg": {
+                "type": [
+                  "string",
+                  "number"
+                ]
+              },
+              "xl": {
+                "type": [
+                  "string",
+                  "number"
+                ]
+              },
+              "full": {
+                "type": [
+                  "string",
+                  "number"
+                ]
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_slide_props",
+      "description": "Update a slide's title and/or background color.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slideId": {
+            "type": "string"
+          },
+          "position": {
+            "type": "number",
+            "description": "1-based slide position."
+          },
+          "title": {
+            "type": "string"
+          },
+          "background": {
+            "type": "string",
+            "description": "CSS color (e.g. '#0f172a') or a theme token: 'theme.background', 'theme.surface', 'theme.text', 'theme.accent', 'theme.accentText'. Prefer tokens so the deck restyles when the theme changes."
+          }
+        }
+      }
+    },
+    {
+      "name": "set_theme_fields",
+      "description": "Advanced escape hatch: set fields by id or raw dot-path. Values are validated when metadata exists.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "updates": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "field": {
+                  "type": "string",
+                  "description": "Field id or path."
+                },
+                "value": {
+                  "type": [
+                    "string",
+                    "number",
+                    "boolean"
+                  ]
+                }
+              },
+              "required": [
+                "field",
+                "value"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "updates"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_typography",
+      "description": "Set font family, size, weight, and line height.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "fontFamily": {
+            "type": "string"
+          },
+          "fontSize": {
+            "type": "string"
+          },
+          "fontWeight": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "lineHeight": {
+            "type": [
+              "string",
+              "number"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "update_element",
+      "description": "Merge a partial patch into one element: position, size, text, and style in a single call. Omitted keys are unchanged. Returns the updated element.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "elementId",
+          "patch"
+        ],
+        "properties": {
+          "elementId": {
+            "type": "string"
+          },
+          "patch": {
+            "type": "object",
+            "description": "Partial element properties to merge; omitted keys are unchanged.",
+            "properties": {
+              "x": {
+                "type": "number",
+                "description": "Slide units; the canvas is 960 wide x 540 tall, origin at the top-left."
+              },
+              "y": {
+                "type": "number"
+              },
+              "w": {
+                "type": "number"
+              },
+              "h": {
+                "type": "number"
+              },
+              "rotation": {
+                "type": "number",
+                "description": "Degrees clockwise."
+              },
+              "z": {
+                "type": "number",
+                "description": "Stacking order; higher renders on top."
+              },
+              "text": {
+                "type": "string",
+                "description": "Text elements only. Use \\n for line breaks."
+              },
+              "fontSize": {
+                "type": "number"
+              },
+              "fontFamily": {
+                "type": "string",
+                "description": "Font stack, or a theme token: 'theme.heading' / 'theme.body'. Prefer tokens."
+              },
+              "fontWeight": {
+                "type": "number",
+                "description": "400 normal, 700 bold."
+              },
+              "color": {
+                "type": "string",
+                "description": "CSS color (e.g. '#0f172a') or a theme token: 'theme.background', 'theme.surface', 'theme.text', 'theme.accent', 'theme.accentText'. Prefer tokens so the deck restyles when the theme changes."
+              },
+              "align": {
+                "type": "string",
+                "enum": [
+                  "left",
+                  "center",
+                  "right"
+                ]
+              },
+              "fill": {
+                "type": "string",
+                "description": "CSS color (e.g. '#0f172a') or a theme token: 'theme.background', 'theme.surface', 'theme.text', 'theme.accent', 'theme.accentText'. Prefer tokens so the deck restyles when the theme changes."
+              },
+              "stroke": {
+                "type": "string",
+                "description": "CSS color (e.g. '#0f172a') or a theme token: 'theme.background', 'theme.surface', 'theme.text', 'theme.accent', 'theme.accentText'. Prefer tokens so the deck restyles when the theme changes."
+              },
+              "strokeWidth": {
+                "type": "number"
+              },
+              "src": {
+                "type": "string",
+                "description": "Image URL, or 'placeholder' for a styled placeholder block."
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "update_event",
+      "description": "Update an existing event by eventId. Only supplied fields are changed. startDate/endDate are LOCAL wall-clock times (YYYY-MM-DDTHH:mm, no \"Z\" or UTC offset).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "eventId": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "startDate": {
+            "type": "string",
+            "description": "Local wall-clock time, e.g. 2026-06-11T08:00. No \"Z\" or UTC offset."
+          },
+          "endDate": {
+            "type": "string",
+            "description": "Local wall-clock time, e.g. 2026-06-11T09:00. No \"Z\" or UTC offset."
+          },
+          "userId": {
+            "type": "string",
+            "description": "Owner/attendee user ID from get_calendar_state."
+          },
+          "color": {
+            "type": "string",
+            "enum": [
+              "blue",
+              "green",
+              "purple",
+              "amber",
+              "rose"
+            ]
+          },
+          "location": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "eventId"
+        ]
+      }
+    },
+    {
+      "name": "view_product",
+      "description": "Look at one product in detail by SKU (from search_products results). Highlights it on the page and returns its full description plus imageUrl/imageAlt. Read-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sku": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "sku"
+        ]
+      }
+    }
+  ],
+  "host": "persona-chat.dev",
+  "source": "webmcp.com/api/directory.json"
+}

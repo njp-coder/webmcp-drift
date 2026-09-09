@@ -1,0 +1,272 @@
+{
+  "sponsio": 1,
+  "url": "https://playground.wordpress.net/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "playground_delete_directory",
+      "description": "Delete a directory from the WordPress\n\t\t\tvirtual filesystem.\n\n\t\t\tWARNING: Deletion is permanent and cannot be\n\t\t\tundone. By default (recursive=false), the directory\n\t\t\tmust be empty or the call will fail. Set\n\t\t\trecursive=true to delete a directory and all its\n\t\t\tcontents — use with care.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Absolute path of directory to delete"
+          },
+          "recursive": {
+            "type": "boolean",
+            "description": "If true, delete directory and\n\t\t\t\t\tall contents. If false (default), fails\n\t\t\t\t\ton non-empty directories.",
+            "default": false
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    },
+    {
+      "name": "playground_delete_file",
+      "description": "Delete a file from the WordPress virtual\n\t\t\tfilesystem.\n\n\t\t\tWARNING: Deletion is permanent and cannot be\n\t\t\tundone. Returns an error if the file does not\n\t\t\texist — use playground_file_exists first if\n\t\t\tdeletion is conditional.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Absolute path of file to delete"
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    },
+    {
+      "name": "playground_execute_php",
+      "description": "Run arbitrary PHP code in WordPress Playground\n\t\t\tand return the output.\n\n\t\t\tWordPress is NOT bootstrapped automatically. To use\n\t\t\tWordPress functions, start your code with:\n\t\t\trequire(\"/wordpress/wp-load.php\");\n\t\t\tAlways include the opening <?php tag.\n\n\t\t\tThe response JSON contains three fields:\n\t\t\t- \"text\": stdout output\n\t\t\t- \"errors\": PHP warnings, notices, and fatal error\n\t\t\t  messages from stderr\n\t\t\t- \"exitCode\": 0 on success, non-zero on fatal error\n\t\t\tCheck both \"errors\" and \"exitCode\" to determine\n\t\t\twhether the call succeeded.\n\n\t\t\tWARNING: output is returned in full with no\n\t\t\ttruncation — avoid queries that produce unbounded\n\t\t\toutput (e.g. SELECT * without LIMIT). Keep output\n\t\t\tunder 50 KB to avoid filling the context window.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "PHP code to execute. Example:\n\t\t\t\t\t\"<?php echo get_bloginfo('name');\""
+          }
+        },
+        "required": [
+          "code"
+        ]
+      }
+    },
+    {
+      "name": "playground_file_exists",
+      "description": "Check whether a file or directory exists\n\t\t\tin the WordPress virtual filesystem.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Absolute path to check"
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    },
+    {
+      "name": "playground_get_current_url",
+      "description": "Get the current URL path of the WordPress\n\t\t\tsite displayed in Playground. For additional\n\t\t\tmetadata (WordPress version, PHP version, document\n\t\t\troot), use playground_get_site_info instead.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "playground_get_site_info",
+      "description": "Get metadata about the running WordPress\n\t\t\tinstance: current URL, document root, site URL,\n\t\t\tWordPress version, and PHP version. Use this when\n\t\t\tyou need version information or the document root\n\t\t\tpath. For just the current URL, prefer\n\t\t\tplayground_get_current_url.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "playground_get_website_url",
+      "description": "Return the URL the user must open in their\n\t\t\tbrowser to use WordPress Playground with this MCP\n\t\t\tserver. Use this tool whenever you need to send\n\t\t\tthe user to Playground or open it autonomously —\n\t\t\talways obtain the URL from this tool rather than\n\t\t\tconstructing it manually.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "playground_list_files",
+      "description": "List files and directories at a given path\n\t\t\tin the WordPress virtual filesystem. Returns a\n\t\t\tflat, non-recursive listing of the immediate\n\t\t\tcontents. To explore subdirectories, call this tool\n\t\t\tagain with the subdirectory path.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Absolute path to list, e.g.\n\t\t\t\t\t\"/wordpress/wp-content/plugins\""
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    },
+    {
+      "name": "playground_list_sites",
+      "description": "List all WordPress Playground sites\n\t\t\tavailable. Call this before any other playground\n\t\t\ttool — it returns the siteId required by every\n\t\t\tother operation.\n\n\t\t\tIf this returns no sites, the user may need to\n\t\t\topen Playground in their browser. Use\n\t\t\tplayground_get_website_url to get the exact URL\n\t\t\tto send to the user.\n\n\t\t\tReturns site names and storage type. \"temporary\"\n\t\t\tsites are lost on page reload, \"opfs\" sites persist\n\t\t\tacross reloads. Call playground_save_in_browser to persist\n\t\t\ta temporary site.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "playground_mkdir",
+      "description": "Create a directory (and all required parent\n\t\t\tdirectories) in the WordPress virtual filesystem.\n\t\t\tCall this before playground_write_file when writing\n\t\t\tto a path whose parent directories do not yet\n\t\t\texist.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Absolute path of directory to\n\t\t\t\t\tcreate, e.g.\n\t\t\t\t\t\"/wordpress/wp-content/my-plugin\""
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    },
+    {
+      "name": "playground_navigate",
+      "description": "Navigate to a URL path in WordPress\n\t\t\tPlayground and return the final URL after any\n\t\t\tredirects. Examples: \"/wp-admin/\",\n\t\t\t\"/wp-login.php\", \"/\".\n\n\t\t\tOn 404 or error pages, navigation still succeeds\n\t\t\tfrom the tool's perspective — check the returned\n\t\t\tURL or use playground_request to verify the HTTP\n\t\t\tstatus code if needed.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "The URL path to navigate to,\n\t\t\t\t\te.g. \"/wp-admin/\" or\n\t\t\t\t\t\"/wp-login.php\""
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    },
+    {
+      "name": "playground_read_file",
+      "description": "Read a file from the WordPress virtual\n\t\t\tfilesystem. Returns the file contents as text.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Absolute path to the file, e.g.\n\t\t\t\t\t\"/wordpress/wp-config.php\""
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    },
+    {
+      "name": "playground_rename_site",
+      "description": "Rename a WordPress Playground site. Updates\n\t\t\tthe display name shown in the browser UI.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "newName": {
+            "type": "string",
+            "description": "The new display name for the site"
+          }
+        },
+        "required": [
+          "newName"
+        ]
+      }
+    },
+    {
+      "name": "playground_request",
+      "description": "Make an HTTP request to the WordPress site\n\t\t\trunning in Playground. REST API requests\n\t\t\t(/wp-json/* or ?rest_route=) are automatically\n\t\t\tauthenticated with a valid nonce — no manual\n\t\t\tauth needed.\n\n\t\t\tTool selection guide:\n\t\t\t1. Use this tool (playground_request) with the\n\t\t\t   REST API for standard content CRUD — posts,\n\t\t\t   pages, users, terms, comments, settings, etc.\n\t\t\t   The REST API handles serialization, pagination,\n\t\t\t   and field filtering for you. Prefer compact\n\t\t\t   REST responses: use _fields to request only the\n\t\t\t   fields needed and per_page/page for large\n\t\t\t   collections. Before using endpoint-specific\n\t\t\t   filters, inspect the route metadata from\n\t\t\t   /wp-json/ and use only args documented for that\n\t\t\t   route.\n\t\t\t2. Use this tool with the WordPress REST API to\n\t\t\t   discover and call registered abilities when the\n\t\t\t   site exposes the Abilities API:\n\t\t\t   - GET /wp-json/wp-abilities/v1/abilities\n\t\t\t     lists registered abilities. Always assume this\n\t\t\t     response may be large and start with _fields,\n\t\t\t     e.g.\n\t\t\t     /wp-json/wp-abilities/v1/abilities?_fields=name,category,label,description\n\t\t\t     Do not assume filters like search or category\n\t\t\t     exist unless /wp-json/ route metadata documents\n\t\t\t     them.\n\t\t\t   - GET /wp-json/wp-abilities/v1/abilities/{name}\n\t\t\t     gets one ability, including schemas and\n\t\t\t     metadata. Ability names include \"/\" in the\n\t\t\t     path; do not encode it. For example, use\n\t\t\t     /wp-json/wp-abilities/v1/abilities/memex/save-note\n\t\t\t     for \"memex/save-note\".\n\t\t\t   - GET, POST, or DELETE\n\t\t\t     /wp-json/wp-abilities/v1/abilities/{name}/run\n\t\t\t     executes the ability. Inspect the ability\n\t\t\t     metadata first, then call /run with the\n\t\t\t     documented method. POST bodies usually wrap\n\t\t\t     arguments in an \"input\" object, e.g.\n\t\t\t     {\"input\":{\"title\":\"Hello\"}}.\n\t\t\t   - GET /wp-json/wp-abilities/v1/categories\n\t\t\t     lists ability categories. Each category includes\n\t\t\t     _links.abilities; follow that URL to list\n\t\t\t     abilities in that category. The abilities\n\t\t\t     collection can also be filtered directly with\n\t\t\t     /wp-json/wp-abilities/v1/abilities?category={slug}.\n\t\t\t3. Use playground_execute_php when the data you\n\t\t\t   need is not exposed by the REST API (e.g.\n\t\t\t   raw options, direct database queries, or\n\t\t\t   custom table access).\n\t\t\t4. Use this tool as a plain HTTP request (non-REST)\n\t\t\t   when the HTTP layer itself matters: verifying\n\t\t\t   redirects, status codes, cookies, or response\n\t\t\t   headers.\n\n\t\t\tThe response JSON contains three fields:\n\t\t\t- \"text\": the response body as a string\n\t\t\t- \"httpStatusCode\": HTTP status code (200, 404…)\n\t\t\t- \"headers\": response headers as key-value pairs\n\t\t\tCheck \"httpStatusCode\" to determine success.\n\n\t\t\tNote: full HTML responses can be very large and may\n\t\t\tfill the context window. To change the URL the user\n\t\t\tsees in their tab, use playground_navigate instead.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "Request URL path, e.g.\n\t\t\t\t\t\"/wp-json/wp/v2/posts\" or\n\t\t\t\t\t\"/wp-admin/plugins.php\""
+          },
+          "method": {
+            "type": "string",
+            "description": "HTTP method (GET, POST, PUT,\n\t\t\t\t\tDELETE, etc.). Defaults to GET.",
+            "default": "GET"
+          },
+          "headers": {
+            "type": "object",
+            "description": "Request headers as string key-value\n\t\t\t\t\tpairs, e.g. {\"Content-Type\":\n\t\t\t\t\t\"application/json\"}",
+            "additionalProperties": true
+          },
+          "body": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "object"
+              }
+            ],
+            "description": "Request body (for POST/PUT requests).\n\t\t\t\t\tAccepts a JSON string or an object."
+          }
+        },
+        "required": [
+          "url"
+        ]
+      }
+    },
+    {
+      "name": "playground_save_in_browser",
+      "description": "Save a temporary WordPress Playground site\n\t\t\tto browser storage so it survives page reloads.\n\t\t\tSafe to call even if the site is already saved\n\t\t\t(no-op).\n\n\t\t\tSites start as temporary by default and are lost\n\t\t\twhen the browser tab is closed or the page is\n\t\t\treloaded. Call this early in any multi-step\n\t\t\tworkflow where losing progress would be costly.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "playground_write_file",
+      "description": "Write content to a file in the WordPress\n\t\t\tvirtual filesystem.\n\n\t\t\tWARNING: Overwrites the entire file — existing\n\t\t\tcontent is permanently lost. Read the file first\n\t\t\twith playground_read_file if you need to preserve\n\t\t\tany content.\n\n\t\t\tCreates the file if it does not exist. Parent\n\t\t\tdirectories are NOT created automatically — call\n\t\t\tplayground_mkdir first if needed, otherwise the\n\t\t\twrite will fail with a \"no such file or directory\"\n\t\t\terror.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Absolute path to write to, e.g.\n\t\t\t\t\t\"/wordpress/wp-content/test.txt\""
+          },
+          "contents": {
+            "type": "string",
+            "description": "File contents to write"
+          }
+        },
+        "required": [
+          "path",
+          "contents"
+        ]
+      }
+    }
+  ],
+  "host": "playground.wordpress.net",
+  "source": "webmcp.com/api/directory.json"
+}

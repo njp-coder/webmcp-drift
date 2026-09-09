@@ -1,0 +1,99 @@
+{
+  "sponsio": 1,
+  "url": "https://flightqueue.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "get_airport_crowd_reports",
+      "description": "Recent traveller-submitted wait time reports for an airport. Small sample, but observed rather than predicted.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "iata": {
+            "type": "string",
+            "pattern": "^[A-Za-z]{3}$",
+            "minLength": 3,
+            "maxLength": 3,
+            "description": "3-letter IATA code. Defaults to the airport on the current page."
+          }
+        }
+      }
+    },
+    {
+      "name": "get_airport_security_wait",
+      "description": "Current security checkpoint wait times for an airport, by terminal and checkpoint where available.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "iata": {
+            "type": "string",
+            "pattern": "^[A-Za-z]{3}$",
+            "minLength": 3,
+            "maxLength": 3,
+            "description": "3-letter IATA code. Defaults to the airport on the current page."
+          }
+        }
+      }
+    },
+    {
+      "name": "get_faa_delays",
+      "description": "Current FAA ground stops, ground delay programmes, and weather impacts across US airports.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "submit_airport_wait_report",
+      "description": "Report a wait time you have just observed at an airport queue. Only call this when the traveller has given you a real observed figure; it feeds the public crowd data other travellers see.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "iata": {
+            "type": "string",
+            "pattern": "^[A-Za-z]{3}$",
+            "minLength": 3,
+            "maxLength": 3,
+            "description": "3-letter IATA code. Defaults to the airport on the current page."
+          },
+          "waitTimeMinutes": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 300,
+            "description": "Observed wait in minutes."
+          },
+          "checkpointType": {
+            "type": "string",
+            "enum": [
+              "security",
+              "immigration",
+              "checkin",
+              "customs",
+              "baggage",
+              "lounge",
+              "ees_kiosk"
+            ],
+            "description": "Which queue. Defaults to security."
+          },
+          "terminal": {
+            "type": "string",
+            "description": "Terminal name or number, if known."
+          },
+          "precheck": {
+            "type": "boolean",
+            "description": "True for TSA PreCheck or another expedited lane."
+          }
+        },
+        "required": [
+          "waitTimeMinutes"
+        ]
+      }
+    }
+  ],
+  "host": "flightqueue.com",
+  "source": "webmcp.com/api/directory.json"
+}

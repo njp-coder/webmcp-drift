@@ -1,0 +1,250 @@
+{
+  "sponsio": 1,
+  "url": "https://heatingplus.ro/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "browse_category",
+      "description": "Listeaza produse publice dintr-o categorie Heating Plus si returneaza denumirea categoriei, descrierea, preturile afisate si URL-urile produselor. Nu modifica filtrele, cosul sau contul.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "categoryUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL HTTPS complet al unei categorii de pe heatingplus.ro."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 24,
+            "default": 12,
+            "description": "Numarul maxim de produse returnate din pagina categoriei."
+          }
+        },
+        "required": [
+          "categoryUrl"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "compare_products",
+      "description": "Compara intre doua si patru produse publice Heating Plus folosind datele structurate actuale: marca, categorie, cod, descriere, pret si disponibilitate. Tool-ul este numai pentru citire.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "productUrls": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 4,
+            "uniqueItems": true,
+            "description": "Doua pana la patru URL-uri HTTPS de produs obtinute din catalogul Heating Plus.",
+            "items": {
+              "type": "string",
+              "format": "uri"
+            }
+          }
+        },
+        "required": [
+          "productUrls"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "estimate_heating_need",
+      "description": "Calculeaza orientativ necesarul termic pentru o centrala sau recomanda capacitatea BTU pentru aer conditionat, folosind aceleasi ipoteze ca calculatorul public Heating Plus. Rezultatul nu inlocuieste proiectarea tehnica.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "application": {
+            "type": "string",
+            "enum": [
+              "central_heating",
+              "air_conditioning"
+            ],
+            "description": "central_heating pentru centrala/cazan sau air_conditioning pentru recomandare BTU pe zona."
+          },
+          "zones": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 10,
+            "description": "Zonele pentru care se face estimarea.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 60,
+                  "description": "Denumirea zonei sau incaperii."
+                },
+                "areaM2": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "maximum": 1000,
+                  "description": "Suprafata zonei in metri patrati."
+                },
+                "heightM": {
+                  "type": "number",
+                  "minimum": 2,
+                  "maximum": 8,
+                  "default": 2.6,
+                  "description": "Inaltimea zonei in metri."
+                },
+                "insulation": {
+                  "type": "string",
+                  "enum": [
+                    "very_good",
+                    "good",
+                    "average",
+                    "poor"
+                  ],
+                  "description": "Nivelul orientativ al izolatiei cladirii."
+                }
+              },
+              "required": [
+                "name",
+                "areaM2",
+                "heightM",
+                "insulation"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "reservePercent": {
+            "type": "integer",
+            "enum": [
+              10,
+              20,
+              30
+            ],
+            "default": 20,
+            "description": "Rezerva de putere aplicata estimarii."
+          },
+          "domesticHotWaterPeople": {
+            "type": "integer",
+            "enum": [
+              0,
+              2,
+              4,
+              5
+            ],
+            "default": 0,
+            "description": "Numarul orientativ de persoane pentru apa calda: 0, pana la 2, pana la 4 sau 5 si peste. Se foloseste numai la central_heating."
+          }
+        },
+        "required": [
+          "application",
+          "zones"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_product_details",
+      "description": "Citeste datele publice structurate ale unei pagini de produs Heating Plus. Foloseste numai URL-uri obtinute din catalog sau din search_products; tool-ul este numai pentru citire.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "productUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL HTTPS complet al produsului de pe heatingplus.ro."
+          }
+        },
+        "required": [
+          "productUrl"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_site_policy",
+      "description": "Citeste informatiile publice oficiale Heating Plus despre livrare, retur, garantie, plata, termeni sau contact. Nu trimite formulare si nu colecteaza date personale.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "topic": {
+            "type": "string",
+            "enum": [
+              "delivery",
+              "returns",
+              "warranty",
+              "payment",
+              "terms",
+              "contact"
+            ],
+            "description": "Subiectul informatiilor comerciale solicitate."
+          }
+        },
+        "required": [
+          "topic"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_guides",
+      "description": "Cauta in ghidurile publice Heating Plus articole despre alegere, montaj, consum, incalzire, climatizare sau eficienta energetica.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 100,
+            "description": "Subiectul cautat in titlul, categoria sau rezumatul ghidului."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "default": 6,
+            "description": "Numarul maxim de ghiduri returnate."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Cauta produse publice in catalogul Heating Plus dupa denumire, marca, model sau cod. Foloseste acest tool pentru recomandari si verificarea preturilor afisate; nu modifica magazinul sau cosul.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 100,
+            "description": "Denumire, marca, model, cod sau expresie de cautare pentru produs."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "default": 6,
+            "description": "Numarul maxim de rezultate returnate."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "heatingplus.ro",
+  "source": "webmcp.com/api/directory.json"
+}

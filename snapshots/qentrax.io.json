@@ -1,0 +1,96 @@
+{
+  "sponsio": 1,
+  "url": "https://qentrax.io/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "get_field_note",
+      "description": "Read a specific field note article by slug or topic (params: slug — defaults to first note) -> {slug, title, meta, url, summary, full_text}",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Article slug (e.g. 'quality-stack', 'lead-validation', 'consent-trail', 'solar-lead-routing'). Defaults to 'quality-stack'."
+          }
+        }
+      }
+    },
+    {
+      "name": "get_solution_overview",
+      "description": "Get operational workflow, workspace capabilities, and quality criteria for advertisers or publishers (params: role='advertiser'|'publisher') -> {role, headline, capabilities, quality_features}",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "enum": [
+              "advertiser",
+              "publisher"
+            ],
+            "type": "string",
+            "description": "Role to inspect: 'advertiser' for buying demand, 'publisher' for supply monetization. Defaults to 'advertiser'."
+          }
+        }
+      }
+    },
+    {
+      "name": "list_field_notes",
+      "description": "Browse published research, compliance, and lead quality field notes (params: topic) -> list [{slug, title, category, read_time, url}]",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "topic": {
+            "type": "string",
+            "description": "Optional topic or category keyword to filter articles by (e.g. 'quality', 'consent', 'insurance', 'solar')"
+          }
+        }
+      }
+    },
+    {
+      "name": "list_markets",
+      "description": "List active consumer demand markets, categories, and routing rules on Qentrax (params: category) -> list [{id, name, description, categories}]",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "description": "Optional vertical or category keyword to filter by (e.g. 'insurance', 'solar', 'real estate', 'finance')"
+          }
+        }
+      }
+    },
+    {
+      "name": "send_contact_inquiry",
+      "description": "Submit a partnership or demand inquiry to the Qentrax network team (params: name, email, message) -> {status, name, email, message, confirmation}",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "name",
+          "email",
+          "message"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Full name of the contact person"
+          },
+          "email": {
+            "type": "string",
+            "description": "Work email address"
+          },
+          "message": {
+            "type": "string",
+            "description": "Details about goals, verticals, and current demand/traffic workflow"
+          }
+        }
+      }
+    }
+  ],
+  "host": "qentrax.io",
+  "source": "webmcp.com/api/directory.json"
+}

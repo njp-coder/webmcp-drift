@@ -1,0 +1,335 @@
+{
+  "sponsio": 1,
+  "url": "https://sundaytable.openai.chatgpt.site/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "clear_agent_meals",
+      "description": "Clear only agent-created meals from the current week. Preserves all human-protected meals and their recipes.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_grocery_list",
+      "description": "Read the automatically consolidated grocery list, grouped by aisle, with quantities merged across all scheduled meals.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_meal_plan",
+      "description": "Read the active week's 14 meal slots, full recipes, consolidated groceries, checked items, preferences, and human-protected meals before making changes.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_meal_slots",
+      "description": "Read Monday–Sunday lunch and dinner slots, including whether each meal is empty or protected by its human owner.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "day": {
+            "type": "string",
+            "enum": [
+              "Monday",
+              "Tuesday",
+              "Wednesday",
+              "Thursday",
+              "Friday",
+              "Saturday",
+              "Sunday"
+            ],
+            "description": "A full day name, Monday through Sunday."
+          }
+        }
+      }
+    },
+    {
+      "name": "plan_week",
+      "description": "Atomically fill or update multiple lunch and dinner slots with existing recipe IDs. Validates every recipe and refuses to overwrite any human-protected slot.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "meals": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "day": {
+                  "type": "string",
+                  "enum": [
+                    "Monday",
+                    "Tuesday",
+                    "Wednesday",
+                    "Thursday",
+                    "Friday",
+                    "Saturday",
+                    "Sunday"
+                  ],
+                  "description": "A full day name, Monday through Sunday."
+                },
+                "mealType": {
+                  "type": "string",
+                  "enum": [
+                    "lunch",
+                    "dinner"
+                  ],
+                  "description": "The lunch or dinner meal slot."
+                },
+                "recipeId": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "day",
+                "mealType",
+                "recipeId"
+              ]
+            }
+          }
+        },
+        "required": [
+          "meals"
+        ]
+      }
+    },
+    {
+      "name": "remove_ingredient",
+      "description": "Remove an ingredient from every agent-authored recipe that uses it and immediately update the grocery list. Refuses to modify human-authored recipes.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "ingredient": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "ingredient"
+        ]
+      }
+    },
+    {
+      "name": "remove_meal",
+      "description": "Remove an agent-authored meal. Unused recipes and their unshared grocery ingredients are automatically removed; human-protected meals cannot be deleted.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "day": {
+            "type": "string",
+            "enum": [
+              "Monday",
+              "Tuesday",
+              "Wednesday",
+              "Thursday",
+              "Friday",
+              "Saturday",
+              "Sunday"
+            ],
+            "description": "A full day name, Monday through Sunday."
+          },
+          "mealType": {
+            "type": "string",
+            "enum": [
+              "lunch",
+              "dinner"
+            ],
+            "description": "The lunch or dinner meal slot."
+          }
+        },
+        "required": [
+          "day",
+          "mealType"
+        ]
+      }
+    },
+    {
+      "name": "set_active_week",
+      "description": "Switch to a week by its Monday date. Each week's meals, recipes, shopping progress, and manual edits remain independently saved.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "weekStart": {
+            "type": "string",
+            "description": "The Monday date in YYYY-MM-DD format."
+          }
+        },
+        "required": [
+          "weekStart"
+        ]
+      }
+    },
+    {
+      "name": "set_food_preferences",
+      "description": "Set the visible dietary, budget, prep-time, and food-waste preferences that guide weekly meal suggestions.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "preferences": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "preferences"
+        ]
+      }
+    },
+    {
+      "name": "set_grocery_checked",
+      "description": "Check or uncheck an ingredient on the shopping list without changing a recipe or meal.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "ingredient": {
+            "type": "string"
+          },
+          "checked": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "ingredient",
+          "checked"
+        ]
+      }
+    },
+    {
+      "name": "set_meal",
+      "description": "Assign an existing recipe to a Monday–Sunday lunch or dinner slot. Human-added or human-edited meals are protected and cannot be overwritten.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "day": {
+            "type": "string",
+            "enum": [
+              "Monday",
+              "Tuesday",
+              "Wednesday",
+              "Thursday",
+              "Friday",
+              "Saturday",
+              "Sunday"
+            ],
+            "description": "A full day name, Monday through Sunday."
+          },
+          "mealType": {
+            "type": "string",
+            "enum": [
+              "lunch",
+              "dinner"
+            ],
+            "description": "The lunch or dinner meal slot."
+          },
+          "recipeId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "day",
+          "mealType",
+          "recipeId"
+        ]
+      }
+    },
+    {
+      "name": "upsert_recipe",
+      "description": "Create or update an agent-authored recipe with ingredients and cooking steps. User-authored recipes cannot be overwritten.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "recipeId": {
+            "type": "string",
+            "description": "Stable recipe ID. Generated when omitted."
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "minutes": {
+            "type": "number",
+            "minimum": 1
+          },
+          "servings": {
+            "type": "number",
+            "minimum": 1
+          },
+          "ingredients": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "quantity": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "unit": {
+                  "type": "string"
+                },
+                "category": {
+                  "type": "string",
+                  "enum": [
+                    "Produce",
+                    "Dairy & eggs",
+                    "Protein",
+                    "Pantry",
+                    "Bakery"
+                  ]
+                }
+              },
+              "required": [
+                "name",
+                "quantity",
+                "unit",
+                "category"
+              ]
+            }
+          },
+          "steps": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "image": {
+            "type": "string",
+            "description": "Optional HTTPS image URL."
+          }
+        },
+        "required": [
+          "title",
+          "ingredients",
+          "steps"
+        ]
+      }
+    }
+  ],
+  "host": "sundaytable.openai.chatgpt.site",
+  "source": "webmcp.com/api/directory.json"
+}

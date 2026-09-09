@@ -1,0 +1,99 @@
+{
+  "sponsio": 1,
+  "url": "https://dmarc.networkthinking.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "check_mail_security",
+      "description": "Run a live SPF, DMARC, DKIM, MX, TXT, DNS, and registrar posture check for a public domain. Returns a compact summary with SPF/DMARC/DKIM records, DKIM selector, MX hosts, external DMARC destinations, score/grade, and report URL. Invocation: browser WebMCP only — open this site, discover tools via the page runtime, then execute here. There is no public HTTP execute_url; do not reverse-engineer the app bundle for a REST path. Agent-friendly: no interactive CAPTCHA.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "domain": {
+            "type": "string",
+            "description": "Domain to analyze, e.g. example.com"
+          }
+        },
+        "required": [
+          "domain"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "export_mail_security_report",
+      "description": "Export the latest mail-security-check results. Formats: copy (clipboard HTML/text for email), pdf (download), or email (send report to a recipient). Email format requires name, company, email, and found_us (e.g. [\"search\"]). Call check_mail_security first if no results are on the page. Invocation: browser WebMCP page runtime only (no public HTTP execute_url). Agent-friendly: no interactive CAPTCHA required.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "format": {
+            "type": "string",
+            "enum": [
+              "copy",
+              "pdf",
+              "email"
+            ],
+            "description": "Export format"
+          },
+          "name": {
+            "type": "string",
+            "description": "Recipient name (required for email format)"
+          },
+          "company": {
+            "type": "string",
+            "description": "Company name (required for email format)"
+          },
+          "email": {
+            "type": "string",
+            "description": "Recipient email (required for email format)"
+          },
+          "found_us": {
+            "type": "array",
+            "description": "How the user found this product (required for email format)",
+            "items": {
+              "type": "string",
+              "enum": [
+                "search",
+                "referral",
+                "linkedin",
+                "nts_website",
+                "existing_customer",
+                "event",
+                "other"
+              ]
+            },
+            "minItems": 1
+          }
+        },
+        "required": [
+          "format"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "open_get_started",
+      "description": "Open the Email Security Monitor sign-up / get-started flow so a user can begin managed DMARC monitoring. Browser WebMCP page runtime only (no public HTTP execute_url).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "open_sign_in",
+      "description": "Open the Email Security Monitor sign-in page for existing users. Browser WebMCP page runtime only (no public HTTP execute_url).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "dmarc.networkthinking.com",
+  "source": "webmcp.com/api/directory.json"
+}

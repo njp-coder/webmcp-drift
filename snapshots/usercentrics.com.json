@@ -1,0 +1,78 @@
+{
+  "sponsio": 1,
+  "url": "https://usercentrics.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "uc_find_regulation",
+      "description": "Given a country, region, US state or industry, return the most relevant data-privacy regulation and region pages on Usercentrics (e.g. GDPR for the EU, CCPA for California). Use this when the user asks which law applies to them or how to comply somewhere. Read a returned URL with uc_read_page to summarise it.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "A country, region, US state or industry, e.g. \"California\", \"Germany\", \"healthcare\"."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "uc_read_page",
+      "description": "Read the content of a Usercentrics page as clean markdown (about 10x fewer tokens than the HTML). Prefer this over fetching/scraping a page when you need to understand or quote its content to answer the user. Pass an absolute usercentrics.com URL (e.g. from uc_find_regulation) or a known page_key such as \"pricing\".",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "Absolute usercentrics.com URL to read."
+          },
+          "page_key": {
+            "type": "string",
+            "description": "A known page key, e.g. \"pricing\", \"regulations\"."
+          }
+        }
+      }
+    },
+    {
+      "name": "uc_scan_cmp",
+      "description": "Check whether a website is GDPR-compliant using the Usercentrics scanner. Ask the user for their domain before calling. The scan takes 30–90 seconds; this tool polls until it completes and returns the result inline.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "domain"
+        ],
+        "properties": {
+          "domain": {
+            "type": "string",
+            "description": "Domain to scan, e.g. \"example.com\"."
+          }
+        }
+      }
+    },
+    {
+      "name": "uc_scan_privacy_policy",
+      "description": "Run a free Usercentrics privacy-policy compliance scan of any website. Returns a risk status and a URL to the full audit (detected trackers, missing disclosures). The scan takes up to ~70 seconds.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "Full URL of the website to scan, e.g. https://example.com"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      }
+    }
+  ],
+  "host": "usercentrics.com",
+  "source": "webmcp.com/api/directory.json"
+}

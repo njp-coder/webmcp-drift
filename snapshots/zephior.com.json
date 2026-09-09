@@ -1,0 +1,77 @@
+{
+  "sponsio": 1,
+  "url": "https://zephior.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "get_tender_universe_stats",
+      "description": "Refresh and return exact public Tender Universe source, portal, and live open-tender counts shown on the page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_latest_open_tenders",
+      "description": "Load recently published open tenders with future deadlines for a region and update the visible live tender feed.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "region": {
+            "type": "string",
+            "maxLength": 20,
+            "default": "global",
+            "description": "Global, regional slug, auto, or ISO alpha-2 country scope."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5,
+            "default": 5,
+            "description": "Maximum compact results returned to the agent."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_zephior_resources",
+      "description": "Search Zephior public articles, guides, comparisons, industry briefs and glossary resources by topic.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "query"
+        ],
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 200
+          },
+          "locale": {
+            "type": "string",
+            "enum": [
+              "en",
+              "de",
+              "fr"
+            ],
+            "default": "en"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "default": 5
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "zephior.com",
+  "source": "webmcp.com/api/directory.json"
+}

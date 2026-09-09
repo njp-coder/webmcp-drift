@@ -1,0 +1,710 @@
+{
+  "sponsio": 1,
+  "url": "https://shop.alpic.ai/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "complete_checkout",
+      "description": "UCP Checkout capability. Complete a checkout by submitting payment instruments.\nOn success, returns status 'completed' with an order confirmation; if the bank requires 3DS, returns 'requires_escalation' with a continue_url.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "ucp-agent": {
+                "description": "Platform profile URI for capability negotiation.",
+                "type": "object",
+                "properties": {
+                  "profile": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "profile"
+                ]
+              }
+            },
+            "description": "UCP request metadata (platform profile advertisement)."
+          },
+          "id": {
+            "type": "string",
+            "description": "Checkout session id to complete."
+          },
+          "payment": {
+            "type": "object",
+            "properties": {
+              "instruments": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "handler_id": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "type": "string"
+                    },
+                    "selected": {
+                      "type": "boolean"
+                    },
+                    "billing_address": {
+                      "type": "object",
+                      "properties": {
+                        "extended_address": {
+                          "type": "string"
+                        },
+                        "street_address": {
+                          "type": "string"
+                        },
+                        "address_locality": {
+                          "type": "string"
+                        },
+                        "address_region": {
+                          "type": "string"
+                        },
+                        "address_country": {
+                          "type": "string"
+                        },
+                        "postal_code": {
+                          "type": "string"
+                        },
+                        "first_name": {
+                          "type": "string"
+                        },
+                        "last_name": {
+                          "type": "string"
+                        },
+                        "phone_number": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "display": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {}
+                    },
+                    "credential": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string"
+                        },
+                        "token": {
+                          "type": "string"
+                        }
+                      },
+                      "additionalProperties": {}
+                    }
+                  },
+                  "required": [
+                    "handler_id",
+                    "type"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "instruments"
+            ],
+            "description": "Payment instruments acquired via the advertised handler."
+          }
+        },
+        "required": [
+          "id",
+          "payment"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "create_cart",
+      "description": "UCP Cart capability. Create a cart from line items (variant id + quantity).\nReturns the cart with estimated totals (subtotal + total in minor units) and a ucp metadata block.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "ucp-agent": {
+                "description": "Platform profile URI for capability negotiation.",
+                "type": "object",
+                "properties": {
+                  "profile": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "profile"
+                ]
+              }
+            },
+            "description": "UCP request metadata (platform profile advertisement)."
+          },
+          "line_items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Variant id being purchased."
+                },
+                "quantity": {
+                  "type": "integer",
+                  "exclusiveMinimum": 0,
+                  "maximum": 9007199254740991
+                }
+              },
+              "required": [
+                "id",
+                "quantity"
+              ]
+            }
+          },
+          "buyer": {
+            "type": "object",
+            "properties": {
+              "first_name": {
+                "type": "string"
+              },
+              "last_name": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              },
+              "phone_number": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "required": [
+          "line_items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "create_checkout",
+      "description": "UCP Checkout capability. Create a checkout session from line items (variant id + quantity).\nReturns the session with status, totals, mandatory legal links, advertised payment handlers (in ucp.payment_handlers), and expiry.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "ucp-agent": {
+                "description": "Platform profile URI for capability negotiation.",
+                "type": "object",
+                "properties": {
+                  "profile": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "profile"
+                ]
+              }
+            },
+            "description": "UCP request metadata (platform profile advertisement)."
+          },
+          "line_items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Variant id being purchased."
+                },
+                "quantity": {
+                  "type": "integer",
+                  "exclusiveMinimum": 0,
+                  "maximum": 9007199254740991
+                }
+              },
+              "required": [
+                "id",
+                "quantity"
+              ]
+            }
+          },
+          "buyer": {
+            "type": "object",
+            "properties": {
+              "first_name": {
+                "type": "string"
+              },
+              "last_name": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              },
+              "phone_number": {
+                "type": "string"
+              }
+            }
+          },
+          "context": {
+            "type": "object",
+            "properties": {
+              "address_country": {
+                "type": "string"
+              },
+              "address_region": {
+                "type": "string"
+              },
+              "postal_code": {
+                "type": "string"
+              },
+              "intent": {
+                "type": "string"
+              },
+              "language": {
+                "type": "string"
+              },
+              "currency": {
+                "type": "string"
+              },
+              "eligibility": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "required": [
+          "line_items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "get_product",
+      "description": "UCP Catalog capability. Retrieve a single product's full detail (variants, options, media, rating) by id or handle.\nReturns a UCP Product object plus a ucp metadata block, or a not-found message.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "ucp-agent": {
+                "description": "Platform profile URI for capability negotiation.",
+                "type": "object",
+                "properties": {
+                  "profile": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "profile"
+                ]
+              }
+            },
+            "description": "UCP request metadata (platform profile advertisement)."
+          },
+          "id": {
+            "type": "string",
+            "description": "Product id or handle."
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "lookup_catalog",
+      "description": "UCP Catalog capability. Batch-resolve products by identifier (product id, handle, or variant id).\nReturns the full UCP Product objects for the matching ids plus a ucp metadata block.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "ucp-agent": {
+                "description": "Platform profile URI for capability negotiation.",
+                "type": "object",
+                "properties": {
+                  "profile": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "profile"
+                ]
+              }
+            },
+            "description": "UCP request metadata (platform profile advertisement)."
+          },
+          "ids": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Product ids, handles, or variant ids to resolve."
+          }
+        },
+        "required": [
+          "ids"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "render-carousel",
+      "description": "Display the products you curated as an inline carousel for the client.\n\n## When to call\nCall this AFTER searching and curating, and BEFORE writing your recommendation. Do not describe the products in text first; the carousel shows them. Stay silent until it has rendered, then speak.\n\n## What to pass\nPass the IDs of the 3-6 products you chose, in display order (most relevant first). Order is significant: the carousel shows them in this exact order and your recommendation must follow the same sequence. Pass distinct products, not several variants of the same one; the detail view lets the client explore a product's variants (colors, sizes, and so on).\n\n## After the carousel\nRecommend in carousel order so the client can follow along. The cards already show image, title, price, and key facts, so do not repeat them: add useful analysis tied to the client's need. Suggest a refinement the client has not addressed yet (from the available filters), never one they already used.\n\n## Accuracy\nUse only the data returned for each product. Never invent attributes, materials, or availability. If the client asks about something not present, open that product's detail or search again before answering.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "ids": {
+            "minItems": 1,
+            "maxItems": 6,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Product IDs to present, in display order."
+          }
+        },
+        "required": [
+          "ids"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "search_catalog",
+      "description": "UCP Catalog capability. Search the product catalog by keyword and optional filters (categories, price range).\nReturns UCP Product objects (id, title, price_range, variants, media) plus pagination and a ucp metadata block.\nPrices are in ISO 4217 minor units (e.g. cents).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "ucp-agent": {
+                "description": "Platform profile URI for capability negotiation.",
+                "type": "object",
+                "properties": {
+                  "profile": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "profile"
+                ]
+              }
+            },
+            "description": "UCP request metadata (platform profile advertisement)."
+          },
+          "query": {
+            "description": "Free-text search query.",
+            "type": "string"
+          },
+          "filters": {
+            "type": "object",
+            "properties": {
+              "categories": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "price": {
+                "type": "object",
+                "properties": {
+                  "min": {
+                    "type": "integer",
+                    "minimum": -9007199254740991,
+                    "maximum": 9007199254740991,
+                    "description": "Monetary amount in ISO 4217 minor units (e.g. cents)."
+                  },
+                  "max": {
+                    "type": "integer",
+                    "minimum": -9007199254740991,
+                    "maximum": 9007199254740991,
+                    "description": "Monetary amount in ISO 4217 minor units (e.g. cents)."
+                  }
+                }
+              }
+            }
+          },
+          "context": {
+            "type": "object",
+            "properties": {
+              "address_country": {
+                "type": "string"
+              },
+              "address_region": {
+                "type": "string"
+              },
+              "postal_code": {
+                "type": "string"
+              },
+              "intent": {
+                "type": "string"
+              },
+              "language": {
+                "type": "string"
+              },
+              "currency": {
+                "type": "string"
+              },
+              "eligibility": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "pagination": {
+            "type": "object",
+            "properties": {
+              "cursor": {
+                "type": "string"
+              },
+              "limit": {
+                "type": "integer",
+                "exclusiveMinimum": 0,
+                "maximum": 9007199254740991
+              }
+            }
+          }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "search-products",
+      "description": "Search the product catalog. Handles any query: specific products, broad categories, gifts, occasions, or open discovery.\nNever assume a category is unavailable: always search before responding.\n\nThe response is data only: a list of matching products (name, ID, price, description, and any product-specific attributes) plus pagination and the available filters. The raw results are for your eyes only: the client never sees them.\n\nNEVER describe or characterize the raw results to the client: do not mention how many there are, what categories they fall into, or that they look off-topic. While searching, stay silent: do not narrate what you are doing, announce searches, or report progress between tool calls. Speak only once the carousel is rendered.\n\nAct on the response as follows:\n\n- FIRST SEARCH: use the keyword only (plus sort if needed). Read the available filters in the response; these are the only valid filter options for follow-ups.\n- REFINEMENT: if the user's intent matches an available filter, apply it. If it doesn't match any filter, start a new keyword search.\n- ITERATE: a single search is never enough. Run several searches (2 minimum) before rendering: vary the keyword, apply a filter, or page deeper, and compare results across them. Quality comes from this multi-call exploration; one call then render gives shallow results.\n- CURATION: read results and pick the best matches for the client's intent, grounding your choice in each product's description. If zero results, broaden the keyword or relax filters and search again: do NOT call render-carousel. If fewer than 3 results and the user didn't ask for a specific product, search again with broader terms. Only after exploring across several searches, call render-carousel with the selected IDs.\n- PRESENT: Once you have 3-6 distinct, relevant products, call render-carousel with their IDs. Recommend ONLY AFTER the carousel displays, in carousel order.\n\nThe sweet spot is 3-6 products.\n",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "keyword": {
+            "type": "string",
+            "description": "Short noun phrases extracted from conversational input. Never pass full sentences. ALWAYS use the singular form, not the plural. Include color, material, and style descriptors for accuracy. For vague gift or occasion queries without a clear product type, use broad category terms. Preserve the existing keyword across filter refinements; only replace when the user makes a completely different request."
+          },
+          "sort": {
+            "description": "Sort order.",
+            "type": "string",
+            "enum": [
+              "price-asc",
+              "price-desc"
+            ]
+          },
+          "priceRange": {
+            "description": "Price range in dollars. Format: 'min-max' e.g. '0-500', '1000-2000'.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "keyword"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "update_cart",
+      "description": "UCP Cart capability. Replace the line items of an existing cart (full replacement).\nReturns the recomputed cart with totals and a ucp metadata block.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "ucp-agent": {
+                "description": "Platform profile URI for capability negotiation.",
+                "type": "object",
+                "properties": {
+                  "profile": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "profile"
+                ]
+              }
+            },
+            "description": "UCP request metadata (platform profile advertisement)."
+          },
+          "id": {
+            "type": "string",
+            "description": "Cart id to update."
+          },
+          "line_items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Variant id being purchased."
+                },
+                "quantity": {
+                  "type": "integer",
+                  "exclusiveMinimum": 0,
+                  "maximum": 9007199254740991
+                }
+              },
+              "required": [
+                "id",
+                "quantity"
+              ]
+            }
+          },
+          "buyer": {
+            "type": "object",
+            "properties": {
+              "first_name": {
+                "type": "string"
+              },
+              "last_name": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              },
+              "phone_number": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "required": [
+          "id",
+          "line_items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "update_checkout",
+      "description": "UCP Checkout capability. Update an existing checkout session's line items (full replacement).\nReturns the recomputed session with status, totals, links, and a ucp metadata block.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "ucp-agent": {
+                "description": "Platform profile URI for capability negotiation.",
+                "type": "object",
+                "properties": {
+                  "profile": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "profile"
+                ]
+              }
+            },
+            "description": "UCP request metadata (platform profile advertisement)."
+          },
+          "id": {
+            "type": "string",
+            "description": "Checkout session id to update."
+          },
+          "line_items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Variant id being purchased."
+                },
+                "quantity": {
+                  "type": "integer",
+                  "exclusiveMinimum": 0,
+                  "maximum": 9007199254740991
+                }
+              },
+              "required": [
+                "id",
+                "quantity"
+              ]
+            }
+          },
+          "buyer": {
+            "type": "object",
+            "properties": {
+              "first_name": {
+                "type": "string"
+              },
+              "last_name": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              },
+              "phone_number": {
+                "type": "string"
+              }
+            }
+          },
+          "context": {
+            "type": "object",
+            "properties": {
+              "address_country": {
+                "type": "string"
+              },
+              "address_region": {
+                "type": "string"
+              },
+              "postal_code": {
+                "type": "string"
+              },
+              "intent": {
+                "type": "string"
+              },
+              "language": {
+                "type": "string"
+              },
+              "currency": {
+                "type": "string"
+              },
+              "eligibility": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "required": [
+          "id",
+          "line_items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    }
+  ],
+  "host": "shop.alpic.ai",
+  "source": "webmcp.com/api/directory.json"
+}

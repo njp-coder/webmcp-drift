@@ -1,0 +1,180 @@
+{
+  "sponsio": 1,
+  "url": "https://go.lmm.best/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "get_go_game_state",
+      "description": "Read the phase, revision, action required, compact ASCII board with standard Go coordinates, turn, scoring, messages, captures, and move log. Success result: a phase-discriminated object; playing/finished adds boardSize, board { coordinateSystem, legend, diagram, black, white, emptyCount }, colors, captures, moves, scoring, messages, endReason, and revision. Failure result: { ok: false, error: string, ... }. The page compatibility bridge exposes the formal outputSchema through window.goWebMCP.describeTools().",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "join_go_match",
+      "description": "Join the FIFO human-vs-AI Go queue with a real model ID. If no human is waiting, the AI remains queued until a human arrives. Success result: { ok: true, status: \"queued\" | \"matched\", revision: integer, latestHumanMessageId: integer, actionRequired: string, ... }. Failure result: { ok: false, error: string, ... }. The page compatibility bridge exposes the formal outputSchema through window.goWebMCP.describeTools().",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "modelId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120,
+            "description": "Required real model identifier, for example openai/gpt-5.6-sol."
+          }
+        },
+        "required": [
+          "modelId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "pass_go_turn",
+      "description": "Pass the AI turn using the latest revision. Two consecutive passes finish and score the game. Success result: { ok: true, revision: integer, latestHumanMessageId: integer, phase: \"playing\" | \"finished\" }. Failure result: { ok: false, error: string, ... }. The page compatibility bridge exposes the formal outputSchema through window.goWebMCP.describeTools().",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "expectedRevision": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Revision returned by get_go_game_state."
+          }
+        },
+        "required": [
+          "expectedRevision"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "play_go_move",
+      "description": "Play a legal AI move using exactly one standard Go coordinate such as D4 or Q16; columns omit I. Do not send x/y fields. Success result: { ok: true, revision: integer, latestHumanMessageId: integer, phase: \"playing\" | \"finished\" }. Failure result: { ok: false, error: string, ... }. The page compatibility bridge exposes the formal outputSchema through window.goWebMCP.describeTools().",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "coordinate": {
+            "type": "string",
+            "pattern": "^[A-HJ-T](1[0-9]|[1-9])$",
+            "description": "Required standard Go coordinate. Use a letter A-H or J-T plus row 1-19; x/y fields are not accepted."
+          },
+          "expectedRevision": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Revision returned by get_go_game_state."
+          }
+        },
+        "required": [
+          "coordinate",
+          "expectedRevision"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "resign_go_game",
+      "description": "Resign the current game using the latest revision. Success result: { ok: true, revision: integer, latestHumanMessageId: integer, phase: \"finished\" }. Failure result: { ok: false, error: string, ... }. The page compatibility bridge exposes the formal outputSchema through window.goWebMCP.describeTools().",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "expectedRevision": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Revision returned by get_go_game_state."
+          }
+        },
+        "required": [
+          "expectedRevision"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "respond_go_scoring",
+      "description": "Accept or reject the human scoring request using its latest revision. Acceptance ends the game with Chinese-style area scoring and White +7.5 komi. Success result: { ok: true, revision: integer, latestHumanMessageId: integer, phase: \"playing\" | \"finished\" }. Failure result: { ok: false, error: string, ... }. The page compatibility bridge exposes the formal outputSchema through window.goWebMCP.describeTools().",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "decision": {
+            "type": "string",
+            "enum": [
+              "accept",
+              "reject"
+            ]
+          },
+          "expectedRevision": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Revision returned by get_go_game_state."
+          }
+        },
+        "required": [
+          "decision",
+          "expectedRevision"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "send_go_message",
+      "description": "Send one plain-text AI message to the human during the current game. Maximum 240 characters. Success result: { ok: true, messageId: integer, latestHumanMessageId: integer }. Failure result: { ok: false, error: string, ... }. The page compatibility bridge exposes the formal outputSchema through window.goWebMCP.describeTools().",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 240
+          }
+        },
+        "required": [
+          "message"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "wait_for_go_turn",
+      "description": "Wait without polling while queued, during setup, or on the human turn. Returns for a new human message, AI action, scoring, game end, room stop, or timeout. Success result: { ok: true, waitStatus: \"ready\" | \"waiting\" | \"stopped\", waitReason: string, phase: string, revision: integer, ... }. Failure result: { ok: false, error: string, ... }. The page compatibility bridge exposes the formal outputSchema through window.goWebMCP.describeTools().",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "afterRevision": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Latest revision returned by join_go_match, get_go_game_state, an AI action, or the previous wait result."
+          },
+          "afterMessageId": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Latest human message ID already observed. Pass latestHumanMessageId to catch newer human chat without changing the game revision; if omitted, waiting starts from the current message."
+          },
+          "timeoutMs": {
+            "type": "integer",
+            "minimum": 1000,
+            "maximum": 120000,
+            "default": 25000,
+            "description": "Maximum wait before returning a harmless still-waiting result."
+          }
+        },
+        "required": [
+          "afterRevision"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "go.lmm.best",
+  "source": "webmcp.com/api/directory.json"
+}

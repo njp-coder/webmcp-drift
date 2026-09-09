@@ -1,0 +1,127 @@
+{
+  "sponsio": 1,
+  "url": "https://anew.page/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "anew_edit",
+      "description": "Edit the page currently open in the editor — replace its whole document with the given HTML. This is the in-place editor surface the user is looking at, so use it for any request to create, write, change, or restyle THIS page. (A rendered page registers a same-named tool that rewrites it by navigating to the successor URL; this one edits in place, inside the editor, and mints nothing until you ask. For a separate, brand-new page instead, use anew_write.) Put the page's <title> in your HTML, matching the visible heading — anew_edit adopts it, so no separate anew_title call is needed after a full edit; a <link rel=icon> is adopted too, but anew_icon is the easy way to set an emoji. Scripts never execute in the authoring view (the editor inserts parsed nodes), so use the bottombar's run button to exercise an interactive page. Inline all CSS, JS, and images (data: URIs, inline SVG, CSS gradients, or emoji) — the page should render alone forever, and each external reference gambles it on someone else's host staying up. One accepted exception: a webfont is far too large to inline, so a font may load from a durable CDN with a system-stack fallback; do not fight a user who asks for one. The HTML should stay ≤ 160000 UTF-8 bytes and the encoded URL ≤ 4000 bytes — the recommended share-safe budgets, not walls: a page past either still mints, renders and serves, up to the physical ceilings (65000 URL bytes, where the edge severs the request line; 163839 decoded bytes, the server's decode cap), it may just break in some apps — the response says so with a warning. Past a ceiling the endpoint refuses with an actionable error (code url_over_budget or content_too_large). Brotli slugs (the endpoint, or a local brotli mint) put a typical page in a few hundred URL bytes; raw base64 fits only ~2900 HTML bytes share-safe — know which budget you are drafting to, and never cut page content to fit before checking the brotli path. Unlike the minting surfaces that rule describes, this tool never refuses on size: the edit always applies, and fits:false in the result is the over-budget signal.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "html": {
+            "type": "string",
+            "minLength": 1,
+            "description": "A self-contained HTML document, fragment, or plain text. Encoded into the returned URL."
+          }
+        },
+        "required": [
+          "html"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "anew_icon",
+      "description": "Set the favicon on its own — a single emoji or an image URL — without a full edit (the easy way to set an emoji icon). Pass exactly one of { emoji } or { url }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "emoji": {
+            "type": "string",
+            "minLength": 1,
+            "description": "A single emoji."
+          },
+          "url": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The favicon href as authored — may be relative."
+          }
+        },
+        "oneOf": [
+          {
+            "required": [
+              "emoji"
+            ]
+          },
+          {
+            "required": [
+              "url"
+            ]
+          }
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "anew_link",
+      "description": "Return the shareable anew.page URL for the current document without leaving the editor. Optional subdomain/slug/privacy shape the returned string only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "subdomain": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "privacy": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "anew_read",
+      "description": "Read the document currently open in this editor — takes no arguments. (Two same-named tools read something else: the anew MCP server's takes a url and reads that page, and a rendered page registers one that reads the page being viewed. This one reads only what's open here.) Returns the editor's current HTML, title, favicon, URL parts, the resulting share URL, and its byte size. Read first when you need to preserve or build on what's already on the page; a full rewrite or restyle can call anew_edit directly.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "anew_title",
+      "description": "Change the page title on its own (browser-tab + home-strip title field), without a full edit — not needed right after anew_edit, which already adopts a <title> from your HTML. An empty string clears it.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "anew_write",
+      "description": "Encode a self-contained HTML document or fragment into a new anew.page URL — a sibling page, independent of the current one. Returns the new URL and its byte counts; does not navigate or mutate the current page — rewriting the page being viewed is anew_edit's job, the tool a viewed page registers alongside this one. Inline all CSS, JS, and images (data: URIs, inline SVG, CSS gradients, or emoji) — the page should render alone forever, and each external reference gambles it on someone else's host staying up. One accepted exception: a webfont is far too large to inline, so a font may load from a durable CDN with a system-stack fallback; do not fight a user who asks for one. The HTML should stay ≤ 160000 UTF-8 bytes and the encoded URL ≤ 4000 bytes — the recommended share-safe budgets, not walls: a page past either still mints, renders and serves, up to the physical ceilings (65000 URL bytes, where the edge severs the request line; 163839 decoded bytes, the server's decode cap), it may just break in some apps — the response says so with a warning. Past a ceiling the endpoint refuses with an actionable error (code url_over_budget or content_too_large). Brotli slugs (the endpoint, or a local brotli mint) put a typical page in a few hundred URL bytes; raw base64 fits only ~2900 HTML bytes share-safe — know which budget you are drafting to, and never cut page content to fit before checking the brotli path.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "html": {
+            "type": "string",
+            "minLength": 1,
+            "description": "A self-contained HTML document, fragment, or plain text. Encoded into the returned URL."
+          }
+        },
+        "required": [
+          "html"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "anew.page",
+  "source": "webmcp.com/api/directory.json"
+}

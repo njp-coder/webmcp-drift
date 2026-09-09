@@ -1,0 +1,176 @@
+{
+  "sponsio": 1,
+  "url": "https://callforpaper.org/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "analyze_abstract",
+      "description": "Analyze an academic paper abstract for structural completeness (Background, Methods, Results, Conclusion), readability, and academic rigor with actionable improvement suggestions.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "abstract": {
+            "type": "string",
+            "description": "The full text of the academic abstract to analyze."
+          }
+        },
+        "required": [
+          "abstract"
+        ]
+      }
+    },
+    {
+      "name": "generate_conference_names",
+      "description": "Generate creative, publication-ready academic event names and acronyms tailored to topic, audience, region, tone, and format.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "topic": {
+            "type": "string",
+            "description": "The main topic or theme of the conference."
+          },
+          "subject_area": {
+            "type": "string",
+            "description": "Academic subject area or discipline."
+          },
+          "audience": {
+            "type": "string",
+            "enum": [
+              "academic",
+              "industry",
+              "practitioner",
+              "student",
+              "general"
+            ],
+            "description": "Target audience level."
+          },
+          "region": {
+            "type": "string",
+            "description": "Geographic focus (e.g. \"International\", \"European\", \"Asia-Pacific\")."
+          },
+          "tone": {
+            "type": "string",
+            "enum": [
+              "academic",
+              "modern",
+              "prestigious",
+              "innovative"
+            ],
+            "description": "Tone style for the conference name."
+          },
+          "format": {
+            "type": "string",
+            "enum": [
+              "conference",
+              "symposium",
+              "workshop",
+              "summit",
+              "congress"
+            ],
+            "description": "Event format type."
+          },
+          "count": {
+            "type": "integer",
+            "description": "Number of name suggestions to generate (1-10).",
+            "default": 5
+          }
+        },
+        "required": [
+          "topic"
+        ]
+      }
+    },
+    {
+      "name": "get_calendar_feed",
+      "description": "Generate live iCal calendar subscription links and feeds for academic conference submission deadlines.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string",
+            "description": "Optional keyword filter for calendar events."
+          },
+          "subject": {
+            "type": "string",
+            "description": "Optional academic subject slug filter."
+          },
+          "country": {
+            "type": "string",
+            "description": "Optional 2-letter country code filter."
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "in-person",
+              "online",
+              "hybrid",
+              "all"
+            ],
+            "description": "Conference attendance mode."
+          }
+        }
+      }
+    },
+    {
+      "name": "navigate_to_page",
+      "description": "Navigate the browser to a specific URL path on CallForPaper.org (e.g. \"/discover\", \"/pricing\", \"/tools/calendar-generator\").",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "The URL path to navigate to."
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    },
+    {
+      "name": "search_cfps",
+      "description": "Search active academic calls for papers and research events on CallForPaper.org. Use this when finding conferences, workshops, CFPs, submission opportunities, deadlines, or academic events. Supports filtering by research subject, country, sort order, and keyword.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string",
+            "description": "Search keywords or topic (e.g. \"Machine Learning\", \"Digital Humanities\", \"NeurIPS\")."
+          },
+          "subject": {
+            "type": "string",
+            "description": "Optional academic discipline slug (e.g. \"computer-science\", \"engineering\", \"medicine\")."
+          },
+          "country": {
+            "type": "string",
+            "description": "Optional 2-letter ISO country code (e.g. \"US\", \"DE\", \"GB\", \"IN\")."
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "deadline",
+              "title",
+              "relevance"
+            ],
+            "description": "Sort ordering for results. Defaults to deadline."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum number of results to return (1-25). Defaults to 10.",
+            "default": 10
+          }
+        },
+        "required": [
+          "q"
+        ]
+      }
+    }
+  ],
+  "host": "callforpaper.org",
+  "source": "webmcp.com/api/directory.json"
+}

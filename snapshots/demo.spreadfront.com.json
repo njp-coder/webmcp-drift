@@ -1,0 +1,204 @@
+{
+  "sponsio": 1,
+  "url": "https://demo.spreadfront.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "add_to_cart",
+      "description": "Add a product to the cart. For products with options (variants), pass every option as {\"OptionName\": \"Value\"} - get_product lists the allowed values. Same product with identical options increments quantity.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Product id from search_products."
+          },
+          "quantity": {
+            "type": "number",
+            "description": "How many to add (default 1, max 999)."
+          },
+          "options": {
+            "type": "object",
+            "description": "Variant choices, e.g. {\"Size\": \"M\", \"Color\": \"Red\"}. Required when the product has options.",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "fill_checkout_form",
+      "description": "Fill the checkout form on the cart page with details collected from the user, so the human only reviews and submits. Maps conversation data to the right fields: full_name is ONE field (combine first and last name), address is a single free-text delivery address. Never submits - the human completes any security check and presses the order button. Only works on the cart/checkout page (call proceed_to_checkout first; after the page loads, call this).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "full_name": {
+            "type": "string",
+            "description": "Buyer full name as one string, e.g. \"Jane Smith\" (combine first and last name)."
+          },
+          "email": {
+            "type": "string",
+            "description": "Buyer email address - order confirmations go here."
+          },
+          "phone": {
+            "type": "string",
+            "description": "Phone number, if the user provided one."
+          },
+          "address": {
+            "type": "string",
+            "description": "Full delivery address as one free-text block (street, city, postal code, country as applicable)."
+          },
+          "note": {
+            "type": "string",
+            "description": "Optional note to the seller."
+          },
+          "custom": {
+            "type": "object",
+            "description": "Values for the store extra checkout fields, keyed by the field label exactly as shown, e.g. {\"Gift message\": \"Happy birthday\"}.",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "payment_method": {
+            "type": "string",
+            "description": "One of the payment options visible on the page: \"card\", \"paypal\", \"crypto\", \"cod\" (cash on delivery / pickup) or \"link\" (pay online)."
+          }
+        }
+      }
+    },
+    {
+      "name": "get_cart",
+      "description": "Get the current shopping cart: line items, quantities, selected options, subtotal and the checkout URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_product",
+      "description": "Get full details for one product by its id (from search_products), including price, availability, description, images and buyable options (variants).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Product id, e.g. \"r0\"."
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "get_store_info",
+      "description": "Get information about this store: name, description, currency, product count and the checkout URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "proceed_to_checkout",
+      "description": "Navigate the shopper’s current browser session to the checkout page. This action does NOT place an order or submit payment - the human shopper must review the cart and complete checkout manually. Call after the cart is ready.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Search this store's product catalog. Returns matching products with id, price, availability and buyable options (variants). Use the returned id with add_to_cart.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Free-text search over name, description, brand and category. Omit to browse by filters alone."
+          },
+          "category": {
+            "type": "string",
+            "description": "Exact category filter (case-insensitive)."
+          },
+          "brand": {
+            "type": "string",
+            "description": "Exact brand filter (case-insensitive)."
+          },
+          "min_price": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Only products priced at or above this (store currency)."
+          },
+          "max_price": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Only products priced at or below this (store currency)."
+          },
+          "in_stock": {
+            "type": "boolean",
+            "description": "true = only products that can be ordered right now."
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "relevance",
+              "price-asc",
+              "price-desc",
+              "name"
+            ],
+            "default": "relevance"
+          },
+          "max_results": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 10
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "update_cart",
+      "description": "Set the quantity of a cart line (0 removes it). Identify the line by product id and, when the product has options, the same options used to add it.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Product id of the cart line."
+          },
+          "quantity": {
+            "type": "number",
+            "description": "New quantity; 0 removes the line."
+          },
+          "options": {
+            "type": "object",
+            "description": "The variant choices of the line to change, if it has any.",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "quantity"
+        ]
+      }
+    }
+  ],
+  "host": "demo.spreadfront.com",
+  "source": "webmcp.com/api/directory.json"
+}

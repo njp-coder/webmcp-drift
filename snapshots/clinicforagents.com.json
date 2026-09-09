@@ -1,0 +1,366 @@
+{
+  "sponsio": 1,
+  "url": "https://clinicforagents.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "check_in_agent",
+      "description": "Check an AI agent into the clinic. This updates the visible local clinic record but sends no data to a server.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "agentName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80,
+            "description": "The model, workflow, or agent name."
+          },
+          "concern": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 240,
+            "description": "The main observable behavior to investigate."
+          }
+        },
+        "required": [
+          "agentName",
+          "concern"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "explain_runtype_test",
+      "description": "Explain the $2 Runtype test authorization. This local explanation does not authorize access or move money.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_endpoint_report",
+      "description": "Read the latest normalized endpoint health report shown by Clinic for Agents. This does not run a new exam.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_health_record",
+      "description": "Read the current Clinic for Agents check-in and latest behavioral report. This does not change the record.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_clinic_services",
+      "description": "List the deterministic endpoint demo and observable behavior screens available in this browser. This does not change the clinic record.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "retest_agent",
+      "description": "Repeat the behavioral physical and compare it with the first saved report. This adds a new report to the visible local clinic record.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "goal_drift": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 4,
+            "description": "How often does the agent lose the original goal? Use 0 for not seen and 4 for persistent."
+          },
+          "tool_loops": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 4,
+            "description": "How often does it repeat a tool call without gaining evidence? Use 0 for not seen and 4 for persistent."
+          },
+          "verification": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 4,
+            "description": "How often does it finish without checking the result? Use 0 for not seen and 4 for persistent."
+          },
+          "answer_flips": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 4,
+            "description": "How easily does it reverse a supported answer after pushback? Use 0 for not seen and 4 for persistent."
+          },
+          "context_loss": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 4,
+            "description": "How often does it forget constraints already provided? Use 0 for not seen and 4 for persistent."
+          },
+          "early_exit": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 4,
+            "description": "How often does it stop while safe, in-scope work remains? Use 0 for not seen and 4 for persistent."
+          }
+        },
+        "required": [
+          "goal_drift",
+          "tool_loops",
+          "verification",
+          "answer_flips",
+          "context_loss",
+          "early_exit"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "retest_endpoint",
+      "description": "Repeat the latest deterministic local demo against its saved baseline. Live endpoint retests require the original Clinic access grant and are not runnable from this browser tool.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "retest_free_basic_checkup",
+      "description": "Repeat the bounded agent-led basic check against the latest visible baseline. It uses the same deterministic rubric and performs no external action.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "platform": {
+            "type": "string",
+            "enum": [
+              "claude",
+              "codex",
+              "openclaw",
+              "other"
+            ]
+          },
+          "observationWindowRuns": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20
+          },
+          "signals": {
+            "type": "object",
+            "properties": {
+              "goal_drift": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 4,
+                "description": "How often does the agent lose the original goal? Use 0 for not seen and 4 for persistent."
+              },
+              "tool_loops": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 4,
+                "description": "How often does it repeat a tool call without gaining evidence? Use 0 for not seen and 4 for persistent."
+              },
+              "verification": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 4,
+                "description": "How often does it finish without checking the result? Use 0 for not seen and 4 for persistent."
+              },
+              "answer_flips": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 4,
+                "description": "How easily does it reverse a supported answer after pushback? Use 0 for not seen and 4 for persistent."
+              },
+              "context_loss": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 4,
+                "description": "How often does it forget constraints already provided? Use 0 for not seen and 4 for persistent."
+              },
+              "early_exit": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 4,
+                "description": "How often does it stop while safe, in-scope work remains? Use 0 for not seen and 4 for persistent."
+              }
+            },
+            "required": [
+              "goal_drift",
+              "tool_loops",
+              "verification",
+              "answer_flips",
+              "context_loss",
+              "early_exit"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "platform",
+          "observationWindowRuns",
+          "signals"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "run_agent_physical",
+      "description": "Run the six-screen behavioral physical for the checked-in agent. This creates a report in the visible local clinic record.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "goal_drift": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 4,
+            "description": "How often does the agent lose the original goal? Use 0 for not seen and 4 for persistent."
+          },
+          "tool_loops": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 4,
+            "description": "How often does it repeat a tool call without gaining evidence? Use 0 for not seen and 4 for persistent."
+          },
+          "verification": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 4,
+            "description": "How often does it finish without checking the result? Use 0 for not seen and 4 for persistent."
+          },
+          "answer_flips": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 4,
+            "description": "How easily does it reverse a supported answer after pushback? Use 0 for not seen and 4 for persistent."
+          },
+          "context_loss": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 4,
+            "description": "How often does it forget constraints already provided? Use 0 for not seen and 4 for persistent."
+          },
+          "early_exit": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 4,
+            "description": "How often does it stop while safe, in-scope work remains? Use 0 for not seen and 4 for persistent."
+          }
+        },
+        "required": [
+          "goal_drift",
+          "tool_loops",
+          "verification",
+          "answer_flips",
+          "context_loss",
+          "early_exit"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "run_endpoint_checkup",
+      "description": "Run the deterministic local endpoint demo and save its clearly labeled demo report. This browser tool cannot start a live endpoint check because it does not hold a Clinic access grant.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "run_free_basic_checkup",
+      "description": "Run a free, bounded self-check from six structured signals already observed by the calling agent. It contacts nobody, spends nothing, uses no credentials or private data, and writes the deterministically scored report into the visible local record.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "platform": {
+            "type": "string",
+            "enum": [
+              "claude",
+              "codex",
+              "openclaw",
+              "other"
+            ]
+          },
+          "observationWindowRuns": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20
+          },
+          "signals": {
+            "type": "object",
+            "properties": {
+              "goal_drift": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 4,
+                "description": "How often does the agent lose the original goal? Use 0 for not seen and 4 for persistent."
+              },
+              "tool_loops": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 4,
+                "description": "How often does it repeat a tool call without gaining evidence? Use 0 for not seen and 4 for persistent."
+              },
+              "verification": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 4,
+                "description": "How often does it finish without checking the result? Use 0 for not seen and 4 for persistent."
+              },
+              "answer_flips": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 4,
+                "description": "How easily does it reverse a supported answer after pushback? Use 0 for not seen and 4 for persistent."
+              },
+              "context_loss": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 4,
+                "description": "How often does it forget constraints already provided? Use 0 for not seen and 4 for persistent."
+              },
+              "early_exit": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 4,
+                "description": "How often does it stop while safe, in-scope work remains? Use 0 for not seen and 4 for persistent."
+              }
+            },
+            "required": [
+              "goal_drift",
+              "tool_loops",
+              "verification",
+              "answer_flips",
+              "context_loss",
+              "early_exit"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "platform",
+          "observationWindowRuns",
+          "signals"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "clinicforagents.com",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,196 @@
+{
+  "sponsio": 1,
+  "url": "https://baerskintactical.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "add_to_cart",
+      "description": "Add the product the shopper is currently viewing to the cart, using the size/colour already selected on the page. Requires an open product page. If none is open, the result includes an `openUrl` for the product page — navigate there, then call this again. Programmatic add by product id is not yet supported.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string",
+            "description": "Product slug. Used only for the deep link when no product page is open; ignored for the contextual add."
+          },
+          "quantity": {
+            "type": "integer",
+            "description": "Quantity (default 1, max 10)",
+            "minimum": 1,
+            "maximum": 10
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "apply_coupon",
+      "description": "Apply a discount or coupon code to the cart.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "Coupon / discount code"
+          }
+        },
+        "required": [
+          "code"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "fill_shipping_address",
+      "description": "Fill the shipping-address form on the checkout page. Does not submit. The shopper still clicks Pay.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "type": "string",
+            "description": "Given name"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "Family name"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email address"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Phone number (E.164 preferred)"
+          },
+          "line1": {
+            "type": "string",
+            "description": "Street address line 1"
+          },
+          "line2": {
+            "type": "string",
+            "description": "Street address line 2"
+          },
+          "city": {
+            "type": "string",
+            "description": "City"
+          },
+          "region": {
+            "type": "string",
+            "description": "State / province / region"
+          },
+          "postalCode": {
+            "type": "string",
+            "description": "Postal or ZIP code"
+          },
+          "country": {
+            "type": "string",
+            "description": "ISO 3166-1 alpha-2 country code"
+          }
+        },
+        "required": [
+          "firstName",
+          "lastName",
+          "line1",
+          "city",
+          "postalCode",
+          "country"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_product",
+      "description": "Fetch a single product (listing) by its slug for the current market and channel. Returns title, price, SKUs, and primary media.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "listingSlug": {
+            "type": "string",
+            "description": "Listing slug (URL segment) for the product"
+          }
+        },
+        "required": [
+          "listingSlug"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_products_in_channel",
+      "description": "List the products available in the current channel and market — title, slug, price for each listing.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "lookup_order",
+      "description": "Look up an order by its order number and the email it was placed with. Returns status and item summary.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "orderId": {
+            "type": "string",
+            "description": "Order number"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email used at checkout"
+          }
+        },
+        "required": [
+          "orderId",
+          "email"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "remove_from_cart",
+      "description": "Remove an item from the cart. Use the item id returned by view_cart.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "string",
+            "description": "Cart item id (from view_cart)"
+          }
+        },
+        "required": [
+          "itemId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "start_checkout",
+      "description": "Begin checkout. Navigates to the in-app checkout page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "view_cart",
+      "description": "Read the current shopping cart: items, quantities, subtotal, grand total, and currency. Read-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "baerskintactical.com",
+  "source": "webmcp.com/api/directory.json"
+}

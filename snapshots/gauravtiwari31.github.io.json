@@ -1,0 +1,166 @@
+{
+  "sponsio": 1,
+  "url": "https://gauravtiwari31.github.io/Nirnay/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "evaluate_design",
+      "description": "Check the current design against the active target specification and return, for each target, the measured value, the target, a PASS or FAIL verdict and the signed margin by which it passes or fails, then an overall verdict. Use this to decide whether tuning is finished, and when it is not, to see which requirement is furthest from being met.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_frequency_response",
+      "description": "Return the open-loop stability margins: gain margin in dB and as a linear factor, phase margin in degrees, and both crossover frequencies in rad/s. Both crossovers are located by bisection, so they are exact rather than read off a plot. Use this to judge robustness and how much more gain the loop can tolerate before it goes unstable.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "include_samples": {
+            "type": "boolean",
+            "description": "When true, also return about 30 log-spaced (frequency in rad/s, magnitude in dB, phase in degrees) triples of the open-loop Bode data. Defaults to false, which returns the margins only."
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_pole_zero_map",
+      "description": "Return the closed-loop poles and zeros as exact complex numbers, the damping ratio and natural frequency of the dominant pole, and the critical loop gain at which the system would become unstable. Use this to understand why the transient looks the way it does, or how far the design is from the stability boundary. The pole-zero plot is a canvas rendering, so these values cannot be read off the screen.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_system",
+      "description": "Read the complete current state of the control design: the plant transfer function, the PID gains, the resulting controller and closed-loop transfer functions, whether the loop is stable, all step-response and frequency-domain metrics, and how the design measures up against the active targets. Start here to find out what you are working with.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "run_step_response",
+      "description": "Simulate the closed-loop unit-step response and return its exact numeric transient metrics: percent overshoot, rise time, peak value and peak time, 2% settling time, final value and steady-state error. Use this instead of trying to read the step-response plot: the plot is a canvas rendering, so its numbers cannot be recovered visually, and these are the actual simulated values.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "include_samples": {
+            "type": "boolean",
+            "description": "When true, also return about 40 evenly spaced (time in seconds, output) pairs from the response, so the shape of the transient can be inspected directly. Defaults to false, which returns the metrics only."
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_controller_gains",
+      "description": "Set one or more PID gains on the live page and immediately return the full resulting design report: the new gains, stability, every step-response metric, both stability margins, the closed-loop poles and the spec verdict. Because the post-change metrics come back with the change, one call is enough per tuning iteration. Any parameter left out keeps its current value, so a single gain can be adjusted on its own. The plots on the page redraw as this is applied.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "Kp": {
+            "type": "number",
+            "description": "Proportional gain. Raising it speeds up the response and reduces steady-state error, at the cost of more overshoot and less phase margin. Clamped to [-1000, 1000]. Omit to leave unchanged."
+          },
+          "Ki": {
+            "type": "number",
+            "description": "Integral gain, in units of 1/s. Any non-zero value drives the steady-state error for a step reference to zero, but adds phase lag and so tends to increase overshoot. Clamped to [-1000, 1000]. Omit to leave unchanged."
+          },
+          "Kd": {
+            "type": "number",
+            "description": "Derivative gain, in seconds. Adds phase lead, which damps overshoot and increases phase margin, but amplifies high-frequency content. Clamped to [-1000, 1000]. Omit to leave unchanged."
+          },
+          "N": {
+            "type": "number",
+            "description": "Derivative filter pole in rad/s, which makes the derivative term realizable: the term is Kd*N*s/(s+N). Larger N approaches an ideal derivative. Clamped to [1, 10000], default 100. Omit to leave unchanged."
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_design_spec",
+      "description": "Set the target specification that the controller is being tuned to meet, then return the current design re-evaluated against the new targets. Use this when the user states requirements, so that evaluate_design and every write tool report progress against the right goal. Any target left out keeps its current value.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "max_overshoot_percent": {
+            "type": "number",
+            "description": "Largest acceptable percent overshoot of the step response. Must not be negative. Omit to leave unchanged."
+          },
+          "max_settling_time_s": {
+            "type": "number",
+            "description": "Largest acceptable 2% settling time in seconds. Must not be negative. Omit to leave unchanged."
+          },
+          "max_steady_state_error": {
+            "type": "number",
+            "description": "Largest acceptable absolute steady-state error for a unit step, so 0.02 means 2% of the reference. Must not be negative. Omit to leave unchanged."
+          },
+          "min_phase_margin_deg": {
+            "type": "number",
+            "description": "Smallest acceptable open-loop phase margin in degrees; 45 to 60 is a common robustness requirement. Must not be negative. Omit to leave unchanged."
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_plant",
+      "description": "Replace the plant being controlled, either by naming one of the built-in presets or by giving numerator and denominator coefficients directly, then return the full resulting design report with the current controller applied to the new plant. Use this to try the same controller against a different system, or to enter a specific transfer function.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "preset": {
+            "type": "string",
+            "enum": [
+              "second-order",
+              "first-order-lag",
+              "double-integrator",
+              "dc-motor",
+              "third-order",
+              "nonminimum-phase",
+              "unstable"
+            ],
+            "description": "Name of a built-in plant. Give either this or numerator and denominator, not both."
+          },
+          "numerator": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "description": "Numerator coefficients in descending powers of s, so [1] is 1 and [-1, 1] is 1 - s. Must be given together with denominator."
+          },
+          "denominator": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "description": "Denominator coefficients in descending powers of s, so [1, 0.6, 1] is s^2 + 0.6s + 1. Must have degree at least that of the numerator, and must be given together with numerator."
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "gauravtiwari31.github.io",
+  "source": "webmcp.com/api/directory.json"
+}

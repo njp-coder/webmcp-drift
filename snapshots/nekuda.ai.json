@@ -1,0 +1,97 @@
+{
+  "sponsio": 1,
+  "url": "https://www.nekuda.ai/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "ask_site",
+      "description": "Answer questions about nekuda from the site's own content. Use when the visitor asks what nekuda does, how WebMCP or the webmcp-kit plugin works, what the privacy policy says, or anything covered by the nekuda blog on agentic commerce. Returns the most relevant content sections with their source page paths so you can compose an answer and cite the page; if nothing matches, returns an empty result with an explicit note saying the site has no matching content.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "question": {
+            "type": "string",
+            "description": "The visitor's question, used for keyword matching against site content"
+          }
+        },
+        "required": [
+          "question"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_latest_posts",
+      "description": "List the most recent posts from the nekuda blog. Use when the visitor asks what's new from nekuda, recent announcements, or the latest agentic-commerce news and analysis. Returns up to limit posts, newest first, each with title, publication date, one-line description, and URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "default": 5,
+            "description": "Number of posts to return"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_offering",
+      "description": "Get a structured summary of nekuda's products and how to get started. Use when the visitor asks what nekuda offers, the difference between the code path (webmcp-kit plugin for coding agents) and the scan path, what the AgentLane dashboard or WebMCP Chrome extension does, or where the SDK, docs, and GitHub repos live. Returns the offering list with descriptions, install commands, and official links.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "request_demo",
+      "description": "Schedule a call with the nekuda team by submitting the site's demo-request form. Use when the visitor asks to book a demo, schedule a call, talk to the team, or discuss implementing WebMCP for their website or application (pass their site URL as siteUrl). Requires first name, last name, work email, company, and a short message. This sends the visitor's contact details to nekuda's CRM and the team will follow up by email — only call it with information the visitor explicitly provided and asked to submit. Returns the submission status shown on the page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "type": "string",
+            "description": "Visitor's first name"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "Visitor's last name"
+          },
+          "email": {
+            "type": "string",
+            "description": "Visitor's work email address"
+          },
+          "company": {
+            "type": "string",
+            "description": "Visitor's company name"
+          },
+          "message": {
+            "type": "string",
+            "description": "What the visitor wants to discuss"
+          },
+          "siteUrl": {
+            "type": "string",
+            "description": "Optional: the visitor's website URL to request a WebMCP readiness scan for"
+          }
+        },
+        "required": [
+          "firstName",
+          "lastName",
+          "email",
+          "company",
+          "message"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "nekuda.ai",
+  "source": "webmcp.com/api/directory.json"
+}

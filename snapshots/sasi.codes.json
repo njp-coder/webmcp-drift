@@ -1,0 +1,194 @@
+{
+  "sponsio": 1,
+  "url": "https://sasi.codes/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "get_experiment",
+      "description": "Read an experiment's details without changing the page. Returns {slug, name, url, preview: {url, width, height}}. URLs are absolute and preview dimensions are pixels. Use open_experiment to navigate to the experiment.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "enum": [
+              "winder",
+              "icons",
+              "captcha",
+              "tetris",
+              "caligraphy",
+              "knob",
+              "particle",
+              "stamp",
+              "charts",
+              "dots",
+              "morph",
+              "starscii"
+            ],
+            "description": "Experiment slug from list_experiments."
+          }
+        },
+        "required": [
+          "slug"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_personal_info",
+      "description": "Read Sasi's personal information without changing the page. Returns {name, bio, url, email, profiles: [{label, handle, url}]}. Use toggle_about to change the visible About panel.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_project",
+      "description": "Read a project's details without changing the page. Returns {name, description, year, url, screenshots: [{url, width, height}]}. Screenshot URLs are absolute and dimensions are pixels. Use toggle_project to change the visible panel.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "enum": [
+              "start",
+              "tape"
+            ],
+            "description": "Project name from list_projects."
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_experiments",
+      "description": "Read Sasi's experiment catalog without changing the page. Returns {experiments: [{slug, name, url}]}; local URLs are relative to this origin. Use get_experiment for a preview, toggle_experiments to display the list, or open_experiment to navigate.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_other_experiments",
+      "description": "List images and demo videos of Sasi's other experiments from the feed, without changing the page. Returns {media: [{kind, url, width, height, poster?}]} in feed order; kind is image or video, url links directly to the media, URLs are absolute, dimensions are pixels, and poster is an optional video preview image URL. Use list_experiments for named interactive experiments, get_project for project screenshots, or toggle_experiments to display the feed.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_projects",
+      "description": "Read Sasi's project catalog without changing the page. Returns {projects: [{name, description, year, url}]}. Use get_project for screenshots or toggle_project to change the visible panel.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "open_experiment",
+      "description": "Navigate this tab to the selected experiment, leaving the portfolio. Winder goes to an external website. Browser Back returns to the portfolio. Returns {navigatingTo: url} if delivered before navigation; the browser may return null after navigation. Use get_experiment to read details without navigating.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "enum": [
+              "winder",
+              "icons",
+              "captcha",
+              "tetris",
+              "caligraphy",
+              "knob",
+              "particle",
+              "stamp",
+              "charts",
+              "dots",
+              "morph",
+              "starscii"
+            ],
+            "description": "Experiment slug from list_experiments."
+          }
+        },
+        "required": [
+          "slug"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "share_contact_email",
+      "description": "Share one email address with Sasi so he can get in touch. Fills the email field and waits for the visitor to press Send. After submission, returns {ok: true, message} on delivery or {ok: false, error} on failure.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Message"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      }
+    },
+    {
+      "name": "toggle_about",
+      "description": "Change the visible About Sasi panel. Closes it if already open; otherwise opens it and replaces any other panel. Returns {activePanel}, containing about or null when closed. Use get_personal_info to read personal information.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "toggle_experiments",
+      "description": "Change the visible experiments panel and media feed. Closes it if already open; otherwise opens it and replaces any other panel. Returns {activePanel}, containing experiments or null when closed. Use list_experiments or list_other_experiments to read the content.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "toggle_project",
+      "description": "Change the visible project panel. Closes the selected project if already open; otherwise opens it and replaces any other panel. Returns {activePanel}, containing the selected project name or null when closed. Use get_project to read project details.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "enum": [
+              "start",
+              "tape"
+            ],
+            "description": "Project name from list_projects."
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "sasi.codes",
+  "source": "webmcp.com/api/directory.json"
+}

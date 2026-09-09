@@ -1,0 +1,142 @@
+{
+  "sponsio": 1,
+  "url": "https://pawelkubiak.dev/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "answer_from_blog",
+      "description": "Answers a question using relevant evidence from Pawel's blog posts.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "question": {
+            "type": "string",
+            "description": "The question to answer from blog content."
+          }
+        },
+        "required": [
+          "question"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "find_blog_posts",
+      "description": "Finds blog posts by topic, title, tags, or content. Use intent recommend for learning goals.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Topic, keyword, or learning goal, for example Angular performance or WebMCP."
+          },
+          "intent": {
+            "type": "string",
+            "enum": [
+              "search",
+              "recommend"
+            ],
+            "description": "search for exact matches; recommend for learning goals with a recent-post fallback."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "find_relevant_experience",
+      "description": "Finds resume experience relevant to a user's project, need, or technology.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "The user's project need or technology, for example Angular audit or SSR."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_author_perspective",
+      "description": "Finds Pawel's perspective on a topic based on his blog posts.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "topic": {
+            "type": "string",
+            "description": "The topic to infer Pawel's perspective on."
+          }
+        },
+        "required": [
+          "topic"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_pages",
+      "description": "Lists navigable site pages and recent blog posts with paths.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "section": {
+            "type": "string",
+            "enum": [
+              "site",
+              "blog",
+              "all"
+            ],
+            "description": "Which section to list. Defaults to all."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "navigate",
+      "description": "Navigates to a site page or blog post by path.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "A site path such as /blog, /about, or /blog/post-slug."
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "summarize_blog_post",
+      "description": "Summarizes a blog post by slug using Chrome Summarizer API when available, with a safe fallback.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Optional blog post slug. If omitted, the currently opened blog post is summarized."
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "pawelkubiak.dev",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,170 @@
+{
+  "sponsio": 1,
+  "url": "https://www.webmcp.ro/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "get_leaderboard",
+      "description": "Returns the highest scoring websites validated on this site. Returns a JSON array where each entry has `website`, `score` (0 to 100), `grade` and `report_url`. Ordered best first; `limit` controls how many come back, between 1 and 25, defaulting to 10. Use it for questions about which sites are ready for AI agents, or to show an example of a good implementation.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "description": "How many entries to return, between 1 and 25",
+            "minimum": 1,
+            "maximum": 25
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_services",
+      "description": "The authoritative list of WebMCP services offered on this site, not a search result. Returns a JSON array of about 16 entries; each has `name`, `summary`, `price_from` (the entry price), `url`, `slug` and `parent` (the parent service, when the entry is a sub-service). The `slug` is what request_quote expects in its `service` field. Use it when someone asks what is offered or what something costs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_webmcp_report",
+      "description": "Returns the latest COMPLETED validation report for a website, without starting a new scan. Returns a JSON object with `website`, `url`, `score` (0 to 100), `grade` (a letter grade), `categories` with `access`, `tools` and `discovery`, each carrying `points` out of `max`, `checks`, an array where each entry has an `id` and a `status` of pass or fail, `tools_detected`, `report_url` and `scanned_at`. Reach for this first whenever someone asks how a site scores; call validate_website only if no report comes back.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "website": {
+            "type": "string",
+            "description": "Domain of the website, e.g. example.com",
+            "minLength": 4,
+            "maxLength": 190,
+            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9.-]*\\.[a-zA-Z]{2,}$"
+          }
+        },
+        "required": [
+          "website"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "request_quote",
+      "description": "Sends a quote request for a WebMCP service. Returns a JSON confirmation that the request was recorded; a human replies by email within one business day. Pass the `service` slug from get_services when the user has picked one. This sends a real message to a business, so ask the user to confirm before calling it.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Full name of the person requesting",
+            "minLength": 2,
+            "maxLength": 120
+          },
+          "email": {
+            "type": "string",
+            "description": "Email address for the reply",
+            "format": "email",
+            "maxLength": 180,
+            "pattern": "^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Optional phone number",
+            "maxLength": 40
+          },
+          "company": {
+            "type": "string",
+            "description": "Optional company name",
+            "maxLength": 150
+          },
+          "website": {
+            "type": "string",
+            "description": "Optional website the request is about",
+            "maxLength": 255
+          },
+          "service": {
+            "type": "string",
+            "description": "Optional service slug from get_services, e.g. implementare-webmcp",
+            "maxLength": 190
+          },
+          "message": {
+            "type": "string",
+            "description": "What the user wants to achieve",
+            "maxLength": 4000
+          }
+        },
+        "required": [
+          "name",
+          "email"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "request_quote_form",
+      "description": "Sends a quote request for a WebMCP service. Confirm the details with the user before calling this, because it submits the form immediately. Returns a short confirmation once sent; a human replies by email within one business day.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Full name of the person making the request"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email address where the reply should be sent"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Optional phone number"
+          },
+          "company": {
+            "type": "string",
+            "description": "Optional company name"
+          },
+          "website": {
+            "type": "string",
+            "description": "The website the request is about, for example example.com"
+          },
+          "message": {
+            "type": "string",
+            "description": "What the user wants to achieve, and which service they are interested in"
+          }
+        },
+        "required": [
+          "name",
+          "email"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "validate_website",
+      "description": "Starts a NEW WebMCP validation scan for a public website. Returns a JSON object with the report link; the scan itself finishes in about 30 seconds, so fetch the report afterwards with get_webmcp_report. Rate limited to a few scans per hour. Use this only when the site has never been scanned or the user explicitly wants fresh results; if a report already exists, get_webmcp_report is instant and does not consume the limit. This is the programmatic path, which hands the result back as data; the scan form on the home page is exposed separately as scan_website and instead renders the report on screen for the user.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "Public website URL or domain, e.g. example.com",
+            "minLength": 4,
+            "maxLength": 300,
+            "pattern": "^(https?://)?[a-zA-Z0-9][a-zA-Z0-9.-]*\\.[a-zA-Z]{2,}"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "webmcp.ro",
+  "source": "webmcp.com/api/directory.json"
+}

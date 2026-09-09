@@ -1,0 +1,276 @@
+{
+  "sponsio": 1,
+  "url": "https://scholar-sidekick.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "auditBibliography",
+      "description": "Audit a whole bibliography (BibTeX / RIS / CSL-JSON text, or a claims[] array) in one call — per-entry fabrication verdict + retraction, plus a corpus summary. Batch counterpart to verifyCitation. Capped at 25 entries; entry `index` is 1-based and `sourceKey` echoes the source file's own key. Read-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "bibliography": {
+            "type": "string",
+            "maxLength": 131072,
+            "description": "Raw BibTeX / RIS / CSL-JSON text (provide this OR claims). Capped at 25 entries; the excess is dropped and counted in `truncated`."
+          },
+          "format": {
+            "type": "string",
+            "enum": [
+              "bibtex",
+              "ris",
+              "csl-json"
+            ],
+            "description": "Override format auto-detection."
+          },
+          "claims": {
+            "type": "array",
+            "maxItems": 25,
+            "description": "Pre-parsed citations (provide this OR bibliography). Each needs `title` plus whatever identifiers it carries (doi, pmid, pmcid, isbn, arxiv, issn, ads, whoIrisUrl), optionally author / year / container.",
+            "items": {
+              "type": "object"
+            }
+          },
+          "checks": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "retraction"
+              ]
+            },
+            "description": "Per-entry checks. Default ['retraction']; pass [] to skip."
+          },
+          "screenWithLlm": {
+            "type": "boolean",
+            "description": "Opt-in Stage 3 LLM screen (requires an authenticated key)."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "checkOpenAccess",
+      "description": "Check a single work's open-access status and best legal full-text URL (Unpaywall). Read-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500,
+            "description": "A single scholarly identifier (DOI, PMID, PMCID, arXiv, ISBN, or ADS bibcode; prefixes tolerated). Exactly one — batches are not accepted."
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "checkRetraction",
+      "description": "Check whether a single work has been retracted, corrected, or flagged with an expression of concern (Crossref / Retraction Watch). Read-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500,
+            "description": "A single scholarly identifier (DOI, PMID, PMCID, arXiv, ISBN, or ADS bibcode; prefixes tolerated). Exactly one — batches are not accepted."
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "exportCitation",
+      "description": "Export scholarly identifiers to a bibliography file format (BibTeX, RIS, EndNote, RefWorks, NBIB, Zotero RDF, CSL-JSON, CSV). Read-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "One or more identifiers (DOI, PMID, PMCID, ISBN, arXiv, ISSN, ADS bibcode, WHO IRIS URL) separated by newlines or commas."
+          },
+          "format": {
+            "type": "string",
+            "enum": [
+              "bib",
+              "ris",
+              "csv",
+              "csl",
+              "endnote-refer",
+              "endnote-xml",
+              "refworks",
+              "medline",
+              "zotero-rdf",
+              "txt"
+            ],
+            "description": "Export format."
+          },
+          "style": {
+            "type": "string",
+            "description": "Citation style (txt export only)."
+          },
+          "lang": {
+            "type": "string",
+            "description": "Locale (e.g. en-US)."
+          }
+        },
+        "required": [
+          "text",
+          "format"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "formatCitation",
+      "description": "Format scholarly identifiers into a finished citation in a style — vancouver (default), ama, apa, ieee, cse, or any of 10,000+ CSL styles. Read-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "One or more identifiers (DOI, PMID, PMCID, ISBN, arXiv, ISSN, ADS bibcode, WHO IRIS URL) separated by newlines or commas."
+          },
+          "style": {
+            "type": "string",
+            "description": "Citation style: vancouver (default), ama, apa, ieee, cse, or a CSL id."
+          },
+          "lang": {
+            "type": "string",
+            "description": "Locale (e.g. en-US, en-GB, fr-FR)."
+          },
+          "footnote": {
+            "type": "boolean",
+            "description": "Footnote form instead of bibliography."
+          },
+          "output": {
+            "type": "string",
+            "enum": [
+              "text",
+              "html",
+              "json"
+            ],
+            "description": "Default text."
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "resolveIdentifier",
+      "description": "Resolve scholarly identifiers (DOI, PMID, PMCID, ISBN, arXiv, ISSN, ADS, WHO IRIS) to structured CSL-JSON metadata. Read-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "One or more identifiers (DOI, PMID, PMCID, ISBN, arXiv, ISSN, ADS bibcode, WHO IRIS URL) separated by newlines or commas."
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "verifyCitation",
+      "description": "Verify a claimed citation against the record at its identifier — catches the real-identifier + fabricated-title pattern (Topaz et al., Lancet 2026). Pass title plus one identifier. Read-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000,
+            "description": "Cited title (required)."
+          },
+          "doi": {
+            "type": "string",
+            "maxLength": 200,
+            "description": "DOI as cited."
+          },
+          "pmid": {
+            "type": "string",
+            "maxLength": 50,
+            "description": "PubMed ID."
+          },
+          "pmcid": {
+            "type": "string",
+            "maxLength": 50,
+            "description": "PubMed Central ID."
+          },
+          "isbn": {
+            "type": "string",
+            "maxLength": 50,
+            "description": "ISBN."
+          },
+          "arxiv": {
+            "type": "string",
+            "maxLength": 50,
+            "description": "arXiv ID."
+          },
+          "issn": {
+            "type": "string",
+            "maxLength": 50,
+            "description": "ISSN."
+          },
+          "ads": {
+            "type": "string",
+            "maxLength": 50,
+            "description": "NASA ADS bibcode."
+          },
+          "whoIrisUrl": {
+            "type": "string",
+            "maxLength": 2000,
+            "description": "WHO IRIS URL."
+          },
+          "author": {
+            "type": "string",
+            "maxLength": 200,
+            "description": "First-author family name."
+          },
+          "year": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9999,
+            "description": "Publication year."
+          },
+          "container": {
+            "type": "string",
+            "maxLength": 500,
+            "description": "Journal / container name."
+          },
+          "screenWithLlm": {
+            "type": "boolean",
+            "description": "Opt-in Stage 3 LLM screen (requires an authenticated key)."
+          }
+        },
+        "required": [
+          "title"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "scholar-sidekick.com",
+  "source": "webmcp.com/api/directory.json"
+}

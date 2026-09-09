@@ -1,0 +1,223 @@
+{
+  "sponsio": 1,
+  "url": "https://quokkapix.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "quokkapix.apply_recipe",
+      "description": "Applies an official recipe id or custom recipe JSON to configure a local browser workflow. Files must still be uploaded through the browser input. This does not start processing.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "recipe": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    {
+      "name": "quokkapix.apply_settings",
+      "description": "Applies browser-agent settings for mode, tool, scenario steps and tool options. Files must still be supplied through the browser file input or dropzone.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "single",
+              "batch"
+            ]
+          },
+          "tool": {
+            "type": "string",
+            "enum": [
+              "resize",
+              "crop",
+              "rotate",
+              "convert",
+              "compress",
+              "metadata",
+              "background",
+              "watermark",
+              "effects",
+              "rename",
+              "constructor"
+            ]
+          },
+          "steps": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "settings": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    {
+      "name": "quokkapix.cancel",
+      "description": "Cancels the current QuokkaPix browser-side processing run.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    },
+    {
+      "name": "quokkapix.get_contract",
+      "description": "Returns the QuokkaPix browser-agent contract, supported image tools, DOM selectors, payment policy and local browser processing constraints.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    },
+    {
+      "name": "quokkapix.get_payment_policy",
+      "description": "Returns free and paid agent-use rules. Single image runs, single scenarios and small batches up to 5 files are free; larger agent batch/scenario runs use x402 unlock.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    },
+    {
+      "name": "quokkapix.get_recipe",
+      "description": "Returns one official QuokkaPix recipe by id. The recipe includes applySettings JSON, limits, payment requirement and expected result manifest contract.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          }
+        }
+      }
+    },
+    {
+      "name": "quokkapix.get_result_manifest",
+      "description": "Returns a machine-readable browser-local processing result, source and output dimensions when available, warnings, capabilities and stable error code.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    },
+    {
+      "name": "quokkapix.get_rule_profile",
+      "description": "Returns one sourced platform image requirement profile by id, including requirements, recommendations, source URL, source type and confidence.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          }
+        }
+      }
+    },
+    {
+      "name": "quokkapix.get_state",
+      "description": "Returns current browser-side processing state, selected tool, upload mode, file count, progress, output metadata and payment state.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    },
+    {
+      "name": "quokkapix.list_recipes",
+      "description": "Returns official QuokkaPix browser-local image workflow recipes such as Shopify product pack, Amazon white background pack, metadata clean batch and website WebP compression.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    },
+    {
+      "name": "quokkapix.list_rule_profiles",
+      "description": "Returns sourced marketplace and social image requirement profiles used by QuokkaPix QA reports. Secondary sources are marked explicitly.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    },
+    {
+      "name": "quokkapix.set_unlock_token",
+      "description": "Stores a short-lived x402 unlock token returned by QuokkaPix payment endpoint. The token is verified and consumed when a paid agent batch run starts.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "unlockToken"
+        ],
+        "properties": {
+          "unlockToken": {
+            "type": "string",
+            "minLength": 16,
+            "maxLength": 4096
+          }
+        }
+      }
+    },
+    {
+      "name": "quokkapix.start",
+      "description": "State-changing action: starts the selected QuokkaPix local browser workflow after files have been uploaded through the page. Single-image runs and small agent batches up to 5 files are free. Larger agent batch/scenario runs require a valid paid unlock token and may consume that unlock when processing starts.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    },
+    {
+      "name": "quokkapix.validate_recipe",
+      "description": "Validates a recipe id or custom recipe object before applying it. This does not upload files and does not start processing.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "recipe": {
+            "type": "object"
+          }
+        }
+      }
+    }
+  ],
+  "host": "quokkapix.com",
+  "source": "webmcp.com/api/directory.json"
+}

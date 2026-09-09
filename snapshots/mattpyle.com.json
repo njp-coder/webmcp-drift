@@ -1,0 +1,119 @@
+{
+  "sponsio": 1,
+  "url": "https://mattpyle.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "describe_site",
+      "description": "Describe mattpyle.com: who the author is, what the site is, and which sections it has. Call this first for context about the site you're on.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_recent_writing",
+      "description": "List the most recent published articles on mattpyle.com, newest first, optionally filtered to a single tag.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "default": 5,
+            "description": "How many articles to return (1-20)."
+          },
+          "tag": {
+            "type": "string",
+            "description": "Only return articles carrying this tag (case-insensitive)."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_related_sites",
+      "description": "List the sites in the web ring on mattpyle.com: a hand-picked, one-directional ring of sites experimenting with the agentic web. Read-only. The ring is still being filled, so some entries are open slots with no URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_content",
+      "description": "Search the titles, descriptions, and tags of every published article, project, and changelog entry on mattpyle.com.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Text to search for (case-insensitive)."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_appearance",
+      "description": "Switch mattpyle.com between its modern appearance and a retro, GeoCities-era skin. This changes only the calling browser's own view (stored in that browser's localStorage) — it never affects the site for other visitors. Pass mode: 'retro' or 'modern'.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "modern",
+              "retro"
+            ],
+            "description": "The appearance to switch to: 'modern' or 'retro'."
+          }
+        },
+        "required": [
+          "mode"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "sign_guestbook",
+      "description": "Sign the guest book on mattpyle.com with a name and a message. The entry is saved in the calling browser's own localStorage and nowhere else — no server receives it and no other visitor can see it. Entries signed through this tool are recorded and displayed as agent-written, which the form cannot claim and this tool cannot disclaim. Safe to retry: calling it again with the same name and message as the most recent entry returns that entry instead of writing a duplicate.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 40,
+            "description": "The signature on the entry (1-40 characters; longer names are trimmed)."
+          },
+          "message": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 280,
+            "description": "What the entry says (1-280 characters; longer messages are trimmed)."
+          }
+        },
+        "required": [
+          "name",
+          "message"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "mattpyle.com",
+  "source": "webmcp.com/api/directory.json"
+}

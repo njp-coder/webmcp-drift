@@ -1,0 +1,124 @@
+{
+  "sponsio": 1,
+  "url": "https://stalux.needhelp.icu/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "stalux_current_post",
+      "description": "Return the metadata of the post the user is currently viewing. Call it first when the user says 'this post' or 'the current page' to establish context — cheaper than reading the body. Returns an error when not on a post page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "stalux_get_post",
+      "description": "Locate a post by abbrlink or title keyword and return its metadata (title, date, categories, tags, description, word count, post page URL). Use it when only metadata is needed — cheaper than reading the full body; use stalux_read_post for the body. To get an abbrlink, first use stalux_list_posts or stalux_search_posts.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Post abbrlink (e.g. f4442947) or a title keyword (fuzzy match, first hit wins)"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "stalux_list_posts",
+      "description": "Paginated list of all published posts, returning title, permanent link (abbrlink), date, categories, tags, description and post page URL. Use it to browse the whole blog or find a post's abbrlink; it does not return body content — use stalux_get_post for one post's metadata, or stalux_read_post for the full body. Prefer pageSize 50 to fetch everything in one call; out-of-range pages clamp to the last page (clamped flag).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1,
+            "description": "Page number, starting at 1"
+          },
+          "pageSize": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 10,
+            "description": "Items per page, max 50"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "stalux_random_post",
+      "description": "Pick a random post and return its metadata (title, abbrlink, date, description, URL). Useful for recommendations, discovery, or when unsure where to start; it does not return body content and does not navigate.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "stalux_read_post",
+      "description": "Read the full Markdown of a post by abbrlink (permanent link ID), including normalized frontmatter, body and copyright footer. Use it for full content, quotes or summarization; for metadata only, stalux_get_post is cheaper. To get an abbrlink, first use stalux_list_posts or stalux_search_posts.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Post abbrlink, e.g. f4442947"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "stalux_search_posts",
+      "description": "Search the full text of all posts (title, tags, categories, body) by keyword, returning matching posts with title, URL and excerpt snippets. Ideal for questions like 'has the blog covered X?' or 'find posts about Y'; once a post is located, use stalux_read_post for the body or stalux_get_post for metadata.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "keyword": {
+            "type": "string",
+            "description": "Search keyword"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "default": 10,
+            "description": "Maximum number of results to return"
+          }
+        },
+        "required": [
+          "keyword"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "stalux_site_info",
+      "description": "Return the blog's site info (title, description, site URL) plus pointers to machine-readable content: /llms.txt (site navigation and post link list) and /llms-full.txt (full-site Markdown mirror with all post bodies). Use it to understand the blog's topic, orient, or bulk-fetch all content.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "stalux.needhelp.icu",
+  "source": "webmcp.com/api/directory.json"
+}

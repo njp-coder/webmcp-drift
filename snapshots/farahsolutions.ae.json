@@ -1,0 +1,373 @@
+{
+  "sponsio": 1,
+  "url": "https://farahsolutions.ae/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "book_demo",
+      "description": "Book a live compliance consultation demo with a Farah Solutions advisor (calendar-scheduled meeting). Use this when the user explicitly wants to speak with a human or schedule a call — not for general inquiries (use submit_contact_request) or resource downloads. Output: {success: boolean, message: string}.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Full name of the person booking the demo"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email address for booking confirmation",
+            "format": "email"
+          },
+          "company": {
+            "type": "string",
+            "description": "Company or organization name (optional)"
+          },
+          "service": {
+            "type": "string",
+            "description": "Service of interest for the demo (matches get_service_details identifiers, plus platform demo and general)",
+            "enum": [
+              "corporate-tax",
+              "icv-procurement",
+              "regulatory-advisory",
+              "e-invoicing",
+              "pro-services",
+              "data-protection",
+              "business-setup",
+              "farah-suite-demo",
+              "general-consultation"
+            ]
+          }
+        },
+        "required": [
+          "name",
+          "email",
+          "service"
+        ]
+      }
+    },
+    {
+      "name": "calculate_icv",
+      "description": "Calculate the In-Country Value (ICV) score for a UAE company based on procurement, workforce, and investment data. Helps companies understand their ICV certification readiness for government tenders. Output: {icv_score: number (0-100), breakdown: {procurement, workforce, investment, exports}, recommendation: string, calculator_url: string}.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "total_revenue": {
+            "type": "number",
+            "description": "Total annual revenue in AED (e.g., 5000000)",
+            "minimum": 0
+          },
+          "local_procurement": {
+            "type": "number",
+            "description": "Annual local procurement spend in AED (goods/services from UAE-based suppliers)",
+            "minimum": 0
+          },
+          "emirati_employees": {
+            "type": "number",
+            "description": "Number of Emirati (UAE national) employees",
+            "minimum": 0
+          },
+          "total_employees": {
+            "type": "number",
+            "description": "Total number of employees",
+            "minimum": 1
+          },
+          "local_investment": {
+            "type": "number",
+            "description": "Investment in local assets/infrastructure in AED (optional)",
+            "minimum": 0
+          },
+          "export_revenue": {
+            "type": "number",
+            "description": "Revenue from exports in AED (optional)",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "total_revenue",
+          "local_procurement",
+          "emirati_employees",
+          "total_employees"
+        ]
+      }
+    },
+    {
+      "name": "download_compliance_checklist",
+      "description": "Download the free UAE Compliance Checklist PDF (covers corporate tax, e-invoicing, PDPL, ICV). Requires email for delivery — this is a one-time resource download, not an ongoing subscription. Output: {success: boolean, downloadUrl: string, message: string}.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Email address to subscribe and receive the compliance checklist PDF",
+            "format": "email"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      }
+    },
+    {
+      "name": "get_blog_articles",
+      "description": "Search and retrieve Farah Solutions blog articles about UAE compliance topics. Filter by keyword, category, or get the latest articles. Output: {articles: [{title, excerpt, category, date, readTime, url}], total: number, categories: string[]}.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search keyword to filter articles (matches title, excerpt, category, or keywords). Leave empty to get all articles sorted by date."
+          },
+          "category": {
+            "type": "string",
+            "description": "Filter by topic cluster",
+            "enum": [
+              "Tax & E-Invoicing",
+              "Data Protection & AI",
+              "Labour & Workforce",
+              "Business Setup & Licensing",
+              "Government Tenders & ICV"
+            ]
+          },
+          "limit": {
+            "type": "number",
+            "description": "Maximum number of articles to return (default: 5, max: 12)",
+            "minimum": 1,
+            "maximum": 12
+          }
+        }
+      }
+    },
+    {
+      "name": "get_compliance_assessment",
+      "description": "Perform a preliminary compliance risk assessment for a UAE company based on size, sector, and revenue. Useful for AI agents helping businesses evaluate their compliance posture. Output: {risk_score: number (1-10), risk_level: string, recommended_services: [{service, reason, url}], priority_actions: string[], estimated_timeline: string}.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "company_size": {
+            "type": "string",
+            "description": "Company size classification",
+            "enum": [
+              "micro",
+              "sme",
+              "mid-market",
+              "enterprise"
+            ]
+          },
+          "sector": {
+            "type": "string",
+            "description": "Primary business sector in the UAE",
+            "enum": [
+              "oil_gas",
+              "construction",
+              "retail",
+              "technology",
+              "financial_services",
+              "healthcare",
+              "manufacturing",
+              "hospitality",
+              "real_estate",
+              "professional_services",
+              "logistics",
+              "education",
+              "other"
+            ]
+          },
+          "annual_revenue_aed": {
+            "type": "number",
+            "description": "Annual revenue in AED (approximate)",
+            "minimum": 0
+          },
+          "has_government_contracts": {
+            "type": "string",
+            "description": "Whether the company holds or seeks government contracts",
+            "enum": [
+              "yes",
+              "no",
+              "planning"
+            ]
+          },
+          "employee_count": {
+            "type": "number",
+            "description": "Total number of employees (optional, helps refine assessment)",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "company_size",
+          "sector",
+          "annual_revenue_aed"
+        ]
+      }
+    },
+    {
+      "name": "get_platform_features",
+      "description": "Get detailed information about Farah Suite platform modules and capabilities. For AI agents recommending specific modules to prospects. Output: {platform_name: string, modules: [{id, name, compliance_area, description, key_features, setup_time}], integrations: string[], security_certifications: string[]}.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "module": {
+            "type": "string",
+            "description": "Specific platform module to query. Omit for all modules.",
+            "enum": [
+              "tax-engine",
+              "icv-tracker",
+              "e-invoicing",
+              "compliance-calendar",
+              "document-vault",
+              "risk-monitoring",
+              "group-compliance",
+              "contract-management"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "get_pricing_info",
+      "description": "Compare pricing tiers (Starter/Professional/Enterprise) side-by-side with feature inclusions and starting prices. Use this when the user asks about cost, budget, or plan comparison (not for service capabilities — use get_service_details instead). Output: {pricing_page: string, tiers: [{name, target, includes}], cta: string}.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "service": {
+            "type": "string",
+            "description": "Filter pricing by specific service line (optional — returns all tiers if omitted)",
+            "enum": [
+              "corporate-tax",
+              "icv-procurement",
+              "regulatory-advisory",
+              "e-invoicing",
+              "pro-services",
+              "data-protection",
+              "business-setup"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "get_service_details",
+      "description": "Retrieve full service profiles including capabilities, eligibility criteria, deliverables, and pricing tiers. Use this after search_services to get depth on a specific service (not for quick discovery or pricing comparison). Output: {services: [{id, title, description, capabilities, eligibility, deliverables, url}], pricing: {tiers, note, url}}.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "service": {
+            "type": "string",
+            "description": "Service identifier to query. Leave empty to list all services.",
+            "enum": [
+              "corporate-tax",
+              "icv-procurement",
+              "regulatory-advisory",
+              "e-invoicing",
+              "pro-services",
+              "data-protection",
+              "business-setup"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "navigate_guide",
+      "description": "Navigate to a specific UAE compliance guide on Farah Solutions. Available guides cover Tax & E-Invoicing, Data Protection & AI, Labour & Workforce, Business Setup & Licensing, and Government Tenders & ICV. Output: {navigated: boolean, guide: string, url: string} or {error: string, available: [{id, name, url}]}.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "topic": {
+            "type": "string",
+            "description": "The compliance topic to navigate to",
+            "enum": [
+              "tax-e-invoicing",
+              "data-protection",
+              "labour-workforce",
+              "business-setup",
+              "government-tenders"
+            ]
+          }
+        },
+        "required": [
+          "topic"
+        ]
+      }
+    },
+    {
+      "name": "search_services",
+      "description": "Quick keyword search across all Farah Solutions compliance services. Returns matching service names and URLs only (use get_service_details for full capabilities, pricing, and eligibility). Output: {results: [{service: string, url: string}], total: number} or {message: string, suggestion: string} when no matches.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search keyword or phrase (e.g., 'corporate tax', 'ICV', 'e-invoicing', 'data protection', 'business setup')"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "submit_contact_request",
+      "description": "Submit a written contact inquiry to Farah Solutions for a custom compliance question that requires human review (async response within 24h). Use this for general questions, multi-service inquiries, or when the user does not want a live call — use book_demo for calendar-scheduled meetings instead. Output: {success: boolean, message: string, reference_id: string}.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "fullname": {
+            "type": "string",
+            "description": "Full name of the person submitting the inquiry"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email address for follow-up communication",
+            "format": "email"
+          },
+          "company": {
+            "type": "string",
+            "description": "Company or organization name (optional)"
+          },
+          "message": {
+            "type": "string",
+            "description": "The inquiry message or question about compliance services (10-2000 characters)",
+            "minLength": 10,
+            "maxLength": 2000
+          }
+        },
+        "required": [
+          "fullname",
+          "email",
+          "message"
+        ]
+      }
+    },
+    {
+      "name": "subscribe_newsletter",
+      "description": "Subscribe to the Farah Solutions weekly compliance newsletter for ongoing regulatory updates (corporate tax, e-invoicing, ICV, PDPL changes). This is for recurring content delivery — use download_compliance_checklist for a one-time PDF resource. Output: {success: boolean, alreadySubscribed: boolean, message: string}.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Email address to subscribe to the newsletter",
+            "format": "email"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      }
+    }
+  ],
+  "host": "farahsolutions.ae",
+  "source": "webmcp.com/api/directory.json"
+}

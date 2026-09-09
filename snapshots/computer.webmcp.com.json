@@ -1,0 +1,738 @@
+{
+  "sponsio": 1,
+  "url": "https://computer.webmcp.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "app_close",
+      "description": "Close one visible WebMCP Computer app window by process PID. Use a PID returned by app_open or app_list. Returns the closed PID and app ID; throws if that process does not exist.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "pid": {
+            "type": "integer",
+            "minimum": 2,
+            "description": "Process PID of the window to close."
+          }
+        },
+        "required": [
+          "pid"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "app_list",
+      "description": "List every running WebMCP Computer app window and its PID, rectangle, z-index, focus state, and minimized state. Use before targeting a window by PID. Returns an explicit note when no apps are open.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "app_open",
+      "description": "Open a built-in WebMCP Computer app in a visible window. Optionally set x, y, width, height, and focus (default true); focus=false preserves current focus and places a new window below the focused window. Geometry uses the same work-area clamping as window_move and window_resize. Settings, Notes, and Preview are singletons: reopening one applies supplied placement to its existing window and returns reused: true. Files, Terminal, and Editor create new windows. For editor, path may select a ~-rooted text file. Agent-made App windows open through ui_open. Returns PID, app ID, optional path, applied rect, and reused.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "appId": {
+            "type": "string",
+            "enum": [
+              "files",
+              "editor",
+              "terminal",
+              "notes",
+              "preview",
+              "settings"
+            ],
+            "description": "WebMCP Computer app identifier to open."
+          },
+          "path": {
+            "type": "string",
+            "description": "Optional ~-rooted file path. Valid only when appId is editor."
+          },
+          "x": {
+            "type": "number",
+            "description": "Optional work-area horizontal position in CSS pixels."
+          },
+          "y": {
+            "type": "number",
+            "description": "Optional work-area vertical position in CSS pixels."
+          },
+          "width": {
+            "type": "number",
+            "description": "Optional window width in CSS pixels."
+          },
+          "height": {
+            "type": "number",
+            "description": "Optional window height in CSS pixels."
+          },
+          "focus": {
+            "type": "boolean",
+            "description": "Whether to focus the opened or reused window; false places a new window below current focus."
+          }
+        },
+        "required": [
+          "appId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "browser_open",
+      "description": "Open the singleton Browser window and start one visible shared Cloudflare Chrome session. Optionally navigate to an http/https URL and set x, y, width, height, and focus like app_open. Reopening focuses the existing window and navigates it when url is supplied. Returns PID, current URL, fifteen-minute idle lifetime, and whether the window was reused. Session or rate-limit failures use 'webmcp-computer: browser session unavailable: …'.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "Optional initial http/https URL."
+          },
+          "x": {
+            "type": "number",
+            "description": "Optional work-area horizontal position in CSS pixels."
+          },
+          "y": {
+            "type": "number",
+            "description": "Optional work-area vertical position in CSS pixels."
+          },
+          "width": {
+            "type": "number",
+            "description": "Optional window width in CSS pixels."
+          },
+          "height": {
+            "type": "number",
+            "description": "Optional window height in CSS pixels."
+          },
+          "focus": {
+            "type": "boolean",
+            "description": "Whether to focus a newly opened window; defaults true."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "cloud_exec",
+      "description": "Visibly execute one command in the WebMCP Computer cloud container when the cloud kernel is active. Returns exitCode, stdout, stderr, pushed, pulled, and truncated after ordered output appears in Terminal; stdout and stderr are each capped at 256 KB. cwd defaults to /workspace and must stay below it; timeoutMs defaults to 300000 and caps at 600000. node_modules is container-only and is lost when the container restarts.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 8192,
+            "description": "Command string to execute in the cloud container."
+          },
+          "cwd": {
+            "type": "string",
+            "pattern": "^/workspace(?:/[^/]+)*$",
+            "description": "Absolute cloud working directory below /workspace; defaults to /workspace."
+          },
+          "timeoutMs": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 600000,
+            "description": "Execution timeout in milliseconds; defaults to 300000 and caps at 600000."
+          }
+        },
+        "required": [
+          "command"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "fs_delete",
+      "description": "Delete one file or directory tree from the shared WebMCP Computer filesystem. The home root itself cannot be deleted.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "~-rooted file or directory to delete."
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "fs_edit",
+      "description": "Replace exact text in one UTF-8 file. old_string must be a unique anchor unless replace_all=true; if it matches zero or multiple times, the error tells you to choose a longer anchor. Returns the normalized path and replacement count.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "~-rooted text-file path to edit."
+          },
+          "old_string": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Exact existing text; unique unless replace_all is true."
+          },
+          "new_string": {
+            "type": "string",
+            "description": "Exact replacement text."
+          },
+          "replace_all": {
+            "type": "boolean",
+            "description": "Replace every exact match instead of requiring one unique match."
+          }
+        },
+        "required": [
+          "path",
+          "old_string",
+          "new_string"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "fs_list",
+      "description": "List direct children of one ~-rooted WebMCP Computer directory. Returns sorted directories first, then files, with type, size, and modification time.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "~-rooted directory path to list."
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "fs_mkdir",
+      "description": "Create one directory at a ~-rooted path. Parent directory must already exist.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "~-rooted directory path to create."
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "fs_move",
+      "description": "Move or rename one file or directory between two ~-rooted paths. Destination parent must exist and destination must be absent unless overwrite=true is passed; overwrite defaults to false.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "description": "Existing ~-rooted source path."
+          },
+          "to": {
+            "type": "string",
+            "description": "New ~-rooted destination path."
+          },
+          "overwrite": {
+            "type": "boolean",
+            "description": "Replace an existing destination. Defaults to false."
+          }
+        },
+        "required": [
+          "from",
+          "to"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "fs_read",
+      "description": "Read one UTF-8 text file from the shared WebMCP Computer filesystem by ~-rooted path. Text files only; content over 256 KB is truncated and `truncated: true` is set. Pass encoding=\"base64\" to read any file as base64; oversized base64 output fails instead of being truncated.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "~-rooted file path to read."
+          },
+          "encoding": {
+            "type": "string",
+            "enum": [
+              "utf8",
+              "base64"
+            ],
+            "description": "Output encoding; defaults to utf8."
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "fs_search",
+      "description": "Search text-file contents case-insensitively below a ~-rooted path, skipping binary files. Returns matching path, 1-based line number, and full line text, plus a truncated flag when max_results is exceeded.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Case-insensitive substring to find."
+          },
+          "path": {
+            "type": "string",
+            "description": "~-rooted file or directory; defaults to ~."
+          },
+          "max_results": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 200,
+            "description": "Maximum matches to return; defaults to 50."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "fs_write",
+      "description": "Create or replace one UTF-8 text file in the shared WebMCP Computer filesystem. Empty content truncates the file to zero bytes. Parent directory must exist; visible Files and Editor windows update live. Pass encoding=\"base64\" to decode content and atomically write binary bytes.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "~-rooted destination file path."
+          },
+          "content": {
+            "type": "string",
+            "description": "Complete UTF-8 file content; empty string truncates to zero bytes."
+          },
+          "encoding": {
+            "type": "string",
+            "enum": [
+              "utf8",
+              "base64"
+            ],
+            "description": "Content encoding; defaults to utf8."
+          }
+        },
+        "required": [
+          "path",
+          "content"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "kill",
+      "description": "Terminate one WebMCP Computer app window or transient shell command by PID. PID 1 is protected. Returns the killed process record; throws when the PID does not exist.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "pid": {
+            "type": "integer",
+            "minimum": 2,
+            "description": "Process PID to terminate."
+          }
+        },
+        "required": [
+          "pid"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "os_manual",
+      "description": "Start here when operating WebMCP Computer. Read its agent manual verbatim from ~/skills. Omit topic for the README and topic list, or request filesystem, terminal, windows, apps, preview, browser, cloud, or conventions.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "topic": {
+            "type": "string",
+            "enum": [
+              "filesystem",
+              "terminal",
+              "windows",
+              "apps",
+              "preview",
+              "browser",
+              "cloud",
+              "conventions"
+            ],
+            "description": "Optional manual topic; omit for ~/skills/README.md."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "os_publish",
+      "description": "Publish a text-only directory to a public internet URL and show that URL with a QR code. Published files are public and deleted after 30 days. path defaults to ~/site and must be a directory. Allows html, css, js, json, svg, txt, and md; maximum 64 files, 256 KB each, 2 MB total. This is consequential because anyone with the returned URL can read the uploaded content.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Directory to publish; defaults to ~/site."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "os_search",
+      "description": "Search files by name and the first 256 KB of content plus apps, settings, running processes, and shell commands. Returns ranked rows ordered exact name, name prefix, then content, each with its acting verb and arguments. By default show=true displays those rows in Spotlight for about 3 seconds without taking focus; any human keypress or click dismisses it. Pass show=false for silent data-only search. Unreadable subtrees are skipped and reported in warnings.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Case-insensitive search text."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "description": "Maximum rows; defaults to 20."
+          },
+          "show": {
+            "type": "boolean",
+            "description": "Display results in passive Spotlight for about 3 seconds; defaults to true."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "ps",
+      "description": "List the real WebMCP Computer process table: PID 1, open app windows, and transient running shell commands. Returns small records with PID, kind, command, and optional app or cwd.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "screensaver_wake",
+      "description": "Wake WebMCP Computer from its boot screensaver and reveal the desktop. Use when the idle screen is visible. Returns whether the screensaver was active before this call.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "settings_get",
+      "description": "Read all persisted WebMCP Computer settings from ~/.config/settings.json: theme, accent, CRT scanlines, verb hints, hostname, idle screensaver minutes, and cloud-kernel reboot preference.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "settings_set",
+      "description": "Validate and persist one WebMCP Computer setting to ~/.config/settings.json, then apply it visibly. Keys: theme, accent, crt, verb_hints, hostname, screensaver_minutes, cloud_kernel. cloud_kernel is mirrored for boot and returns a reboot-required note. Returns the full updated settings object.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "enum": [
+              "theme",
+              "accent",
+              "crt",
+              "verb_hints",
+              "hostname",
+              "screensaver_minutes",
+              "cloud_kernel"
+            ],
+            "description": "Setting key to change."
+          },
+          "value": {
+            "description": "New value; type and allowed values depend on key."
+          }
+        },
+        "required": [
+          "key",
+          "value"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "sys_status",
+      "description": "Read current WebMCP Computer hostname, uptime in seconds, running process count, active filesystem backend and status, and the ~/skills manual path. Use for a concise health check.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "term_exec",
+      "description": "Visibly type and execute one just-bash command against the shared WebMCP Computer filesystem. Opens a Terminal when none exists; optionally target a terminal PID. Supports pipes, redirects, variables, subshells, jq, awk, sed, grep, and other bundled commands; network, Python, and JavaScript runtimes are disabled. Times out after 30s by default; timeout_ms can set up to 120s. Returns stdout, stderr, exit_code, and truncated after output appears; stdout and stderr are each capped at 256 KB.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Shell command to type and execute."
+          },
+          "term_pid": {
+            "type": "integer",
+            "minimum": 2,
+            "description": "Optional PID of an open Terminal window."
+          },
+          "timeout_ms": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 120000,
+            "description": "Execution timeout in milliseconds; defaults to 30000 and caps at 120000."
+          }
+        },
+        "required": [
+          "command"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "term_history",
+      "description": "Read structured command history from the live frontmost Terminal session, shared with the human and ordered oldest to newest. Defaults to 50 entries; pass term_pid to target another Terminal.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "term_pid": {
+            "type": "integer",
+            "minimum": 2,
+            "description": "Optional PID of an open Terminal window."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000,
+            "description": "Trailing history entries; defaults to 50."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "term_read",
+      "description": "Read the last lines of an open WebMCP Computer Terminal's shared 2000-line scrollback. Defaults to the frontmost Terminal and 50 lines; returns the terminal PID, plain-text lines, and truncated when older scrollback was discarded.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "term_pid": {
+            "type": "integer",
+            "minimum": 2,
+            "description": "Optional PID of an open Terminal window."
+          },
+          "lines": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 200,
+            "description": "Number of trailing lines; defaults to 50."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "term_state",
+      "description": "Read the live shell session behind the frontmost Terminal: PID, cwd, busy state, optional running command, and environment. Pass term_pid to target another Terminal. This reads session objects, never parsed scrollback.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "term_pid": {
+            "type": "integer",
+            "minimum": 2,
+            "description": "Optional PID of an open Terminal window."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "ui_open",
+      "description": "Create or open an agent-made HTML app in a visible WebMCP Computer window. Pass exactly one of html or an existing ~-rooted .html path; inline HTML is written to ~/apps/<name>.html and remains live-editable by the human. The app runs in an opaque allow-scripts sandbox with no same-origin or popup access. Its HTML may publish site_* WebMCP tools through document.modelContext. allowTools defaults to an empty inward grant and may expose active non-transact OS tools; transact tools, site_* tools, unknown tools, and ui_open are always excluded. Returns PID, file path, applied rect, and the granted tool names.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 40,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9-_]*$",
+            "description": "File-safe app name used for inline HTML under ~/apps/."
+          },
+          "html": {
+            "type": "string",
+            "maxLength": 262144,
+            "description": "Complete HTML document, up to 256 KB UTF-8; mutually exclusive with path."
+          },
+          "path": {
+            "type": "string",
+            "description": "Existing ~-rooted .html text file; mutually exclusive with html."
+          },
+          "allowTools": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 16,
+            "description": "OS tool names the app may call; omitted means no tools."
+          },
+          "x": {
+            "type": "number",
+            "description": "Optional work-area horizontal position in CSS pixels."
+          },
+          "y": {
+            "type": "number",
+            "description": "Optional work-area vertical position in CSS pixels."
+          },
+          "width": {
+            "type": "number",
+            "description": "Optional window width in CSS pixels."
+          },
+          "height": {
+            "type": "number",
+            "description": "Optional window height in CSS pixels."
+          },
+          "focus": {
+            "type": "boolean",
+            "description": "Whether to focus the new window; defaults to true."
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "window_focus",
+      "description": "Bring a running WebMCP Computer window to the front and give it focus by PID. Use app_list to discover PIDs. Returns the focused process record with its new z-index.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "pid": {
+            "type": "integer",
+            "minimum": 2,
+            "description": "Process PID of the window to focus."
+          }
+        },
+        "required": [
+          "pid"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "window_move",
+      "description": "Move a visible WebMCP Computer window by PID to coordinates relative to the desktop work area, whose origin sits just below the 38px menu bar. Targets are clamped to keep the left-side close control and at least 60px of the titlebar reachable. Use app_list to inspect current rectangles. Returns the updated process record and visibly repositions the window.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "pid": {
+            "type": "integer",
+            "minimum": 2,
+            "description": "Process PID of the window to move."
+          },
+          "x": {
+            "type": "number",
+            "description": "Target horizontal position in work-area CSS pixels."
+          },
+          "y": {
+            "type": "number",
+            "description": "Target vertical position in work-area CSS pixels."
+          }
+        },
+        "required": [
+          "pid",
+          "x",
+          "y"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "window_resize",
+      "description": "Resize a visible WebMCP Computer window by PID in CSS pixels. Width and height are clamped between the 300 by 210 minimum and the desktop work-area size. Returns the updated process record and visibly resizes the window.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "pid": {
+            "type": "integer",
+            "minimum": 2,
+            "description": "Process PID of the window to resize."
+          },
+          "width": {
+            "type": "number",
+            "description": "Target width in CSS pixels."
+          },
+          "height": {
+            "type": "number",
+            "description": "Target height in CSS pixels."
+          }
+        },
+        "required": [
+          "pid",
+          "width",
+          "height"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "computer.webmcp.com",
+  "source": "webmcp.com/api/directory.json"
+}

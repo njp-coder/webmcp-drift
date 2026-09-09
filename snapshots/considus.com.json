@@ -1,0 +1,131 @@
+{
+  "sponsio": 1,
+  "url": "https://considus.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "get_install_prerequisites_and_commands",
+      "description": "Returns the prerequisites and the exact install commands for one Considus MCP server, for macOS, Linux and Windows, quoted from the project README. It also explains how the MCP client configuration is produced, which is by a setup script on the user's own machine and not by a config block copied from documentation. Call this before writing any MCP client config for a Considus server: the install path is not knowable until setup has run, so a config block written from memory will point somewhere that does not exist.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "server": {
+            "type": "string",
+            "enum": [
+              "pagespeed-insights-mcp",
+              "proton-bridge-mcp"
+            ],
+            "description": "The server slug, from list_mcp_servers."
+          }
+        },
+        "required": [
+          "server"
+        ]
+      }
+    },
+    {
+      "name": "get_journal_post",
+      "description": "Returns one Considus journal post as text, given its slug. Slugs come from search_journal. A long post is shortened and the canonical URL is always included, so the full text can be fetched or cited from there.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "enum": [
+              "prompt-injection-and-mail",
+              "pagespeed-replays-cached-results",
+              "proton-bridge-mcp-launch",
+              "catchlight-where-it-stands",
+              "small-studio-software",
+              "ai-coding-is-not-cheating"
+            ],
+            "description": "The post slug. search_journal returns it with each result."
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "get_mcp_server_overview",
+      "description": "Returns what one Considus MCP server does, what it needs in order to run, what it deliberately does not do, and its licence and URLs. Use this when a user is deciding whether a server fits their situation. If they have already decided and want to install it, call get_install_prerequisites_and_commands instead.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "server": {
+            "type": "string",
+            "enum": [
+              "pagespeed-insights-mcp",
+              "proton-bridge-mcp"
+            ],
+            "description": "The server slug, from list_mcp_servers."
+          }
+        },
+        "required": [
+          "server"
+        ]
+      }
+    },
+    {
+      "name": "list_mcp_servers",
+      "description": "Lists every MCP server Considus publishes, with each one's purpose, licence, version, repository URL and documentation URL. Call this when a user asks what Considus makes or which MCP servers it offers, and call it before the other server tools, because it returns the exact server slugs they require.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "search_considus_docs",
+      "description": "Searches the Considus documentation: both MCP servers' full documentation, plus the about, FAQ, support and Catchlight pages. Returns matching sections with their heading, a short excerpt and the page URL. Use this for a specific question about how something works, what a limit is, or where a feature stops. For the studio's opinions or the reasoning behind a decision, use search_journal instead.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 200,
+            "description": "Words to search for."
+          },
+          "server": {
+            "type": "string",
+            "enum": [
+              "pagespeed-insights-mcp",
+              "proton-bridge-mcp"
+            ],
+            "description": "Optional. Restrict the search to one server's documentation."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "search_journal",
+      "description": "Searches the Considus journal, which is the studio's writing on privacy, craft and building software slowly. Returns matching posts with title, publication date, a short excerpt and the URL. Use this when a user asks what Considus thinks about something or why a decision was made. For how a product works, use search_considus_docs instead.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 200,
+            "description": "Words to search for."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "considus.com",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,71 @@
+{
+  "sponsio": 1,
+  "url": "https://gebo-bsc.vercel.app/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "check_wallet_authority",
+      "description": "Read which scoped session keys a BNB Chain wallet has registered in the Altana Keystore, what each permits (target contracts, spend caps, expiry), and whether it is still valid. The same query runs from anywhere; it covers keystore sessions only and the page states what it cannot see.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "wallet": {
+            "type": "string",
+            "description": "0x… wallet address"
+          },
+          "chain": {
+            "type": "string",
+            "enum": [
+              "56",
+              "97"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "search_agents",
+      "description": "Search registered BNB Chain agents by capability (e.g. 'rebalance liquidity', 'watch my loan', 'x402 payments'). Results are ordered by trust state first and relevance second, never by popularity. Each hit says why it matched and carries a registry URL with full qualifiers. Returns a JSON object with keys: query, result_count, ordering, results, caveats included - a bare number is never a measurement.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Free-text capability query",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "category": {
+            "type": "string",
+            "description": "Optional category filter. Judged: rebalancing, grid, yield, health. Adjacent: trading, research, payments, social, infra. Omit for all.",
+            "enum": [
+              "rebalancing",
+              "grid",
+              "yield",
+              "health",
+              "trading",
+              "research",
+              "payments",
+              "social",
+              "infra"
+            ]
+          },
+          "limit": {
+            "type": "number",
+            "description": "Max hits (default 10, capped at 40)",
+            "minimum": 1,
+            "maximum": 40,
+            "default": 10
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "gebo-bsc.vercel.app",
+  "source": "webmcp.com/api/directory.json"
+}

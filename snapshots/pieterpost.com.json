@@ -1,0 +1,356 @@
+{
+  "sponsio": 1,
+  "url": "https://pieterpost.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "cancel_prepared_order",
+      "description": "Cancel and delete the private content of an untouched unpaid prepared draft before payment starts. Returns the same minimal status shape as get_order_status, with status cancelled or expired. Paid, claimed, or checkout-open orders cannot be cancelled here.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "orderRef": {
+            "description": "The orderRef of the prepared draft to cancel.",
+            "maxLength": 140,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "orderRef"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "create_payment_link",
+      "description": "Create PieterPost's hosted payment link for one prepared order. Returns {orderRef,preparedOrderId,amountCents,currency,paymentLinkUrl,expiresAt,status,paymentStatus,fulfillmentStatus,statusUrl,updatedAt}. It never creates a second mail order.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "idempotencyKey": {
+            "description": "Stable key scoped to this prepared draft and payment-link operation.",
+            "maxLength": 140,
+            "minLength": 1,
+            "type": "string"
+          },
+          "paymentMethod": {
+            "description": "Optional hosted checkout method; auto is recommended.",
+            "enum": [
+              "auto",
+              "card",
+              "ideal"
+            ],
+            "type": "string"
+          },
+          "preparedOrderRef": {
+            "description": "The orderRef returned by prepare_letter or prepare_postcard.",
+            "maxLength": 140,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "preparedOrderRef",
+          "idempotencyKey"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_order_status",
+      "description": "Get minimal status only. Returns {orderRef,status,paymentStatus,fulfillmentStatus,statusUrl,updatedAt}. status is draft, payment_processing, checkout_open, paid, queued, fulfilled, failed, cancelled, or expired. No message, address, email, or private payment URL is returned.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "orderRef": {
+            "description": "The PieterPost orderRef returned by a prepare operation.",
+            "maxLength": 140,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "orderRef"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "list_session_orders",
+      "description": "List minimal status for up to four PieterPost orders prepared or checked in this browser tab. Returns {ok:true,data:{orders:[status],unavailableOrderRefs:[string]}}. The list is session-only and contains no message, address, email, or payment URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {},
+        "type": "object"
+      }
+    },
+    {
+      "name": "prepare_letter",
+      "description": "Validate, price, and prepare one letter without paying or sending it. Returns an expiring order with orderRef, amountCents, currency, recipient summary, status fields, nextActions, and payment endpoints; address-warning errors include details.addressWarnings.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "anyOf": [
+          {
+            "required": [
+              "message"
+            ]
+          },
+          {
+            "required": [
+              "attachmentAssetIds"
+            ]
+          }
+        ],
+        "properties": {
+          "acceptUsAddressWarnings": {
+            "description": "Set true only after reviewing details.addressWarnings from an earlier attempt.",
+            "type": "boolean"
+          },
+          "attachmentAssetIds": {
+            "description": "Up to three asset IDs returned by upload_mail_asset.",
+            "items": {
+              "maxLength": 140,
+              "type": "string"
+            },
+            "maxItems": 3,
+            "minItems": 1,
+            "type": "array"
+          },
+          "idempotencyKey": {
+            "description": "Stable caller-generated key for safe retries of this exact draft.",
+            "maxLength": 140,
+            "minLength": 1,
+            "type": "string"
+          },
+          "locale": {
+            "enum": [
+              "de",
+              "en",
+              "es",
+              "fr",
+              "it",
+              "nl",
+              "pl",
+              "pt"
+            ],
+            "type": "string"
+          },
+          "message": {
+            "description": "Exact final letter text, with line breaks preserved.",
+            "maxLength": 6000,
+            "type": "string"
+          },
+          "recipient": {
+            "additionalProperties": false,
+            "description": "One normalized postal recipient. Address lines exclude the recipient name; do not infer missing address details.",
+            "properties": {
+              "addressLines": {
+                "items": {
+                  "maxLength": 140,
+                  "type": "string"
+                },
+                "maxItems": 4,
+                "minItems": 1,
+                "type": "array"
+              },
+              "city": {
+                "maxLength": 140,
+                "type": "string"
+              },
+              "country": {
+                "maxLength": 140,
+                "type": "string"
+              },
+              "name": {
+                "maxLength": 140,
+                "minLength": 1,
+                "type": "string"
+              },
+              "postalCode": {
+                "maxLength": 140,
+                "type": "string"
+              },
+              "state": {
+                "maxLength": 140,
+                "type": "string"
+              }
+            },
+            "required": [
+              "name",
+              "addressLines"
+            ],
+            "type": "object"
+          },
+          "stampImageAssetId": {
+            "description": "Optional letter-stamp-image asset ID returned by upload_mail_asset.",
+            "maxLength": 140,
+            "type": "string"
+          }
+        },
+        "required": [
+          "idempotencyKey",
+          "recipient"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "prepare_postcard",
+      "description": "Validate, price, and prepare one postcard without paying or sending it. Returns an expiring order with orderRef, amountCents, currency, recipient summary, status fields, nextActions, and payment endpoints; address-warning errors include details.addressWarnings.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "acceptUsAddressWarnings": {
+            "description": "Set true only after reviewing details.addressWarnings from an earlier attempt.",
+            "type": "boolean"
+          },
+          "frontImageAssetId": {
+            "description": "Optional postcard-image asset ID returned by upload_mail_asset.",
+            "maxLength": 140,
+            "type": "string"
+          },
+          "idempotencyKey": {
+            "description": "Stable caller-generated key for safe retries of this exact draft.",
+            "maxLength": 140,
+            "minLength": 1,
+            "type": "string"
+          },
+          "locale": {
+            "enum": [
+              "de",
+              "en",
+              "es",
+              "fr",
+              "it",
+              "nl",
+              "pl",
+              "pt"
+            ],
+            "type": "string"
+          },
+          "message": {
+            "description": "Exact final postcard text, with line breaks preserved.",
+            "maxLength": 1200,
+            "minLength": 1,
+            "type": "string"
+          },
+          "recipient": {
+            "additionalProperties": false,
+            "description": "One normalized postal recipient. Address lines exclude the recipient name; do not infer missing address details.",
+            "properties": {
+              "addressLines": {
+                "items": {
+                  "maxLength": 140,
+                  "type": "string"
+                },
+                "maxItems": 4,
+                "minItems": 1,
+                "type": "array"
+              },
+              "city": {
+                "maxLength": 140,
+                "type": "string"
+              },
+              "country": {
+                "maxLength": 140,
+                "type": "string"
+              },
+              "name": {
+                "maxLength": 140,
+                "minLength": 1,
+                "type": "string"
+              },
+              "postalCode": {
+                "maxLength": 140,
+                "type": "string"
+              },
+              "state": {
+                "maxLength": 140,
+                "type": "string"
+              }
+            },
+            "required": [
+              "name",
+              "addressLines"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "idempotencyKey",
+          "message",
+          "recipient"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "upload_mail_asset",
+      "description": "Upload one PDF, PNG, or JPEG for a letter attachment, letter stamp, or postcard front. Use the returned assetId in a prepare tool. Returns {ok:true,data:{assetId,contentType,kind,name,originalName,publicUrl,size}} or the standard error envelope.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "oneOf": [
+          {
+            "required": [
+              "fileBase64",
+              "contentType"
+            ]
+          },
+          {
+            "required": [
+              "fileUrl"
+            ]
+          }
+        ],
+        "properties": {
+          "contentType": {
+            "enum": [
+              "application/pdf",
+              "image/jpeg",
+              "image/png"
+            ],
+            "type": "string"
+          },
+          "fileBase64": {
+            "description": "Base64 file bytes. Use fileUrl when the file has an HTTPS URL.",
+            "minLength": 1,
+            "type": "string"
+          },
+          "fileName": {
+            "maxLength": 200,
+            "minLength": 1,
+            "type": "string"
+          },
+          "fileUrl": {
+            "description": "Public HTTPS URL. Private, local, and redirected private URLs are rejected.",
+            "maxLength": 2000,
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "letter-attachment",
+              "letter-stamp-image",
+              "postcard-image"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "fileName",
+          "kind"
+        ],
+        "type": "object"
+      }
+    }
+  ],
+  "host": "pieterpost.com",
+  "source": "webmcp.com/api/directory.json"
+}

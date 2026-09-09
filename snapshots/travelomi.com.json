@@ -1,0 +1,456 @@
+{
+  "sponsio": 1,
+  "url": "https://travelomi.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "add_leg",
+      "description": "Add a Leg — one relocation of the Trip, flight or transfer — and return the platform result, including rejections. Send the revision from get_trip; a stale revision is a 409 with the fresh state. Does not book.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "trip": {
+            "type": "string",
+            "description": "Trip slug, or its /t/{uuid} Chat URL path. Defaults to the Trip on this page; required on every other page."
+          },
+          "revision": {
+            "type": "integer",
+            "description": "Trip revision from get_trip. Required. The platform validates the change; a stale revision is a 409 with the fresh state — retry from that."
+          },
+          "leg": {
+            "type": "object",
+            "description": "The Leg to add.",
+            "properties": {
+              "kind": {
+                "type": "string",
+                "description": "flight (default) or transfer.",
+                "enum": [
+                  "flight",
+                  "transfer"
+                ]
+              },
+              "mode": {
+                "type": "string",
+                "description": "Transfer only: car or pickup.",
+                "enum": [
+                  "car",
+                  "pickup"
+                ]
+              },
+              "origin": {
+                "type": "object",
+                "description": "A place the Trip moves from or to.",
+                "properties": {
+                  "raw": {
+                    "type": "string",
+                    "description": "What the traveller said: \"London\", \"somewhere in Scotland\"."
+                  },
+                  "iatas": {
+                    "type": "array",
+                    "description": "Resolved airport candidates, e.g. LHR, LGW.",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "required": [],
+                "additionalProperties": false
+              },
+              "destination": {
+                "type": "object",
+                "description": "A place the Trip moves from or to.",
+                "properties": {
+                  "raw": {
+                    "type": "string",
+                    "description": "What the traveller said: \"London\", \"somewhere in Scotland\"."
+                  },
+                  "iatas": {
+                    "type": "array",
+                    "description": "Resolved airport candidates, e.g. LHR, LGW.",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "required": [],
+                "additionalProperties": false
+              },
+              "date_from": {
+                "type": "string",
+                "description": "YYYY-MM-DD. Range with date_to expresses flexibility.",
+                "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+              },
+              "date_to": {
+                "type": "string",
+                "description": "YYYY-MM-DD.",
+                "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+              }
+            },
+            "required": [
+              "origin",
+              "destination"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "revision",
+          "leg"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_handoff_links",
+      "description": "Return LinkResolver URLs for selected offers on this Trip. Travelomi does not book; the traveller completes the booking at the source.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "trip": {
+            "type": "string",
+            "description": "Trip slug, or its /t/{uuid} Chat URL path. Defaults to the Trip on this page; required on every other page."
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_route",
+      "description": "Return drive, walk, or transit time between two places a ground hop apart, with its computed-at time. Origin and destination are a place name or a lat,lng pair. Planning-grade, no live traffic; flight-scale pairs come back as a typed distance. No booking.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "trip": {
+            "type": "string",
+            "description": "Trip slug, or its /t/{uuid} Chat URL path. Defaults to the Trip on this page; required on every other page."
+          },
+          "from": {
+            "type": "string",
+            "description": "Origin: a place name, or lat,lng."
+          },
+          "to": {
+            "type": "string",
+            "description": "Destination: a place name, or lat,lng."
+          },
+          "mode": {
+            "type": "string",
+            "description": "Travel mode. Default drive.",
+            "enum": [
+              "drive",
+              "walk",
+              "transit"
+            ]
+          },
+          "depart": {
+            "type": "string",
+            "description": "Transit only: desired departure as RFC3339 with offset, e.g. 2026-09-02T09:00:00+02:00."
+          }
+        },
+        "required": [
+          "from",
+          "to"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_trip",
+      "description": "Return this Trip's typed compiled state, including its revision. Live offers and prices are not Trip state.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "trip": {
+            "type": "string",
+            "description": "Trip slug, or its /t/{uuid} Chat URL path. Defaults to the Trip on this page; required on every other page."
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_flights",
+      "description": "Search flights for explicit origin, destination, dates and party, and return platform offers with price, currency and expiry, verbatim. Origin and destination are IATA codes (comma-separated for alternates, e.g. LHR,LGW). Display-grade prices; no booking through Travelomi.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "trip": {
+            "type": "string",
+            "description": "Trip slug, or its /t/{uuid} Chat URL path. Defaults to the Trip on this page; required on every other page."
+          },
+          "origin": {
+            "type": "string",
+            "description": "Origin IATA code or comma-separated set, e.g. MLA or LHR,LGW,STN,LTN."
+          },
+          "destination": {
+            "type": "string",
+            "description": "Destination IATA code or comma-separated set."
+          },
+          "departure_date": {
+            "type": "string",
+            "description": "Outbound date as YYYY-MM-DD.",
+            "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+          },
+          "return_date": {
+            "type": "string",
+            "description": "Return date as YYYY-MM-DD. Omit for one-way.",
+            "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+          },
+          "party": {
+            "type": "integer",
+            "description": "Number of adult travellers. Default 1.",
+            "minimum": 1,
+            "maximum": 9
+          },
+          "cabin": {
+            "type": "string",
+            "description": "Cabin class, only if stated.",
+            "enum": [
+              "economy",
+              "premium_economy",
+              "business",
+              "first"
+            ]
+          },
+          "direct_only": {
+            "type": "boolean",
+            "description": "true when they said direct or nonstop only."
+          }
+        },
+        "required": [
+          "origin",
+          "destination",
+          "departure_date"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_dates",
+      "description": "Set the date on a flight Leg (same path as tapping a date Card) and return the selection stream. Needs that Chat: pass the Trip's `/t/{uuid}` path, or call it on the Trip's own page. Send the revision from get_trip; a 409 returns the conflict plus fresh state. A booked Leg is refused.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "trip": {
+            "type": "string",
+            "description": "Trip slug, or its /t/{uuid} Chat URL path. Defaults to the Trip on this page; required on every other page."
+          },
+          "leg_id": {
+            "type": "string",
+            "description": "Flight Leg id this date belongs to."
+          },
+          "date": {
+            "type": "string",
+            "description": "The date as YYYY-MM-DD.",
+            "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+          },
+          "revision": {
+            "type": "integer",
+            "description": "Trip revision from get_trip. Required so a concurrent change is a 409, not a silent overwrite."
+          }
+        },
+        "required": [
+          "leg_id",
+          "date",
+          "revision"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_intent",
+      "description": "Set the why of this Trip — the part that survives destination changes — and return the platform result. Send the revision from get_trip; a stale revision is a 409 with the fresh state.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "trip": {
+            "type": "string",
+            "description": "Trip slug, or its /t/{uuid} Chat URL path. Defaults to the Trip on this page; required on every other page."
+          },
+          "revision": {
+            "type": "integer",
+            "description": "Trip revision from get_trip. Required. The platform validates the change; a stale revision is a 409 with the fresh state — retry from that."
+          },
+          "intent": {
+            "type": "object",
+            "description": "The durable why.",
+            "properties": {
+              "summary": {
+                "type": "string",
+                "description": "e.g. wilderness, something new."
+              },
+              "destination": {
+                "type": "string",
+                "description": "Current destination hypothesis, before a Leg or Stay exists."
+              },
+              "themes": {
+                "type": "array",
+                "description": "Internal themes, e.g. nature.",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "budget": {
+                "type": "object",
+                "description": "Whole currency units, not minor units.",
+                "properties": {
+                  "amount": {
+                    "type": "integer",
+                    "description": "Amount in whole currency units."
+                  },
+                  "currency": {
+                    "type": "string",
+                    "description": "ISO currency, e.g. EUR."
+                  },
+                  "posture": {
+                    "type": "string",
+                    "description": "hard_cap or flexible.",
+                    "enum": [
+                      "hard_cap",
+                      "flexible"
+                    ]
+                  }
+                },
+                "required": [],
+                "additionalProperties": false
+              },
+              "season": {
+                "type": "string",
+                "description": "Free text: November, next summer."
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "revision",
+          "intent"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_party",
+      "description": "Set who is travelling, 1–9 people, and return the platform result. Maps to set_travellers. Send the revision from get_trip; a stale revision is a 409 with the fresh state.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "trip": {
+            "type": "string",
+            "description": "Trip slug, or its /t/{uuid} Chat URL path. Defaults to the Trip on this page; required on every other page."
+          },
+          "revision": {
+            "type": "integer",
+            "description": "Trip revision from get_trip. Required. The platform validates the change; a stale revision is a 409 with the fresh state — retry from that."
+          },
+          "travellers": {
+            "type": "array",
+            "description": "The party. Each may have a name and a from (home airport or city).",
+            "items": {
+              "type": "object",
+              "description": "One traveller.",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Optional name."
+                },
+                "from": {
+                  "type": "string",
+                  "description": "Home airport or city if they start from a different place."
+                }
+              },
+              "required": [],
+              "additionalProperties": false
+            },
+            "minItems": 1,
+            "maxItems": 9
+          }
+        },
+        "required": [
+          "revision",
+          "travellers"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_stay",
+      "description": "Add a Stay, or update one when stay.id is set, and return the platform result. Send the revision from get_trip; a stale revision is a 409 with the fresh state. Does not book; status booked is refused.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "trip": {
+            "type": "string",
+            "description": "Trip slug, or its /t/{uuid} Chat URL path. Defaults to the Trip on this page; required on every other page."
+          },
+          "revision": {
+            "type": "integer",
+            "description": "Trip revision from get_trip. Required. The platform validates the change; a stale revision is a 409 with the fresh state — retry from that."
+          },
+          "stay": {
+            "type": "object",
+            "description": "The Stay to add (no id) or update (id set).",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Existing Stay id. Omit to add a new Stay."
+              },
+              "place": {
+                "type": "string",
+                "description": "Where the Stay is, e.g. Kyoto."
+              },
+              "check_in": {
+                "type": "string",
+                "description": "YYYY-MM-DD.",
+                "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+              },
+              "check_out": {
+                "type": "string",
+                "description": "YYYY-MM-DD.",
+                "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+              }
+            },
+            "required": [
+              "place"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "revision",
+          "stay"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "start_trip",
+      "description": "Create a Chat in this browser and return `{chat, url_path, trip}`. `url_path` is `/t/{chat.uuid}`; `trip` is null until the first turn mints it, or the existing Trip if this Chat already has one. A logged-out browser may own one Trip — a second create returns `anonymous_trip_limit` as data.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "intent": {
+            "type": "string",
+            "description": "Why this Trip exists, echoed on the result only. Destinations and dates may change; omit if unknown."
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "travelomi.com",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,303 @@
+{
+  "sponsio": 1,
+  "url": "https://sema.run/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "continue_debugging",
+      "description": "Continue the paused Sema debugger and wait for its next stable state.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "find_examples",
+      "description": "Find bundled Sema examples by filename, category, or identifier.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "default": "",
+            "description": "Case-insensitive text used to filter examples."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "default": 10,
+            "description": "Maximum examples to return."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "format_editor",
+      "description": "Format the current Sema source in the playground editor.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_debug_state",
+      "description": "Read debugger status, active line, breakpoints, locals, and stack frames.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_files",
+      "description": "List one directory in the playground virtual filesystem.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "dir": {
+            "type": "string",
+            "default": "/",
+            "description": "Absolute virtual directory path to list."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "load_example",
+      "description": "Load one bundled Sema example into the editor by identifier or filename.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Example identifier such as getting-started/hello.sema or hello.sema."
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "read_editor",
+      "description": "Read Sema source from the playground editor. Use this before editing or running unfamiliar code.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Zero-based character offset at which to start reading."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12000,
+            "default": 1500,
+            "description": "Maximum number of characters to return."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "read_file",
+      "description": "Read a UTF-8 text file from the playground virtual filesystem.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Absolute virtual file path to read."
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Zero-based character offset at which to start reading."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12000,
+            "default": 1500,
+            "description": "Maximum number of characters to return."
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "path"
+        ]
+      }
+    },
+    {
+      "name": "read_output",
+      "description": "Read the current playground output, including values, printed lines, errors, and timing.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Zero-based character offset at which to start reading."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12000,
+            "default": 1500,
+            "description": "Maximum number of characters to return."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "run_editor",
+      "description": "Run the current Sema source and wait for evaluation to finish.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_breakpoints",
+      "description": "Replace the debugger breakpoints with the requested one-based source lines.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "lines": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "uniqueItems": true,
+            "description": "One-based editor line numbers on which to pause."
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "lines"
+        ]
+      }
+    },
+    {
+      "name": "start_debugging",
+      "description": "Start debugging the current Sema source and wait for a pause, finish, or error.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "step_debugger",
+      "description": "Step the paused Sema debugger into, over, or out and wait for its next stable state.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "into",
+              "over",
+              "out"
+            ],
+            "description": "Debugger stepping mode."
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "mode"
+        ]
+      }
+    },
+    {
+      "name": "stop_debugging",
+      "description": "Stop the active Sema debugger and return the playground to its idle state.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "stop_run",
+      "description": "Cancel the active worker-backed Sema evaluation when one is running.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "write_editor",
+      "description": "Replace the playground editor contents with Sema source code.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "Complete Sema source to place in the editor."
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "code"
+        ]
+      }
+    },
+    {
+      "name": "write_file",
+      "description": "Create or replace a UTF-8 text file in the playground virtual filesystem.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Absolute virtual file path to create or replace."
+          },
+          "content": {
+            "type": "string",
+            "maxLength": 1048576,
+            "description": "UTF-8 text content, limited to 1 MiB."
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "content"
+        ]
+      }
+    }
+  ],
+  "host": "sema.run",
+  "source": "webmcp.com/api/directory.json"
+}

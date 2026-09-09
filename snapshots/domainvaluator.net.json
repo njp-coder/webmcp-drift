@@ -1,0 +1,193 @@
+{
+  "sponsio": 1,
+  "url": "https://domainvaluator.net/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "get_appraisal_methodology",
+      "description": "Explain how DomainValuator estimates a domain market value: the factors used (age, keywords, search volume, comparable sales, mozRank) and what an appraisal does and does not guarantee. Read-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_privacy_policy",
+      "description": "Return the DomainValuator privacy policy text from this page: what personal data is collected, how it is used, and how to contact support. Read-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_terms_of_service",
+      "description": "Return the DomainValuator terms of service from this page: conditions for using the free appraisal tool and related services. Read-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_domain_for_sale",
+      "description": "List a domain on the public marketplace. Available on every page, including /login after start_register or start_login. Sensitive: requires confirm=true. If the user is not signed in, returns login_required. Do not navigate away after auth — call this tool on the current page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "domain": {
+            "type": "string",
+            "description": "Fully qualified domain name to list.",
+            "pattern": "^[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$"
+          },
+          "price": {
+            "type": "number",
+            "description": "Asking price as a whole number in the chosen currency, e.g. 1250.",
+            "minimum": 1
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "EUR",
+              "USD",
+              "GBP",
+              "CHF",
+              "DKK",
+              "SEK",
+              "NOK"
+            ],
+            "description": "ISO currency. Defaults to EUR."
+          },
+          "confirm": {
+            "type": "boolean",
+            "description": "Must be true to actually create the public listing."
+          }
+        },
+        "required": [
+          "domain",
+          "price"
+        ]
+      }
+    },
+    {
+      "name": "navigate_to_page",
+      "description": "Go to another DomainValuator page: home, login, register, dashboard, privacy, or terms. Available on every page. After start_login or start_register, stay on this page and call list_domain_for_sale instead of navigating.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "page": {
+            "type": "string",
+            "enum": [
+              "home",
+              "login",
+              "register",
+              "dashboard",
+              "privacy",
+              "terms"
+            ],
+            "description": "Destination page of the appraisal and listing journey."
+          }
+        },
+        "required": [
+          "page"
+        ]
+      }
+    },
+    {
+      "name": "start_login",
+      "description": "Sign the user into their DomainValuator portfolio. Works on /login whether the login or register form is visible: this tool switches to the login form first, then signs in via fetch so this page stays loaded. After success, call list_domain_for_sale on this same page. Never echo the password back.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "pattern": "^[a-zA-Z0-9._%+\\-]+@[a-zA-Z0-9.\\-]+\\.[a-zA-Z]{2,}$",
+            "minLength": 6,
+            "maxLength": 254,
+            "description": "Account email address, e.g. you@example.com."
+          },
+          "password": {
+            "type": "string",
+            "description": "Account password. Used only to fill the form; never returned.",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      }
+    },
+    {
+      "name": "start_register",
+      "description": "Create a DomainValuator account. Works on /login whether the login or register form is visible. After success the user is signed in on this same page so list_domain_for_sale can be called immediately. Never echo the password back.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Optional display name."
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "pattern": "^[a-zA-Z0-9._%+\\-]+@[a-zA-Z0-9.\\-]+\\.[a-zA-Z]{2,}$",
+            "minLength": 6,
+            "maxLength": 254,
+            "description": "New account email address, e.g. you@example.com."
+          },
+          "password": {
+            "type": "string",
+            "description": "Password, at least 6 characters. Never returned.",
+            "minLength": 6
+          },
+          "password_confirm": {
+            "type": "string",
+            "description": "Must match password."
+          }
+        },
+        "required": [
+          "email",
+          "password",
+          "password_confirm"
+        ]
+      }
+    },
+    {
+      "name": "valuate_domain",
+      "description": "Return a structured domain appraisal for one registered domain: estimated market value, TLD, creation date, mozRank, monthly search volume, extracted keywords, and whether the name contains digits or hyphens. This is an asynchronous check: a first call may return status \"processing\" with retry_after_seconds — wait that long and call again with the same domain. Do not wait inside one call. Read-only; does not list or sell the domain.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "domain": {
+            "type": "string",
+            "description": "Fully qualified domain name including TLD. No protocol, path or www. Examples: example.nl, example.com.",
+            "pattern": "^[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$",
+            "minLength": 3,
+            "maxLength": 253
+          }
+        },
+        "required": [
+          "domain"
+        ]
+      }
+    }
+  ],
+  "host": "domainvaluator.net",
+  "source": "webmcp.com/api/directory.json"
+}

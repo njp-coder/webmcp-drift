@@ -1,0 +1,117 @@
+{
+  "sponsio": 1,
+  "url": "https://abahanavillas.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "check_villa_availability",
+      "description": "Comprueba si una villa está disponible entre dos fechas y devuelve el precio calculado en servidor. Si no se indica la ocupación se asume 2 adultos. El campo available indica si la villa puede reservarse en esas fechas.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "villaErc": {
+            "type": "string",
+            "description": "External reference code de la villa"
+          },
+          "checkIn": {
+            "type": "string",
+            "description": "Fecha de entrada en formato YYYY-MM-DD"
+          },
+          "checkOut": {
+            "type": "string",
+            "description": "Fecha de salida en formato YYYY-MM-DD"
+          },
+          "adults": {
+            "type": "number",
+            "description": "Número de adultos (por defecto 2)"
+          },
+          "children": {
+            "type": "number",
+            "description": "Número de niños"
+          },
+          "pets": {
+            "type": "number",
+            "description": "Mascotas: 0 o 1"
+          }
+        },
+        "required": [
+          "villaErc",
+          "checkIn",
+          "checkOut"
+        ]
+      }
+    },
+    {
+      "name": "get_villa_details",
+      "description": "Obtiene la ficha completa de una villa de Abahana Villas a partir de su external reference code: descripción, ubicación, capacidad, servicios e imágenes.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "villaErc": {
+            "type": "string",
+            "description": "External reference code de la villa"
+          }
+        },
+        "required": [
+          "villaErc"
+        ]
+      }
+    },
+    {
+      "name": "search_villas",
+      "description": "Busca villas de alquiler vacacional de Abahana Villas en la Costa Blanca (Calpe, Moraira, Jávea, Altea, Benissa). Devuelve un resumen de cada villa con su external reference code, capacidad y, si se indican fechas, el precio para esas fechas.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "location": {
+            "type": "string",
+            "description": "Destino: Calpe, Moraira, Javea, Altea o Benissa"
+          },
+          "checkIn": {
+            "type": "string",
+            "description": "Fecha de entrada en formato YYYY-MM-DD"
+          },
+          "checkOut": {
+            "type": "string",
+            "description": "Fecha de salida en formato YYYY-MM-DD"
+          },
+          "minDays": {
+            "type": "number",
+            "description": "Estancia mínima en noches"
+          },
+          "adults": {
+            "type": "number",
+            "description": "Número de adultos"
+          },
+          "children": {
+            "type": "number",
+            "description": "Número de niños"
+          },
+          "pets": {
+            "type": "number",
+            "description": "Mascotas: 0 o 1"
+          },
+          "descriptors": {
+            "type": "string",
+            "description": "Filtros adicionales (piscina, vistas al mar, etc.)"
+          },
+          "page": {
+            "type": "number",
+            "description": "Página, empezando en 1"
+          },
+          "pageSize": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 20,
+            "description": "Resultados por página (entre 1 y 20)"
+          }
+        }
+      }
+    }
+  ],
+  "host": "abahanavillas.com",
+  "source": "webmcp.com/api/directory.json"
+}

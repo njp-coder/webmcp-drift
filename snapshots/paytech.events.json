@@ -1,0 +1,235 @@
+{
+  "sponsio": 1,
+  "url": "https://paytech.events/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "compare_events",
+      "description": "Compare two or more fintech conferences side by side by slug — dates, location, duration, ticket price, typical hotel rate, audience size — including an estimated total trip cost for each so they can be ranked by budget. Use when the user is choosing between events.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slugs": {
+            "type": "array",
+            "description": "Event slugs to compare, e.g. [\"sibos\",\"money20-20-europe\"]. 2-6 recommended.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "flightEur": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Assumed return flight cost per event, in EUR (applied to all)."
+          }
+        },
+        "required": [
+          "slugs"
+        ]
+      }
+    },
+    {
+      "name": "estimate_conference_trip_cost",
+      "description": "Estimate the total cost of attending a fintech conference (registration + flights + hotel + meals + extras), itemised in EUR. Defaults come from the event data (ticket price, duration, typical hotel rate); override any of them. If no slug is given it uses the event on the current page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Event slug. Defaults to the current page's event."
+          },
+          "flightEur": {
+            "type": "number",
+            "description": "Return flight cost in EUR.",
+            "minimum": 0
+          },
+          "hotelPerNightEur": {
+            "type": "number",
+            "description": "Override nightly hotel rate in EUR.",
+            "minimum": 0
+          },
+          "nights": {
+            "type": "number",
+            "description": "Override number of hotel nights.",
+            "minimum": 0
+          },
+          "days": {
+            "type": "number",
+            "description": "Override number of days on the ground (for meals).",
+            "minimum": 0
+          },
+          "mealsPerDayEur": {
+            "type": "number",
+            "description": "Override daily meal allowance in EUR.",
+            "minimum": 0
+          },
+          "localTransportEur": {
+            "type": "number",
+            "description": "Local transport/taxis in EUR.",
+            "minimum": 0
+          },
+          "registrationEur": {
+            "type": "number",
+            "description": "Override the ticket price in EUR.",
+            "minimum": 0
+          },
+          "otherEur": {
+            "type": "number",
+            "description": "Any other costs in EUR (visa, materials, networking).",
+            "minimum": 0
+          }
+        }
+      }
+    },
+    {
+      "name": "fill_expense_calculator",
+      "description": "Fill in the interactive trip expense calculator on the current event page with the given amounts, so the user sees the numbers and can adjust them or export a PDF. Scrolls the calculator into view. Use estimate_conference_trip_cost first if you need the figures.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "flightEur": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Flight cost in EUR."
+          },
+          "trainEur": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Train cost in EUR."
+          },
+          "localTransportEur": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Local transport in EUR."
+          },
+          "hotelPerNightEur": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Hotel nightly rate in EUR."
+          },
+          "nights": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Number of hotel nights."
+          },
+          "mealsPerDayEur": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Daily meal allowance in EUR."
+          },
+          "days": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Number of days for meals."
+          },
+          "visaFeesEur": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Visa fees in EUR."
+          },
+          "networkingEur": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Networking/events budget in EUR."
+          },
+          "miscellaneousEur": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Miscellaneous costs in EUR."
+          }
+        }
+      }
+    },
+    {
+      "name": "get_destination_guide",
+      "description": "Get PayTech.Events' practical city guide for a conference destination — airports (with IATA codes), timezone, currency, best seasons to visit, and the fintech events held there. Accepts a city name (e.g. \"London\") or destination slug. Use for travel/logistics questions.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "city": {
+            "type": "string",
+            "description": "City name or destination slug, e.g. \"London\" or \"hong-kong\"."
+          },
+          "includeEvents": {
+            "type": "boolean",
+            "description": "Also list events in that city. Default true."
+          }
+        },
+        "required": [
+          "city"
+        ]
+      }
+    },
+    {
+      "name": "get_event_details",
+      "description": "Get full structured details for one event on PayTech.Events by its slug (the last path segment of its URL, e.g. \"money20-20-europe\"). Returns dates, city/country, IATA airport code, ticket price, typical hotel nightly rate and duration.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Event slug, e.g. \"sibos\"."
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "search_fintech_events",
+      "description": "Search PayTech.Events for fintech, banking, payments and ecommerce conferences. Filter by free-text query, city, country, region, date range, and maximum ticket price (EUR). Returns matching events with dates, location, price and the page URL. Use this instead of scraping the site when the user asks which conferences to attend.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Free text matched against event title, city, country and tags."
+          },
+          "city": {
+            "type": "string",
+            "description": "Filter by city, e.g. \"London\"."
+          },
+          "country": {
+            "type": "string",
+            "description": "Filter by country, e.g. \"Germany\"."
+          },
+          "region": {
+            "type": "string",
+            "description": "Filter by region, e.g. \"Europe\", \"North America\", \"Asia\"."
+          },
+          "from": {
+            "type": "string",
+            "description": "Only events starting on/after this date (YYYY-MM-DD). Defaults to today."
+          },
+          "to": {
+            "type": "string",
+            "description": "Only events starting on/before this date (YYYY-MM-DD)."
+          },
+          "maxPriceEur": {
+            "type": "number",
+            "description": "Maximum standard pass price in EUR.",
+            "minimum": 0
+          },
+          "includePast": {
+            "type": "boolean",
+            "description": "Include events that have already happened. Default false."
+          },
+          "limit": {
+            "type": "number",
+            "description": "Max results (default 20, max 100).",
+            "minimum": 1,
+            "maximum": 100
+          }
+        }
+      }
+    }
+  ],
+  "host": "paytech.events",
+  "source": "webmcp.com/api/directory.json"
+}

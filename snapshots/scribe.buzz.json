@@ -1,0 +1,101 @@
+{
+  "sponsio": 1,
+  "url": "https://scribe.buzz/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "brief_agent",
+      "description": "Submits a work brief to Scribe for review by ROIZILLA, LLC. Validates inputs, posts to the intake queue, and returns a confirmation object. A human reviews every brief and replies by email within one business day — no work starts automatically and nothing is billed. Ask the user for any missing required field before calling. Returns a JSON object with status (\"received\" or \"error\") and a message.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 2,
+            "description": "Full name of the person submitting the brief."
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Email address ROIZILLA replies to. Must be a valid email address."
+          },
+          "company": {
+            "type": "string",
+            "description": "Company or team the work is for. Optional — omit if unknown."
+          },
+          "scope": {
+            "type": "string",
+            "minLength": 20,
+            "description": "Description of the work: goal, context, and what done looks like. At least 20 characters."
+          },
+          "budget": {
+            "type": "string",
+            "enum": [
+              "under-500",
+              "500-1000",
+              "1000-5000",
+              "5000-plus"
+            ],
+            "description": "Budget range for the work."
+          },
+          "deadline": {
+            "type": "string",
+            "enum": [
+              "asap",
+              "this-month",
+              "this-quarter",
+              "flexible"
+            ],
+            "description": "When the work needs to be delivered."
+          }
+        },
+        "required": [
+          "name",
+          "email",
+          "scope",
+          "budget",
+          "deadline"
+        ]
+      }
+    },
+    {
+      "name": "get_agent_summary",
+      "description": "Returns who Scribe is and what work it performs: role, workflow, deliverables, and operating guardrails. Read-only. Use this to decide whether the agent fits a task. Does not include pricing — call get_pricing for commercial terms. Returns a JSON object with agent, site, operator, summary, deliverables[], and standing_rules[].",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_policies",
+      "description": "Returns the store policies for Scribe subscriptions: links to the terms of service, privacy policy, and refund policy, with a short summary of each. Read-only. Use before recommending a purchase. Returns a JSON object with terms_url, privacy_url, refund_url, and summary.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_pricing",
+      "description": "Returns the commercial terms for hiring Scribe: monthly price, billing terms, what the subscription includes, and the secure checkout URL. Read-only. Contains no capability detail — call get_agent_summary for that. Returns a JSON object with agent, price, terms, includes[], and subscribe_url.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "start_subscription",
+      "description": "Navigates the user’s browser tab to the secure Stripe checkout page for Scribe ($199/month). SIDE EFFECT: page navigation. This tool does NOT complete any purchase and no payment is taken — the human reviews and confirms on the checkout page. Call only when the user has explicitly asked to subscribe. Returns a JSON object with status (\"redirected\"), checkout_url, and next_step.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    }
+  ],
+  "host": "scribe.buzz",
+  "source": "webmcp.com/api/directory.json"
+}

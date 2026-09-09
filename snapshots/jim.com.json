@@ -1,0 +1,75 @@
+{
+  "sponsio": 1,
+  "url": "https://jim.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "calculate_payment_fees",
+      "description": "Exact JIM fee and net payout for a sale. Covers Tap to Pay vs Payment Link, fee pass-through, and JIM Card vs ACH withdrawal. Use instead of estimating.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "amount_usd": {
+            "type": "number",
+            "description": "Sale amount in USD, before fees."
+          },
+          "method": {
+            "type": "string",
+            "enum": [
+              "tap_to_pay",
+              "payment_link"
+            ],
+            "description": "Tap to Pay is contactless in person; Payment Link is sent remotely."
+          },
+          "fee_paid_by": {
+            "type": "string",
+            "enum": [
+              "seller",
+              "customer"
+            ],
+            "description": "Who absorbs the processing fee. Default seller."
+          },
+          "payout": {
+            "type": "string",
+            "enum": [
+              "jim_card",
+              "ach_transfer"
+            ],
+            "description": "How the seller withdraws. JIM Card is free. Default jim_card."
+          }
+        },
+        "required": [
+          "amount_usd",
+          "method"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_pricing",
+      "description": "JIM's pricing as structured data: account, processing rates, payout costs, Bookings, availability. Use calculate_payment_fees to price a specific sale.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "topic": {
+            "type": "string",
+            "enum": [
+              "all",
+              "account",
+              "payment_processing",
+              "payouts",
+              "bookings",
+              "availability"
+            ],
+            "description": "Which section to return. Default all."
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "jim.com",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,316 @@
+{
+  "sponsio": 1,
+  "url": "https://practicehub.ludara.org/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "compare_practice_technology",
+      "description": "Compare documented public evidence for Practice Hub technology profiles by need, category, or up to three product names. Returns dated pricing snapshots and watch points, not endorsements or compliance determinations.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 160,
+            "description": "Optional workflow, feature, or practice need."
+          },
+          "category": {
+            "type": "string",
+            "description": "Optional category such as EHR, Accounting, or Communications."
+          },
+          "products": {
+            "type": "array",
+            "maxItems": 3,
+            "items": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 60
+            },
+            "description": "Optional product names or slugs to compare."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 3,
+            "default": 3
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "find_practice_pathways",
+      "description": "Find the reviewed Practice Hub sequence for starting, growing, changing, or strengthening a therapy practice. Returns milestones and available supporting resources without making the decision for the user.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 160,
+            "description": "The practice situation or transition to work through."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "find_practice_templates",
+      "description": "Find public Practice Hub worksheets for technology, operations, continuity, people, client flow, and money tasks. Returns links and section names; it never submits, saves, or reads worksheet entries.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 160,
+            "description": "The task or worksheet content to find."
+          },
+          "group": {
+            "type": "string",
+            "description": "Optional template group such as Technology or Operations."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 3,
+            "default": 3
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_practice_hub_updates",
+      "description": "Retrieve the latest approved public Practice Hub change records, optionally filtered by topic. Returns effective dates, user impact, action needed, and public links.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 160,
+            "description": "Optional topic or affected resource to filter updates."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 3,
+            "default": 3
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_practice_resource",
+      "description": "Get the reviewed summary, public link, audience, applicability, and review record for one approved Practice Hub resource or practice-operations guide.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "identifier": {
+            "type": "string",
+            "description": "A resource ID such as RES-001, a practice-operations guide ID such as POG-003, a slug, or a public path returned by search_practice_resources."
+          }
+        },
+        "required": [
+          "identifier"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_practice_topics",
+      "description": "List the topics represented in Practice Hub’s approved public resource catalog and the number of available resources in each topic.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_public_collections",
+      "description": "Map every public Practice Hub collection, its size, coverage, boundary, public link, and the best read-only tool for exploring it.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 160,
+            "description": "Optional collection, audience, or task to narrow the map."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_state_coverage",
+      "description": "Check whether Practice Hub has a reviewed public guide for a U.S. state or the District of Columbia. Without a state, returns a compact nationwide coverage summary and explicit gaps.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "state": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 40,
+            "description": "Optional state name or two-letter code."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_practice_evidence",
+      "description": "Retrieve one publication-gated evidence record with its status, confidence, fact-check and review dates, Practice Hub page, and official-source citations. Supports general practice guidance and reviewed state research.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 160,
+            "description": "Optional claim, topic, publisher, or source to search."
+          },
+          "identifier": {
+            "type": "string",
+            "description": "Optional exact claim ID returned by this or another Practice Hub tool."
+          },
+          "jurisdiction": {
+            "type": "string",
+            "description": "Optional state, federal, national, or jurisdiction-independent scope."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_practice_resources",
+      "description": "Search approved public Practice Hub guidance, including the six practice-operations working guides, for operations, technology, money, teams, foundations, and client administration. Returns educational summaries, links, and review dates.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 160,
+            "description": "The practice task or topic to find guidance about."
+          },
+          "topic": {
+            "type": "string",
+            "description": "Optional exact topic returned by list_practice_topics."
+          },
+          "audience": {
+            "type": "string",
+            "description": "Optional audience such as practice owners, administrators, or operations leads."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 3,
+            "default": 3,
+            "description": "Maximum number of results to return."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_session_resources",
+      "description": "Search 130 public Practice Hub worksheets, activities, cards, posters, coloring pages, and practice templates by goal, audience, format, or collection. For qualified adult professional use only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 160,
+            "description": "The session goal, theme, or kind of resource to find."
+          },
+          "collection": {
+            "type": "string",
+            "description": "Optional exact or partial collection name."
+          },
+          "audience": {
+            "type": "string",
+            "description": "Optional developmental range or audience group."
+          },
+          "format": {
+            "type": "string",
+            "description": "Optional format such as Activity, Cards, Poster, or Guided worksheet."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 3,
+            "default": 3
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_state_guidance",
+      "description": "Search reviewed public state research for a named state and practice topic, optionally scoped to a profession. Returns dated evidence summaries and the public research—not professional advice boundary.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "state": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 40,
+            "description": "A supported state name, code, or slug."
+          },
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 160,
+            "description": "A research topic such as telehealth, supervision, records, billing, or closure."
+          },
+          "profession": {
+            "type": "string",
+            "description": "Optional profession such as counselors, psychologists, or practice operations."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 3,
+            "default": 3
+          }
+        },
+        "required": [
+          "state",
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "practicehub.ludara.org",
+  "source": "webmcp.com/api/directory.json"
+}

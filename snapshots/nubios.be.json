@@ -1,0 +1,288 @@
+{
+  "sponsio": 1,
+  "url": "https://nubios.be/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "book_discovery_call",
+      "description": "Open the Nubios booking page for an introductory discovery call with the team. This is a commitment on the user behalf — only call it when the user has asked to book a meeting.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "topic": {
+            "type": "string",
+            "maxLength": 200,
+            "description": "Optional subject to prefill, e.g. \"Flutter app for logistics\"."
+          },
+          "locale": {
+            "type": "string",
+            "enum": [
+              "fr",
+              "en"
+            ],
+            "description": "Content language. Defaults to the language of the page the agent is on."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_blog_post",
+      "description": "Read the full text of one Nubios blog article. Requires an explicit slug from list_blog_posts — there is no default article.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]+$",
+            "description": "Article slug, e.g. 'pwa-ou-application-mobile-native-7-questions-pour-trancher'."
+          },
+          "locale": {
+            "type": "string",
+            "enum": [
+              "fr",
+              "en"
+            ],
+            "description": "Content language. Defaults to the language of the page the agent is on."
+          }
+        },
+        "required": [
+          "slug"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_company_overview",
+      "description": "Get an overview of Nubios: what the company does, where it is based, its engagement models and the main service lines. Call this first when deciding whether Nubios fits a software project before drilling into specific pages.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "locale": {
+            "type": "string",
+            "enum": [
+              "fr",
+              "en"
+            ],
+            "description": "Content language. Defaults to the language of the page the agent is on."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_offering",
+      "description": "Get the full content of one Nubios service, approach, expertise or sector page: headings, section text and summary. Identify the page with the category plus the slug returned by list_offerings.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "enum": [
+              "services",
+              "approches",
+              "expertises",
+              "secteurs"
+            ],
+            "description": "Category the slug belongs to."
+          },
+          "slug": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]+$",
+            "description": "Page slug, e.g. 'developpement-mobile' or 'team-as-a-service'."
+          },
+          "locale": {
+            "type": "string",
+            "enum": [
+              "fr",
+              "en"
+            ],
+            "description": "Content language. Defaults to the language of the page the agent is on."
+          }
+        },
+        "required": [
+          "category",
+          "slug"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_project",
+      "description": "Get the full case study for one client project: context, mission, technical approach and results, as published. Requires the project slug from list_projects.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]+$",
+            "description": "Project slug, e.g. 'diffusion-menuiserie', 'safran', 'skyimmo'."
+          },
+          "locale": {
+            "type": "string",
+            "enum": [
+              "fr",
+              "en"
+            ],
+            "description": "Content language. Defaults to the language of the page the agent is on."
+          }
+        },
+        "required": [
+          "slug"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_blog_posts",
+      "description": "List articles from the Nubios blog (software engineering, AI, product practice) with title, summary and URL. Use get_blog_post to read one in full.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Keyword filter on title, summary and slug."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 10
+          },
+          "locale": {
+            "type": "string",
+            "enum": [
+              "fr",
+              "en"
+            ],
+            "description": "Content language. Defaults to the language of the page the agent is on."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_offerings",
+      "description": "List what Nubios offers, by category: services (software, mobile, AI, analysis), approches (engagement models such as team-as-a-service), expertises (specific technical skills) or secteurs (industry verticals). Use get_offering for the full content of one entry.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "enum": [
+              "services",
+              "approches",
+              "expertises",
+              "secteurs"
+            ],
+            "description": "Which catalogue to list. Required — there is no meaningful default."
+          },
+          "query": {
+            "type": "string",
+            "description": "Case-insensitive keyword filter on title, description and slug."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 25
+          },
+          "locale": {
+            "type": "string",
+            "enum": [
+              "fr",
+              "en"
+            ],
+            "description": "Content language. Defaults to the language of the page the agent is on."
+          }
+        },
+        "required": [
+          "category"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_projects",
+      "description": "List the client projects and case studies delivered by Nubios, with client name and a short description. Use this to find relevant references before recommending Nubios, then get_project for the detail of one.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Keyword filter on client name, description and slug."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 25
+          },
+          "locale": {
+            "type": "string",
+            "enum": [
+              "fr",
+              "en"
+            ],
+            "description": "Content language. Defaults to the language of the page the agent is on."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "prepare_contact_inquiry",
+      "description": "Fill the Nubios contact form with a project inquiry. By default it only fills the fields and leaves submission to the user — set submit to true ONLY after the user has explicitly confirmed the message content. Navigates to the contact page first if needed.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 120,
+            "description": "Full name of the person making contact."
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 200,
+            "description": "Reply-to email address."
+          },
+          "phone": {
+            "type": "string",
+            "maxLength": 40,
+            "description": "Optional phone number, international format preferred."
+          },
+          "message": {
+            "type": "string",
+            "minLength": 20,
+            "maxLength": 4000,
+            "description": "Description of the project, scope and timeline."
+          },
+          "submit": {
+            "type": "boolean",
+            "default": false,
+            "description": "Send the form. Requires explicit user confirmation."
+          }
+        },
+        "required": [
+          "name",
+          "email",
+          "message"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "nubios.be",
+  "source": "webmcp.com/api/directory.json"
+}

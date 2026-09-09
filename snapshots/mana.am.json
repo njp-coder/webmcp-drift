@@ -1,0 +1,151 @@
+{
+  "sponsio": 1,
+  "url": "https://mana.am",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "get_mana_agent_doc",
+      "description": "Return one scoped Mana product or API document as markdown.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "doc"
+        ],
+        "properties": {
+          "doc": {
+            "type": "string",
+            "enum": [
+              "overview",
+              "pricing",
+              "compare",
+              "auth",
+              "api"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_mana_creation",
+      "description": "Return one published creation's public descriptive data and links. Never source code, bundles, or assets.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "handle": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "locale": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "handle",
+          "slug"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_mana_creator",
+      "description": "Return one creator's public profile and a capped list of their published creations.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "handle": {
+            "type": "string"
+          },
+          "locale": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "handle"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_mana_agent_docs",
+      "description": "List the scoped Mana documents available to agents.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "include_urls": {
+            "type": "boolean",
+            "default": true
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_mana_tags",
+      "description": "List the popular tags used across public Mana creations, with counts — the same vocabulary the website browses by.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 24
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_mana_creations",
+      "description": "Search or browse the public Mana community — the same creations the website shows. Capped per call, no pagination cursor.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string"
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "trending",
+              "recent",
+              "popular",
+              "remixed",
+              "liked"
+            ]
+          },
+          "category": {
+            "type": "string"
+          },
+          "tag": {
+            "type": "string"
+          },
+          "featured_only": {
+            "type": "boolean"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 48,
+            "default": 8
+          },
+          "locale": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "mana.am",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,276 @@
+{
+  "sponsio": 1,
+  "url": "https://lens.streaming-radar.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "ask_site",
+      "description": "Answer a visitor's question about Streaming Lens using the site's own published pages — reports, market analyses, methodology, pricing, and the author's background. Use this whenever the question is about streaming markets, vertical drama, African OTT, what a report covers, or how Streaming Lens works. Returns the matching page sections as text with their canonical URLs, ranked by relevance — it retrieves, it does not summarise. Returns an explicit note when no page matches.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "question": {
+            "type": "string",
+            "description": "The visitor's question, in free text (English or French)."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 6,
+            "default": 3,
+            "description": "Maximum number of sections to return."
+          }
+        },
+        "required": [
+          "question"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "browse_reports",
+      "description": "List the Streaming Lens research reports published on this site with their status (live or upcoming), scope, version and page URL. Use this when the visitor asks what reports exist, what a report covers, or which one fits their market. Returns one entry per report — title, one-line scope, status, version, URL. Pricing and purchase live on the /pricing page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "check_data_coverage",
+      "description": "Check what sourced data Streaming Lens holds on a company, market, country or topic — how many datapoints match, which reports and countries they cover, which years, the confidence mix, when the most recent one was updated, and one sample datapoint with its metric name, unit, source and confidence. Use this to tell the visitor whether the answer to their question exists in the database and what it would take to read it. The values themselves are withheld — they sit behind the paid MCP server, and the response says where. Read-only, free. Matching is word-bounded, so a short acronym does not match inside a longer word.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Company, market, country, platform or topic.",
+            "minLength": 3,
+            "maxLength": 60
+          },
+          "report_slug": {
+            "type": "string",
+            "enum": [
+              "vertical-invasion-2026",
+              "africa-streaming-2026",
+              "piracy-streaming-2026",
+              "creator-economy-2026",
+              "sports-streaming-2026",
+              "streaming-radar"
+            ],
+            "description": "Restrict to one report silo."
+          },
+          "country": {
+            "type": "string",
+            "description": "Restrict to one country as spelled in the data (e.g. \"Nigeria\")."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_article",
+      "description": "Fetch the content, key findings, and metadata of a specific market analysis or guide article (params: slug, url) -> {title, url, summary, sections: [{heading, content}]}",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "Full URL of the article to fetch."
+          },
+          "slug": {
+            "type": "string",
+            "description": "Article path or slug (e.g. 'vertical-drama-guide', 'micro-drama-apps', 'svod-graveyard-africa')."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_market_signals",
+      "description": "Return the latest streaming-market signals Streaming Lens has picked up — headline, one-line summary, source domain, date and link — from its live monitoring feed (vertical drama, African OTT, piracy, creator economy, sports rights). Use this when the visitor asks what is happening right now in streaming, or what a given platform or market has been doing lately. Read-only. Headlines are third-party content, quoted as scanned.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 40,
+            "default": 10,
+            "description": "How many signals to return."
+          },
+          "contains": {
+            "type": "string",
+            "description": "Optional free-text filter kept only on signals whose title, summary or source contains it."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_pricing",
+      "description": "Retrieve pricing tiers for reports, MCP data silo subscriptions, advisory, and consulting (params: none) -> {currency, tiers: [{name, price, billing, description, cta_url}]}",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_report",
+      "description": "Get detailed information, table of contents/headings, and summary for a specific report (params: report_id) -> {id, title, url, teaser_url, key_sections, summary}",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "report_id": {
+            "type": "string",
+            "default": "vertical-invasion-2026",
+            "description": "ID of the report ('vertical-invasion-2026' or 'africa-streaming-2026')"
+          }
+        }
+      }
+    },
+    {
+      "name": "list_reports",
+      "description": "List all strategic intelligence reports published or in progress (params: status) -> list [{id, title, status, pages, market_size, url}]",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "Filter by status, e.g. 'LIVE' or 'ENRICHING'"
+          }
+        }
+      }
+    },
+    {
+      "name": "request_report_teaser",
+      "description": "Register a visitor's email to receive the free teaser of a Streaming Lens report — 'vi-2026' for Vertical Invasion 2026 (micro-drama / vertical drama), 'africa-2026' for Africa Streaming 2026 (African OTT). This stores the email, sends an email, and adds the visitor to the mailing list — ask the visitor and pass their explicit consent before calling it. Returns the signed download URL for the teaser PDF and fills the page's own email gate so the visitor sees what was submitted.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "pattern": "^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$",
+            "minLength": 6,
+            "maxLength": 254,
+            "description": "The visitor's email address."
+          },
+          "report": {
+            "type": "string",
+            "enum": [
+              "vi-2026",
+              "africa-2026"
+            ],
+            "default": "vi-2026",
+            "description": "Which teaser to send."
+          },
+          "consent": {
+            "type": "boolean",
+            "description": "Must be true, and must reflect consent the visitor actually gave for this email to be stored and used."
+          },
+          "lang": {
+            "type": "string",
+            "enum": [
+              "en",
+              "fr"
+            ],
+            "default": "en",
+            "description": "Language of the teaser PDF."
+          }
+        },
+        "required": [
+          "email",
+          "consent"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_intelligence_archive",
+      "description": "Search the Streaming Radar published archive — the newsletter editions and long-form analyses Ludovic Bostral has already written about streaming markets. Use this when the visitor asks whether a company, market or trend has been covered, or wants the existing analysis rather than a page of the website (for that, use ask_site). Returns, for each match: edition number, title, publication date, editorial angle and a link to read it. Read-only, free.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Company, market, platform or topic (e.g. \"ReelShort\", \"Canal+\", \"mobile money\").",
+            "minLength": 2
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "default": 5,
+            "description": "How many published pieces to return."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "start_call_booking",
+      "description": "Initiate scheduling a strategic consultation or advisory call with the author (params: navigate=true) -> {status: 'handoff', booking_url: string}",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "navigate": {
+            "type": "boolean",
+            "default": true,
+            "description": "Whether to redirect the browser to the calendar booking interface."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "submit_datapoint_challenge",
+      "description": "Prepare a formal challenge or correction to a specific sourced datapoint on the site (params: datapoint_id, proposed_value, source_url, notes) -> {status: 'ready', datapoint_id: string, challenge_url: string}",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "datapoint_id"
+        ],
+        "properties": {
+          "notes": {
+            "type": "string",
+            "description": "Context or explanation of the challenge."
+          },
+          "source_url": {
+            "type": "string",
+            "description": "Authoritative source link backing the correction."
+          },
+          "datapoint_id": {
+            "type": "string",
+            "description": "Identifier of the datapoint (e.g. 'vi.market_size_2025', 'africa.ott_market_2026')."
+          },
+          "proposed_value": {
+            "type": "string",
+            "description": "Your corrected or proposed metric value."
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "lens.streaming-radar.com",
+  "source": "webmcp.com/api/directory.json"
+}

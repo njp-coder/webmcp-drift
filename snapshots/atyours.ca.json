@@ -1,0 +1,292 @@
+{
+  "sponsio": 1,
+  "url": "https://atyours.ca/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "join_customer_waitlist",
+      "description": "Add a prospective customer or requester to the AtYours prelaunch waitlist for launch and service-availability updates. Service keys: chef = Private Chef; barber = Barber; tech = Home Tech; dj = DJ; beauty = Beauty; fitness = Fitness; tidy = Tidy; handyman = Handyman; seniorCare = Senior Care; wax = Wax; glam = Glam; braid = Braid; clean = Clean; photography = Photography. The current page is not specific to one service; choose service keys from the schema based on the person's interests. Collect only name, email, city, and one or more service interests. The person joining must consent to receive launch and service-availability updates and accept the Privacy Policy after confirming the supplied contact information. Use only after explicit intent, review of the complete entry, confirmed name/email, and affirmative consents. Never infer consent. Human verification appears as a popup on the current AtYours page. After verification succeeds, repeat the identical call to retrieve the idempotent receipt. Privacy Policy: https://atyours.ca/privacy/ Visible form fallback: https://atyours.ca/waitlist/",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "email",
+          "city",
+          "services",
+          "consents",
+          "explicitWaitlistIntent",
+          "contactInformationConfirmed"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "description": "Person's full name."
+          },
+          "email": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 254,
+            "format": "email",
+            "description": "Person's confirmed email address for launch and service-availability updates."
+          },
+          "city": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "description": "City where the person wants services."
+          },
+          "services": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 15,
+            "uniqueItems": true,
+            "description": "One or more service interests. Keys: chef = Private Chef; barber = Barber; tech = Home Tech; dj = DJ; beauty = Beauty; fitness = Fitness; tidy = Tidy; handyman = Handyman; seniorCare = Senior Care; wax = Wax; glam = Glam; braid = Braid; clean = Clean; photography = Photography.",
+            "items": {
+              "type": "string",
+              "enum": [
+                "chef",
+                "barber",
+                "tech",
+                "dj",
+                "beauty",
+                "fitness",
+                "tidy",
+                "handyman",
+                "seniorCare",
+                "wax",
+                "glam",
+                "braid",
+                "clean",
+                "photography"
+              ]
+            }
+          },
+          "consents": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "launchUpdates",
+              "privacyPolicy"
+            ],
+            "description": "Both consents must be affirmatively obtained from the person and must not be inferred.",
+            "properties": {
+              "launchUpdates": {
+                "type": "boolean",
+                "const": true,
+                "description": "Person agrees to receive AtYours launch and service-availability updates."
+              },
+              "privacyPolicy": {
+                "type": "boolean",
+                "const": true,
+                "description": "Person accepts the Privacy Policy at https://atyours.ca/privacy/"
+              }
+            }
+          },
+          "explicitWaitlistIntent": {
+            "type": "boolean",
+            "const": true,
+            "description": "True only when the person explicitly wants to join the waitlist now."
+          },
+          "contactInformationConfirmed": {
+            "type": "boolean",
+            "const": true,
+            "description": "True only after the person confirms the supplied name and email."
+          }
+        }
+      }
+    },
+    {
+      "name": "submit_provider_application",
+      "description": "Submit an application to AtYours’s prospective provider network. AtYours is building an agentic platform for high-intent lead generation for service businesses. The platform is prelaunch and is not yet a live lead, booking, or matching service. Applications are open to providers inside or outside the GTA. Submission is not approval, does not guarantee work, and creates no employment or contractor relationship. Service keys: chef = Private Chef; barber = Barber; tech = Home Tech; dj = DJ; beauty = Beauty; fitness = Fitness; tidy = Tidy; handyman = Handyman; seniorCare = Senior Care; wax = Wax; glam = Glam; braid = Braid; clean = Clean; photography = Photography; other = Other. The current page is not specific to one service; choose service keys from the schema based on the applicant's work. Required application fields: applicantName, email, phone, services, baseCity, province, country, serviceArea, yearsExperience, insuranceStatus, backgroundAndFit, consents. Optional fields: businessName, websiteOrProfileUrl, credentials. Required when services includes “other”; otherwise it must be omitted. The applicant must consent to review, follow-up contact, consideration as a prospective AtYours provider, and the Privacy Policy after confirming the supplied contact information. Use only after explicit application intent, review of the complete application, confirmed name/email/phone, and affirmative required consents. Never infer consent. Providers use this tool, not the customer waitlist. Human verification appears as a popup on the current AtYours page. After verification succeeds, repeat the identical call to retrieve the idempotent receipt. Privacy Policy: https://atyours.ca/privacy/ Visible form fallback: https://atyours.ca/providers/",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "explicitApplicationIntent",
+          "contactInformationConfirmed",
+          "applicantName",
+          "email",
+          "phone",
+          "services",
+          "baseCity",
+          "province",
+          "country",
+          "serviceArea",
+          "yearsExperience",
+          "insuranceStatus",
+          "backgroundAndFit",
+          "consents"
+        ],
+        "properties": {
+          "explicitApplicationIntent": {
+            "type": "boolean",
+            "const": true,
+            "description": "True only when the user explicitly wants to submit this application now."
+          },
+          "contactInformationConfirmed": {
+            "type": "boolean",
+            "const": true,
+            "description": "True only after the user confirms the supplied name, email, and phone."
+          },
+          "applicantName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "description": "Applicant's full name."
+          },
+          "email": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 254,
+            "description": "Applicant's confirmed email address.",
+            "format": "email"
+          },
+          "phone": {
+            "type": "string",
+            "minLength": 7,
+            "maxLength": 30,
+            "description": "Applicant's confirmed phone number."
+          },
+          "businessName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120,
+            "description": "Optional business name."
+          },
+          "websiteOrProfileUrl": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500,
+            "description": "Optional complete http or https business website or professional profile URL.",
+            "format": "uri"
+          },
+          "services": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 15,
+            "uniqueItems": true,
+            "description": "One or more services the applicant provides. Keys: chef = Private Chef; barber = Barber; tech = Home Tech; dj = DJ; beauty = Beauty; fitness = Fitness; tidy = Tidy; handyman = Handyman; seniorCare = Senior Care; wax = Wax; glam = Glam; braid = Braid; clean = Clean; photography = Photography; other = Other.",
+            "items": {
+              "type": "string",
+              "enum": [
+                "chef",
+                "barber",
+                "tech",
+                "dj",
+                "beauty",
+                "fitness",
+                "tidy",
+                "handyman",
+                "seniorCare",
+                "wax",
+                "glam",
+                "braid",
+                "clean",
+                "photography",
+                "other"
+              ]
+            }
+          },
+          "otherService": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120,
+            "description": "Required when services includes “other”; omit it otherwise."
+          },
+          "baseCity": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "description": "City where the provider is based."
+          },
+          "province": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "description": "Province, state, or region where the provider is based."
+          },
+          "country": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "description": "Country where the provider is based."
+          },
+          "serviceArea": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500,
+            "description": "Plain-language description of where the provider can travel or deliver services."
+          },
+          "yearsExperience": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 80,
+            "description": "Whole number of years of relevant experience."
+          },
+          "credentials": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000,
+            "description": "Optional relevant licences, certifications, or credentials. Do not collect documents."
+          },
+          "insuranceStatus": {
+            "type": "string",
+            "enum": [
+              "insured",
+              "in_progress",
+              "not_insured",
+              "unsure"
+            ],
+            "description": "Applicant's current business or professional insurance status."
+          },
+          "backgroundAndFit": {
+            "type": "string",
+            "minLength": 40,
+            "maxLength": 2000,
+            "description": "A short statement about the applicant's background and fit for high-intent service leads."
+          },
+          "consents": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "applicationReview",
+              "followUpContact",
+              "sharedNetwork",
+              "privacyPolicy"
+            ],
+            "description": "Every consent must be affirmatively obtained from the applicant and must not be inferred.",
+            "properties": {
+              "applicationReview": {
+                "type": "boolean",
+                "const": true,
+                "description": "Applicant agrees that AtYours may review the application."
+              },
+              "followUpContact": {
+                "type": "boolean",
+                "const": true,
+                "description": "Applicant agrees that AtYours may contact them about the application."
+              },
+              "sharedNetwork": {
+                "type": "boolean",
+                "const": true,
+                "description": "Applicant agrees to consideration for the prospective AtYours provider network."
+              },
+              "privacyPolicy": {
+                "type": "boolean",
+                "const": true,
+                "description": "Applicant accepts the Privacy Policy at https://atyours.ca/privacy/"
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "host": "atyours.ca",
+  "source": "webmcp.com/api/directory.json"
+}

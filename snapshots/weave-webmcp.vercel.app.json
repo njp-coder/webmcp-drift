@@ -1,0 +1,104 @@
+{
+  "sponsio": 1,
+  "url": "https://weave-webmcp.vercel.app/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "weave_add_section",
+      "description": "Add a complete, professionally designed section to the current page from WEAVE’s section library. The section lands after the given element, or at the end of the page by default, and every element inside it is immediately editable by the human and by weave_update_element.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "section_type": {
+            "type": "string",
+            "enum": [
+              "header",
+              "hero",
+              "features",
+              "products",
+              "testimonials",
+              "pricing",
+              "faq",
+              "cta",
+              "contact",
+              "footer"
+            ],
+            "description": "Which kind of section to add."
+          },
+          "after_element_id": {
+            "type": "string",
+            "description": "Id of the section to insert after. Defaults to the end of the page."
+          }
+        },
+        "required": [
+          "section_type"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "weave_get_context",
+      "description": "Read the structured state of the website being edited: project and page, current revision, the human’s selection, the ordered list of page sections with their semantic types, a bounded element tree with stable ids, any proposals awaiting human review, and the actions currently available. Re-read this after the human edits the page — the revision number changes whenever the project does, and a proposal built against an old revision will be refused.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "weave_propose_changes",
+      "description": "Propose several related edits as ONE reviewable change, instead of applying them one at a time. Use this for any request that touches more than one element — rewriting a hero, restructuring a page, adding and then populating a section. The proposal is shown to the human, who can edit individual values, skip parts of it, apply it or reject it; accepted operations then commit together as one undoable revision. Nothing changes on the page until the human applies it. The proposal is pinned to the current revision and is refused if the human edits the page first. Each operation is an object with an \"op\" field: {\"op\":\"update_text\",\"target\":ELEMENT_ID,\"value\":TEXT} · {\"op\":\"rename\",\"target\":ELEMENT_ID,\"name\":TEXT} · {\"op\":\"update_style\",\"target\":ELEMENT_ID,\"styles\":{CSS}} · {\"op\":\"update_attrs\",\"target\":ELEMENT_ID,\"attrs\":{HTML_ATTRS}} · {\"op\":\"set_visible\",\"target\":ELEMENT_ID,\"visible\":BOOL} · {\"op\":\"move\",\"target\":ELEMENT_ID,\"index\":N} or {\"op\":\"move\",\"target\":ELEMENT_ID,\"parent\":ELEMENT_ID,\"index\":N} · {\"op\":\"add_section\",\"sectionType\":ONE_OF(header|hero|features|products|testimonials|pricing|faq|cta|contact|footer),\"afterElementId\":ELEMENT_ID} · {\"op\":\"delete\",\"target\":ELEMENT_ID}",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "summary": {
+            "type": "string",
+            "description": "One line stating the intent, shown to the human as the proposal title."
+          },
+          "operations": {
+            "type": "array",
+            "description": "The edits to propose, in the order they should apply.",
+            "items": {
+              "type": "object"
+            }
+          }
+        },
+        "required": [
+          "summary",
+          "operations"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "weave_publish_site",
+      "description": "Ask the human to publish the site. This never publishes on its own: it opens an approval card in the WEAVE Agent panel showing the revision and what changed, and only the human’s explicit approval runs the publish. Poll weave_get_context to see whether the request is still awaiting approval.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "note": {
+            "type": "string",
+            "description": "Optional message shown to the human with the request."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "weave_validate_site",
+      "description": "Check the current page for problems that would make it hard for people or agents to use: images without alternative text, links and buttons with no destination, unnamed or empty sections, sections with no recognisable type, empty text, and missing page metadata. Returns each finding with the element id it refers to, plus an explainable agent-readiness score out of 100.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "weave-webmcp.vercel.app",
+  "source": "webmcp.com/api/directory.json"
+}

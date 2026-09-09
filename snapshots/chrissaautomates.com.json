@@ -1,0 +1,392 @@
+{
+  "sponsio": 1,
+  "url": "https://chrissaautomates.com/agent-utility-index",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "add_research_candidate",
+      "description": "Add a candidate discovered by the agent. Candidates are deduplicated by normalized domain when available, otherwise by normalized name. The agent may add candidates but may not change human-controlled requirements.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 180
+          },
+          "website": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "summary": {
+            "type": "string",
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "approve_firecrawl_escalation",
+      "description": "Sensitive paid action. Only call after the human explicitly approves paid retrieval. The exact confirmation phrase is exchanged for a short-lived server-signed token scoped to the current contract and URLs before Firecrawl can run.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "confirmation": {
+            "type": "string",
+            "enum": [
+              "APPROVE PAID RETRIEVAL"
+            ],
+            "description": "Exact human-confirmed approval phrase."
+          }
+        },
+        "required": [
+          "confirmation"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "build_verified_shortlist",
+      "description": "Use for find, compare, recommend, shortlist, vendor-selection, or product-selection requests where the user has requirements. Discover candidates automatically, verify must-have claims with current web evidence, reject unsupported options, and update the same shortlist visible to the human. URLs are not required from the user.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "request": {
+            "type": "string",
+            "minLength": 12,
+            "maxLength": 1600
+          }
+        },
+        "required": [
+          "request"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "check_action_clearance",
+      "description": "Return ACTION_ALLOWED only when every required claim in the current evidence contract is verified; otherwise return ACTION_BLOCKED with the exact unresolved gates.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "create_evidence_contract",
+      "description": "Create the live Agent Evidence Gate state that defines what a vendor recommendation must prove before the agent can proceed. Updates the same state visible to the human.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "objective": {
+            "type": "string",
+            "minLength": 8
+          },
+          "vendor": {
+            "type": "string",
+            "minLength": 1
+          },
+          "urls": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 4,
+            "items": {
+              "type": "string"
+            }
+          },
+          "budget": {
+            "type": "number",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "objective",
+          "vendor",
+          "urls",
+          "budget"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "create_research_board",
+      "description": "Create the board visible to the human. At creation time the agent may translate the user's request into must-have criteria. After creation, humans control the rules; agents control candidate discovery and evidence.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "objective": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 1200
+          },
+          "criteria": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 10,
+            "items": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 180
+            }
+          }
+        },
+        "required": [
+          "objective",
+          "criteria"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_agent_utility_index_evidence",
+      "description": "Return the public frozen benchmark evidence that powers evidence-acquisition decisions.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_evidence_decision_report",
+      "description": "Return the machine-readable audit report with claim evidence, source URLs, retrieval routes, paid-call counts, action clearance, and frozen benchmark context.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_missing_checks",
+      "description": "Return only the automatic research queue. MISSING and PARTIAL cells are eligible for automatic recheck. FAILED is terminal and excluded unless the human changes the rule or explicitly asks the agent to revisit it.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_research_board",
+      "description": "Read the exact current board state. Pass since_revision when you already saw an earlier revision; the response includes only the recorded changes since then as changes_since, while still returning the current board for safe synchronization.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "since_revision": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_verified_shortlist",
+      "description": "Read the shortlist and requirements currently visible to the human, including qualified, near-match, rejected options and their evidence checks.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "inspect_evidence_gaps",
+      "description": "Read the required claims that still block the current agent action.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "recommend_agent_retrieval_strategy",
+      "description": "Compute an evidence-guided web retrieval strategy from the frozen Agent Utility Index benchmark without calling a provider.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "use_case": {
+            "type": "string",
+            "enum": [
+              "lead_enrichment",
+              "competitive_research",
+              "product_monitoring",
+              "rag_research",
+              "website_audit",
+              "custom_agent"
+            ]
+          },
+          "workload": {
+            "type": "string",
+            "enum": [
+              "saas_pricing",
+              "documentation",
+              "ecommerce_product",
+              "javascript_heavy",
+              "difficult_antibot"
+            ]
+          },
+          "priority": {
+            "type": "string",
+            "enum": [
+              "efficiency",
+              "reliability",
+              "latency"
+            ]
+          }
+        },
+        "required": [
+          "use_case",
+          "workload",
+          "priority"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "recommend_evidence_retrieval",
+      "description": "Apply the current contract plus the frozen Agent Utility Index policy to decide whether the agent should FREE_STOP, request Firecrawl approval, or execute an approved escalation.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "refine_verified_shortlist",
+      "description": "Use after the human changes a requirement, such as adding a budget, removing credit-card requirements, changing a minimum allowance, or narrowing a feature. Re-run discovery and verification and update the same visible shortlist.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "requirement_change": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "requirement_change"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "research_and_verify_web_question",
+      "description": "Use this when the user needs current web research, vendor discovery, product comparison, pricing/plan verification, feature verification, or an evidence-backed shortlist. The user does not need to provide URLs. Discover candidates, prefer first-party evidence for hard vendor claims, and return the supported answer with sources.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 12,
+            "maxLength": 1400
+          },
+          "known_url": {
+            "type": "string",
+            "description": "Optional starting source URL. Do not require it when the user has not provided one."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "run_direct_evidence_check",
+      "description": "Retrieve the contract's first-party URLs with Direct Fetch, test the hard evidence gates, update the visible workspace, and block or clear the action without spending Firecrawl credits.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "update_candidate_evidence",
+      "description": "Write one researched candidate/requirement cell. Supply the board revision research started from and the exact evidence cell revision expected. Unrelated board edits do not invalidate the write; a changed requirement or newer write to this same cell does. VERIFIED requires a source URL. A rejected VERIFIED-without-source attempt is also written to shared activity so the human can see the guardrail fire live.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "candidate_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 180
+          },
+          "requirement_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 180
+          },
+          "expected_revision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "expected_cell_revision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "VERIFIED",
+              "PARTIAL",
+              "MISSING",
+              "FAILED"
+            ]
+          },
+          "claim": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 800
+          },
+          "source_url": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "source_title": {
+            "type": "string",
+            "maxLength": 250
+          },
+          "source_snippet": {
+            "type": "string",
+            "maxLength": 600
+          },
+          "observed_at": {
+            "type": "string",
+            "maxLength": 80
+          }
+        },
+        "required": [
+          "candidate_id",
+          "requirement_id",
+          "expected_revision",
+          "expected_cell_revision",
+          "status",
+          "claim"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "chrissaautomates.com",
+  "source": "webmcp.com/api/directory.json"
+}

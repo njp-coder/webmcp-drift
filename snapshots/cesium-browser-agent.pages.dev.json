@@ -1,0 +1,3426 @@
+{
+  "sponsio": 1,
+  "url": "https://cesium-browser-agent.pages.dev/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "addBillboard",
+      "description": "Add an image billboard at geographic coordinates. Returns { success: boolean, data?: unknown, message?: string, error?: string }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "longitude": {
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180
+          },
+          "latitude": {
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90
+          },
+          "height": {
+            "type": "number",
+            "minimum": -12000,
+            "maximum": 50000000,
+            "default": 0
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "image": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          },
+          "scale": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "maximum": 1000,
+            "default": 1
+          },
+          "color": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "pixelOffset": {
+            "type": "object",
+            "properties": {
+              "x": {
+                "type": "number"
+              },
+              "y": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "x",
+              "y"
+            ],
+            "additionalProperties": false
+          },
+          "horizontalOrigin": {
+            "type": "string",
+            "enum": [
+              "CENTER",
+              "LEFT",
+              "RIGHT"
+            ]
+          },
+          "verticalOrigin": {
+            "type": "string",
+            "enum": [
+              "CENTER",
+              "TOP",
+              "BOTTOM",
+              "BASELINE"
+            ]
+          },
+          "heightReference": {
+            "type": "string",
+            "enum": [
+              "NONE",
+              "CLAMP_TO_GROUND",
+              "RELATIVE_TO_GROUND"
+            ]
+          }
+        },
+        "required": [
+          "longitude",
+          "latitude",
+          "image"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "addBox",
+      "description": "Add a three-dimensional box entity. Returns { success: boolean, data?: unknown, message?: string, error?: string }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "longitude": {
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180
+          },
+          "latitude": {
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90
+          },
+          "height": {
+            "type": "number",
+            "minimum": -12000,
+            "maximum": 50000000,
+            "default": 0
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "dimensions": {
+            "type": "object",
+            "properties": {
+              "width": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              "length": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              "height": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              }
+            },
+            "required": [
+              "width",
+              "length",
+              "height"
+            ],
+            "additionalProperties": false
+          },
+          "material": {
+            "oneOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 64
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "color",
+                      "image",
+                      "checkerboard",
+                      "stripe",
+                      "grid"
+                    ]
+                  },
+                  "color": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 64
+                  },
+                  "image": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4096
+                  },
+                  "evenColor": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 64
+                  },
+                  "oddColor": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 64
+                  },
+                  "orientation": {
+                    "type": "string",
+                    "enum": [
+                      "horizontal",
+                      "vertical"
+                    ]
+                  },
+                  "cellAlpha": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  }
+                },
+                "required": [
+                  "type"
+                ],
+                "additionalProperties": true
+              }
+            ]
+          },
+          "outline": {
+            "type": "boolean",
+            "default": true
+          },
+          "outlineColor": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "fill": {
+            "type": "boolean",
+            "default": true
+          },
+          "orientation": {
+            "type": "object",
+            "properties": {
+              "heading": {
+                "type": "number"
+              },
+              "pitch": {
+                "type": "number"
+              },
+              "roll": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "heading",
+              "pitch",
+              "roll"
+            ],
+            "additionalProperties": false
+          },
+          "heightReference": {
+            "type": "string",
+            "enum": [
+              "NONE",
+              "CLAMP_TO_GROUND",
+              "RELATIVE_TO_GROUND"
+            ]
+          }
+        },
+        "required": [
+          "longitude",
+          "latitude",
+          "dimensions"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "addCorridor",
+      "description": "Add a corridor with a geographic centerline and width. Returns { success: boolean, data?: unknown, message?: string, error?: string }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "positions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "longitude": {
+                  "type": "number",
+                  "minimum": -180,
+                  "maximum": 180
+                },
+                "latitude": {
+                  "type": "number",
+                  "minimum": -90,
+                  "maximum": 90
+                },
+                "height": {
+                  "type": "number",
+                  "minimum": -12000,
+                  "maximum": 50000000
+                }
+              },
+              "required": [
+                "longitude",
+                "latitude"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 2,
+            "maxItems": 10000
+          },
+          "width": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "material": {
+            "oneOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 64
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "color",
+                      "image",
+                      "checkerboard",
+                      "stripe",
+                      "grid"
+                    ]
+                  },
+                  "color": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 64
+                  },
+                  "image": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4096
+                  },
+                  "evenColor": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 64
+                  },
+                  "oddColor": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 64
+                  },
+                  "orientation": {
+                    "type": "string",
+                    "enum": [
+                      "horizontal",
+                      "vertical"
+                    ]
+                  },
+                  "cellAlpha": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  }
+                },
+                "required": [
+                  "type"
+                ],
+                "additionalProperties": true
+              }
+            ]
+          },
+          "outline": {
+            "type": "boolean",
+            "default": false
+          },
+          "outlineColor": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "fill": {
+            "type": "boolean",
+            "default": true
+          },
+          "cornerType": {
+            "type": "string",
+            "enum": [
+              "ROUNDED",
+              "MITERED",
+              "BEVELED"
+            ]
+          },
+          "height": {
+            "type": "number",
+            "minimum": -12000,
+            "maximum": 50000000
+          },
+          "extrudedHeight": {
+            "type": "number",
+            "minimum": -12000,
+            "maximum": 50000000
+          }
+        },
+        "required": [
+          "positions",
+          "width"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "addCylinder",
+      "description": "Add a cylinder or cone entity. Returns { success: boolean, data?: unknown, message?: string, error?: string }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "longitude": {
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180
+          },
+          "latitude": {
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90
+          },
+          "height": {
+            "type": "number",
+            "minimum": -12000,
+            "maximum": 50000000,
+            "default": 0
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "length": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "topRadius": {
+            "type": "number",
+            "minimum": 0
+          },
+          "bottomRadius": {
+            "type": "number",
+            "minimum": 0
+          },
+          "material": {
+            "oneOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 64
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "color",
+                      "image",
+                      "checkerboard",
+                      "stripe",
+                      "grid"
+                    ]
+                  },
+                  "color": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 64
+                  },
+                  "image": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4096
+                  },
+                  "evenColor": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 64
+                  },
+                  "oddColor": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 64
+                  },
+                  "orientation": {
+                    "type": "string",
+                    "enum": [
+                      "horizontal",
+                      "vertical"
+                    ]
+                  },
+                  "cellAlpha": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  }
+                },
+                "required": [
+                  "type"
+                ],
+                "additionalProperties": true
+              }
+            ]
+          },
+          "outline": {
+            "type": "boolean",
+            "default": true
+          },
+          "outlineColor": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "fill": {
+            "type": "boolean",
+            "default": true
+          },
+          "orientation": {
+            "type": "object",
+            "properties": {
+              "heading": {
+                "type": "number"
+              },
+              "pitch": {
+                "type": "number"
+              },
+              "roll": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "heading",
+              "pitch",
+              "roll"
+            ],
+            "additionalProperties": false
+          },
+          "numberOfVerticalLines": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1024,
+            "default": 16
+          },
+          "slices": {
+            "type": "integer",
+            "minimum": 3,
+            "maximum": 4096,
+            "default": 128
+          }
+        },
+        "required": [
+          "longitude",
+          "latitude",
+          "length",
+          "topRadius",
+          "bottomRadius"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "addEllipse",
+      "description": "Add an ellipse or circle entity. Returns { success: boolean, data?: unknown, message?: string, error?: string }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "longitude": {
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180
+          },
+          "latitude": {
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90
+          },
+          "height": {
+            "type": "number",
+            "minimum": -12000,
+            "maximum": 50000000,
+            "default": 0
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "semiMajorAxis": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "semiMinorAxis": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "material": {
+            "oneOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 64
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "color",
+                      "image",
+                      "checkerboard",
+                      "stripe",
+                      "grid"
+                    ]
+                  },
+                  "color": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 64
+                  },
+                  "image": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4096
+                  },
+                  "evenColor": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 64
+                  },
+                  "oddColor": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 64
+                  },
+                  "orientation": {
+                    "type": "string",
+                    "enum": [
+                      "horizontal",
+                      "vertical"
+                    ]
+                  },
+                  "cellAlpha": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  }
+                },
+                "required": [
+                  "type"
+                ],
+                "additionalProperties": true
+              }
+            ]
+          },
+          "outline": {
+            "type": "boolean",
+            "default": false
+          },
+          "outlineColor": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "fill": {
+            "type": "boolean",
+            "default": true
+          },
+          "extrudedHeight": {
+            "type": "number",
+            "minimum": -12000,
+            "maximum": 50000000
+          },
+          "rotation": {
+            "type": "number"
+          },
+          "stRotation": {
+            "type": "number"
+          },
+          "numberOfVerticalLines": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1024,
+            "default": 16
+          }
+        },
+        "required": [
+          "longitude",
+          "latitude",
+          "semiMajorAxis",
+          "semiMinorAxis"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "addGeoJsonLayer",
+      "description": "Add a styled GeoJSON Point, LineString, or Polygon layer. Returns { success, data: { id, name, type, visible, color, dataRefId? }, message? }; use id with highlight.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "data": {
+            "type": "object",
+            "description": "GeoJSON FeatureCollection containing Point, LineString, or Polygon features",
+            "properties": {
+              "type": {
+                "const": "FeatureCollection"
+              },
+              "features": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "const": "Feature"
+                    },
+                    "id": {
+                      "type": [
+                        "string",
+                        "number"
+                      ]
+                    },
+                    "geometry": {
+                      "oneOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "const": "Point"
+                            },
+                            "coordinates": {
+                              "type": "array",
+                              "prefixItems": [
+                                {
+                                  "type": "number",
+                                  "minimum": -180,
+                                  "maximum": 180,
+                                  "description": "Longitude in decimal degrees"
+                                },
+                                {
+                                  "type": "number",
+                                  "minimum": -90,
+                                  "maximum": 90,
+                                  "description": "Latitude in decimal degrees"
+                                },
+                                {
+                                  "type": "number",
+                                  "minimum": -12000,
+                                  "maximum": 50000000,
+                                  "description": "Optional height in meters"
+                                }
+                              ],
+                              "minItems": 2,
+                              "maxItems": 3,
+                              "description": "Coordinate tuple [longitude, latitude, optional height]"
+                            }
+                          },
+                          "required": [
+                            "type",
+                            "coordinates"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "const": "LineString"
+                            },
+                            "coordinates": {
+                              "type": "array",
+                              "items": {
+                                "type": "array",
+                                "prefixItems": [
+                                  {
+                                    "type": "number",
+                                    "minimum": -180,
+                                    "maximum": 180,
+                                    "description": "Longitude in decimal degrees"
+                                  },
+                                  {
+                                    "type": "number",
+                                    "minimum": -90,
+                                    "maximum": 90,
+                                    "description": "Latitude in decimal degrees"
+                                  },
+                                  {
+                                    "type": "number",
+                                    "minimum": -12000,
+                                    "maximum": 50000000,
+                                    "description": "Optional height in meters"
+                                  }
+                                ],
+                                "minItems": 2,
+                                "maxItems": 3,
+                                "description": "Coordinate tuple [longitude, latitude, optional height]"
+                              },
+                              "minItems": 2
+                            }
+                          },
+                          "required": [
+                            "type",
+                            "coordinates"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "const": "Polygon"
+                            },
+                            "coordinates": {
+                              "type": "array",
+                              "items": {
+                                "type": "array",
+                                "items": {
+                                  "type": "array",
+                                  "prefixItems": [
+                                    {
+                                      "type": "number",
+                                      "minimum": -180,
+                                      "maximum": 180,
+                                      "description": "Longitude in decimal degrees"
+                                    },
+                                    {
+                                      "type": "number",
+                                      "minimum": -90,
+                                      "maximum": 90,
+                                      "description": "Latitude in decimal degrees"
+                                    },
+                                    {
+                                      "type": "number",
+                                      "minimum": -12000,
+                                      "maximum": 50000000,
+                                      "description": "Optional height in meters"
+                                    }
+                                  ],
+                                  "minItems": 2,
+                                  "maxItems": 3,
+                                  "description": "Coordinate tuple [longitude, latitude, optional height]"
+                                },
+                                "minItems": 4
+                              },
+                              "minItems": 1
+                            }
+                          },
+                          "required": [
+                            "type",
+                            "coordinates"
+                          ],
+                          "additionalProperties": false
+                        }
+                      ]
+                    },
+                    "properties": {
+                      "type": [
+                        "object",
+                        "null"
+                      ],
+                      "description": "Feature attributes used for labels and thematic styling"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "geometry",
+                    "properties"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "type",
+              "features"
+            ],
+            "additionalProperties": false
+          },
+          "url": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          },
+          "style": {
+            "type": "object",
+            "properties": {
+              "color": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 64,
+                "description": "CSS color such as #3B82F6 or rgba(59,130,246,0.8)"
+              },
+              "opacity": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "pointSize": {
+                "type": "number",
+                "minimum": 1,
+                "maximum": 128
+              },
+              "strokeWidth": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 64
+              },
+              "randomColor": {
+                "type": "boolean"
+              },
+              "gradient": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 64,
+                  "description": "CSS color such as #3B82F6 or rgba(59,130,246,0.8)"
+                },
+                "minItems": 2,
+                "maxItems": 2
+              },
+              "choropleth": {
+                "type": "object",
+                "properties": {
+                  "field": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "breaks": {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    },
+                    "minItems": 1
+                  },
+                  "colors": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 64,
+                      "description": "CSS color such as #3B82F6 or rgba(59,130,246,0.8)"
+                    },
+                    "minItems": 2
+                  }
+                },
+                "required": [
+                  "field",
+                  "breaks",
+                  "colors"
+                ],
+                "additionalProperties": false
+              },
+              "category": {
+                "type": "object",
+                "properties": {
+                  "field": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "colors": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 64,
+                      "description": "CSS color such as #3B82F6 or rgba(59,130,246,0.8)"
+                    },
+                    "minItems": 1
+                  }
+                },
+                "required": [
+                  "field"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "addGeoJsonPrimitive",
+      "description": "Render GeoJSON as Cesium primitives for large browser datasets. Returns { success: boolean, data?: unknown, message?: string, error?: string }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "data": {
+            "type": "object"
+          },
+          "url": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          },
+          "allowPicking": {
+            "type": "boolean"
+          },
+          "show": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "addHeatmap",
+      "description": "Add a heatmap from GeoJSON point features. Returns { success: boolean, data?: unknown, message?: string, error?: string }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "data": {
+            "type": "object"
+          },
+          "radius": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 500,
+            "default": 30
+          },
+          "gradient": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            }
+          },
+          "blur": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "default": 0.85
+          },
+          "maxOpacity": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "default": 0.8
+          },
+          "minOpacity": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "default": 0
+          },
+          "resolution": {
+            "type": "integer",
+            "minimum": 64,
+            "maximum": 4096,
+            "default": 512
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "addLabel",
+      "description": "Add property-based text labels for GeoJSON features. Returns { success, data: { labelCount: integer }, message? }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "description": "GeoJSON FeatureCollection containing Point, LineString, or Polygon features",
+            "properties": {
+              "type": {
+                "const": "FeatureCollection"
+              },
+              "features": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "const": "Feature"
+                    },
+                    "id": {
+                      "type": [
+                        "string",
+                        "number"
+                      ]
+                    },
+                    "geometry": {
+                      "oneOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "const": "Point"
+                            },
+                            "coordinates": {
+                              "type": "array",
+                              "prefixItems": [
+                                {
+                                  "type": "number",
+                                  "minimum": -180,
+                                  "maximum": 180,
+                                  "description": "Longitude in decimal degrees"
+                                },
+                                {
+                                  "type": "number",
+                                  "minimum": -90,
+                                  "maximum": 90,
+                                  "description": "Latitude in decimal degrees"
+                                },
+                                {
+                                  "type": "number",
+                                  "minimum": -12000,
+                                  "maximum": 50000000,
+                                  "description": "Optional height in meters"
+                                }
+                              ],
+                              "minItems": 2,
+                              "maxItems": 3,
+                              "description": "Coordinate tuple [longitude, latitude, optional height]"
+                            }
+                          },
+                          "required": [
+                            "type",
+                            "coordinates"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "const": "LineString"
+                            },
+                            "coordinates": {
+                              "type": "array",
+                              "items": {
+                                "type": "array",
+                                "prefixItems": [
+                                  {
+                                    "type": "number",
+                                    "minimum": -180,
+                                    "maximum": 180,
+                                    "description": "Longitude in decimal degrees"
+                                  },
+                                  {
+                                    "type": "number",
+                                    "minimum": -90,
+                                    "maximum": 90,
+                                    "description": "Latitude in decimal degrees"
+                                  },
+                                  {
+                                    "type": "number",
+                                    "minimum": -12000,
+                                    "maximum": 50000000,
+                                    "description": "Optional height in meters"
+                                  }
+                                ],
+                                "minItems": 2,
+                                "maxItems": 3,
+                                "description": "Coordinate tuple [longitude, latitude, optional height]"
+                              },
+                              "minItems": 2
+                            }
+                          },
+                          "required": [
+                            "type",
+                            "coordinates"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "const": "Polygon"
+                            },
+                            "coordinates": {
+                              "type": "array",
+                              "items": {
+                                "type": "array",
+                                "items": {
+                                  "type": "array",
+                                  "prefixItems": [
+                                    {
+                                      "type": "number",
+                                      "minimum": -180,
+                                      "maximum": 180,
+                                      "description": "Longitude in decimal degrees"
+                                    },
+                                    {
+                                      "type": "number",
+                                      "minimum": -90,
+                                      "maximum": 90,
+                                      "description": "Latitude in decimal degrees"
+                                    },
+                                    {
+                                      "type": "number",
+                                      "minimum": -12000,
+                                      "maximum": 50000000,
+                                      "description": "Optional height in meters"
+                                    }
+                                  ],
+                                  "minItems": 2,
+                                  "maxItems": 3,
+                                  "description": "Coordinate tuple [longitude, latitude, optional height]"
+                                },
+                                "minItems": 4
+                              },
+                              "minItems": 1
+                            }
+                          },
+                          "required": [
+                            "type",
+                            "coordinates"
+                          ],
+                          "additionalProperties": false
+                        }
+                      ]
+                    },
+                    "properties": {
+                      "type": [
+                        "object",
+                        "null"
+                      ],
+                      "description": "Feature attributes used for labels and thematic styling"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "geometry",
+                    "properties"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "type",
+              "features"
+            ],
+            "additionalProperties": false
+          },
+          "field": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "style": {
+            "type": "object",
+            "properties": {
+              "font": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 100
+              },
+              "fillColor": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 64,
+                "description": "CSS color such as #3B82F6 or rgba(59,130,246,0.8)"
+              },
+              "outlineColor": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 64,
+                "description": "CSS color such as #3B82F6 or rgba(59,130,246,0.8)"
+              },
+              "outlineWidth": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 10
+              },
+              "backgroundColor": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 64,
+                "description": "CSS color such as #3B82F6 or rgba(59,130,246,0.8)"
+              },
+              "showBackground": {
+                "type": "boolean"
+              },
+              "pixelOffset": {
+                "type": "array",
+                "items": {
+                  "type": "number",
+                  "minimum": -1000,
+                  "maximum": 1000
+                },
+                "minItems": 2,
+                "maxItems": 2
+              },
+              "scale": {
+                "type": "number",
+                "exclusiveMinimum": 0,
+                "maximum": 10
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "data",
+          "field"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "addMarker",
+      "description": "Add a point marker at geographic coordinates. Returns { success, data: { entityId }, message? }; keep entityId for removeEntity.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "longitude": {
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180,
+            "description": "Longitude in decimal degrees"
+          },
+          "latitude": {
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90,
+            "description": "Latitude in decimal degrees"
+          },
+          "label": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "color": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64,
+            "description": "CSS color such as #3B82F6 or rgba(59,130,246,0.8)",
+            "default": "#3B82F6"
+          },
+          "size": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 128,
+            "default": 12
+          },
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          }
+        },
+        "required": [
+          "longitude",
+          "latitude"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "addModel",
+      "description": "Add a glTF or GLB model at geographic coordinates. Returns { success: boolean, data?: unknown, message?: string, error?: string }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "longitude": {
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180
+          },
+          "latitude": {
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90
+          },
+          "height": {
+            "type": "number",
+            "minimum": -12000,
+            "maximum": 50000000,
+            "default": 0
+          },
+          "url": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          },
+          "scale": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "maximum": 100000,
+            "default": 1
+          },
+          "heading": {
+            "type": "number",
+            "default": 0
+          },
+          "pitch": {
+            "type": "number",
+            "default": 0
+          },
+          "roll": {
+            "type": "number",
+            "default": 0
+          },
+          "label": {
+            "type": "string",
+            "maxLength": 200
+          }
+        },
+        "required": [
+          "longitude",
+          "latitude",
+          "url"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "addPolygon",
+      "description": "Draw a polygon area from geographic coordinate tuples. Returns { success, data: { entityId }, message? }; keep entityId for removeEntity.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "coordinates": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "prefixItems": [
+                {
+                  "type": "number",
+                  "minimum": -180,
+                  "maximum": 180,
+                  "description": "Longitude in decimal degrees"
+                },
+                {
+                  "type": "number",
+                  "minimum": -90,
+                  "maximum": 90,
+                  "description": "Latitude in decimal degrees"
+                },
+                {
+                  "type": "number",
+                  "minimum": -12000,
+                  "maximum": 50000000,
+                  "description": "Optional height in meters"
+                }
+              ],
+              "minItems": 2,
+              "maxItems": 3,
+              "description": "Coordinate tuple [longitude, latitude, optional height]"
+            },
+            "minItems": 3,
+            "maxItems": 10000
+          },
+          "color": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64,
+            "description": "CSS color such as #3B82F6 or rgba(59,130,246,0.8)",
+            "default": "#3B82F6"
+          },
+          "outlineColor": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64,
+            "description": "CSS color such as #3B82F6 or rgba(59,130,246,0.8)",
+            "default": "#FFFFFF"
+          },
+          "opacity": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "default": 0.6
+          },
+          "extrudedHeight": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100000
+          },
+          "clampToGround": {
+            "type": "boolean",
+            "default": true
+          },
+          "label": {
+            "type": "string",
+            "maxLength": 200
+          }
+        },
+        "required": [
+          "coordinates"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "addPolyline",
+      "description": "Draw a path or route from geographic coordinate tuples. Returns { success, data: { entityId }, message? }; keep entityId for removeEntity.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "coordinates": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "prefixItems": [
+                {
+                  "type": "number",
+                  "minimum": -180,
+                  "maximum": 180,
+                  "description": "Longitude in decimal degrees"
+                },
+                {
+                  "type": "number",
+                  "minimum": -90,
+                  "maximum": 90,
+                  "description": "Latitude in decimal degrees"
+                },
+                {
+                  "type": "number",
+                  "minimum": -12000,
+                  "maximum": 50000000,
+                  "description": "Optional height in meters"
+                }
+              ],
+              "minItems": 2,
+              "maxItems": 3,
+              "description": "Coordinate tuple [longitude, latitude, optional height]"
+            },
+            "minItems": 2,
+            "maxItems": 10000
+          },
+          "color": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64,
+            "description": "CSS color such as #3B82F6 or rgba(59,130,246,0.8)",
+            "default": "#3B82F6"
+          },
+          "width": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 64,
+            "default": 3
+          },
+          "clampToGround": {
+            "type": "boolean",
+            "default": true
+          },
+          "label": {
+            "type": "string",
+            "maxLength": 200
+          }
+        },
+        "required": [
+          "coordinates"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "addRectangle",
+      "description": "Add a geographic rectangle entity. Returns { success: boolean, data?: unknown, message?: string, error?: string }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "west": {
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180
+          },
+          "south": {
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90
+          },
+          "east": {
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180
+          },
+          "north": {
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90
+          },
+          "material": {
+            "oneOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 64
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "color",
+                      "image",
+                      "checkerboard",
+                      "stripe",
+                      "grid"
+                    ]
+                  },
+                  "color": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 64
+                  },
+                  "image": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4096
+                  },
+                  "evenColor": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 64
+                  },
+                  "oddColor": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 64
+                  },
+                  "orientation": {
+                    "type": "string",
+                    "enum": [
+                      "horizontal",
+                      "vertical"
+                    ]
+                  },
+                  "cellAlpha": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  }
+                },
+                "required": [
+                  "type"
+                ],
+                "additionalProperties": true
+              }
+            ]
+          },
+          "outline": {
+            "type": "boolean",
+            "default": false
+          },
+          "outlineColor": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "fill": {
+            "type": "boolean",
+            "default": true
+          },
+          "height": {
+            "type": "number",
+            "minimum": -12000,
+            "maximum": 50000000
+          },
+          "extrudedHeight": {
+            "type": "number",
+            "minimum": -12000,
+            "maximum": 50000000
+          },
+          "rotation": {
+            "type": "number"
+          },
+          "stRotation": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "west",
+          "south",
+          "east",
+          "north"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "addWall",
+      "description": "Add a wall along geographic positions. Returns { success: boolean, data?: unknown, message?: string, error?: string }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "positions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "longitude": {
+                  "type": "number",
+                  "minimum": -180,
+                  "maximum": 180
+                },
+                "latitude": {
+                  "type": "number",
+                  "minimum": -90,
+                  "maximum": 90
+                },
+                "height": {
+                  "type": "number",
+                  "minimum": -12000,
+                  "maximum": 50000000
+                }
+              },
+              "required": [
+                "longitude",
+                "latitude"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 2,
+            "maxItems": 10000
+          },
+          "minimumHeights": {
+            "type": "array",
+            "items": {
+              "type": "number",
+              "minimum": -12000,
+              "maximum": 50000000
+            },
+            "maxItems": 10000
+          },
+          "maximumHeights": {
+            "type": "array",
+            "items": {
+              "type": "number",
+              "minimum": -12000,
+              "maximum": 50000000
+            },
+            "maxItems": 10000
+          },
+          "material": {
+            "oneOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 64
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "color",
+                      "image",
+                      "checkerboard",
+                      "stripe",
+                      "grid"
+                    ]
+                  },
+                  "color": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 64
+                  },
+                  "image": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4096
+                  },
+                  "evenColor": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 64
+                  },
+                  "oddColor": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 64
+                  },
+                  "orientation": {
+                    "type": "string",
+                    "enum": [
+                      "horizontal",
+                      "vertical"
+                    ]
+                  },
+                  "cellAlpha": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  }
+                },
+                "required": [
+                  "type"
+                ],
+                "additionalProperties": true
+              }
+            ]
+          },
+          "outline": {
+            "type": "boolean",
+            "default": false
+          },
+          "outlineColor": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "fill": {
+            "type": "boolean",
+            "default": true
+          }
+        },
+        "required": [
+          "positions"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "batchAddEntities",
+      "description": "Add multiple supported entities in one page operation. Returns { success: boolean, data?: unknown, message?: string, error?: string }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "entities": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 1000,
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "marker",
+                    "polyline",
+                    "polygon",
+                    "model",
+                    "billboard",
+                    "box",
+                    "cylinder",
+                    "ellipse",
+                    "rectangle",
+                    "wall",
+                    "corridor"
+                  ]
+                }
+              },
+              "required": [
+                "type"
+              ],
+              "additionalProperties": true
+            }
+          }
+        },
+        "required": [
+          "entities"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "clearAll",
+      "description": "Clear all layers, entities, animations, and trajectories from the scene. Returns { success, data: { removedLayers, removedEntities }, message? }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "controlAnimation",
+      "description": "Play or pause the Cesium clock animation. Returns { success: boolean, data?: unknown, message?: string, error?: string }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "play",
+              "pause"
+            ]
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "controlClock",
+      "description": "Configure Cesium simulation time, current time, speed, or range. Returns { success: boolean, data?: unknown, message?: string, error?: string }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "configure",
+              "setTime",
+              "setMultiplier"
+            ]
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "stopTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "currentTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "time": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "multiplier": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100000
+          },
+          "shouldAnimate": {
+            "type": "boolean"
+          },
+          "clockRange": {
+            "type": "string",
+            "enum": [
+              "UNBOUNDED",
+              "CLAMPED",
+              "LOOP_STOP"
+            ]
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "createAnimation",
+      "description": "Create a time-dynamic entity moving through ISO-timestamped waypoints. Returns { success: boolean, data?: unknown, message?: string, error?: string }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "waypoints": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 10000,
+            "items": {
+              "type": "object",
+              "properties": {
+                "longitude": {
+                  "type": "number",
+                  "minimum": -180,
+                  "maximum": 180
+                },
+                "latitude": {
+                  "type": "number",
+                  "minimum": -90,
+                  "maximum": 90
+                },
+                "height": {
+                  "type": "number",
+                  "minimum": -12000,
+                  "maximum": 50000000,
+                  "default": 0
+                },
+                "time": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              },
+              "required": [
+                "longitude",
+                "latitude",
+                "time"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "modelUri": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          },
+          "showPath": {
+            "type": "boolean",
+            "default": true
+          },
+          "pathWidth": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 64,
+            "default": 2
+          },
+          "pathColor": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64,
+            "default": "#00FF00"
+          },
+          "pathLeadTime": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 86400,
+            "default": 0
+          },
+          "pathTrailTime": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1000000000000,
+            "default": 10000000000
+          },
+          "multiplier": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100000,
+            "default": 1
+          },
+          "shouldAnimate": {
+            "type": "boolean",
+            "default": true
+          }
+        },
+        "required": [
+          "waypoints"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "exportScene",
+      "description": "Export the current view, layer, and entity state as JSON. Returns { success: boolean, data?: unknown, message?: string, error?: string }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "flyTo",
+      "description": "Animate the camera to a geographic location. Use for visible navigation requested by the user. Returns { success: boolean, message?: string, error?: string }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "longitude": {
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180,
+            "description": "Longitude in decimal degrees"
+          },
+          "latitude": {
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90,
+            "description": "Latitude in decimal degrees"
+          },
+          "height": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 50000000,
+            "description": "Height above the ellipsoid in meters",
+            "default": 50000
+          },
+          "heading": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 360,
+            "default": 0
+          },
+          "pitch": {
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90,
+            "default": -45
+          },
+          "duration": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 60,
+            "default": 2
+          }
+        },
+        "required": [
+          "longitude",
+          "latitude"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "geocode",
+      "description": "Convert an address or place name to geographic coordinates using OSM Nominatim. Returns { success, longitude?, latitude?, displayName?, boundingBox?, message? }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 300
+          },
+          "countryCode": {
+            "type": "string",
+            "pattern": "^[A-Za-z]{2}$"
+          }
+        },
+        "required": [
+          "address"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "getEntityProperties",
+      "description": "Read the properties and graphics metadata for one entity. Returns { success: boolean, data?: unknown, message?: string, error?: string }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "entityId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          }
+        },
+        "required": [
+          "entityId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "getLayerSchema",
+      "description": "Inspect fields, entity counts, and metadata for a layer. Returns { success: boolean, data?: unknown, message?: string, error?: string }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "layerId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          }
+        },
+        "required": [
+          "layerId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "getView",
+      "description": "Get the current camera position and orientation. Returns { success, data: { longitude, latitude, height, heading, pitch, roll }, message? }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "highlight",
+      "description": "Highlight one feature or every feature in a GeoJSON layer. Returns { success: boolean, message?: string, error?: string }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "layerId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "featureIndex": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "color": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64,
+            "description": "CSS color such as #3B82F6 or rgba(59,130,246,0.8)",
+            "default": "#FFFF00"
+          },
+          "clear": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "listAnimations",
+      "description": "List animated entities in the current page. Returns { success: boolean, data?: unknown, message?: string, error?: string }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "listLayers",
+      "description": "List all layers currently managed by the page. Returns { success: boolean, data?: unknown, message?: string, error?: string }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "listViewpoints",
+      "description": "List camera viewpoints saved in the current page. Returns { success: boolean, data?: unknown, message?: string, error?: string }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "load3dGaussianSplat",
+      "description": "Load a 3D Gaussian Splat tileset from a URL. Returns { success: boolean, data?: unknown, message?: string, error?: string }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "url": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          },
+          "maximumScreenSpaceError": {
+            "type": "number",
+            "minimum": 0,
+            "default": 16
+          },
+          "show": {
+            "type": "boolean",
+            "default": true
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "load3dTiles",
+      "description": "Load a 3D Tiles tileset from a URL or Cesium ion asset. Returns { success: boolean, data?: unknown, message?: string, error?: string }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "url": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          },
+          "ionAssetId": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "maximumScreenSpaceError": {
+            "type": "number",
+            "minimum": 0,
+            "default": 16
+          },
+          "heightOffset": {
+            "type": "number",
+            "default": 0
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "loadCzml",
+      "description": "Load CZML data from inline packets or a URL. Returns { success: boolean, data?: unknown, message?: string, error?: string }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "data": {
+            "type": "array",
+            "maxItems": 10000
+          },
+          "url": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          },
+          "sourceUri": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          },
+          "clampToGround": {
+            "type": "boolean"
+          },
+          "flyTo": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "loadImageryService",
+      "description": "Load WMS, WMTS, XYZ, ArcGIS MapServer, or ion imagery. Returns { success: boolean, data?: unknown, message?: string, error?: string }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "url": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          },
+          "ionAssetId": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "serviceType": {
+            "type": "string",
+            "enum": [
+              "wms",
+              "wmts",
+              "xyz",
+              "arcgis_mapserver",
+              "ion"
+            ]
+          },
+          "layerName": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "opacity": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "default": 1
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "loadKml",
+      "description": "Load KML or KMZ data from inline text or a URL. Returns { success: boolean, data?: unknown, message?: string, error?: string }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "url": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          },
+          "data": {
+            "type": "string",
+            "maxLength": 10000000
+          },
+          "sourceUri": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          },
+          "clampToGround": {
+            "type": "boolean"
+          },
+          "flyTo": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "loadTerrain",
+      "description": "Switch the Cesium terrain provider. Returns { success: boolean, data?: unknown, message?: string, error?: string }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "provider": {
+            "type": "string",
+            "enum": [
+              "cesiumion",
+              "arcgis",
+              "flat"
+            ]
+          },
+          "url": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          },
+          "cesiumIonAssetId": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "provider"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "loadViewpoint",
+      "description": "Restore a previously saved page-local camera state. Returns { success: boolean, data?: unknown, message?: string, error?: string }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "duration": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 60,
+            "default": 2
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "lookAtTransform",
+      "description": "Aim the camera at a geographic target with heading, pitch, and range. Returns { success: boolean, data?: unknown, message?: string, error?: string }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "longitude": {
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180
+          },
+          "latitude": {
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90
+          },
+          "height": {
+            "type": "number",
+            "minimum": -12000,
+            "maximum": 50000000,
+            "default": 0
+          },
+          "heading": {
+            "type": "number",
+            "default": 0
+          },
+          "pitch": {
+            "type": "number",
+            "default": -45
+          },
+          "range": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 50000000,
+            "default": 1000
+          }
+        },
+        "required": [
+          "longitude",
+          "latitude"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "measure",
+      "description": "Measure distance or area between geographic coordinate tuples. Returns { success, data: { mode, value, unit, segments?, id? }, message? }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "distance",
+              "area"
+            ]
+          },
+          "positions": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "prefixItems": [
+                {
+                  "type": "number",
+                  "minimum": -180,
+                  "maximum": 180,
+                  "description": "Longitude in decimal degrees"
+                },
+                {
+                  "type": "number",
+                  "minimum": -90,
+                  "maximum": 90,
+                  "description": "Latitude in decimal degrees"
+                },
+                {
+                  "type": "number",
+                  "minimum": -12000,
+                  "maximum": 50000000,
+                  "description": "Optional height in meters"
+                }
+              ],
+              "minItems": 2,
+              "maxItems": 3,
+              "description": "Coordinate tuple [longitude, latitude, optional height]"
+            },
+            "minItems": 2,
+            "maxItems": 10000
+          },
+          "showOnMap": {
+            "type": "boolean",
+            "default": true
+          },
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          }
+        },
+        "required": [
+          "mode",
+          "positions"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "playTrajectory",
+      "description": "Play a moving entity along geographic coordinate tuples. Returns { success: boolean, data?: unknown, message?: string, error?: string }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "coordinates": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "prefixItems": [
+                {
+                  "type": "number",
+                  "minimum": -180,
+                  "maximum": 180
+                },
+                {
+                  "type": "number",
+                  "minimum": -90,
+                  "maximum": 90
+                },
+                {
+                  "type": "number",
+                  "minimum": -12000,
+                  "maximum": 50000000
+                }
+              ],
+              "minItems": 2,
+              "maxItems": 3
+            },
+            "minItems": 2,
+            "maxItems": 10000
+          },
+          "durationSeconds": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 86400,
+            "default": 10
+          },
+          "trailSeconds": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 86400,
+            "default": 2
+          },
+          "label": {
+            "type": "string",
+            "maxLength": 200
+          }
+        },
+        "required": [
+          "coordinates"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "queryEntities",
+      "description": "Query page entities by name, type, or geographic extent. Returns { success: boolean, data?: unknown, message?: string, error?: string }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "type": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "bbox": {
+            "type": "array",
+            "prefixItems": [
+              {
+                "type": "number",
+                "minimum": -180,
+                "maximum": 180
+              },
+              {
+                "type": "number",
+                "minimum": -90,
+                "maximum": 90
+              },
+              {
+                "type": "number",
+                "minimum": -180,
+                "maximum": 180
+              },
+              {
+                "type": "number",
+                "minimum": -90,
+                "maximum": 90
+              }
+            ],
+            "minItems": 4,
+            "maxItems": 4
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "removeAnimation",
+      "description": "Remove one animated entity. Returns { success: boolean, data?: unknown, message?: string, error?: string }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "entityId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          }
+        },
+        "required": [
+          "entityId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "removeEntity",
+      "description": "Remove one entity created by an entity tool. Returns { success, message? } or { success: false, error } when entityId is not found.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "entityId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          }
+        },
+        "required": [
+          "entityId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "removeLayer",
+      "description": "Remove a managed layer from the page. Returns { success: boolean, data?: unknown, message?: string, error?: string }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "saveViewpoint",
+      "description": "Save the current camera state under a page-local name. Returns { success: boolean, data?: unknown, message?: string, error?: string }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "screenshot",
+      "description": "Capture the current Cesium map view as a PNG image. Returns { success, data: { dataUrl, width, height }, message? }; dataUrl is a base64 PNG.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "setBasemap",
+      "description": "Switch the visible basemap style. Returns { success, data: { basemap }, message? }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "basemap": {
+            "type": "string",
+            "enum": [
+              "dark",
+              "satellite",
+              "standard",
+              "osm",
+              "arcgis",
+              "light",
+              "tianditu_vec",
+              "tianditu_img",
+              "amap",
+              "amap_satellite"
+            ],
+            "default": "dark"
+          },
+          "token": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          },
+          "url": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "setCameraOptions",
+      "description": "Configure Cesium camera input and zoom constraints. Returns { success: boolean, data?: unknown, message?: string, error?: string }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "enableRotate": {
+            "type": "boolean"
+          },
+          "enableTranslate": {
+            "type": "boolean"
+          },
+          "enableZoom": {
+            "type": "boolean"
+          },
+          "enableTilt": {
+            "type": "boolean"
+          },
+          "enableLook": {
+            "type": "boolean"
+          },
+          "enableInputs": {
+            "type": "boolean"
+          },
+          "minimumZoomDistance": {
+            "type": "number",
+            "minimum": 0
+          },
+          "maximumZoomDistance": {
+            "type": "number",
+            "minimum": 0
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "setEdgeDisplayMode",
+      "description": "Set surface and edge rendering mode for one or all 3D Tiles layers. Returns { success: boolean, data?: unknown, message?: string, error?: string }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tilesetId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "surfaces_only",
+              "surfaces_and_edges",
+              "edges_only"
+            ]
+          }
+        },
+        "required": [
+          "mode"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "setGlobeLighting",
+      "description": "Configure globe lighting and atmosphere lighting. Returns { success: boolean, data?: unknown, message?: string, error?: string }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "enableLighting": {
+            "type": "boolean"
+          },
+          "dynamicAtmosphereLighting": {
+            "type": "boolean"
+          },
+          "dynamicAtmosphereLightingFromSun": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "setLayerVisibility",
+      "description": "Show or hide a managed layer. Returns { success: boolean, data?: unknown, message?: string, error?: string }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "visible": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "visible"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "setPostProcess",
+      "description": "Configure bloom, ambient occlusion, and FXAA post-processing. Returns { success: boolean, data?: unknown, message?: string, error?: string }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "bloom": {
+            "type": "boolean"
+          },
+          "bloomContrast": {
+            "type": "number"
+          },
+          "bloomBrightness": {
+            "type": "number"
+          },
+          "bloomDelta": {
+            "type": "number"
+          },
+          "bloomSigma": {
+            "type": "number"
+          },
+          "bloomStepSize": {
+            "type": "number"
+          },
+          "bloomGlowOnly": {
+            "type": "boolean"
+          },
+          "ambientOcclusion": {
+            "type": "boolean"
+          },
+          "aoIntensity": {
+            "type": "number"
+          },
+          "aoBias": {
+            "type": "number"
+          },
+          "aoLengthCap": {
+            "type": "number"
+          },
+          "aoStepSize": {
+            "type": "number"
+          },
+          "fxaa": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "setSceneOptions",
+      "description": "Configure fog, atmosphere, shadows, celestial bodies, terrain depth testing, and background. Returns { success: boolean, data?: unknown, message?: string, error?: string }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "fogEnabled": {
+            "type": "boolean"
+          },
+          "fogDensity": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "fogMinimumBrightness": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "skyAtmosphereShow": {
+            "type": "boolean"
+          },
+          "skyAtmosphereHueShift": {
+            "type": "number"
+          },
+          "skyAtmosphereSaturationShift": {
+            "type": "number"
+          },
+          "skyAtmosphereBrightnessShift": {
+            "type": "number"
+          },
+          "groundAtmosphereShow": {
+            "type": "boolean"
+          },
+          "shadowsEnabled": {
+            "type": "boolean"
+          },
+          "shadowsSoftShadows": {
+            "type": "boolean"
+          },
+          "shadowsDarkness": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "sunShow": {
+            "type": "boolean"
+          },
+          "sunGlowFactor": {
+            "type": "number",
+            "minimum": 0
+          },
+          "moonShow": {
+            "type": "boolean"
+          },
+          "depthTestAgainstTerrain": {
+            "type": "boolean"
+          },
+          "backgroundColor": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "setView",
+      "description": "Set the camera position immediately without animation. Use for deterministic setup or instant view changes. Returns { success: boolean, message?: string, error?: string }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "longitude": {
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180,
+            "description": "Longitude in decimal degrees"
+          },
+          "latitude": {
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90,
+            "description": "Latitude in decimal degrees"
+          },
+          "height": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 50000000,
+            "description": "Height above the ellipsoid in meters",
+            "default": 50000
+          },
+          "heading": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 360,
+            "default": 0
+          },
+          "pitch": {
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90,
+            "default": -45
+          },
+          "roll": {
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180
+          }
+        },
+        "required": [
+          "longitude",
+          "latitude"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "startOrbit",
+      "description": "Start continuous camera orbit around the current target. Returns { success: boolean, data?: unknown, message?: string, error?: string }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "speed": {
+            "type": "number",
+            "minimum": 0.001,
+            "maximum": 360,
+            "default": 0.005
+          },
+          "clockwise": {
+            "type": "boolean",
+            "default": true
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "stopOrbit",
+      "description": "Stop a camera orbit started by startOrbit. Returns { success: boolean, data?: unknown, message?: string, error?: string }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "trackEntity",
+      "description": "Track an entity with the Cesium camera, or stop tracking when entityId is omitted. Returns { success: boolean, data?: unknown, message?: string, error?: string }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "entityId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "heading": {
+            "type": "number",
+            "default": 0
+          },
+          "pitch": {
+            "type": "number",
+            "default": -30
+          },
+          "range": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 50000000,
+            "default": 500
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "updateAnimationPath",
+      "description": "Update the path appearance of an animated entity. Returns { success: boolean, data?: unknown, message?: string, error?: string }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "entityId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "width": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 64
+          },
+          "color": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "leadTime": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 86400
+          },
+          "trailTime": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 86400
+          },
+          "show": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "entityId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "updateEntity",
+      "description": "Update the position, appearance, label, or visibility of an entity. Returns { success: boolean, data?: unknown, message?: string, error?: string }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "entityId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "position": {
+            "type": "object",
+            "properties": {
+              "longitude": {
+                "type": "number",
+                "minimum": -180,
+                "maximum": 180
+              },
+              "latitude": {
+                "type": "number",
+                "minimum": -90,
+                "maximum": 90
+              },
+              "height": {
+                "type": "number",
+                "minimum": -12000,
+                "maximum": 50000000
+              }
+            },
+            "required": [
+              "longitude",
+              "latitude"
+            ],
+            "additionalProperties": false
+          },
+          "label": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "color": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "scale": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100000
+          },
+          "show": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "entityId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "updateLayerStyle",
+      "description": "Update vector, imagery, primitive, or 3D Tiles styling for a layer. Returns { success: boolean, data?: unknown, message?: string, error?: string }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "layerId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "labelStyle": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "layerStyle": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "imageryStyle": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "primitiveStyle": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "tileStyle": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        },
+        "required": [
+          "layerId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "zoomToExtent",
+      "description": "Animate the camera to a west/south/east/north bounding box. Returns { success: boolean, data?: unknown, message?: string, error?: string }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "bbox": {
+            "type": "array",
+            "prefixItems": [
+              {
+                "type": "number",
+                "minimum": -180,
+                "maximum": 180
+              },
+              {
+                "type": "number",
+                "minimum": -90,
+                "maximum": 90
+              },
+              {
+                "type": "number",
+                "minimum": -180,
+                "maximum": 180
+              },
+              {
+                "type": "number",
+                "minimum": -90,
+                "maximum": 90
+              }
+            ],
+            "minItems": 4,
+            "maxItems": 4
+          },
+          "duration": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 60,
+            "default": 1.5
+          }
+        },
+        "required": [
+          "bbox"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "cesium-browser-agent.pages.dev",
+  "source": "webmcp.com/api/directory.json"
+}

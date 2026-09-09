@@ -1,0 +1,245 @@
+{
+  "sponsio": 1,
+  "url": "https://scvd.store/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "check_before_you_pay",
+      "description": "Probes one x402 door unpaid and replays the stock @x402/core client selection over the accepts it returned, under the caller's own profile. Returns which accept a stock client would sign — network, asset, amount, signing window — or that it would refuse locally before signing, with the stage and the setting that decided it. Free; nothing is signed and nothing is paid.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "The https x402 door you are about to pay.",
+            "maxLength": 2048
+          },
+          "client_profile": {
+            "type": "object",
+            "description": "The caller's own x402 client settings. Absent, the replay runs against a client configured with nothing, the case that loses money quietly.",
+            "properties": {
+              "max_amount_per_payment_usd": {
+                "type": [
+                  "number",
+                  "boolean"
+                ],
+                "description": "Your spendControls.maxAmountPerPayment, in dollars; false if you set it to false."
+              },
+              "spend_controls_disabled": {
+                "type": "boolean",
+                "description": "True if you pass spendControls: false — the one escape from the whole filter."
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "additionalProperties": false,
+        "examples": [
+          {
+            "url": "https://example.com/api/paid-answer"
+          },
+          {
+            "url": "https://example.com/api/paid-answer",
+            "client_profile": {
+              "max_amount_per_payment_usd": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "check_conformance",
+      "description": "Verifies any issuer's signed x402 offer or receipt (a compact JWS): structure, the signature against the issuer's did:web key, and liveness. Returns a verdict with every check named. With public_key_hex supplied the check runs fully offline. Free; the method is MIT-licensed and identical to the published verifier.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "artifact": {
+            "type": "string",
+            "description": "The signed offer or receipt as a compact JWS: header.payload.signature, base64url.",
+            "maxLength": 9000
+          },
+          "kind": {
+            "type": "string",
+            "description": "Optional: offer | receipt. Detected from the artifact when absent."
+          },
+          "public_key_hex": {
+            "type": "string",
+            "description": "Optional ed25519 public key, hex. Supplying it makes the check fully offline.",
+            "maxLength": 64
+          }
+        },
+        "required": [
+          "artifact"
+        ],
+        "additionalProperties": false,
+        "examples": [
+          {
+            "artifact": "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJkaWQ6d2ViOmV4YW1wbGUuY29tIn0.c2lnbmF0dXJl"
+          }
+        ]
+      }
+    },
+    {
+      "name": "check_order",
+      "description": "Returns the current state of a human-queue order by its order_id: status (queued or completed), the promised window in hours, and the deliverable once completed. The same record GET /api/order/{order_id} serves. Free; past its window the order carries a window_breached block stating what is owed.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "order_id": {
+            "type": "string",
+            "description": "The order_id from a human-queue purchase result.",
+            "maxLength": 60
+          }
+        },
+        "required": [
+          "order_id"
+        ],
+        "additionalProperties": false,
+        "examples": [
+          {
+            "order_id": "ord_example"
+          }
+        ]
+      }
+    },
+    {
+      "name": "find_in_catalog",
+      "description": "Searches this store's shelf and returns compact rows: id, name, price in USDC, instant or human-fulfilled, and what each item reads. Filters by a price ceiling, a text match, or both; an item_id returns that one item with its description. Free and read-only. Nothing is ranked or recommended.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string",
+            "description": "Words to match against an item's id, name, subtitle and description.",
+            "maxLength": 120
+          },
+          "max_price_usdc": {
+            "type": "number",
+            "minimum": 0,
+            "description": "A ceiling in USDC. Items at or below it match."
+          },
+          "item_id": {
+            "type": "string",
+            "description": "One item's id. The answer carries that item alone, in full.",
+            "maxLength": 60
+          }
+        },
+        "additionalProperties": false,
+        "examples": [
+          {
+            "max_price_usdc": 0.01
+          },
+          {
+            "q": "watch"
+          },
+          {
+            "item_id": "spot_check"
+          }
+        ]
+      }
+    },
+    {
+      "name": "look_at_door",
+      "description": "Returns what the store holds about one x402 door: one unpaid probe now, folded with the signed weekly record of that host — rounds probed of rounds since first seen, the passport tier with its fraction, the last probed round's failed checks, and whether the door answers now the way the last signed round saw it. Not a score or a rank; counts carry their denominators. Free.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "The https x402 door you are asking about.",
+            "maxLength": 2048
+          },
+          "since": {
+            "type": "string",
+            "description": "Optional. A signed week, e.g. 2026-W34, to reproduce against that week's row.",
+            "maxLength": 8
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "additionalProperties": false,
+        "examples": [
+          {
+            "url": "https://example.com/api/paid-answer"
+          },
+          {
+            "url": "https://example.com/api/paid-answer",
+            "since": "2026-W34"
+          }
+        ]
+      }
+    },
+    {
+      "name": "preflight_endpoint",
+      "description": "Probes one x402 endpoint unpaid and returns whether it serves a well-formed x402 v2 payment challenge right now: the verdict, the level reached on the L0–L6 evidence ladder, each check's tri-state result, and what a single probe cannot establish. A shape check at one moment, not an uptime or delivery claim. Free and rate limited; the ceiling travels with the result.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "The https endpoint a buyer would GET expecting a 402 challenge.",
+            "maxLength": 2048
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "additionalProperties": false,
+        "examples": [
+          {
+            "url": "https://example.com/api/paid-answer"
+          }
+        ]
+      }
+    },
+    {
+      "name": "read_store_guide",
+      "description": "Returns the store's guide as plain text: the catalog with prices, how x402 payment works here, the free instruments, and the house promises. Free; no purchase is made and nothing is stored.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false,
+        "examples": [
+          {}
+        ]
+      }
+    },
+    {
+      "name": "verify_artifact",
+      "description": "Verifies a certificate, visit stamp or context anchor by its id against the store's own ed25519 key. Returns valid (true or false), the artifact kind, and a one-line note. Free and unlimited, for artifacts anyone bought or none.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "A cert_, stamp_, or anchor_ id.",
+            "maxLength": 60
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false,
+        "examples": [
+          {
+            "id": "cert_4dww28dx5j"
+          }
+        ]
+      }
+    }
+  ],
+  "host": "scvd.store",
+  "source": "webmcp.com/api/directory.json"
+}

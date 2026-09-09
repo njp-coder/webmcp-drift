@@ -1,0 +1,113 @@
+{
+  "sponsio": 1,
+  "url": "https://www.valquere.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "book_showroom_appointment",
+      "description": "Submits a showroom appointment request to Valquère. A Valquère jewelry consultant will follow up to confirm the exact time. Collect ALL required fields from the customer in conversation before calling this tool — do not invent or guess values. The customer must explicitly choose a showroom, a preferred date, and provide their contact details and the reason for their visit. Server-side validation returns success=false with an error message only as a safety net; the goal is a valid first call.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "showroom": {
+            "type": "string",
+            "enum": [
+              "amsterdam",
+              "antwerp",
+              "dusseldorf",
+              "geneva",
+              "hong-kong",
+              "knokke",
+              "mumbai",
+              "paris",
+              "shanghai",
+              "zurich"
+            ],
+            "description": "Required. The showroom city the customer wants to visit. Ask the customer to choose one of the listed cities (call show_showrooms first to give them context if needed)."
+          },
+          "date": {
+            "type": "string",
+            "description": "Required. The customer's preferred date in YYYY-MM-DD format (ISO 8601). Must be today or in the future. Example: \"2026-06-15\". Do not pass relative phrases like \"next week\" — convert to an absolute date with the customer first."
+          },
+          "salutation": {
+            "type": "string",
+            "enum": [
+              "mr",
+              "mrs"
+            ],
+            "description": "Required. Honorific the customer wishes to be addressed with: \"mr\" for Mr., \"mrs\" for Mrs. Ask if not provided."
+          },
+          "first_name": {
+            "type": "string",
+            "description": "Required. The customer's first name. Max 100 characters. Example: \"Sophie\"."
+          },
+          "last_name": {
+            "type": "string",
+            "description": "Required. The customer's last name. Max 100 characters. Example: \"Janssens\"."
+          },
+          "email": {
+            "type": "string",
+            "description": "Required. The customer's email address. Must be a valid email format. Example: \"sophie.janssens@example.com\"."
+          },
+          "phone": {
+            "type": "string",
+            "description": "Required. The customer's phone number including international country code, starting with \"+\". Example: \"+32 470 12 34 56\". Must contain at least 7 digits."
+          },
+          "interest": {
+            "type": "string",
+            "description": "Required. Free-text answer to \"How can we help you?\" — what the customer is looking for or wants to discuss. Example: \"I am looking for an engagement ring with a 1ct round diamond.\". Max 2000 characters."
+          },
+          "budget": {
+            "type": "string",
+            "enum": [
+              "under-2500",
+              "2500-5000",
+              "5000-10000",
+              "over-10000"
+            ],
+            "description": "Optional. The customer's budget range in EUR. Only include if the customer voluntarily shares it — do not push for this."
+          },
+          "language": {
+            "type": "string",
+            "enum": [
+              "de",
+              "en",
+              "es",
+              "fr",
+              "hk",
+              "it",
+              "jp",
+              "kr",
+              "nl",
+              "tr",
+              "zh"
+            ],
+            "description": "Optional. ISO-like language code in which the Valquère consultant should follow up with the customer. Defaults to the language of the page the tool is invoked from, falling back to English. Only set explicitly if the customer prefers a follow-up language that differs from the page language."
+          }
+        },
+        "required": [
+          "showroom",
+          "date",
+          "salutation",
+          "first_name",
+          "last_name",
+          "email",
+          "phone",
+          "interest"
+        ]
+      }
+    },
+    {
+      "name": "show_showrooms",
+      "description": "Returns all live Valquère showroom locations, with name, city, address, phone, URL, languages spoken and directions on how to reach them.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    }
+  ],
+  "host": "valquere.com",
+  "source": "webmcp.com/api/directory.json"
+}

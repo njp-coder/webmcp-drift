@@ -1,0 +1,104 @@
+{
+  "sponsio": 1,
+  "url": "https://heroleague.ai/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "get_playbook",
+      "description": "Get the What-to-Fix playbook for a run (Premium/Portfolio). Requires a Save token proving ownership — run_id alone is not enough.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "run_id": {
+            "type": "string"
+          },
+          "token": {
+            "type": "string",
+            "description": "Save-link token proving ownership"
+          }
+        },
+        "required": [
+          "run_id"
+        ]
+      }
+    },
+    {
+      "name": "get_result",
+      "description": "Fetch a stored HAIL result by run_id or share_slug.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "run_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "run_id"
+        ]
+      }
+    },
+    {
+      "name": "list_questions",
+      "description": "List HAIL assessment questions for simple, professional, or advanced profile. Advanced (real-number telemetry) is always available — no Premium required. Each question includes tier (core|extended) and core_position. Payload also returns core_count, core_keys, and extended_order.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "profile": {
+            "type": "string",
+            "enum": [
+              "simple",
+              "professional",
+              "advanced"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "run_assessment",
+      "description": "Score a team assessment. Email is optional — anonymous runs are allowed. profile may be simple, professional, or advanced (advanced is always available, no Premium; answers are numeric measurements, not option indices). Core 8 answers are enough to place a hero; response includes core_complete and sharpen hints. Agents are bounded by the per-IP rate limit, not a free-run gate.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "team_name": {
+            "type": "string"
+          },
+          "profile": {
+            "type": "string",
+            "enum": [
+              "simple",
+              "professional",
+              "advanced"
+            ]
+          },
+          "answers": {
+            "type": "object"
+          },
+          "team_type": {
+            "type": "string",
+            "enum": [
+              "product",
+              "platform"
+            ]
+          },
+          "business_answers": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "team_name",
+          "answers"
+        ]
+      }
+    }
+  ],
+  "host": "heroleague.ai",
+  "source": "webmcp.com/api/directory.json"
+}

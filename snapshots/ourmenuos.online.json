@@ -1,0 +1,1147 @@
+{
+  "sponsio": 1,
+  "url": "https://ourmenuos.online/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "add_to_cart",
+      "description": "Add an available catalog item to the active shopping cart with optional modifier selections. Returns the updated cart line items, total item count, and recalculated subtotal.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "itemId",
+          "quantity"
+        ],
+        "properties": {
+          "cartId": {
+            "type": "string",
+            "description": "Optional unique cart session ID. If omitted, uses active session cart."
+          },
+          "itemId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The unique ID of the item from wetaego_search_catalog."
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "description": "Quantity of items to add (1-50)."
+          },
+          "modifiers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "modifierId"
+              ],
+              "properties": {
+                "modifierId": {
+                  "type": "string",
+                  "description": "Identifier of the modifier group"
+                },
+                "optionIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Selected option IDs within the group"
+                }
+              },
+              "additionalProperties": false
+            },
+            "description": "Selected modifier groups and option IDs."
+          },
+          "notes": {
+            "type": "string",
+            "maxLength": 500,
+            "description": "Special preparation instructions or customer preferences."
+          },
+          "clearExisting": {
+            "type": "boolean",
+            "description": "Clear existing cart items before adding, ensuring clean cross-venue isolation."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "apply_coupon",
+      "description": "Apply a promotional coupon code or discount voucher to the active shopping cart session. Validates the code, recalculates discounts, and updates the cart subtotal and final total.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "couponCode"
+        ],
+        "properties": {
+          "couponCode": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 30,
+            "pattern": "^[A-Za-z0-9_-]+$",
+            "description": "The promotional discount or coupon code to apply (e.g. SAVE10, WELCOME20, PACY50, VIP15, SUMMER20).",
+            "examples": [
+              "SAVE10",
+              "WELCOME20",
+              "PACY50",
+              "VIP15",
+              "SUMMER20"
+            ]
+          },
+          "cartId": {
+            "type": "string",
+            "description": "Optional cart session identifier. If omitted, applies to the active session cart."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "create_cart",
+      "description": "Initialize a new shopping cart session or retrieve the existing active cart. Returns a structured \"cartId\" (e.g. \"cart_demo_abc123\") that can be passed to subsequent cart and checkout calls.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tableIdentifier": {
+            "type": "string",
+            "maxLength": 50,
+            "description": "Optional table number, room, seat, or pickup counter."
+          },
+          "customerNote": {
+            "type": "string",
+            "maxLength": 300,
+            "description": "Optional initial order note."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "find_venue",
+      "description": "Search and discover distinct external merchant venues or branch locations across the WETAEGO network. Use \"query\" for keyword/city search, \"name\" for exact business matching, or \"slug\" for direct venue URL lookup. (To switch tabs or departments inside the current venue, use wetaego_open_business_page instead.)",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Free-text keyword or location search (e.g. \"Lagos sushi\", \"spa Lekki\")."
+          },
+          "name": {
+            "type": "string",
+            "description": "Exact or partial business name (e.g. \"Pacy Group\", \"Emerald Cafe\")."
+          },
+          "industry": {
+            "type": "string",
+            "enum": [
+              "dining",
+              "hospitality",
+              "wellness",
+              "retail",
+              "services",
+              "creator"
+            ],
+            "description": "Non-overlapping industry vertical filter: \"dining\" (restaurants, cafes, bars), \"hospitality\" (hotels, stays, resorts), \"wellness\" (spas, salons, beauty), \"retail\" (boutiques, electronics, supermarkets), \"services\" (repairs, consulting), \"creator\" (media, studios, rate cards)."
+          },
+          "slug": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 64,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Exact venue slug identifier (e.g. \"demo\", \"emerald-cafe\", \"ocean-ember\", \"lotus-spa\").",
+            "examples": [
+              "demo",
+              "emerald-cafe",
+              "ocean-ember",
+              "lotus-spa"
+            ]
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 10,
+            "description": "Max venues to return (1-50)."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_cart",
+      "description": "Return the current cart contents, line items, validated unit prices, modifiers, discount breakdown, applied taxes, and authoritative final total.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "cartId": {
+            "type": "string",
+            "description": "Optional unique cart session ID to inspect. If omitted, returns active session cart."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_item_details",
+      "description": "Return authoritative details for a specific catalog item using its unique itemId, including price, stock status, customizable modifier groups, dietary tags, and variant options.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "itemId"
+        ],
+        "properties": {
+          "itemId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The unique itemId from wetaego_search_catalog results."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "initiate_checkout",
+      "description": "Validate the current cart and generate a locked checkout session with computed taxes, fulfillment options, and totals. Locks prices for 15 minutes. Does NOT charge the customer — call wetaego_submit_order with customer confirmation to finalize.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "fulfillment"
+        ],
+        "properties": {
+          "cartId": {
+            "type": "string",
+            "description": "Optional cart session ID to checkout. If omitted, uses active session cart."
+          },
+          "fulfillment": {
+            "type": "string",
+            "enum": [
+              "dine_in",
+              "pickup",
+              "delivery"
+            ],
+            "description": "Fulfillment method."
+          },
+          "tableIdentifier": {
+            "type": "string",
+            "maxLength": 50,
+            "description": "Table number, room, seat, or pickup counter."
+          },
+          "couponCode": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 30,
+            "pattern": "^[A-Za-z0-9_-]+$",
+            "description": "Optional promotional coupon or discount voucher code to apply before price locking.",
+            "examples": [
+              "SAVE10",
+              "WELCOME20",
+              "PACY50"
+            ]
+          },
+          "customer": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Customer full name"
+              },
+              "email": {
+                "type": "string",
+                "format": "email",
+                "description": "Customer contact email"
+              },
+              "phone": {
+                "type": "string",
+                "format": "tel",
+                "pattern": "^\\+?[0-9\\s\\-().]{7,20}$",
+                "minLength": 7,
+                "maxLength": 20,
+                "description": "Customer contact phone number in standard international E.164 format (e.g. +12025550123 or +2348012345678).",
+                "examples": [
+                  "+12025550123",
+                  "+2348012345678"
+                ]
+              }
+            },
+            "additionalProperties": false
+          },
+          "notes": {
+            "type": "string",
+            "maxLength": 1000,
+            "description": "Order-level fulfillment notes."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "open_business_page",
+      "description": "Switch the active storefront viewport to an internal department or category catalog tab (such as \"restaurant\", \"pacy-wellness\", \"pacy-boutique\", \"pacy-gadgets\", \"pacy-stays\", \"pacy-hotels\", \"pacy-repairs\", \"pacy-media\") inside the current merchant venue. (To search for other businesses or branches, use wetaego_find_venue.)",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "conceptSlug"
+        ],
+        "properties": {
+          "conceptSlug": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 64,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "enum": [
+              "restaurant",
+              "pacy-wellness",
+              "pacy-boutique",
+              "pacy-gadgets",
+              "pacy-stays",
+              "pacy-hotels",
+              "pacy-repairs",
+              "pacy-media",
+              "menu",
+              "treatments"
+            ],
+            "description": "The standardized kebab-case URL slug of the internal department or concept to open (e.g. \"restaurant\", \"pacy-wellness\", \"pacy-boutique\", \"pacy-gadgets\", \"pacy-stays\", \"pacy-hotels\", \"pacy-repairs\", \"pacy-media\").",
+            "examples": [
+              "restaurant",
+              "pacy-wellness",
+              "pacy-boutique",
+              "pacy-gadgets",
+              "pacy-stays",
+              "pacy-repairs"
+            ]
+          },
+          "concept-slug": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 64,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Kebab-case alias for conceptSlug.",
+            "examples": [
+              "restaurant",
+              "pacy-wellness",
+              "pacy-boutique"
+            ]
+          },
+          "venueSlug": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 64,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Optional venue slug (e.g. \"demo\", \"emerald-cafe\", \"ocean-ember\", \"lotus-spa\"). If omitted, uses active venue.",
+            "examples": [
+              "demo",
+              "emerald-cafe",
+              "ocean-ember",
+              "lotus-spa"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "recommend_pairings",
+      "description": "Suggest complementary catalog items, sides, drinks, or accessories. If itemId is omitted, recommendations are generated based on the active cart items or top venue specialties; if itemId is provided, recommendations specifically complement that item.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "string",
+            "description": "Optional focal item ID. If omitted, pairings are selected from current cart items or venue favorites."
+          },
+          "maxRecommendations": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "default": 3,
+            "description": "Maximum pairing recommendations to return (1-10)."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "request_staff",
+      "description": "Send an immediate service or waiter call notification to venue floor staff for a specific table or room.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "reason"
+        ],
+        "properties": {
+          "reason": {
+            "type": "string",
+            "enum": [
+              "water_refill",
+              "bill_check",
+              "table_cleanup",
+              "waiter_assistance",
+              "order_inquiry",
+              "manager_escalation"
+            ],
+            "description": "Structured reason for requesting staff assistance."
+          },
+          "details": {
+            "type": "string",
+            "maxLength": 300,
+            "description": "Optional supplementary notes for staff."
+          },
+          "tableIdentifier": {
+            "type": "string",
+            "maxLength": 50,
+            "description": "Table number, room, or seat requesting assistance."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_catalog",
+      "description": "Search catalog items, products, dishes, and services with category and price filters. Returns item details, prices, and availability.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Keyword search query for products, dishes, or services."
+          },
+          "category": {
+            "type": "string",
+            "description": "Category name filter (e.g. \"Mains\", \"Apparel\", \"Spa Services\")."
+          },
+          "venueSlug": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 64,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Optional venue slug (e.g. \"demo\", \"emerald-cafe\", \"ocean-ember\", \"lotus-spa\") to scope search to a specific merchant.",
+            "examples": [
+              "demo",
+              "emerald-cafe",
+              "ocean-ember",
+              "lotus-spa"
+            ]
+          },
+          "currency": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 3,
+            "pattern": "^[A-Z]{3}$",
+            "enum": [
+              "USD",
+              "EUR",
+              "GBP",
+              "NGN",
+              "CAD",
+              "AUD",
+              "JPY",
+              "KES",
+              "GHS",
+              "ZAR"
+            ],
+            "description": "3-letter ISO 4217 target currency code (e.g. USD, EUR, GBP, NGN) for dynamic rate conversion.",
+            "examples": [
+              "USD",
+              "NGN",
+              "EUR",
+              "GBP"
+            ]
+          },
+          "dietary": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "vegan",
+                "vegetarian",
+                "halal",
+                "kosher",
+                "gluten_free",
+                "dairy_free",
+                "nut_free",
+                "keto"
+              ]
+            },
+            "description": "Dietary classification filters for food & dining."
+          },
+          "maxPrice": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Maximum price filter in major currency units."
+          },
+          "inStockOnly": {
+            "type": "boolean",
+            "default": true,
+            "description": "Return only in-stock or available items."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 20,
+            "description": "Max items per page (1-100)."
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Pagination offset."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "submit_order",
+      "description": "Submit a prepared checkout session as an authoritative live customer order. Requires authorization.confirmed: true indicating the customer reviewed and approved the order total.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "checkoutId",
+          "authorization"
+        ],
+        "properties": {
+          "checkoutId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The checkoutId returned from wetaego_initiate_checkout."
+          },
+          "authorization": {
+            "type": "object",
+            "required": [
+              "confirmed"
+            ],
+            "properties": {
+              "confirmed": {
+                "type": "boolean",
+                "description": "Set to true after the customer confirms the order total."
+              },
+              "confirmationId": {
+                "type": "string",
+                "description": "Optional confirmation tracking token or receipt reference."
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "update_cart",
+      "description": "Modify the quantity of an existing line item in the cart or remove it completely by setting quantity to 0.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "lineId"
+        ],
+        "properties": {
+          "cartId": {
+            "type": "string",
+            "description": "Optional unique cart session ID. If omitted, updates active cart."
+          },
+          "lineId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The unique lineId of the item to update."
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 50,
+            "description": "New quantity. Set to 0 to remove item."
+          },
+          "notes": {
+            "type": "string",
+            "maxLength": 500,
+            "description": "Updated preparation notes or instructions."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "wetaego_add_to_cart",
+      "description": "Add an available catalog item to the active shopping cart with optional modifier selections. Returns the updated cart line items, total item count, and recalculated subtotal.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "itemId",
+          "quantity"
+        ],
+        "properties": {
+          "cartId": {
+            "type": "string",
+            "description": "Optional unique cart session ID. If omitted, uses active session cart."
+          },
+          "itemId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The unique ID of the item from wetaego_search_catalog."
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "description": "Quantity of items to add (1-50)."
+          },
+          "modifiers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "modifierId"
+              ],
+              "properties": {
+                "modifierId": {
+                  "type": "string",
+                  "description": "Identifier of the modifier group"
+                },
+                "optionIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Selected option IDs within the group"
+                }
+              },
+              "additionalProperties": false
+            },
+            "description": "Selected modifier groups and option IDs."
+          },
+          "notes": {
+            "type": "string",
+            "maxLength": 500,
+            "description": "Special preparation instructions or customer preferences."
+          },
+          "clearExisting": {
+            "type": "boolean",
+            "description": "Clear existing cart items before adding, ensuring clean cross-venue isolation."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "wetaego_apply_coupon",
+      "description": "Apply a promotional coupon code or discount voucher to the active shopping cart session. Validates the code, recalculates discounts, and updates the cart subtotal and final total.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "couponCode"
+        ],
+        "properties": {
+          "couponCode": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 30,
+            "pattern": "^[A-Za-z0-9_-]+$",
+            "description": "The promotional discount or coupon code to apply (e.g. SAVE10, WELCOME20, PACY50, VIP15, SUMMER20).",
+            "examples": [
+              "SAVE10",
+              "WELCOME20",
+              "PACY50",
+              "VIP15",
+              "SUMMER20"
+            ]
+          },
+          "cartId": {
+            "type": "string",
+            "description": "Optional cart session identifier. If omitted, applies to the active session cart."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "wetaego_create_cart",
+      "description": "Initialize a new shopping cart session or retrieve the existing active cart. Returns a structured \"cartId\" (e.g. \"cart_demo_abc123\") that can be passed to subsequent cart and checkout calls.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tableIdentifier": {
+            "type": "string",
+            "maxLength": 50,
+            "description": "Optional table number, room, seat, or pickup counter."
+          },
+          "customerNote": {
+            "type": "string",
+            "maxLength": 300,
+            "description": "Optional initial order note."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "wetaego_find_venue",
+      "description": "Search and discover distinct external merchant venues or branch locations across the WETAEGO network. Use \"query\" for keyword/city search, \"name\" for exact business matching, or \"slug\" for direct venue URL lookup. (To switch tabs or departments inside the current venue, use wetaego_open_business_page instead.)",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Free-text keyword or location search (e.g. \"Lagos sushi\", \"spa Lekki\")."
+          },
+          "name": {
+            "type": "string",
+            "description": "Exact or partial business name (e.g. \"Pacy Group\", \"Emerald Cafe\")."
+          },
+          "industry": {
+            "type": "string",
+            "enum": [
+              "dining",
+              "hospitality",
+              "wellness",
+              "retail",
+              "services",
+              "creator"
+            ],
+            "description": "Non-overlapping industry vertical filter: \"dining\" (restaurants, cafes, bars), \"hospitality\" (hotels, stays, resorts), \"wellness\" (spas, salons, beauty), \"retail\" (boutiques, electronics, supermarkets), \"services\" (repairs, consulting), \"creator\" (media, studios, rate cards)."
+          },
+          "slug": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 64,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Exact venue slug identifier (e.g. \"demo\", \"emerald-cafe\", \"ocean-ember\", \"lotus-spa\").",
+            "examples": [
+              "demo",
+              "emerald-cafe",
+              "ocean-ember",
+              "lotus-spa"
+            ]
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 10,
+            "description": "Max venues to return (1-50)."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "wetaego_get_cart",
+      "description": "Return the current cart contents, line items, validated unit prices, modifiers, discount breakdown, applied taxes, and authoritative final total.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "cartId": {
+            "type": "string",
+            "description": "Optional unique cart session ID to inspect. If omitted, returns active session cart."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "wetaego_get_item_details",
+      "description": "Return authoritative details for a specific catalog item using its unique itemId, including price, stock status, customizable modifier groups, dietary tags, and variant options.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "itemId"
+        ],
+        "properties": {
+          "itemId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The unique itemId from wetaego_search_catalog results."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "wetaego_initiate_checkout",
+      "description": "Validate the current cart and generate a locked checkout session with computed taxes, fulfillment options, and totals. Locks prices for 15 minutes. Does NOT charge the customer — call wetaego_submit_order with customer confirmation to finalize.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "fulfillment"
+        ],
+        "properties": {
+          "cartId": {
+            "type": "string",
+            "description": "Optional cart session ID to checkout. If omitted, uses active session cart."
+          },
+          "fulfillment": {
+            "type": "string",
+            "enum": [
+              "dine_in",
+              "pickup",
+              "delivery"
+            ],
+            "description": "Fulfillment method."
+          },
+          "tableIdentifier": {
+            "type": "string",
+            "maxLength": 50,
+            "description": "Table number, room, seat, or pickup counter."
+          },
+          "couponCode": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 30,
+            "pattern": "^[A-Za-z0-9_-]+$",
+            "description": "Optional promotional coupon or discount voucher code to apply before price locking.",
+            "examples": [
+              "SAVE10",
+              "WELCOME20",
+              "PACY50"
+            ]
+          },
+          "customer": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Customer full name"
+              },
+              "email": {
+                "type": "string",
+                "format": "email",
+                "description": "Customer contact email"
+              },
+              "phone": {
+                "type": "string",
+                "format": "tel",
+                "pattern": "^\\+?[0-9\\s\\-().]{7,20}$",
+                "minLength": 7,
+                "maxLength": 20,
+                "description": "Customer contact phone number in standard international E.164 format (e.g. +12025550123 or +2348012345678).",
+                "examples": [
+                  "+12025550123",
+                  "+2348012345678"
+                ]
+              }
+            },
+            "additionalProperties": false
+          },
+          "notes": {
+            "type": "string",
+            "maxLength": 1000,
+            "description": "Order-level fulfillment notes."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "wetaego_open_business_page",
+      "description": "Switch the active storefront viewport to an internal department or category catalog tab (such as \"restaurant\", \"pacy-wellness\", \"pacy-boutique\", \"pacy-gadgets\", \"pacy-stays\", \"pacy-hotels\", \"pacy-repairs\", \"pacy-media\") inside the current merchant venue. (To search for other businesses or branches, use wetaego_find_venue.)",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "conceptSlug"
+        ],
+        "properties": {
+          "conceptSlug": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 64,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "enum": [
+              "restaurant",
+              "pacy-wellness",
+              "pacy-boutique",
+              "pacy-gadgets",
+              "pacy-stays",
+              "pacy-hotels",
+              "pacy-repairs",
+              "pacy-media",
+              "menu",
+              "treatments"
+            ],
+            "description": "The standardized kebab-case URL slug of the internal department or concept to open (e.g. \"restaurant\", \"pacy-wellness\", \"pacy-boutique\", \"pacy-gadgets\", \"pacy-stays\", \"pacy-hotels\", \"pacy-repairs\", \"pacy-media\").",
+            "examples": [
+              "restaurant",
+              "pacy-wellness",
+              "pacy-boutique",
+              "pacy-gadgets",
+              "pacy-stays",
+              "pacy-repairs"
+            ]
+          },
+          "concept-slug": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 64,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Kebab-case alias for conceptSlug.",
+            "examples": [
+              "restaurant",
+              "pacy-wellness",
+              "pacy-boutique"
+            ]
+          },
+          "venueSlug": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 64,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Optional venue slug (e.g. \"demo\", \"emerald-cafe\", \"ocean-ember\", \"lotus-spa\"). If omitted, uses active venue.",
+            "examples": [
+              "demo",
+              "emerald-cafe",
+              "ocean-ember",
+              "lotus-spa"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "wetaego_recommend_pairings",
+      "description": "Suggest complementary catalog items, sides, drinks, or accessories. If itemId is omitted, recommendations are generated based on the active cart items or top venue specialties; if itemId is provided, recommendations specifically complement that item.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "string",
+            "description": "Optional focal item ID. If omitted, pairings are selected from current cart items or venue favorites."
+          },
+          "maxRecommendations": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "default": 3,
+            "description": "Maximum pairing recommendations to return (1-10)."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "wetaego_request_staff",
+      "description": "Send an immediate service or waiter call notification to venue floor staff for a specific table or room.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "reason"
+        ],
+        "properties": {
+          "reason": {
+            "type": "string",
+            "enum": [
+              "water_refill",
+              "bill_check",
+              "table_cleanup",
+              "waiter_assistance",
+              "order_inquiry",
+              "manager_escalation"
+            ],
+            "description": "Structured reason for requesting staff assistance."
+          },
+          "details": {
+            "type": "string",
+            "maxLength": 300,
+            "description": "Optional supplementary notes for staff."
+          },
+          "tableIdentifier": {
+            "type": "string",
+            "maxLength": 50,
+            "description": "Table number, room, or seat requesting assistance."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "wetaego_search_catalog",
+      "description": "Search catalog items, products, dishes, and services with category and price filters. Returns item details, prices, and availability.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Keyword search query for products, dishes, or services."
+          },
+          "category": {
+            "type": "string",
+            "description": "Category name filter (e.g. \"Mains\", \"Apparel\", \"Spa Services\")."
+          },
+          "venueSlug": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 64,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Optional venue slug (e.g. \"demo\", \"emerald-cafe\", \"ocean-ember\", \"lotus-spa\") to scope search to a specific merchant.",
+            "examples": [
+              "demo",
+              "emerald-cafe",
+              "ocean-ember",
+              "lotus-spa"
+            ]
+          },
+          "currency": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 3,
+            "pattern": "^[A-Z]{3}$",
+            "enum": [
+              "USD",
+              "EUR",
+              "GBP",
+              "NGN",
+              "CAD",
+              "AUD",
+              "JPY",
+              "KES",
+              "GHS",
+              "ZAR"
+            ],
+            "description": "3-letter ISO 4217 target currency code (e.g. USD, EUR, GBP, NGN) for dynamic rate conversion.",
+            "examples": [
+              "USD",
+              "NGN",
+              "EUR",
+              "GBP"
+            ]
+          },
+          "dietary": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "vegan",
+                "vegetarian",
+                "halal",
+                "kosher",
+                "gluten_free",
+                "dairy_free",
+                "nut_free",
+                "keto"
+              ]
+            },
+            "description": "Dietary classification filters for food & dining."
+          },
+          "maxPrice": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Maximum price filter in major currency units."
+          },
+          "inStockOnly": {
+            "type": "boolean",
+            "default": true,
+            "description": "Return only in-stock or available items."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 20,
+            "description": "Max items per page (1-100)."
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Pagination offset."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "wetaego_submit_order",
+      "description": "Submit a prepared checkout session as an authoritative live customer order. Requires authorization.confirmed: true indicating the customer reviewed and approved the order total.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "checkoutId",
+          "authorization"
+        ],
+        "properties": {
+          "checkoutId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The checkoutId returned from wetaego_initiate_checkout."
+          },
+          "authorization": {
+            "type": "object",
+            "required": [
+              "confirmed"
+            ],
+            "properties": {
+              "confirmed": {
+                "type": "boolean",
+                "description": "Set to true after the customer confirms the order total."
+              },
+              "confirmationId": {
+                "type": "string",
+                "description": "Optional confirmation tracking token or receipt reference."
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "wetaego_update_cart",
+      "description": "Modify the quantity of an existing line item in the cart or remove it completely by setting quantity to 0.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "lineId"
+        ],
+        "properties": {
+          "cartId": {
+            "type": "string",
+            "description": "Optional unique cart session ID. If omitted, updates active cart."
+          },
+          "lineId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The unique lineId of the item to update."
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 50,
+            "description": "New quantity. Set to 0 to remove item."
+          },
+          "notes": {
+            "type": "string",
+            "maxLength": 500,
+            "description": "Updated preparation notes or instructions."
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "ourmenuos.online",
+  "source": "webmcp.com/api/directory.json"
+}

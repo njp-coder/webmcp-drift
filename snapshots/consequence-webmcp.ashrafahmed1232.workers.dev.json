@@ -1,0 +1,301 @@
+{
+  "sponsio": 1,
+  "url": "https://consequence-webmcp.ashrafahmed1232.workers.dev/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "add_review_comment",
+      "description": "Add a review comment to a section, authored under the caller's own identity.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sectionId": {
+            "type": "string"
+          },
+          "body": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "sectionId",
+          "body"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "answer_question",
+      "description": "Answer a field directly. Refuses with a structured reason for human_only fields (attestations, signatures) and evidence_required fields (use propose_answer instead).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "fieldId": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string",
+            "description": "Stringify numbers/booleans as needed; dates as YYYY-MM-DD."
+          }
+        },
+        "required": [
+          "fieldId",
+          "value"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "check_consistency",
+      "description": "Cross-reference every answered field for contradictions: overlapping dates, an expired passport, income figures that don't add up.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "explain_requirement",
+      "description": "Get the plain-language requirement and permission class for one field.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "fieldId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "fieldId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_application_status",
+      "description": "Get overall application progress: sections completed, open questions, and whether it's ready to submit.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_history",
+      "description": "Get the full, replayable mutation history for this application — who changed what, in order.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "number"
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_provenance_report",
+      "description": "Get who filled every field and when — the full provenance trail.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_section",
+      "description": "Get all fields and current values for one section, by section id.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sectionId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "sectionId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_blocking_items",
+      "description": "List everything currently blocking submission.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_evidence",
+      "description": "List evidence files attached to this application.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_open_questions",
+      "description": "List every unanswered or unconfirmed required field — the agent's work queue.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_review_items",
+      "description": "List reviewer comments across all sections.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "navigate_to_section",
+      "description": "Move the active section — affects which section-scoped tools are registered next.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sectionId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "sectionId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "propose_answer",
+      "description": "Propose a value for an evidence_required field (e.g. transcribed from an attached document). Lands as 'needs your confirmation' — never sets the field outright.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "fieldId": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          },
+          "basedOnEvidenceId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "fieldId",
+          "value"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "read_evidence",
+      "description": "Read an attached evidence file and extract a plain-text summary of what it appears to contain, so the agent can decide what to propose_answer next. Does not modify any field itself.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "evidenceId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "evidenceId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "request_evidence",
+      "description": "Ask the human to attach a document supporting an evidence_required field. The agent cannot attach files itself.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "fieldId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "fieldId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "request_human_action",
+      "description": "Escalate to the human: flag a field or general issue that needs their attention. Surfaces in the 'needs you' queue.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "fieldId": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "reason"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "summarize_application",
+      "description": "Get a plain-language summary of application progress: what's done, what's outstanding, and any consistency issues found.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "validate_section",
+      "description": "Check one section for unanswered required fields.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sectionId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "sectionId"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "consequence-webmcp.ashrafahmed1232.workers.dev",
+  "source": "webmcp.com/api/directory.json"
+}

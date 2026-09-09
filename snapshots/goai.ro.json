@@ -1,0 +1,118 @@
+{
+  "sponsio": 1,
+  "url": "https://goai.ro/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "get_business_info",
+      "description": "Returnează datele de identificare ale agenției GOAI ca obiect JSON: `contact` cu `phone`, `email` și `address`, plus `company` cu `name`, `founded` (anul înființării) și `services` (tabloul serviciilor). Fără parametru întoarce ambele blocuri; cu `section` întoarce doar `contact` sau doar `company`. Folosește-l când se cer datele de contact, adresa, vechimea sau profilul firmei.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "section": {
+            "type": "string",
+            "description": "Secțiunea dorită",
+            "enum": [
+              "contact",
+              "company"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_services",
+      "description": "Sursa autoritară pentru serviciile agenției GOAI: o listă fixă și completă, nu un rezultat de căutare. Returnează un obiect JSON cu `count` și `services`, un tablou în care fiecare serviciu are `key` (identificatorul), `name` (numele) și `url` (adresa paginii). Fără parametru întoarce toate cele șapte servicii; cu `category` întoarce doar serviciul cerut. Folosește-l ori de câte ori întrebarea e despre ce oferă agenția sau despre adresa unei pagini de serviciu. Pentru articole, ghiduri sau orice alt conținut editorial, folosește `search_site`.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "description": "Categoria de serviciu pentru filtrare",
+            "enum": [
+              "seo",
+              "audit",
+              "optimizare",
+              "link-building",
+              "local",
+              "ecommerce",
+              "tehnic"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "request_seo_audit",
+      "description": "Trimite către GOAI o cerere de audit SEO gratuit pentru un site. Dacă pagina curentă conține formularul de analiză, îl completează și îl trimite, ca utilizatorul să vadă ce pleacă; pe celelalte pagini trimite cererea direct, prin API. Returnează un text de confirmare că cererea a ajuns la agenție și că răspunsul vine pe email, sau un text de eroare. Trimite un mesaj real către o firmă, deci cere confirmarea utilizatorului înainte de a-l apela.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "website": {
+            "type": "string",
+            "description": "Adresa site-ului de auditat",
+            "maxLength": 200,
+            "pattern": "^[^\\s]+\\.[^\\s]+$"
+          },
+          "name": {
+            "type": "string",
+            "description": "Numele persoanei de contact",
+            "minLength": 2,
+            "maxLength": 100
+          },
+          "email": {
+            "type": "string",
+            "description": "Adresa de email pe care vine răspunsul",
+            "format": "email",
+            "maxLength": 150,
+            "pattern": "^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Număr de telefon (opțional)",
+            "maxLength": 20,
+            "pattern": "^[0-9+()\\s-]{6,20}$"
+          },
+          "message": {
+            "type": "string",
+            "description": "Detalii suplimentare (opțional)",
+            "maxLength": 1000
+          }
+        },
+        "required": [
+          "website",
+          "name",
+          "email"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_site",
+      "description": "Caută în conținutul editorial al site-ului GOAI: articole de blog, ghiduri și pagini de conținut. Returnează un obiect JSON cu `query` (termenul căutat), `count` (numărul de rezultate) și `results`, un tablou în care fiecare element are `title` și `url`. Dacă nu găsește nimic, `count` este 0 și `results` este gol. Folosește-l pentru întrebări despre subiecte tratate pe site, ca să citezi pagina reală în loc să răspunzi din memorie. NU îl folosi pentru lista serviciilor agenției: pentru asta există `get_services`.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Termenul de căutat",
+            "minLength": 2,
+            "maxLength": 100
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "goai.ro",
+  "source": "webmcp.com/api/directory.json"
+}

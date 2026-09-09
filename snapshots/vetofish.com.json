@@ -1,0 +1,195 @@
+{
+  "sponsio": 1,
+  "url": "https://www.vetofish.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "get_veterinarian_profile",
+      "description": "Retourne le profil professionnel public et localisé d’un vétérinaire Vetofish, avec ses qualifications, expertises et identifiants publics.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "veterinarian": {
+            "type": "string",
+            "enum": [
+              "leguay",
+              "meunier"
+            ],
+            "description": "Vetofish veterinarian."
+          },
+          "lang": {
+            "type": "string",
+            "enum": [
+              "fr",
+              "en"
+            ],
+            "description": "Profile language."
+          }
+        },
+        "required": [
+          "veterinarian"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_services",
+      "description": "Liste les services publics de Vetofish avec leur description, leurs situations d’usage, leurs livrables et leur URL dans la langue demandée.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "lang": {
+            "type": "string",
+            "enum": [
+              "fr",
+              "en"
+            ],
+            "description": "Content language."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_upcoming_events",
+      "description": "Liste les événements Vetofish à venir et les filtre par langue, secteur, type et dates. Le statut explicite ‘no_matches’ constitue une réponse complète et ne nécessite aucune recherche de secours.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "lang": {
+            "type": "string",
+            "enum": [
+              "fr",
+              "en"
+            ],
+            "description": "Content language."
+          },
+          "sector": {
+            "type": "string",
+            "enum": [
+              "aquacultures",
+              "aquariums-publics",
+              "recherche",
+              "environnement"
+            ],
+            "description": "Vetofish sector."
+          },
+          "type": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80,
+            "description": "Event type."
+          },
+          "from": {
+            "type": "string",
+            "format": "date",
+            "description": "Earliest event date."
+          },
+          "to": {
+            "type": "string",
+            "format": "date",
+            "description": "Latest event date."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5,
+            "default": 5,
+            "description": "Maximum results."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "lookup_definition",
+      "description": "Recherche un terme français, un acronyme ou un alias dans le glossaire Vetofish et retourne jusqu’à trois définitions correspondantes.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "term": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120,
+            "description": "French term, acronym, or alias."
+          }
+        },
+        "required": [
+          "term"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_vetofish",
+      "description": "Recherche les contenus publics et indexables de Vetofish par mots-clés, langue, type et secteur, puis retourne jusqu’à cinq résultats classés.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "description": "Search words or phrase."
+          },
+          "lang": {
+            "type": "string",
+            "enum": [
+              "fr",
+              "en"
+            ],
+            "description": "Content language."
+          },
+          "types": {
+            "type": "array",
+            "maxItems": 9,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "enum": [
+                "faq",
+                "definition",
+                "news",
+                "event",
+                "service",
+                "sector",
+                "regulation",
+                "publication",
+                "veterinarian"
+              ]
+            },
+            "description": "Content types."
+          },
+          "sector": {
+            "type": "string",
+            "enum": [
+              "aquacultures",
+              "aquariums-publics",
+              "recherche",
+              "environnement"
+            ],
+            "description": "Vetofish sector."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5,
+            "default": 5,
+            "description": "Maximum results."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "vetofish.com",
+  "source": "webmcp.com/api/directory.json"
+}

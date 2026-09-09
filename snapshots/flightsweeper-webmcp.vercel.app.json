@@ -1,0 +1,147 @@
+{
+  "sponsio": 1,
+  "url": "https://flightsweeper-webmcp.vercel.app/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "compare_visible_offers",
+      "description": "Compare only offers already visible in Mission Control using application-side policy. Returns data as an array of {offer, evaluation} entries with offer IDs, exact totals, checks, and failed rules, plus missionStatus and validNextActions. Failures return a typed error with recovery guidance.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "evaluate_purchase",
+      "description": "Evaluate the selected offer against stored route, fare, price, freshness, and authority policy; callers cannot provide the decision. Returns data as {evaluation, receipt} with checks, evidence, failed rules, policy version, and quote version, plus missionStatus and validNextActions. Failures return a typed error with recovery guidance.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_booking_receipt",
+      "description": "Read the canonical sandbox booking receipt without passenger or payment data. Returns data as the ticketed booking, or {status: not_booked}, plus missionStatus and validNextActions. Failures return a typed error with recovery guidance.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "purchase_selected_offer",
+      "description": "Issue one sandbox ticket for the selected, refreshed, authorized offer, or replay the original booking. Requires an idempotency key and never creates a real charge or airline order. Returns data as {booking, replayed}, including booking ID, offer ID, ticket number, total, and authorization receipt, plus missionStatus and validNextActions. Failures return a typed error with recovery guidance.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "idempotencyKey": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9.:-]{0,79}$"
+          }
+        },
+        "required": [
+          "idempotencyKey"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "read_flight_mission",
+      "description": "Read the active flight mission, its exact purchasing limits, current state, and safe booking status. Returns data as the complete mission object, including mission ID, policy and quote versions, selected offer ID, decision, and booking, plus missionStatus and validNextActions. Failures return a typed error with recovery guidance.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "refresh_selected_offer",
+      "description": "Refresh the selected offer before purchase and advance the application-controlled quote version. Returns data as {offer, quoteVersion, refreshed}, plus missionStatus and validNextActions. Failures return a typed error with recovery guidance.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "revoke_purchase_authority",
+      "description": "Revoke the active mission authority so future purchases are denied while prior receipts remain readable; a human can replace the mandate later. Returns data as {missionId, authority: revoked, revoked: true}, plus missionStatus and validNextActions. Failures return a typed error with recovery guidance.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_flights",
+      "description": "Search only the route, date, fare rules, and purchase cap stored in the active mission; callers cannot expand authority. Returns data as {missionId, offers[]}, where every offer has an offer ID and application-side policy evaluation, plus missionStatus and validNextActions. Failures return a typed error with recovery guidance.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "select_offer",
+      "description": "Select one visible offer by offerId for later evaluation; this never charges or books. Returns data as {offer, evaluation} for the exact selected offer, plus missionStatus and validNextActions. Failures return a typed error with recovery guidance.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "offerId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80,
+            "pattern": "^[A-Za-z0-9_-]+$"
+          }
+        },
+        "required": [
+          "offerId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "tighten_flight_mission",
+      "description": "Make the mission safer by lowering the cap, requiring an earlier arrival, reducing stops, or requiring refundability; never expand authority. Returns data as the updated complete mission object and new policy version, plus missionStatus and validNextActions. Failures return a typed error with recovery guidance.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "maxTotalCents": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 500000
+          },
+          "maxStops": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2
+          },
+          "arriveBefore": {
+            "type": "string",
+            "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$"
+          },
+          "refundableOnly": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "flightsweeper-webmcp.vercel.app",
+  "source": "webmcp.com/api/directory.json"
+}

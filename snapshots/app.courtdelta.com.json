@@ -1,0 +1,360 @@
+{
+  "sponsio": 1,
+  "url": "https://app.courtdelta.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "check_court_scam",
+      "description": "Check whether a demand for payment supposedly from a North Carolina court — missed jury duty, unpaid court costs, a warrant, a bond — matches known court-impersonation scam patterns. Returns deterministic FINDINGS and a severity (0 low, 1 caution, 2 high), never a verdict. IMPORTANT: severity 0 means only that none of the patterns checked for are present — it is NOT a finding that the demand is legitimate, and must never be reported as one. Pass ids from the enums verbatim. If a case or citation number is involved, also call lookup_court_case; a real case number does not make a payment demand legitimate. Read-only. NC only. Not legal advice.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "claim_type": {
+            "type": "string",
+            "enum": [
+              "jury_duty_penalty",
+              "court_costs_or_fine",
+              "bail_or_bond",
+              "warrant_or_arrest",
+              "missed_court_date",
+              "other"
+            ],
+            "description": "What the contact claimed the money was for."
+          },
+          "contact_channel": {
+            "type": "string",
+            "enum": [
+              "phone_call",
+              "text_sms",
+              "email",
+              "mail",
+              "in_person"
+            ],
+            "description": "How they made contact. Real NC court notices arrive by mail."
+          },
+          "case_or_citation_number": {
+            "type": "string",
+            "description": "Any case or citation number they cited, if one was given. Not verified here — use lookup_court_case for that."
+          },
+          "county": {
+            "type": "string",
+            "pattern": "^[A-Za-z .'-]{3,40}$",
+            "description": "NC county named, if any."
+          },
+          "amount_demanded": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Amount demanded, in whole US dollars."
+          },
+          "payment_method_requested": {
+            "type": "string",
+            "enum": [
+              "gift_card",
+              "cryptocurrency",
+              "virtual_currency_kiosk_atm",
+              "wire_transfer_caller_directed",
+              "peer_to_peer_app",
+              "phone_requested_money_transfer",
+              "mailed_check_to_clerk",
+              "in_person_at_courthouse",
+              "not_asked"
+            ],
+            "description": "How they asked to be paid. No NC court takes gift cards, crypto or wires."
+          },
+          "behavioral_flags": {
+            "type": "array",
+            "maxItems": 30,
+            "items": {
+              "type": "string",
+              "enum": [
+                "threatened_immediate_arrest",
+                "claimed_to_be_official",
+                "used_target_personal_details",
+                "spoofed_caller_id",
+                "gave_callback_number",
+                "pressured_to_stay_on_line",
+                "asked_to_stay_on_phone_during_purchase",
+                "requested_ssn_or_financial_info",
+                "transferred_to_supervisor_or_clerk",
+                "background_noise_office_or_radio",
+                "asked_to_meet_in_person",
+                "after_hours_contact",
+                "demanded_secrecy"
+              ]
+            },
+            "description": "Every tactic that applies. More detail gives a better assessment."
+          },
+          "raw_description": {
+            "type": "string",
+            "maxLength": 4000,
+            "description": "The person's own account, in their words. Scanned for scam language; never stored."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "check_expunction_options",
+      "description": "Find which NC expunction statute and AOC petition form fit how each charge on a case ended. With a case number (e.g. 22CR702455-520) it routes against the live case; with no case number it returns the full NC expunction statute table. Routing only — not an eligibility determination. Read-only. NC only. Not legal advice.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "caseNumber": {
+            "type": "string",
+            "description": "NC case number, e.g. 22CR702455-520. Omit to get the full statute table.",
+            "pattern": "^\\d{2}[A-Z]{1,3}\\d{6}-\\d{3}$"
+          },
+          "felony": {
+            "type": "boolean",
+            "description": "Treat charges as felony where the record degree is ambiguous."
+          },
+          "convictionCount": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Prior conviction count, if known."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "check_traffic_charge",
+      "description": "Check whether NC traffic charges from a citation can be waived or require a court appearance, and how to request a reduction — no case number needed. Provide the charge(s) from the paper citation. Read-only. NC only. Not legal advice.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "charges": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 20,
+            "items": {
+              "type": "object",
+              "properties": {
+                "offense": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Offense text, e.g. 'Speeding'."
+                },
+                "statute": {
+                  "type": "string",
+                  "pattern": "^[0-9]+[A-Za-z0-9.().\\-]*$",
+                  "description": "NC statute number, e.g. '20-141'."
+                },
+                "degree": {
+                  "type": "string",
+                  "description": "Charge degree, e.g. 'Infraction', 'Misdemeanor Class 3'."
+                },
+                "actual_speed": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 200,
+                  "description": "MPH the vehicle was travelling."
+                },
+                "speed_limit": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 100,
+                  "description": "Posted limit in MPH."
+                },
+                "school_zone": {
+                  "type": "boolean"
+                },
+                "construction_zone": {
+                  "type": "boolean"
+                }
+              },
+              "anyOf": [
+                {
+                  "required": [
+                    "offense"
+                  ]
+                },
+                {
+                  "required": [
+                    "statute"
+                  ]
+                }
+              ],
+              "additionalProperties": false
+            }
+          },
+          "county": {
+            "type": "string",
+            "description": "Optional NC county, for reduction guidance.",
+            "pattern": "^[A-Za-z .'-]{3,40}$"
+          }
+        },
+        "required": [
+          "charges"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "courthouse_info",
+      "description": "Get North Carolina courthouse locations for a county — address, phone, hours, and nearby parking. Provide a county (e.g. 'Wake') or an NC case number (e.g. 26CR031353-910) to derive the county. Read-only. NC only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "county": {
+            "type": "string",
+            "description": "NC county name, e.g. 'Wake', 'Mecklenburg'.",
+            "pattern": "^[A-Za-z .'-]{3,40}$"
+          },
+          "caseNumber": {
+            "type": "string",
+            "description": "NC case number, e.g. 26CR031353-910 (county is derived from it).",
+            "pattern": "^\\d{2}[A-Z]{1,3}\\d{6}-\\d{3}$"
+          }
+        },
+        "anyOf": [
+          {
+            "required": [
+              "county"
+            ]
+          },
+          {
+            "required": [
+              "caseNumber"
+            ]
+          }
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "estimate_license_points",
+      "description": "Estimate NC driver's-license points under G.S. 20-16(c) for traffic charges, plus any mandatory suspension for excessive speeding — no case number needed. DMV points only, not insurance (SDIP) points. Read-only. NC only. Not legal advice.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "charges": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 20,
+            "items": {
+              "type": "object",
+              "properties": {
+                "offense": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Offense text, e.g. 'Speeding 15 over'."
+                },
+                "statute": {
+                  "type": "string",
+                  "pattern": "^[0-9]+[A-Za-z0-9.().\\-]*$",
+                  "description": "NC statute number, e.g. '20-141'."
+                },
+                "actual_speed": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 200,
+                  "description": "MPH the vehicle was travelling."
+                },
+                "speed_limit": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 100,
+                  "description": "Posted limit in MPH."
+                }
+              },
+              "anyOf": [
+                {
+                  "required": [
+                    "offense"
+                  ]
+                },
+                {
+                  "required": [
+                    "statute"
+                  ]
+                }
+              ],
+              "additionalProperties": false
+            }
+          },
+          "priorPoints": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Points already on the license, if known."
+          },
+          "recentlyReinstated": {
+            "type": "boolean"
+          },
+          "commercialLicense": {
+            "type": "boolean"
+          },
+          "outOfStateLicense": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "charges"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "lookup_court_case",
+      "description": "Look up a North Carolina court case or traffic citation by case number (e.g. 26CV001234-012) or citation number (e.g. 92403H2). Returns case status, upcoming hearings, and charges. Read-only. NC only. Not legal advice.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "An NC case number (e.g. 26CV001234-012) or citation number (e.g. 92403H2).",
+            "pattern": "^(\\d{2}[A-Z]{1,3}\\d{6}-\\d{3}|\\d{3,5}[A-Z]\\d{1,3})$"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "subscribe_to_case_updates",
+      "description": "Sign up for email alerts about an NC court case — new hearing dates, changes and dispositions. This SENDS ONE CONFIRMATION EMAIL to the address given. It does not start monitoring: no alerts are sent, and nothing is activated, until the recipient clicks the link in that email. Use it only when the person has asked for alerts and has given you their own email address; do not subscribe an address on someone else's behalf. NC only. Not legal advice.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 2,
+            "description": "The person's full name, first and last."
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Where the confirmation email is sent. Must belong to the person asking."
+          },
+          "caseNumber": {
+            "type": "string",
+            "description": "NC case number (e.g. 26CV001234-012) or citation number (e.g. 92403H2).",
+            "pattern": "^(\\d{2}[A-Z]{1,3}\\d{6}-\\d{3}|\\d{3,5}[A-Z]\\d{1,3})$"
+          },
+          "phone": {
+            "type": "string",
+            "pattern": "^\\d{10}$",
+            "description": "Optional 10-digit US phone number, digits only."
+          }
+        },
+        "required": [
+          "name",
+          "email",
+          "caseNumber"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "app.courtdelta.com",
+  "source": "webmcp.com/api/directory.json"
+}

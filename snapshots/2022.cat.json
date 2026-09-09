@@ -1,0 +1,85 @@
+{
+  "sponsio": 1,
+  "url": "https://2022.cat/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "get_document_metadata",
+      "description": "Retorna la fitxa del document en la llengua d'aquesta pàgina: títol complet, autor, any, DOI i text de citació; els 3 àmbits i 12 objectius amb el nombre d'accions i les URL; les descàrregues en PDF, EPUB i Markdown; i l'endpoint del servidor MCP. Punt de partida recomanat i font de la citació correcta.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_section",
+      "description": "Retorna el text complet d'una secció del document en Markdown, amb títol i URL, en la llengua d'aquesta pàgina. Sense slug, retorna la pàgina que el lector té oberta. Accepta el slug canònic (per exemple sphere-1/goal-2/action-2-1 o introduction) o la ruta localitzada d'aquesta llengua. Cobreix les 109 seccions del document: introducció, resum executiu, tren de la prosperitat, 3 àmbits, 12 objectius i 91 accions.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Slug canònic o ruta localitzada de la secció. Deixa-ho buit per llegir la pàgina actual."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_proposals",
+      "description": "Llista les 91 accions del pla en ordre numèric, amb identificador, títol, slug i URL, en la llengua d'aquesta pàgina. Filtra per àmbit (sphereId d'1 a 3) o per objectiu (goalId d'1 a 12); sense filtre retorna les 91 accions. Quan sigui possible, filtra per objectiu per obtenir una resposta curta.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sphereId": {
+            "type": "integer",
+            "description": "Número d'àmbit, d'1 a 3 (1 societat, 2 economia, 3 sector públic).",
+            "minimum": 1,
+            "maximum": 3
+          },
+          "goalId": {
+            "type": "integer",
+            "description": "Número d'objectiu, d'1 a 12 (d'1 a 4 àmbit 1, de 5 a 8 àmbit 2, de 9 a 12 àmbit 3).",
+            "minimum": 1,
+            "maximum": 12
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_document",
+      "description": "Cerca per paraules clau a tot el document Catalunya 2022: 3 àmbits, 12 objectius i 91 accions, més la introducció, el resum executiu i el tren de la prosperitat. Retorna fins a 8 resultats amb identificador, títol, ruta, URL i fragment, en la llengua d'aquesta pàgina. Per llegir una secció sencera, crida get_section amb el slug d'un resultat.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Termes de cerca en la llengua de la pàgina, fins a 100 caràcters. Exemples: habitatge, energia, formació professional."
+          },
+          "scope": {
+            "type": "string",
+            "description": "Tipus de secció: action (91 accions), goal (12 objectius), sphere (3 àmbits) o static (introducció, resum executiu, tren de la prosperitat).",
+            "enum": [
+              "sphere",
+              "goal",
+              "action",
+              "static"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "2022.cat",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,490 @@
+{
+  "sponsio": 1,
+  "url": "https://bandarra.me/apps/webmcp-text-editor/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "create_document",
+      "description": "Creates a new document in the workspace with the given title and optional initial content. Providing content avoids a separate write step. Pauses for user authorization before creating.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "The title for the new document."
+          },
+          "content": {
+            "type": "string",
+            "description": "Optional initial content for the new document. If omitted the document is created blank."
+          }
+        },
+        "required": [
+          "title"
+        ]
+      }
+    },
+    {
+      "name": "delegate_to_skill",
+      "description": "Delegates a task to a named skill (sub-agent). The skill runs with read-only access and returns its response as a string. Interpret the response and act on it accordingly.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "skillName": {
+            "type": "string",
+            "description": "The exact name of the skill to invoke."
+          },
+          "task": {
+            "type": "string",
+            "description": "The specific task or instructions to pass to the skill."
+          }
+        },
+        "required": [
+          "skillName",
+          "task"
+        ]
+      }
+    },
+    {
+      "name": "delete_document",
+      "description": "Deletes a document from the workspace. Pauses for user authorization before deleting. If the deleted document was active, a different document becomes active.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The document ID to delete."
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "edit",
+      "description": "Proposes a targeted edit. This tool pauses and waits for user approval. ONLY use this for small, localized changes (e.g., 1-2 sentences). Never pass the entire document.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "originalText": {
+            "type": "string",
+            "description": "The exact, minimal string of text to replace. Must be short. Do NOT pass the whole document."
+          },
+          "replacementText": {
+            "type": "string",
+            "description": "The new text to replace the originalText with."
+          }
+        },
+        "required": [
+          "originalText",
+          "replacementText"
+        ]
+      }
+    },
+    {
+      "name": "get_active_doc_info",
+      "description": "Returns the id and title of the document currently open in the editor.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_current_mode",
+      "description": "Returns the current UI mode: 'editor' (Monaco editor is visible) or 'preview' (Markdown preview is visible). Check this before making edits to ensure the editor is accessible.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_metadata",
+      "description": "Returns metadata about the current document: character count, word count, and line count.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "invoke_agent",
+      "description": "Delegates an ad-hoc task to a generic sub-agent. The sub-agent runs with the given system prompt and optional tool groups. Returns { result: string } with the sub-agent's final response.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "systemPrompt": {
+            "type": "string",
+            "description": "The system prompt / instructions for the sub-agent."
+          },
+          "task": {
+            "type": "string",
+            "description": "The task or question to send to the sub-agent."
+          },
+          "tools": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Optional tool group names to give the sub-agent. Supported: 'workspace_readonly'."
+          }
+        },
+        "required": [
+          "systemPrompt",
+          "task"
+        ]
+      }
+    },
+    {
+      "name": "invoke_planner",
+      "description": "Decomposes a high-level task into a structured step-by-step Plan. Returns a JSON string: { goal, steps: [{ id, instruction, dependsOn }] }. The Orchestrator reads the plan and dispatches each step using the appropriate tools.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The high-level task to decompose into a plan."
+          },
+          "context": {
+            "type": "string",
+            "description": "Optional additional context (e.g. current document summary, workspace doc list)."
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    },
+    {
+      "name": "invoke_researcher",
+      "description": "Queries workspace documents and synthesizes a structured answer. Returns JSON: { summary, sources: [{ id, title, excerpt }] }. Use this when the task requires finding information across workspace documents before writing or reviewing.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "The question or information need to research."
+          },
+          "docIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Optional list of document IDs to restrict the search to. If omitted, all workspace documents are queried."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "invoke_reviewer",
+      "description": "Evaluates a draft against explicit criteria and returns structured feedback. Returns JSON: { passed: boolean, issues: [{ severity, location?, description, fix? }], summary }. Use after invoke_writer to check a draft before applying it. If passed is false and error-severity issues remain after 3 Writer→Reviewer cycles, present the best available draft via edit() or write() and summarise remaining issues in your response.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "The draft text to review."
+          },
+          "criteria": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Review criteria to check against (e.g. 'grammatical correctness', 'consistent use of past tense', 'no unsupported factual claims')."
+          }
+        },
+        "required": [
+          "text",
+          "criteria"
+        ]
+      }
+    },
+    {
+      "name": "invoke_writer",
+      "description": "Generates draft text for a single targeted section from an instruction and optional research/style context. Returns { draft: string } — raw text only, no edits applied. After receiving the draft, apply it using edit() for the target section. Do NOT use this to rewrite the whole document at once — use invoke_planner to break full-document tasks into per-section steps.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "instruction": {
+            "type": "string",
+            "description": "What to write. Be explicit: specify the target section, desired length, and any constraints."
+          },
+          "researchContext": {
+            "type": "string",
+            "description": "JSON-encoded ResearchResult from invoke_researcher. Inject when the draft should cite workspace sources."
+          },
+          "styleContext": {
+            "type": "string",
+            "description": "A verbatim excerpt from the document the Writer should match in tone, voice, and formatting."
+          }
+        },
+        "required": [
+          "instruction"
+        ]
+      }
+    },
+    {
+      "name": "list_skills",
+      "description": "Lists all skills available in this workspace. Returns an array of { id, name, description } entries. Use read_skill to fetch the full instructions for a skill, or delegate_to_skill to run one.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_workspace_docs",
+      "description": "Lists all documents in the workspace. Returns an array of { id, title } objects.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "post_comment",
+      "description": "Leave a blog post comment",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string"
+          },
+          "website": {
+            "type": "string"
+          },
+          "author_name": {
+            "type": "string"
+          },
+          "author_email": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "author_name",
+          "text"
+        ]
+      }
+    },
+    {
+      "name": "query_workspace",
+      "description": "Asks a question spanning all workspace documents and synthesizes the results. Returns { summary, sources: [{ id, title, excerpt }] }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "The question to answer across all documents."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "query_workspace_doc",
+      "description": "Asks a question about a specific document using a sub-agent. Returns { summary, excerpt } where excerpt is the most relevant verbatim passage.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The document ID to query."
+          },
+          "query": {
+            "type": "string",
+            "description": "The question about the document."
+          }
+        },
+        "required": [
+          "id",
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "read",
+      "description": "Reads the complete current editor content.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "read_selection",
+      "description": "Reads the currently selected text in the editor.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "read_skill",
+      "description": "Returns the full definition of a skill (id, name, description, instructions, optional model) given its id or name. Use this before delegate_to_skill to inspect what a skill does.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The skill id. Either id or name must be provided."
+          },
+          "name": {
+            "type": "string",
+            "description": "The skill name (case-insensitive). Either id or name must be provided."
+          }
+        }
+      }
+    },
+    {
+      "name": "read_workspace_doc",
+      "description": "Reads the full content of a specific document. Returns { title, content } or { error }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The document ID to read."
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "rename_document",
+      "description": "Renames an existing document in the workspace. Pauses for user authorization before renaming.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The document ID to rename."
+          },
+          "title": {
+            "type": "string",
+            "description": "The new title for the document."
+          }
+        },
+        "required": [
+          "id",
+          "title"
+        ]
+      }
+    },
+    {
+      "name": "request_switch_to_editor",
+      "description": "Requests the user to switch from Preview mode to Editor mode. This will display a prompt to the user and pause until they accept or decline. Call this before attempting edits when in preview mode.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "search",
+      "description": "Finds all occurrences of a query string in the document. Returns the line and column of each match.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "The text to search for."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "switch_active_document",
+      "description": "Switches the active document in the editor. Saves the current document content before switching. Does not require user authorization.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The document ID to switch to."
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "translate",
+      "description": "Translate a piece of text from one language to another using an on-device AI model. Languages are specified as BCP 47 tags (e.g. 'en', 'fr', 'ja').",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "The text to translate."
+          },
+          "sourceLanguage": {
+            "type": "string",
+            "description": "BCP 47 language tag of the source language (e.g. \"en\")."
+          },
+          "targetLanguage": {
+            "type": "string",
+            "description": "BCP 47 language tag of the target language (e.g. \"fr\")."
+          }
+        },
+        "required": [
+          "text",
+          "sourceLanguage",
+          "targetLanguage"
+        ]
+      }
+    },
+    {
+      "name": "write",
+      "description": "Proposes a complete rewrite. This tool pauses and waits for user approval. ONLY use this when the user explicitly requests a total rewrite of the entire document.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "The full new document content."
+          }
+        },
+        "required": [
+          "content"
+        ]
+      }
+    }
+  ],
+  "host": "bandarra.me",
+  "source": "webmcp.com/api/directory.json"
+}

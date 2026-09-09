@@ -1,0 +1,944 @@
+{
+  "sponsio": 1,
+  "url": "https://demos.telerik.com/blazor-ui/marketing-campaigns/webmcp-operations-hub",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "inventory-sheet-spreadsheet-add-sheet",
+      "description": "Add a new sheet to the Warehouse Capacity spreadsheet, e.g. when the user asks for a 'Q3 Forecast' or a separate sheet for filtered data. (inventory-sheet spreadsheet)",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "inventory-sheet-spreadsheet-export",
+      "description": "Export the Warehouse Capacity spreadsheet to an Excel (.xlsx) file. (inventory-sheet spreadsheet)",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "fileName": {
+            "type": "string",
+            "description": "Optional file name for the exported file (without extension)"
+          }
+        }
+      }
+    },
+    {
+      "name": "inventory-sheet-spreadsheet-navigate-sheet",
+      "description": "Switch to a different sheet in the spreadsheet. (inventory-sheet spreadsheet)",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sheetName": {
+            "type": "string",
+            "description": "Name of the sheet to navigate to"
+          }
+        },
+        "required": [
+          "sheetName"
+        ]
+      }
+    },
+    {
+      "name": "inventory-sheet-spreadsheet-rename-sheet",
+      "description": "Rename a sheet in the Warehouse Capacity spreadsheet. (inventory-sheet spreadsheet)",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "currentName": {
+            "type": "string",
+            "description": "Current name of the sheet to rename"
+          },
+          "newName": {
+            "type": "string",
+            "description": "New name for the sheet"
+          }
+        },
+        "required": [
+          "currentName",
+          "newName"
+        ]
+      }
+    },
+    {
+      "name": "inventory-sheet-spreadsheet-set-cell",
+      "description": "Write a single cell value into the Warehouse Capacity spreadsheet. To populate the spreadsheet from the Shipment Tracker grid, ALWAYS first call shipment-tracker Filter (if criteria given) and then shipment-tracker GetData to retrieve the visible rows. Then call this tool MULTIPLE TIMES to write: (1) a header row at row 1 with columns A='Tracking #', B='Origin', C='Destination', D='Delivery Address', E='Status', F='Carrier', G='Value', H='Weight (kg)', I='Ship Date', J='ETA', K='Dest. Lat', L='Dest. Lng'; and (2) one row per shipment starting at row 2, mapping TrackingNumber→A, Origin→B, Destination→C, DestinationStreet→D, Status→E, Carrier→F, Value→G, Weight→H, ShipDate→I, ETA→J, DestinationLat→K, DestinationLng→L. Cell addresses use A1 notation (e.g. 'A1', 'B2'). Clear any old rows the user no longer wants before writing new ones. (inventory-sheet spreadsheet)",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "row": {
+            "type": "number",
+            "description": "Zero-based row index of the cell"
+          },
+          "col": {
+            "type": "number",
+            "description": "Zero-based column index of the cell"
+          },
+          "value": {
+            "type": "string",
+            "description": "The value to set in the cell"
+          },
+          "sheet": {
+            "type": "string",
+            "description": "Optional sheet name. Defaults to the active sheet"
+          }
+        },
+        "required": [
+          "row",
+          "col",
+          "value"
+        ]
+      }
+    },
+    {
+      "name": "shipment-tracker-grid-clear-filter",
+      "description": "Remove all active filters from the Shipment Tracker grid. (shipment-tracker grid)",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "shipment-tracker-grid-clear-group",
+      "description": "Clear all applied groups from the grid. (shipment-tracker grid)",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "shipment-tracker-grid-clear-highlight",
+      "description": "Clear all highlighted rows and cells in the grid. (shipment-tracker grid)",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "shipment-tracker-grid-clear-select",
+      "description": "Clear all selected rows and cells in the grid. (shipment-tracker grid)",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "shipment-tracker-grid-clear-sort",
+      "description": "Clear all applied sorts from the grid. (shipment-tracker grid)",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "shipment-tracker-grid-column-hide",
+      "description": "Hide a visible grid column. (shipment-tracker grid)",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Column identifier",
+            "enum": [
+              "tracking",
+              "origin",
+              "destination",
+              "street",
+              "destlat",
+              "destlng",
+              "status",
+              "carrier",
+              "value",
+              "weight",
+              "shipdate",
+              "eta"
+            ]
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "shipment-tracker-grid-column-lock",
+      "description": "Lock (freeze) a grid column so it stays visible when scrolling. (shipment-tracker grid)",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Column identifier",
+            "enum": [
+              "tracking",
+              "origin",
+              "destination",
+              "street",
+              "destlat",
+              "destlng",
+              "status",
+              "carrier",
+              "value",
+              "weight",
+              "shipdate",
+              "eta"
+            ]
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "shipment-tracker-grid-column-reorder",
+      "description": "Move a grid column to a different position. (shipment-tracker grid)",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Column identifier to move",
+            "enum": [
+              "tracking",
+              "origin",
+              "destination",
+              "street",
+              "destlat",
+              "destlng",
+              "status",
+              "carrier",
+              "value",
+              "weight",
+              "shipdate",
+              "eta"
+            ]
+          },
+          "position": {
+            "type": "number",
+            "description": "Target position index (0-based)"
+          }
+        },
+        "required": [
+          "id",
+          "position"
+        ]
+      }
+    },
+    {
+      "name": "shipment-tracker-grid-column-resize",
+      "description": "Resize a grid column to a specified width. (shipment-tracker grid)",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Column identifier to resize",
+            "enum": [
+              "tracking",
+              "origin",
+              "destination",
+              "street",
+              "destlat",
+              "destlng",
+              "status",
+              "carrier",
+              "value",
+              "weight",
+              "shipdate",
+              "eta"
+            ]
+          },
+          "size": {
+            "type": "string",
+            "description": "New column width (e.g. \"200px\")"
+          }
+        },
+        "required": [
+          "id",
+          "size"
+        ]
+      }
+    },
+    {
+      "name": "shipment-tracker-grid-column-show",
+      "description": "Show a hidden grid column. (shipment-tracker grid)",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Column identifier",
+            "enum": [
+              "tracking",
+              "origin",
+              "destination",
+              "street",
+              "destlat",
+              "destlng",
+              "status",
+              "carrier",
+              "value",
+              "weight",
+              "shipdate",
+              "eta"
+            ]
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "shipment-tracker-grid-column-unlock",
+      "description": "Unlock a frozen grid column. (shipment-tracker grid)",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Column identifier",
+            "enum": [
+              "tracking",
+              "origin",
+              "destination",
+              "street",
+              "destlat",
+              "destlng",
+              "status",
+              "carrier",
+              "value",
+              "weight",
+              "shipdate",
+              "eta"
+            ]
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "shipment-tracker-grid-export-csv",
+      "description": "Export the grid data to a CSV file. (shipment-tracker grid)",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "fileName": {
+            "type": "string",
+            "description": "Name of the exported file (optional)"
+          }
+        }
+      }
+    },
+    {
+      "name": "shipment-tracker-grid-export-excel",
+      "description": "Export the grid data to an Excel file. (shipment-tracker grid)",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "fileName": {
+            "type": "string",
+            "description": "Name of the exported file (optional)"
+          }
+        }
+      }
+    },
+    {
+      "name": "shipment-tracker-grid-filter",
+      "description": "Narrow the Shipment Tracker grid to a subset of rows. Use this whenever the user asks to see, show, focus on, or look at shipments matching some criteria. Available column fields: Status (values: 'In Transit', 'Delivered', 'Delayed', 'Pending'), Destination (city name: New York, London, Berlin, Dubai, Singapore, Mexico City, Toronto, Johannesburg, Seoul, Sydney), Origin (Chicago, Rotterdam, Shanghai, São Paulo, Mumbai, Tokyo, Sydney, Lagos), Carrier, Region (North America, Europe, Asia Pacific, Latin America, Africa, Oceania), Value (number), Weight (number). Always call this FIRST before warehouse-map AddMarker or inventory-sheet SetCell when the user asks to plot or export shipments. (shipment-tracker grid)",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "description": "Filter by a single condition (field + operator + value). To match multiple values in the same column, use logic + filters. To filter by different columns, call this tool once per column.",
+        "properties": {
+          "field": {
+            "type": "string",
+            "enum": [
+              "TrackingNumber",
+              "Origin",
+              "Destination",
+              "DestinationStreet",
+              "DestinationLat",
+              "DestinationLng",
+              "Status",
+              "Carrier",
+              "Value",
+              "Weight",
+              "ShipDate",
+              "ETA"
+            ],
+            "description": "Column field name to filter"
+          },
+          "operator": {
+            "type": "string",
+            "enum": [
+              "eq",
+              "neq",
+              "gt",
+              "gte",
+              "lt",
+              "lte",
+              "contains",
+              "doesnotcontain",
+              "startswith",
+              "endswith",
+              "isnull",
+              "isnotnull",
+              "isempty",
+              "isnotempty"
+            ],
+            "description": "Filter operator"
+          },
+          "value": {
+            "description": "Filter value (string, number, or boolean depending on column type)"
+          },
+          "logic": {
+            "type": "string",
+            "enum": [
+              "and",
+              "or"
+            ],
+            "description": "Logical operator to combine multiple values for the same column"
+          },
+          "filters": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "field": {
+                  "type": "string",
+                  "enum": [
+                    "TrackingNumber",
+                    "Origin",
+                    "Destination",
+                    "DestinationStreet",
+                    "DestinationLat",
+                    "DestinationLng",
+                    "Status",
+                    "Carrier",
+                    "Value",
+                    "Weight",
+                    "ShipDate",
+                    "ETA"
+                  ],
+                  "description": "Column field name to filter"
+                },
+                "operator": {
+                  "type": "string",
+                  "enum": [
+                    "eq",
+                    "neq",
+                    "gt",
+                    "gte",
+                    "lt",
+                    "lte",
+                    "contains",
+                    "doesnotcontain",
+                    "startswith",
+                    "endswith",
+                    "isnull",
+                    "isnotnull",
+                    "isempty",
+                    "isnotempty"
+                  ],
+                  "description": "Filter operator"
+                },
+                "value": {
+                  "description": "Filter value"
+                }
+              }
+            },
+            "description": "Array of filter conditions for the same column"
+          }
+        }
+      }
+    },
+    {
+      "name": "shipment-tracker-grid-group",
+      "description": "Group the grid data by a column field. (shipment-tracker grid)",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string",
+            "enum": [
+              "TrackingNumber",
+              "Origin",
+              "Destination",
+              "DestinationStreet",
+              "DestinationLat",
+              "DestinationLng",
+              "Status",
+              "Carrier",
+              "Value",
+              "Weight",
+              "ShipDate",
+              "ETA"
+            ],
+            "description": "Column field name to group by"
+          },
+          "dir": {
+            "type": "string",
+            "enum": [
+              "asc",
+              "desc"
+            ],
+            "description": "Sort direction within the group"
+          }
+        },
+        "required": [
+          "field"
+        ]
+      }
+    },
+    {
+      "name": "shipment-tracker-grid-highlight",
+      "description": "Visually highlight grid rows or cells that match a condition. This is a standalone visual operation — do NOT call grid-filter beforehand. Specify field, operator, and value. To match multiple values in the same column, use logic and filters. To match by different columns, call this tool once per column. Optionally provide 'cells' with column fields to highlight only those cells instead of entire rows. (shipment-tracker grid)",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "description": "Match rows by a single condition (field + operator + value). To match multiple values in the same column, use logic + filters. To match by different columns, call this tool once per column. Optionally target specific cells.",
+        "properties": {
+          "field": {
+            "type": "string",
+            "enum": [
+              "TrackingNumber",
+              "Origin",
+              "Destination",
+              "DestinationStreet",
+              "DestinationLat",
+              "DestinationLng",
+              "Status",
+              "Carrier",
+              "Value",
+              "Weight",
+              "ShipDate",
+              "ETA"
+            ],
+            "description": "Column field name to match"
+          },
+          "operator": {
+            "type": "string",
+            "enum": [
+              "eq",
+              "neq",
+              "gt",
+              "gte",
+              "lt",
+              "lte",
+              "contains",
+              "doesnotcontain",
+              "startswith",
+              "endswith",
+              "isnull",
+              "isnotnull",
+              "isempty",
+              "isnotempty"
+            ],
+            "description": "Filter operator"
+          },
+          "value": {
+            "description": "Filter value (string, number, or boolean depending on column type)"
+          },
+          "logic": {
+            "type": "string",
+            "enum": [
+              "and",
+              "or"
+            ],
+            "description": "Logical operator to combine multiple values for the same column"
+          },
+          "filters": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "field": {
+                  "type": "string",
+                  "enum": [
+                    "TrackingNumber",
+                    "Origin",
+                    "Destination",
+                    "DestinationStreet",
+                    "DestinationLat",
+                    "DestinationLng",
+                    "Status",
+                    "Carrier",
+                    "Value",
+                    "Weight",
+                    "ShipDate",
+                    "ETA"
+                  ],
+                  "description": "Column field name to match"
+                },
+                "operator": {
+                  "type": "string",
+                  "enum": [
+                    "eq",
+                    "neq",
+                    "gt",
+                    "gte",
+                    "lt",
+                    "lte",
+                    "contains",
+                    "doesnotcontain",
+                    "startswith",
+                    "endswith",
+                    "isnull",
+                    "isnotnull",
+                    "isempty",
+                    "isnotempty"
+                  ],
+                  "description": "Filter operator"
+                },
+                "value": {
+                  "description": "Filter value"
+                }
+              }
+            },
+            "description": "Array of filter conditions for the same column"
+          },
+          "cells": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "TrackingNumber",
+                "Origin",
+                "Destination",
+                "DestinationStreet",
+                "DestinationLat",
+                "DestinationLng",
+                "Status",
+                "Carrier",
+                "Value",
+                "Weight",
+                "ShipDate",
+                "ETA"
+              ]
+            },
+            "description": "Optional list of column fields to target. When provided, only the specified cells in matching rows are affected instead of entire rows."
+          }
+        }
+      }
+    },
+    {
+      "name": "shipment-tracker-grid-page",
+      "description": "Navigate the grid to a specific page number. (shipment-tracker grid)",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "number",
+            "description": "Page number (1-based)"
+          }
+        },
+        "required": [
+          "page"
+        ]
+      }
+    },
+    {
+      "name": "shipment-tracker-grid-page-size",
+      "description": "Change the number of items displayed per page. (shipment-tracker grid)",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "pageSize": {
+            "type": "number",
+            "enum": [
+              10,
+              20,
+              50
+            ],
+            "description": "Number of items per page"
+          }
+        },
+        "required": [
+          "pageSize"
+        ]
+      }
+    },
+    {
+      "name": "shipment-tracker-grid-select",
+      "description": "Select grid rows or cells that match a condition. This is a standalone operation — do NOT call grid-filter beforehand. Specify field, operator, and value. To match multiple values in the same column, use logic and filters. To match by different columns, call this tool once per column. Optionally provide 'cells' with column fields to select only those cells instead of entire rows. (shipment-tracker grid)",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "description": "Match rows by a single condition (field + operator + value). To match multiple values in the same column, use logic + filters. To match by different columns, call this tool once per column. Optionally target specific cells.",
+        "properties": {
+          "field": {
+            "type": "string",
+            "enum": [
+              "TrackingNumber",
+              "Origin",
+              "Destination",
+              "DestinationStreet",
+              "DestinationLat",
+              "DestinationLng",
+              "Status",
+              "Carrier",
+              "Value",
+              "Weight",
+              "ShipDate",
+              "ETA"
+            ],
+            "description": "Column field name to match"
+          },
+          "operator": {
+            "type": "string",
+            "enum": [
+              "eq",
+              "neq",
+              "gt",
+              "gte",
+              "lt",
+              "lte",
+              "contains",
+              "doesnotcontain",
+              "startswith",
+              "endswith",
+              "isnull",
+              "isnotnull",
+              "isempty",
+              "isnotempty"
+            ],
+            "description": "Filter operator"
+          },
+          "value": {
+            "description": "Filter value (string, number, or boolean depending on column type)"
+          },
+          "logic": {
+            "type": "string",
+            "enum": [
+              "and",
+              "or"
+            ],
+            "description": "Logical operator to combine multiple values for the same column"
+          },
+          "filters": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "field": {
+                  "type": "string",
+                  "enum": [
+                    "TrackingNumber",
+                    "Origin",
+                    "Destination",
+                    "DestinationStreet",
+                    "DestinationLat",
+                    "DestinationLng",
+                    "Status",
+                    "Carrier",
+                    "Value",
+                    "Weight",
+                    "ShipDate",
+                    "ETA"
+                  ],
+                  "description": "Column field name to match"
+                },
+                "operator": {
+                  "type": "string",
+                  "enum": [
+                    "eq",
+                    "neq",
+                    "gt",
+                    "gte",
+                    "lt",
+                    "lte",
+                    "contains",
+                    "doesnotcontain",
+                    "startswith",
+                    "endswith",
+                    "isnull",
+                    "isnotnull",
+                    "isempty",
+                    "isnotempty"
+                  ],
+                  "description": "Filter operator"
+                },
+                "value": {
+                  "description": "Filter value"
+                }
+              }
+            },
+            "description": "Array of filter conditions for the same column"
+          },
+          "cells": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "TrackingNumber",
+                "Origin",
+                "Destination",
+                "DestinationStreet",
+                "DestinationLat",
+                "DestinationLng",
+                "Status",
+                "Carrier",
+                "Value",
+                "Weight",
+                "ShipDate",
+                "ETA"
+              ]
+            },
+            "description": "Optional list of column fields to target. When provided, only the specified cells in matching rows are affected instead of entire rows."
+          }
+        }
+      }
+    },
+    {
+      "name": "shipment-tracker-grid-sort",
+      "description": "Sort the Shipment Tracker grid by a column, e.g. Value descending or ETA ascending. (shipment-tracker grid)",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string",
+            "enum": [
+              "TrackingNumber",
+              "Origin",
+              "Destination",
+              "DestinationStreet",
+              "DestinationLat",
+              "DestinationLng",
+              "Status",
+              "Carrier",
+              "Value",
+              "Weight",
+              "ShipDate",
+              "ETA"
+            ],
+            "description": "Column field name to sort by"
+          },
+          "dir": {
+            "type": "string",
+            "enum": [
+              "asc",
+              "desc"
+            ],
+            "description": "Sort direction"
+          }
+        },
+        "required": [
+          "field",
+          "dir"
+        ]
+      }
+    },
+    {
+      "name": "shipment-tracker-gridgetdata",
+      "description": "Read the rows currently visible in the Shipment Tracker (after any active filter/sort) as JSON. ALWAYS call this AFTER a Filter step when the user wants to plot shipments on the map or write them to the warehouse spreadsheet. Each returned row exposes: TrackingNumber, Origin, Destination (city), DestinationStreet (full delivery address), DestinationLat, DestinationLng, Status, Carrier, Value, Weight, ShipDate, ETA. Use DestinationLat/DestinationLng with warehouse-map AddMarker, and feed the rows into inventory-sheet SetCell. (shipment-tracker grid)",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "warehouse-map-map-add-marker",
+      "description": "Add a pin/marker on the Global Warehouse Network map. Use this to plot warehouse locations OR shipment delivery addresses returned by the shipment-tracker grid. For shipment delivery addresses: ALWAYS first call shipment-tracker Filter (when criteria given) and then shipment-tracker GetData to fetch the current rows. Each grid row exposes DestinationStreet, Destination (city), DestinationLat and DestinationLng — pass DestinationLat as latitude and DestinationLng as longitude, one call per shipment. Use DestinationStreet or '{TrackingNumber} — {Destination}' as the marker title. Available warehouses (for warehouse pins): Chicago Hub (Chicago, USA, North America) at [41.88, -87.63], capacity 78%; Rotterdam Port (Rotterdam, Netherlands, Europe) at [51.92, 4.48], capacity 85%; Shanghai Terminal (Shanghai, China, Asia Pacific) at [31.23, 121.47], capacity 92%; São Paulo Center (São Paulo, Brazil, Latin America) at [-23.55, -46.63], capacity 61%; Mumbai Gateway (Mumbai, India, Asia Pacific) at [19.08, 72.88], capacity 88%; Tokyo Depot (Tokyo, Japan, Asia Pacific) at [35.68, 139.69], capacity 73%; Sydney Warehouse (Sydney, Australia, Oceania) at [-33.87, 151.21], capacity 55%; Lagos Depot (Lagos, Nigeria, Africa) at [6.52, 3.38], capacity 42% (warehouse-map map)",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "latitude": {
+            "type": "number",
+            "description": "The latitude of the marker"
+          },
+          "longitude": {
+            "type": "number",
+            "description": "The longitude of the marker"
+          },
+          "title": {
+            "type": "string",
+            "description": "The title/tooltip of the marker"
+          }
+        },
+        "required": [
+          "latitude",
+          "longitude"
+        ]
+      }
+    },
+    {
+      "name": "warehouse-map-map-clear-markers",
+      "description": "Remove all markers from the map. (warehouse-map map)",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "warehouse-map-map-set-center",
+      "description": "Center the map on a specific location. (warehouse-map map)",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "latitude": {
+            "type": "number",
+            "description": "The latitude to center the map on"
+          },
+          "longitude": {
+            "type": "number",
+            "description": "The longitude to center the map on"
+          }
+        },
+        "required": [
+          "latitude",
+          "longitude"
+        ]
+      }
+    },
+    {
+      "name": "warehouse-map-map-set-zoom",
+      "description": "Set the zoom level of the map. (warehouse-map map)",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "level": {
+            "type": "number",
+            "description": "The zoom level to set (typically 1-19)"
+          }
+        },
+        "required": [
+          "level"
+        ]
+      }
+    }
+  ],
+  "host": "demos.telerik.com",
+  "source": "webmcp.com/api/directory.json"
+}

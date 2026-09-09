@@ -1,0 +1,579 @@
+{
+  "sponsio": 1,
+  "url": "https://matipojo.github.io/WebMCP-React-Chess/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "add-lesson-step",
+      "description": "Add ONE catalog item: a teaching Step or a Riddle. Writes the saved lesson only; does not move the live playhead or board. Fast teaching steps do not play the board; why first, then the move; student taps Play when they reach that slide. type riddle stores the puzzle on this lesson — the student solves it when they open that slide (do not wait here). A one-step lesson or riddle has no recap and no Back/Next — state the task only, never how to solve. Before a riddle, call how_to_offer_a_hint. After two or more teaching steps, the student sees Generating... on Next until you add-lesson-step or set-lesson-recap. Same lesson number. Never create-lesson again for the same topic. Not used for create-lesson type showme. Squares MUST be English algebraic: files a–h and ranks 1–8 (e4, f7, h5). Never transliterate squares. Words may be any language. Moves MUST use long algebraic notation (LAN) so hover can draw the arrow from the exact piece: e2-e4, e7-e5, Ng1-f3, Nb8-c6, Bf1-c4. Captures: e4xd5, Bf1xc4. Never write short SAN for a move (not 1.e4, not e5, not Nf3, not Bc4, not Qh5) — that only highlights the destination, as if the piece is unknown. Bare squares (e4, f7) name a location, not a move. Castling may stay O-O / O-O-O.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "lesson": {
+            "type": "number",
+            "description": "Catalog number from create-lesson."
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "step",
+              "riddle"
+            ],
+            "description": "step = teaching beat (title, why, what). riddle = chess puzzle/חידה: question + correct squares, then wait for a click."
+          },
+          "title": {
+            "type": "string",
+            "description": "Beat heading, not the lesson title. For a riddle, a short name."
+          },
+          "why": {
+            "type": "string",
+            "description": "Teaching steps: situation and goal before the move. Omit for riddles."
+          },
+          "what": {
+            "type": "string",
+            "description": "Teaching steps: concrete move(s) in long algebraic notation such as e2-e4, Ng1-f3. Omit for riddles."
+          },
+          "paragraphs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Optional extra detail for teaching steps. Do not spoil a riddle here."
+          },
+          "moves": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Optional from:to for Play buttons on teaching steps, e.g. [\"e2:e4\", \"e7:e5\"]."
+          },
+          "question": {
+            "type": "string",
+            "description": "Required for type riddle. Puzzle prompt shown to the student. Task only, no spoiler. Squares MUST be English algebraic: files a–h and ranks 1–8 (e4, f7, h5). Never transliterate squares. Words may be any language. Moves MUST use long algebraic notation (LAN) so hover can draw the arrow from the exact piece: e2-e4, e7-e5, Ng1-f3, Nb8-c6, Bf1-c4. Captures: e4xd5, Bf1xc4. Never write short SAN for a move (not 1.e4, not e5, not Nf3, not Bc4, not Qh5) — that only highlights the destination, as if the piece is unknown. Bare squares (e4, f7) name a location, not a move. Castling may stay O-O / O-O-O."
+          },
+          "correct": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Required for type riddle. Acceptable squares such as [\"e5\", \"e4\"]."
+          },
+          "hint": {
+            "type": "string",
+            "description": "Optional private nudge for type riddle, used only after they tap Give me a hint in chat. Never put this in question. Not shown on the chess page. Squares MUST be English algebraic: files a–h and ranks 1–8 (e4, f7, h5). Never transliterate squares. Words may be any language. Moves MUST use long algebraic notation (LAN) so hover can draw the arrow from the exact piece: e2-e4, e7-e5, Ng1-f3, Nb8-c6, Bf1-c4. Captures: e4xd5, Bf1xc4. Never write short SAN for a move (not 1.e4, not e5, not Nf3, not Bc4, not Qh5) — that only highlights the destination, as if the piece is unknown. Bare squares (e4, f7) name a location, not a move. Castling may stay O-O / O-O-O."
+          },
+          "quizType": {
+            "type": "string",
+            "enum": [
+              "click-square",
+              "click-piece",
+              "choose-move"
+            ],
+            "description": "How the student answers a riddle. Default click-square."
+          }
+        },
+        "required": [
+          "lesson"
+        ]
+      }
+    },
+    {
+      "name": "annotate-board",
+      "description": "Highlight squares and draw arrows on the board. kinds: move, capture, key, wrong, correct. Omit highlights or arrows to leave the current ones in place; pass an empty array to clear that overlay. Square names must be English algebraic (e4, f7).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "highlights": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "square": {
+                  "type": "string"
+                },
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "move",
+                    "capture",
+                    "key",
+                    "wrong",
+                    "correct"
+                  ]
+                }
+              }
+            }
+          },
+          "arrows": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "from": {
+                  "type": "string"
+                },
+                "to": {
+                  "type": "string"
+                },
+                "color": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "ask-quiz",
+      "description": "Prefer add-lesson-step with type riddle so the puzzle is stored on the catalog lesson. Use this tool only for a one-off quiz that is not a lesson step. Show a puzzle question in the coach panel and start a 30-second timer. Wait for a square click. The question must state the task only — never how to solve it, which tactic to use, or which piece or square to look at. Do not put a hint on the chess page. Before this tool, call how_to_offer_a_hint and render the Give me a hint button in this chat. A correct click shows Correct! in the coach only (do not mark the board). A miss or timeout teaches the correct square on the board and in the coach. Squares MUST be English algebraic: files a–h and ranks 1–8 (e4, f7, h5). Never transliterate squares. Words may be any language. Moves MUST use long algebraic notation (LAN) so hover can draw the arrow from the exact piece: e2-e4, e7-e5, Ng1-f3, Nb8-c6, Bf1-c4. Captures: e4xd5, Bf1xc4. Never write short SAN for a move (not 1.e4, not e5, not Nf3, not Bc4, not Qh5) — that only highlights the destination, as if the piece is unknown. Bare squares (e4, f7) name a location, not a move. Castling may stay O-O / O-O-O.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "question": {
+            "type": "string",
+            "description": "Puzzle prompt shown to the student. Task only, no spoiler. Squares MUST be English algebraic: files a–h and ranks 1–8 (e4, f7, h5). Never transliterate squares. Words may be any language. Moves MUST use long algebraic notation (LAN) so hover can draw the arrow from the exact piece: e2-e4, e7-e5, Ng1-f3, Nb8-c6, Bf1-c4. Captures: e4xd5, Bf1xc4. Never write short SAN for a move (not 1.e4, not e5, not Nf3, not Bc4, not Qh5) — that only highlights the destination, as if the piece is unknown. Bare squares (e4, f7) name a location, not a move. Castling may stay O-O / O-O-O."
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "click-square",
+              "click-piece",
+              "choose-move"
+            ]
+          },
+          "correct": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Acceptable squares such as [\"e5\", \"e4\"]"
+          },
+          "hint": {
+            "type": "string",
+            "description": "Optional private nudge to use only after they tap Give me a hint in chat. Never put this in question. Not shown on the chess page. Squares MUST be English algebraic: files a–h and ranks 1–8 (e4, f7, h5). Never transliterate squares. Words may be any language. Moves MUST use long algebraic notation (LAN) so hover can draw the arrow from the exact piece: e2-e4, e7-e5, Ng1-f3, Nb8-c6, Bf1-c4. Captures: e4xd5, Bf1xc4. Never write short SAN for a move (not 1.e4, not e5, not Nf3, not Bc4, not Qh5) — that only highlights the destination, as if the piece is unknown. Bare squares (e4, f7) name a location, not a move. Castling may stay O-O / O-O-O."
+          }
+        },
+        "required": [
+          "question",
+          "correct"
+        ]
+      }
+    },
+    {
+      "name": "clear-lesson",
+      "description": "Clear coach text, highlights, arrows, and any pending quiz. Stays in learn mode.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "create-lesson",
+      "description": "Create a new catalog lesson. type lesson (default): does not change the live board, coach, quiz, or playhead. Goal copy only: lasting title + what we will learn; then add-lesson-step. type showme: one live screen with one explanation; the planned line auto-plays, and the coach has Pause, Stop, and Replay. Call once per topic. Squares MUST be English algebraic: files a–h and ranks 1–8 (e4, f7, h5). Never transliterate squares. Words may be any language. Moves MUST use long algebraic notation (LAN) so hover can draw the arrow from the exact piece: e2-e4, e7-e5, Ng1-f3, Nb8-c6, Bf1-c4. Captures: e4xd5, Bf1xc4. Never write short SAN for a move (not 1.e4, not e5, not Nf3, not Bc4, not Qh5) — that only highlights the destination, as if the piece is unknown. Bare squares (e4, f7) name a location, not a move. Castling may stay O-O / O-O-O.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "lesson",
+              "showme"
+            ],
+            "description": "lesson = Goal then add-lesson-step. showme = one explanation; the line auto-plays with Pause, Stop, and Replay. Pass this enum; do not infer it by matching chat wording."
+          },
+          "title": {
+            "type": "string",
+            "description": "Lesson topic shown for the whole lesson, e.g. \"Italian Opening\" or \"Scholar's Mate\"."
+          },
+          "paragraphs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "type lesson: optional intro (long algebraic for any moves, e.g. e2-e4). type showme: the single explanation of the line the student will watch."
+          },
+          "moves": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Required for type showme. Planned line as from:to, e.g. [\"e2:e4\", \"e7:e5\"]. The line auto-plays in this order."
+          },
+          "fen": {
+            "type": "string",
+            "description": "Optional starting FEN for type showme. Default is the starting position."
+          }
+        },
+        "required": [
+          "title"
+        ]
+      }
+    },
+    {
+      "name": "demonstrate-piece",
+      "description": "Empty-ish board with one piece, legal-move highlights, and a coach explanation of how that piece moves. Then call how_to_ask_the_user.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "piece": {
+            "type": "string",
+            "description": "pawn, knight, bishop, rook, queen, or king"
+          },
+          "square": {
+            "type": "string",
+            "description": "Optional square, e.g. d4"
+          },
+          "color": {
+            "type": "string",
+            "description": "w or b"
+          }
+        },
+        "required": [
+          "piece"
+        ]
+      }
+    },
+    {
+      "name": "enter-learn-mode",
+      "description": "Switch the app into interactive learning mode, or resume the previous lesson if one was saved by exit-learn-mode. Use before teaching, famous games, piece demos, or quizzes. Disables checkmate so teaching positions can omit kings. Squares MUST be English algebraic: files a–h and ranks 1–8 (e4, f7, h5). Never transliterate squares. Words may be any language. Moves MUST use long algebraic notation (LAN) so hover can draw the arrow from the exact piece: e2-e4, e7-e5, Ng1-f3, Nb8-c6, Bf1-c4. Captures: e4xd5, Bf1xc4. Never write short SAN for a move (not 1.e4, not e5, not Nf3, not Bc4, not Qh5) — that only highlights the destination, as if the piece is unknown. Bare squares (e4, f7) name a location, not a move. Castling may stay O-O / O-O-O. After anything the student should see on the board (coach text, a played line, a demo), call how_to_ask_the_user with no arguments, then follow the returned instructions: render clickable buttons in this chat with your visualization UI. Do not use a numbered list. Do not put the question on the webpage. For a puzzle or exam, call how_to_offer_a_hint, then add-lesson-step with type riddle (question + correct squares). The riddle prompt must not spoil how to solve; the student taps Give me a hint in this chat if they want a nudge.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "exit-learn-mode",
+      "description": "Leave learning mode, save the current lesson so it can be resumed, clear coaching overlays, and restore a standard playable game.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get-board-state",
+      "description": "Retrieves the current state of the chess board including piece positions, current turn, total moves, game status, and whether learn mode is on.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get-possible-moves",
+      "description": "Gets all legal moves for a piece. Prefer algebraic square (e.g. \"e2\"); x/y coordinates also work.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "square": {
+            "type": "string",
+            "description": "Algebraic square such as e2"
+          },
+          "position": {
+            "type": "object",
+            "properties": {
+              "x": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 7,
+                "description": "X coordinate (0=a, 7=h)"
+              },
+              "y": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 7,
+                "description": "Y coordinate (0=rank 1, 7=rank 8)"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "goto-move",
+      "description": "Jump to a ply in the loaded game (0 = start). Rebuilds the position without animation.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "ply": {
+            "type": "number",
+            "description": "Number of half-moves from the start"
+          }
+        },
+        "required": [
+          "ply"
+        ]
+      }
+    },
+    {
+      "name": "how_to_ask_the_user",
+      "description": "Returns instructions for asking the student in this chat with clickable visualization buttons, not a numbered list and not on the chess page. Takes no arguments. Call this whenever you need them to choose what happens next, then follow the returned prompt exactly and stop. Includes the current board-theme accent and a readable label color. After anything the student should see on the board (coach text, a played line, a demo), call how_to_ask_the_user with no arguments, then follow the returned instructions: render clickable buttons in this chat with your visualization UI. Do not use a numbered list. Do not put the question on the webpage. For a puzzle or exam, call how_to_offer_a_hint, then add-lesson-step with type riddle (question + correct squares). The riddle prompt must not spoil how to solve; the student taps Give me a hint in this chat if they want a nudge.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "how_to_offer_a_hint",
+      "description": "Returns instructions for offering an opt-in Give me a hint visualization button in this chat. Takes no arguments. Call this instead of how_to_ask_the_user while the student is solving, before add-lesson-step type riddle (or ask-quiz for a one-off). Do not spoil the solution in coach text or in this chat until they tap the button. Follow the returned prompt, then add the riddle step.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list-lessons",
+      "description": "Lists famous games, piece tutorials, and saved catalog lessons. create-lesson type: lesson (Goal then add-lesson-step) or showme (one explanation; the line auto-plays with Pause, Stop, and Replay). Riddle: add-lesson-step type riddle. Squares MUST be English algebraic: files a–h and ranks 1–8 (e4, f7, h5). Never transliterate squares. Words may be any language. Moves MUST use long algebraic notation (LAN) so hover can draw the arrow from the exact piece: e2-e4, e7-e5, Ng1-f3, Nb8-c6, Bf1-c4. Captures: e4xd5, Bf1xc4. Never write short SAN for a move (not 1.e4, not e5, not Nf3, not Bc4, not Qh5) — that only highlights the destination, as if the piece is unknown. Bare squares (e4, f7) name a location, not a move. Castling may stay O-O / O-O-O.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "load-game",
+      "description": "Load a curated famous game or a saved user-catalog lesson by id or name (scholars-mate, fools-mate, italian-game, opera-game). Sets the starting position. Then call play-line for famous games.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Catalog id or game name"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "make-move",
+      "description": "Makes a chess move. Provide the move as \"from:to\" (e.g., \"e2:e4\"). Castling: \"e1:g1\", \"e1:h1\", or \"O-O\". In learn mode, either side may move. Animates with the hand.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "move": {
+            "type": "string",
+            "description": "Move in format \"from:to\" (e.g., \"e2:e4\"), or O-O / O-O-O to castle",
+            "default": "e2:e4"
+          }
+        },
+        "required": [
+          "move"
+        ]
+      }
+    },
+    {
+      "name": "play-line",
+      "description": "Play moves on the board with the hand animation. During a catalog lesson this does NOT change the coach text — use add-lesson-step Play buttons instead. For create-lesson type showme, the line auto-plays; the student uses Pause, Stop, and Replay on the coach (do not call this tool to start that demo). Omit moves to continue a loaded famous game. Then call how_to_ask_the_user.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "moves": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Moves as from:to, e.g. [\"e2:e4\", \"e7:e5\"]"
+          },
+          "count": {
+            "type": "number",
+            "description": "If continuing a loaded game, how many plies to play"
+          }
+        }
+      }
+    },
+    {
+      "name": "promote-pawn",
+      "description": "Promotes a pawn to queen, rook, bishop, or knight.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "pieceType": {
+            "type": "string",
+            "enum": [
+              "queen",
+              "rook",
+              "bishop",
+              "knight"
+            ],
+            "description": "Piece type to promote to."
+          }
+        },
+        "required": [
+          "pieceType"
+        ]
+      }
+    },
+    {
+      "name": "restart-game",
+      "description": "Restarts the chess game to initial position.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "set-coach",
+      "description": "Update the currently visible coach text only. Does not write the catalog. Prefer create-lesson, add-lesson-step, and set-lesson-recap. Squares MUST be English algebraic: files a–h and ranks 1–8 (e4, f7, h5). Never transliterate squares. Words may be any language. Moves MUST use long algebraic notation (LAN) so hover can draw the arrow from the exact piece: e2-e4, e7-e5, Ng1-f3, Nb8-c6, Bf1-c4. Captures: e4xd5, Bf1xc4. Never write short SAN for a move (not 1.e4, not e5, not Nf3, not Bc4, not Qh5) — that only highlights the destination, as if the piece is unknown. Bare squares (e4, f7) name a location, not a move. Castling may stay O-O / O-O-O.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "lesson": {
+            "type": "number",
+            "description": "Catalog lesson number. Reuse it; do not invent a new lesson per move."
+          },
+          "title": {
+            "type": "string",
+            "description": "Beat heading, not the whole lesson topic."
+          },
+          "what": {
+            "type": "string",
+            "description": "What happens now. Moves must be long algebraic such as e2-e4, Ng1-f3, never short SAN (e4, Nf3)."
+          },
+          "why": {
+            "type": "string",
+            "description": "Why this belongs here."
+          },
+          "paragraphs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Optional extra paragraphs after what/why. Squares MUST be English algebraic: files a–h and ranks 1–8 (e4, f7, h5). Never transliterate squares. Words may be any language. Moves MUST use long algebraic notation (LAN) so hover can draw the arrow from the exact piece: e2-e4, e7-e5, Ng1-f3, Nb8-c6, Bf1-c4. Captures: e4xd5, Bf1xc4. Never write short SAN for a move (not 1.e4, not e5, not Nf3, not Bc4, not Qh5) — that only highlights the destination, as if the piece is unknown. Bare squares (e4, f7) name a location, not a move. Castling may stay O-O / O-O-O."
+          },
+          "body": {
+            "type": "string",
+            "description": "Fallback only if you cannot send paragraphs. Prefer paragraphs."
+          },
+          "step": {
+            "type": "number",
+            "description": "1-based teaching step index. Omit to append."
+          },
+          "totalSteps": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "title",
+          "lesson"
+        ]
+      }
+    },
+    {
+      "name": "set-lesson-recap",
+      "description": "Write or replace the Recap screen after the last teaching step. Catalog only; does not change the live playhead. Skip this for one-step lessons such as a chess exam or riddle — those have no recap. Recap is not a numbered step. Call this when a multi-step line is complete, or rewrite it after extra add-lesson-step beats. Then how_to_ask_the_user. Squares MUST be English algebraic: files a–h and ranks 1–8 (e4, f7, h5). Never transliterate squares. Words may be any language. Moves MUST use long algebraic notation (LAN) so hover can draw the arrow from the exact piece: e2-e4, e7-e5, Ng1-f3, Nb8-c6, Bf1-c4. Captures: e4xd5, Bf1xc4. Never write short SAN for a move (not 1.e4, not e5, not Nf3, not Bc4, not Qh5) — that only highlights the destination, as if the piece is unknown. Bare squares (e4, f7) name a location, not a move. Castling may stay O-O / O-O-O. After anything the student should see on the board (coach text, a played line, a demo), call how_to_ask_the_user with no arguments, then follow the returned instructions: render clickable buttons in this chat with your visualization UI. Do not use a numbered list. Do not put the question on the webpage. For a puzzle or exam, call how_to_offer_a_hint, then add-lesson-step with type riddle (question + correct squares). The riddle prompt must not spoil how to solve; the student taps Give me a hint in this chat if they want a nudge.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "lesson": {
+            "type": "number",
+            "description": "Catalog lesson number."
+          },
+          "title": {
+            "type": "string",
+            "description": "Optional recap heading. Default Recap."
+          },
+          "paragraphs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Takeaway after the beats so far. Rewrite freely when the student asked something new."
+          },
+          "body": {
+            "type": "string",
+            "description": "Fallback if you cannot send paragraphs."
+          }
+        },
+        "required": [
+          "lesson",
+          "paragraphs"
+        ]
+      }
+    },
+    {
+      "name": "set-page-background",
+      "description": "Saves a custom page background for the currently selected board theme only (Classic or Purple). Switching themes shows that theme’s image, or the default theme background if none was set. WebMCP tool arguments are JSON only — there is no native File transfer — so pass the picture as a data URL or raw base64 in `image`, or an http(s) `url`. If the user attached an image in this chat, encode it as base64/data URL and pass it here. Use clear: true to remove the image for the current theme only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "image": {
+            "type": "string",
+            "description": "PNG, JPEG, WebP, GIF, or BMP as a data URL (data:image/png;base64,...) or raw base64. Prefer a data URL."
+          },
+          "mimeType": {
+            "type": "string",
+            "description": "Required when image is raw base64. Example: image/png or image/jpeg."
+          },
+          "url": {
+            "type": "string",
+            "description": "http(s) URL of an image, used as the page background instead of base64."
+          },
+          "clear": {
+            "type": "boolean",
+            "description": "If true, remove the custom background for the current theme only."
+          }
+        }
+      }
+    },
+    {
+      "name": "set-position",
+      "description": "Set the board from FEN or a list of pieces. Enters learn mode. Example pieces: [{ \"square\": \"d4\", \"type\": \"knight\", \"color\": \"w\" }].",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "fen": {
+            "type": "string",
+            "description": "FEN string, e.g. 8/8/8/8/3N4/8/8/8 w - - 0 1"
+          },
+          "pieces": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "square": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                },
+                "color": {
+                  "type": "string",
+                  "description": "w or b"
+                }
+              }
+            }
+          },
+          "turn": {
+            "type": "string",
+            "description": "w or b"
+          }
+        }
+      }
+    }
+  ],
+  "host": "react-chess",
+  "source": "webmcp.com/api/directory.json"
+}

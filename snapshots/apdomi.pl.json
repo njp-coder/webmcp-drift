@@ -1,0 +1,145 @@
+{
+  "sponsio": 1,
+  "url": "https://apdomi.pl/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "apdomi_dane_kontaktowe",
+      "description": "Zwraca dane kontaktowe APDOMI: telefon, e-mail, adres biura sprzedaży. Użyj, gdy klient chce się skontaktować lub odwiedzić biuro.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "apdomi_dziennik_budowy",
+      "description": "Dziennik budowy — postęp prac na inwestycjach APDOMI (etapy, kamienie milowe). Opcjonalnie filtruj po investment_slug i limit (domyślnie 10).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "investment_slug": {
+            "type": "string",
+            "description": "Slug inwestycji (opcjonalny)"
+          },
+          "limit": {
+            "type": "number",
+            "description": "Ile wpisów zwrócić (domyślnie 10)"
+          }
+        }
+      }
+    },
+    {
+      "name": "apdomi_lista_inwestycji",
+      "description": "Zwraca listę wszystkich inwestycji deweloperskich APDOMI: nazwa, lokalizacja, status, liczba mieszkań (ogółem i dostępnych) oraz zakres cen i metraży.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "apdomi_nawiguj",
+      "description": "Przechodzi do wskazanej strony serwisu APDOMI (akcja widoczna — zmienia stronę). \"mieszkania\" = wyszukiwarka mieszkań na sprzedaż z filtrami. Do podstrony konkretnej inwestycji użyj cel=\"inwestycja\" oraz slug.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "cel": {
+            "type": "string",
+            "enum": [
+              "strona_glowna",
+              "mieszkania",
+              "inwestycje",
+              "nieruchomosci_komercyjne",
+              "o_nas",
+              "kontakt",
+              "opinie",
+              "kupimy_grunty",
+              "asystent",
+              "blog",
+              "inwestycja"
+            ],
+            "description": "Dokąd przejść. \"inwestycja\" wymaga pola slug."
+          },
+          "slug": {
+            "type": "string",
+            "description": "Slug inwestycji — wymagany gdy cel=\"inwestycja\""
+          }
+        },
+        "required": [
+          "cel"
+        ]
+      }
+    },
+    {
+      "name": "apdomi_szczegoly_mieszkania",
+      "description": "Szczegóły konkretnego mieszkania: cena, metraż, piętro, liczba pokoi, parking, komórka, rzuty, link do strony. Podaj numer lokalu (unit); investment_slug opcjonalnie (bez niego szuka we wszystkich inwestycjach).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "unit": {
+            "type": "string",
+            "description": "Numer lokalu, np. M1, B1, M5B"
+          },
+          "investment_slug": {
+            "type": "string",
+            "description": "Slug inwestycji (opcjonalny)"
+          }
+        },
+        "required": [
+          "unit"
+        ]
+      }
+    },
+    {
+      "name": "apdomi_szukaj_mieszkan",
+      "description": "Wyszukuje mieszkania wg kryteriów: inwestycja (slug), status (available/reserved/sold), metraż (min/max m²), cena całkowita (min/max PLN), liczba pokoi. Zwraca pasujące lokale z ceną, metrażem i linkiem do strony lokalu (url) oraz link do wyszukiwarki z tymi filtrami (url_wyszukiwarki, strona /mieszkania).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "investment_slug": {
+            "type": "string",
+            "description": "Slug inwestycji, np. odnowiciela-2, blackwood"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "available",
+              "reserved",
+              "sold"
+            ],
+            "description": "Status mieszkania"
+          },
+          "min_area": {
+            "type": "number",
+            "description": "Min powierzchnia m²"
+          },
+          "max_area": {
+            "type": "number",
+            "description": "Max powierzchnia m²"
+          },
+          "min_price": {
+            "type": "number",
+            "description": "Min cena całkowita PLN"
+          },
+          "max_price": {
+            "type": "number",
+            "description": "Max cena całkowita PLN"
+          },
+          "rooms": {
+            "type": "string",
+            "description": "Liczba pokoi jako liczba, np. \"2\", \"3\" (porównanie po znormalizowanej liczbie pokoi)"
+          }
+        }
+      }
+    }
+  ],
+  "host": "apdomi.pl",
+  "source": "webmcp.com/api/directory.json"
+}

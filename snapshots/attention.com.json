@@ -1,0 +1,49 @@
+{
+  "sponsio": 1,
+  "url": "https://attention.com",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "book_demo",
+      "description": "Navigates to Attention's demo-scheduling page (powered by Default). The page opens a calendar where the user picks a time with the sales team. Optionally pre-fills a note with context (company, team size, use-case).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "note": {
+            "type": "string",
+            "description": "Optional context (company name, use-case, team size) to pre-fill on the booking form."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_docs",
+      "description": "Searches the Attention product docs and API reference by filtering the published llms.txt index at docs.attention.com/llms.txt. Returns an array of {title, url, snippet} matches. Use this before recommending doc pages to the user so citations resolve to real URLs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "query"
+        ],
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search terms, e.g. 'scorecards', 'MCP server', 'Salesforce integration', 'SCIM'."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 25,
+            "default": 8,
+            "description": "Maximum results to return."
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "attention.com",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,478 @@
+{
+  "sponsio": 1,
+  "url": "https://pixlpal.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "create_mask",
+      "description": "Create an engine-computed area mask without running segmentation. Use luminance_range for tonal areas ('the bright sky', 'crushed shadows'). Use linear_gradient or radial_gradient for positional areas ('the top of the image', 'the corners', 'the center'). Use color_range when a non-color op must hit a hue ('sharpen just the greens'); for 'make the grass pop' prefer hsl_mixer with no mask instead. Returns a maskId for set_operations / invert_mask. Evaluated on the original photo, so it stays put as other sliders move.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "luminance_range",
+              "color_range",
+              "linear_gradient",
+              "radial_gradient"
+            ],
+            "description": "luminance_range, color_range, linear_gradient, or radial_gradient."
+          },
+          "id": {
+            "type": "string",
+            "description": "Optional mask id. Defaults to luma, color, gradient, or radial."
+          },
+          "feather": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Edge softness as a fraction of the shorter side. Default 0.02."
+          },
+          "min": {
+            "type": "number",
+            "description": "luminance_range: luma floor 0..1. Default 0."
+          },
+          "max": {
+            "type": "number",
+            "description": "luminance_range: luma ceiling 0..1. Default 1."
+          },
+          "softness": {
+            "type": "number",
+            "description": "Falloff 0..1 for luminance_range, color_range, and radial_gradient."
+          },
+          "hue": {
+            "type": "number",
+            "description": "color_range: target hue in degrees 0..360."
+          },
+          "range": {
+            "type": "number",
+            "description": "color_range: full-inclusion half-width in degrees. Default 25."
+          },
+          "satMin": {
+            "type": "number",
+            "description": "color_range: exclude pixels below this saturation. Default 0.08."
+          },
+          "lumMin": {
+            "type": "number",
+            "description": "color_range: luminance floor 0..1. Default 0."
+          },
+          "lumMax": {
+            "type": "number",
+            "description": "color_range: luminance ceiling 0..1. Default 1."
+          },
+          "x0": {
+            "type": "number",
+            "description": "linear_gradient: start X 0..1. 1.0 at start."
+          },
+          "y0": {
+            "type": "number",
+            "description": "linear_gradient: start Y 0..1 (0 is the top)."
+          },
+          "x1": {
+            "type": "number",
+            "description": "linear_gradient: end X 0..1. 0.0 at end."
+          },
+          "y1": {
+            "type": "number",
+            "description": "linear_gradient: end Y 0..1."
+          },
+          "cx": {
+            "type": "number",
+            "description": "radial_gradient: center X 0..1. Default 0.5."
+          },
+          "cy": {
+            "type": "number",
+            "description": "radial_gradient: center Y 0..1. Default 0.5."
+          },
+          "radiusX": {
+            "type": "number",
+            "description": "radial_gradient: X radius 0..1. Default 0.4."
+          },
+          "radiusY": {
+            "type": "number",
+            "description": "radial_gradient: Y radius 0..1. Default 0.4."
+          }
+        },
+        "required": [
+          "type"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_edit_state",
+      "description": "Read the current state of the PixlPal editor: whether a photo is open, the declarative pipeline of active operations (the same JSON shown in the editor's pipeline panel), the masks available for local edits, and whether undo/redo are available. Call this first to see what the user and you have done so far before making further edits.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_image_stats",
+      "description": "Measure the photo currently open in the editor: brightness, black and white points, clipping, saturation and color cast. Returns precise numbers to complement the preview image attached to each user message. Call this when you need quantitative measurements (for example exact clipping or color-cast values).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "invert_mask",
+      "description": "Create a selectable mask that is the inverse of an existing mask from segment. Use after segment when the user wants edits on everything except a subject, for example 'blur everything except the person' or 'emphasize this object' (boost the subject mask, then de-emphasize the inverse). Returns a new maskId for set_operations. Prefer this over set_operations invertMask:true when both the subject and its surroundings need their own edits.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "maskId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Mask id returned by a prior segment call."
+          }
+        },
+        "required": [
+          "maskId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "remove_operations",
+      "description": "Switch operations off entirely, removing them from the edit. Use this rather than setting a parameter to zero when the user wants an effect gone.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "ops": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "enum": [
+                "exposure",
+                "contrast",
+                "shadows_highlights",
+                "tone_curve",
+                "blacks_whites",
+                "dodge_burn",
+                "saturation",
+                "color_balance",
+                "color_shift",
+                "hsl_mixer",
+                "grain",
+                "film_softness",
+                "vignette",
+                "bloom",
+                "halation",
+                "lens_blur"
+              ]
+            }
+          }
+        },
+        "required": [
+          "ops"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "reset_edits",
+      "description": "Clear every adjustment and return to the untouched original photo.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "segment",
+      "description": "Find a subject in the open photo by referring expression and create a mask. Use this for discrete nameable objects (a dress, a person, a car). For tonal or positional areas (bright sky, the top of the frame) prefer create_mask. For 'make the grass pop' prefer hsl_mixer, not segmentation. Returns a maskId you then pass to set_operations via `mask`, or to invert_mask to select everything else. Runs fully on-device; no pixels leave the device. If segmentation fails, fall back to a global edit and say so.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Referring expression, e.g. \"the red dress\" or \"the sky\"."
+          }
+        },
+        "required": [
+          "prompt"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_frame",
+      "description": "Reframe the photo non-destructively: rotate in 90-degree steps and/or crop. The crop only trims the frame — it cannot remove an object from the middle of the picture; if a subject the user wants gone is not near an edge, say so instead of cropping. Rotation is absolute and clockwise; an existing crop follows the rotation. The crop rectangle is normalized (0..1 fractions of the rotated frame). Three ways to crop, use exactly one per call: (1) `subjectMaskId` from a prior segment call, plus optional `aspect` and `padding` — fits the crop around that subject; this is the right tool for 'crop to portrait, centered on the person' (segment first, then set_frame). (2) `aspect` alone — largest centered crop with that shape, e.g. '4:5' portrait, '1:1' square, '16:9' wide, '9:16' story, 'original'. (3) explicit `crop` rect when you know exact fractions from looking at the preview (the preview you see is always the full uncropped frame; the crop shows there as a brighter window). Pass `crop: null` to clear the crop, `rotate: 0` to clear rotation.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "rotate": {
+            "type": "integer",
+            "enum": [
+              0,
+              90,
+              180,
+              270
+            ],
+            "description": "Absolute clockwise rotation in degrees."
+          },
+          "crop": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "description": "Explicit normalized crop rect in the rotated frame, or null to remove the crop.",
+            "properties": {
+              "x": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "y": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "width": {
+                "type": "number",
+                "exclusiveMinimum": 0,
+                "maximum": 1
+              },
+              "height": {
+                "type": "number",
+                "exclusiveMinimum": 0,
+                "maximum": 1
+              }
+            },
+            "required": [
+              "x",
+              "y",
+              "width",
+              "height"
+            ],
+            "additionalProperties": false
+          },
+          "aspect": {
+            "type": "string",
+            "description": "Crop shape as \"W:H\" (e.g. \"4:5\", \"3:2\", \"16:9\", \"9:16\"), \"square\", or \"original\"."
+          },
+          "subjectMaskId": {
+            "type": "string",
+            "description": "Mask id from segment/invert_mask; the crop is fitted around this subject."
+          },
+          "padding": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Margin around the subject as a fraction of its size. Default 0.15; use more for loose framing."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_operations",
+      "description": "Turn one or more editing knobs. Parameters you pass are merged into the current edit, so you can nudge a single value without restating the rest; omitting `params` entirely enables the operation at its default strength. Optional `mask` (from a prior segment, create_mask, or invert_mask call) limits the op to that region. Prefer invert_mask when the user wants edits on everything except a subject; `invertMask: true` on this tool is a quick alternative that does not create a selectable complement mask. `maskStrength` (0..1, default 1) softens how hard the mask applies without changing the op's own amount — use it to dial in local edits. For local lighten/darken prefer dodge_burn with a range (shadows|midtones| highlights) plus a mask; prefer shadows_highlights for whole-frame shadow/ highlight recovery; keep exposure for whole-frame EV. Prefer blacks_whites for endpoint clip/crush (the black and white points) rather than the broad shadows/highlights bands. Prefer hsl_mixer (no mask) for 'make the grass pop' and other color-of-things requests. Operations and their parameter ranges: - exposure (Brightens or darkens the whole image in photographic stops.) amount -1..1 - contrast (Expands or compresses tones around middle gray.) amount -1..1 - shadows_highlights (Opens or recovers shadows and highlights independently (Lightroom-style). Prefer for whole-frame tonal recovery.) shadows -1..1, highlights -1..1 - tone_curve (Remaps tones through a named response curve.) preset one of linear|soft|hard|film - blacks_whites (Moves the black and white points. Negative blacks crush shadows; positive lifts them. Positive whites stretch brights and can clip; negative pulls the white point in. Prefer over shadows_highlights when you want the endpoints, not the broad bands.) blacks -1..1, whites -1..1 - dodge_burn (Lightens (dodge) or darkens (burn) a tonal range — shadows, midtones, or highlights. Best used with a mask for local edits.) amount -1..1, range one of shadows|midtones|highlights - saturation (Pushes colors toward or away from grayscale.) amount -1..1 - color_balance (Warm/cool temperature and green/magenta tint.) temperature -1..1, tint -1..1 - color_shift (Rotates every hue around the color wheel.) hue -1..1 - hsl_mixer (Lightroom-style per-hue hue/saturation/luminance. Prefer for 'make the grass pop' / 'mute the blues' without a mask — near-grays stay untouched.) red_hue -1..1, red_sat -1..1, red_lum -1..1, orange_hue -1..1, orange_sat -1..1, orange_lum -1..1, yellow_hue -1..1, yellow_sat -1..1, yellow_lum -1..1, green_hue -1..1, green_sat -1..1, green_lum -1..1, aqua_hue -1..1, aqua_sat -1..1, aqua_lum -1..1, blue_hue -1..1, blue_sat -1..1, blue_lum -1..1, purple_hue -1..1, purple_sat -1..1, purple_lum -1..1, magenta_hue -1..1, magenta_sat -1..1, magenta_lum -1..1 - grain (Deterministic film grain, strongest in the midtones.) amount 0..1, size 0.5..4 - film_softness (Gentle diffusion that lowers micro-contrast, keeps detail.) amount 0..1 - vignette (Darkens frame edges with a smooth radial falloff.) amount 0..1, size 0..1 - bloom (Bright areas glow softly outward.) strength 0..1, threshold 0..1, radius 0..1 - halation (Red-orange film halo around bright highlights.) strength 0..1, threshold 0..1, radius 0..1 - lens_blur (Soft gaussian defocus across the whole frame.) radius 0..1",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "operations": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "properties": {
+                "op": {
+                  "type": "string",
+                  "enum": [
+                    "exposure",
+                    "contrast",
+                    "shadows_highlights",
+                    "tone_curve",
+                    "blacks_whites",
+                    "dodge_burn",
+                    "saturation",
+                    "color_balance",
+                    "color_shift",
+                    "hsl_mixer",
+                    "grain",
+                    "film_softness",
+                    "vignette",
+                    "bloom",
+                    "halation",
+                    "lens_blur"
+                  ]
+                },
+                "params": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "amount": {
+                      "type": "number"
+                    },
+                    "shadows": {
+                      "type": "number"
+                    },
+                    "highlights": {
+                      "type": "number"
+                    },
+                    "preset": {
+                      "type": "string",
+                      "enum": [
+                        "linear",
+                        "soft",
+                        "hard",
+                        "film"
+                      ]
+                    },
+                    "blacks": {
+                      "type": "number"
+                    },
+                    "whites": {
+                      "type": "number"
+                    },
+                    "range": {
+                      "type": "string",
+                      "enum": [
+                        "shadows",
+                        "midtones",
+                        "highlights"
+                      ]
+                    },
+                    "temperature": {
+                      "type": "number"
+                    },
+                    "tint": {
+                      "type": "number"
+                    },
+                    "hue": {
+                      "type": "number"
+                    },
+                    "red_hue": {
+                      "type": "number"
+                    },
+                    "red_sat": {
+                      "type": "number"
+                    },
+                    "red_lum": {
+                      "type": "number"
+                    },
+                    "orange_hue": {
+                      "type": "number"
+                    },
+                    "orange_sat": {
+                      "type": "number"
+                    },
+                    "orange_lum": {
+                      "type": "number"
+                    },
+                    "yellow_hue": {
+                      "type": "number"
+                    },
+                    "yellow_sat": {
+                      "type": "number"
+                    },
+                    "yellow_lum": {
+                      "type": "number"
+                    },
+                    "green_hue": {
+                      "type": "number"
+                    },
+                    "green_sat": {
+                      "type": "number"
+                    },
+                    "green_lum": {
+                      "type": "number"
+                    },
+                    "aqua_hue": {
+                      "type": "number"
+                    },
+                    "aqua_sat": {
+                      "type": "number"
+                    },
+                    "aqua_lum": {
+                      "type": "number"
+                    },
+                    "blue_hue": {
+                      "type": "number"
+                    },
+                    "blue_sat": {
+                      "type": "number"
+                    },
+                    "blue_lum": {
+                      "type": "number"
+                    },
+                    "purple_hue": {
+                      "type": "number"
+                    },
+                    "purple_sat": {
+                      "type": "number"
+                    },
+                    "purple_lum": {
+                      "type": "number"
+                    },
+                    "magenta_hue": {
+                      "type": "number"
+                    },
+                    "magenta_sat": {
+                      "type": "number"
+                    },
+                    "magenta_lum": {
+                      "type": "number"
+                    },
+                    "size": {
+                      "type": "number"
+                    },
+                    "strength": {
+                      "type": "number"
+                    },
+                    "threshold": {
+                      "type": "number"
+                    },
+                    "radius": {
+                      "type": "number"
+                    }
+                  }
+                },
+                "mask": {
+                  "type": "string",
+                  "description": "Mask id returned by segment, create_mask, or invert_mask."
+                },
+                "invertMask": {
+                  "type": "boolean",
+                  "description": "When true, apply the op outside the mask without creating a complement mask. Prefer invert_mask when both the subject and its surroundings need separate selectable edits."
+                },
+                "maskStrength": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1,
+                  "description": "0..1 scale on the mask before invert. Requires mask. Default 1."
+                }
+              },
+              "required": [
+                "op"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "operations"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "pixlpal.com",
+  "source": "webmcp.com/api/directory.json"
+}

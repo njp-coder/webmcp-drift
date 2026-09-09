@@ -1,0 +1,143 @@
+{
+  "sponsio": 1,
+  "url": "https://peppolvalidator.com",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "convert_xml_to_pdf",
+      "description": "Convert a UBL 2.1 or CII XML invoice or credit note to a human-readable PDF document.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "xml": {
+            "type": "string",
+            "description": "The raw XML content of the invoice to convert"
+          }
+        },
+        "required": [
+          "xml"
+        ]
+      }
+    },
+    {
+      "name": "get_verification_challenge",
+      "description": "Get a HATCHA verification challenge to prove you are an AI agent. Required before calling submit_feedback. Returns a token and a challenge prompt (e.g. compute a SHA-256 hash). Include the token and your answer when submitting feedback.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "submit_feedback",
+      "description": "Report the outcome of using the Peppol Validator. Requires HATCHA verification (call get_verification_challenge first). Use this to report validation accuracy issues, API problems, or general feedback about the tool.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "agentId": {
+            "type": "string",
+            "description": "Your agent identifier"
+          },
+          "toolUsed": {
+            "type": "string",
+            "enum": [
+              "validate_invoice",
+              "xml_to_pdf"
+            ],
+            "description": "Which Peppol Validator tool you used"
+          },
+          "outcome": {
+            "type": "string",
+            "enum": [
+              "success",
+              "failure",
+              "error"
+            ],
+            "description": "success: tool worked correctly, failure: tool gave wrong results, error: tool crashed or was unavailable"
+          },
+          "comment": {
+            "type": "string",
+            "description": "What happened, what you expected, and what went wrong (if anything)"
+          },
+          "verificationToken": {
+            "type": "string",
+            "description": "Token from get_verification_challenge"
+          },
+          "verificationAnswer": {
+            "type": "string",
+            "description": "Your answer to the HATCHA challenge"
+          },
+          "accuracyIssue": {
+            "type": "string",
+            "enum": [
+              "false_positive",
+              "false_negative",
+              "incorrect_severity",
+              "wrong_rule"
+            ],
+            "description": "Type of validation accuracy problem, if any (optional)"
+          },
+          "ruleIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Specific rule IDs involved, e.g. ['BR-01', 'PEPPOL-EN16931-R001'] (optional)"
+          },
+          "invoiceFormat": {
+            "type": "string",
+            "enum": [
+              "ubl",
+              "cii"
+            ],
+            "description": "Invoice format that was validated (optional)"
+          },
+          "apiIssues": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "API/tool problems encountered, e.g. ['timeout', 'unclear error message'] (optional)"
+          },
+          "sessionId": {
+            "type": "string",
+            "description": "Validation session ID for traceability (optional)"
+          },
+          "fileId": {
+            "type": "string",
+            "description": "Specific file ID for traceability (optional)"
+          }
+        },
+        "required": [
+          "agentId",
+          "toolUsed",
+          "outcome",
+          "comment",
+          "verificationToken",
+          "verificationAnswer"
+        ]
+      }
+    },
+    {
+      "name": "validate_invoice",
+      "description": "Validate a Peppol UBL 2.1 or CII XML invoice against EN16931 (CEN) and Peppol BIS Billing 3.0 schematron rules. Returns validation status, errors, warnings, and a shareable results URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "xml": {
+            "type": "string",
+            "description": "The raw XML content of the invoice to validate"
+          }
+        },
+        "required": [
+          "xml"
+        ]
+      }
+    }
+  ],
+  "host": "peppolvalidator.com",
+  "source": "webmcp.com/api/directory.json"
+}

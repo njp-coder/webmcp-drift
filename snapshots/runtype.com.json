@@ -1,0 +1,133 @@
+{
+  "sponsio": 1,
+  "url": "https://www.runtype.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "get_example",
+      "description": "Fetch the full detail of one example product by its slug: what it is built from (surfaces, flows, agents, tools), its evals and metrics, and a long-form Markdown walkthrough. Use list_examples first to discover valid slugs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "The example slug, e.g. \"invoice-artisan\"."
+          }
+        },
+        "required": [
+          "slug"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_examples",
+      "description": "List the published example products on Runtype.com — real, deployable templates (e.g. invoice extraction, fraud analysis, chat agents) showing what can be built. Returns each example's slug, title, tagline, category, tags, link, and a count of its surfaces/flows/agents/tools. Use get_example for the full walkthrough.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "navigate_to",
+      "description": "Move the page to a section of Runtype.com so the visitor can see what you are describing. Use a named destination, or a detail destination with a slug (e.g. {\"destination\":\"example\",\"slug\":\"invoice-artisan\"}). \"signup\" sends the visitor to create an account.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "destination": {
+            "type": "string",
+            "enum": [
+              "home",
+              "pricing",
+              "examples",
+              "blog",
+              "changelog",
+              "surfaces",
+              "works-with",
+              "products",
+              "platform",
+              "security",
+              "about",
+              "careers",
+              "support",
+              "example",
+              "blog-post",
+              "changelog-entry",
+              "surface",
+              "signup"
+            ],
+            "description": "Where to navigate."
+          },
+          "slug": {
+            "type": "string",
+            "description": "Required for detail destinations (example, blog-post, changelog-entry, surface)."
+          }
+        },
+        "required": [
+          "destination"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "recommend_plan",
+      "description": "Recommend the right Runtype pricing plan for a described workload. Surfaces are unlimited on every plan, so the decision turns on usage and features: provide expected monthly executions, whether they want to bring their own model keys (BYOK), and whether they're just building or shipping to production. Returns the recommended tier, price, sign-up link, and the reasons.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "monthlyExecutions": {
+            "type": "number",
+            "description": "Estimated executions per month (the usage-based pricing metric)."
+          },
+          "needsByok": {
+            "type": "boolean",
+            "description": "True if the visitor wants to bring their own model API keys."
+          },
+          "environment": {
+            "type": "string",
+            "enum": [
+              "development",
+              "production"
+            ],
+            "description": "\"development\" = just building/testing, \"production\" = shipping to real users."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_content",
+      "description": "Full-text search across Runtype's blog posts and product changelog. Use to find announcements, recently shipped features, fixes, and explainer articles. Returns titles, summaries, dates, and links — not full article bodies.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search keywords, e.g. \"slack agent\" or \"evals\"."
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "all",
+              "blog",
+              "changelog"
+            ],
+            "description": "Which content to search. Defaults to \"all\"."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "runtype.com",
+  "source": "webmcp.com/api/directory.json"
+}

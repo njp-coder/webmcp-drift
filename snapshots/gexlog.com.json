@@ -1,0 +1,140 @@
+{
+  "sponsio": 1,
+  "url": "https://gexlog.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "get_available_dates",
+      "description": "List all dates that have archived GEXLOG market data. Returns separate arrays of dates with morning, evening, and weekend reports, sorted newest first. Use this to discover what historical data is available before querying specific dates with get_historical_briefing or get_date_range.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_current_briefing",
+      "description": "Get today's GEXLOG market briefing for SPX/SPXW options. Returns the current gamma regime classification (POSITIVE/NEGATIVE/NEUTRAL/TRANSITIONAL), key price levels (put wall, call wall, GEX flip, expected move, pivot levels R1/R2/S1/S2), trade signal (GO/CAUTION/WAIT), day type forecast (RANGE BOUND/TREND UP/TREND DOWN/HIGH VOLATILITY), AI-generated market narrative, and structured trade playbook with primary, alternative, and neutral strategies. Data is generated pre-market (~6:50 AM ET weekdays) and refreshed after close (~7:40 PM ET). Use this to understand today's SPX options market positioning and trade guidance.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "report": {
+            "type": "string",
+            "anyOf": [
+              {
+                "const": "morning",
+                "title": "Morning briefing (pre-market, generated ~6:50 AM ET)"
+              },
+              {
+                "const": "evening",
+                "title": "Evening briefing (post-close refresh with updated levels and scorecard)"
+              },
+              {
+                "const": "weekend",
+                "title": "Weekend preview (generated Saturday ~8:30 AM ET, covers coming week)"
+              }
+            ],
+            "enum": [
+              "morning",
+              "evening",
+              "weekend"
+            ],
+            "description": "Which report to retrieve. 'morning' is the primary daily briefing. 'evening' is the post-close refresh with updated levels and scorecard. 'weekend' is the Saturday preview for the coming week including week-ahead calendar and risk score."
+          }
+        }
+      }
+    },
+    {
+      "name": "get_date_range",
+      "description": "Get GEXLOG market data for a range of dates. Returns morning, evening, and weekend reports for all available dates in the range. Use this for trend analysis, comparing market structure across multiple days, or analyzing how gamma regimes, signals, and levels evolved over a period. Returns only dates that have data (holidays are excluded, but weekend data is included on Saturdays). Maximum range: 30 days. This endpoint may require a USDC micropayment via x402. If payment is required, the response will include pricing and payment instructions.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "start": {
+            "type": "string",
+            "description": "Start date in YYYY-MM-DD format (inclusive)"
+          },
+          "end": {
+            "type": "string",
+            "description": "End date in YYYY-MM-DD format (inclusive)"
+          }
+        },
+        "required": [
+          "start",
+          "end"
+        ]
+      }
+    },
+    {
+      "name": "get_historical_briefing",
+      "description": "Get a past day's GEXLOG market snapshot by date. Returns morning, evening, and/or weekend report data for the specified date, including gamma regime, price levels, trade signal, forecast, AI narrative, and scorecard (evening only). Use this to look up what the market structure was on a specific date, compare past conditions to current ones, or analyze how a specific trading day played out. Each weekday typically has a morning (pre-market) and evening (post-close) snapshot, while Saturdays have a weekend preview. This endpoint may require a USDC micropayment via x402. If payment is required, the response will include pricing and payment instructions.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "description": "Date in YYYY-MM-DD format (e.g., '2026-05-09'). Must be a date with available archive data — use get_available_dates to check."
+          },
+          "report_type": {
+            "type": "string",
+            "anyOf": [
+              {
+                "const": "morning",
+                "title": "Morning briefing only"
+              },
+              {
+                "const": "evening",
+                "title": "Evening briefing only"
+              },
+              {
+                "const": "weekend",
+                "title": "Weekend briefing only"
+              },
+              {
+                "const": "both",
+                "title": "Morning, evening, and weekend briefings"
+              }
+            ],
+            "enum": [
+              "morning",
+              "evening",
+              "weekend",
+              "both"
+            ],
+            "description": "Which report(s) to retrieve for that date. Default: 'both'."
+          }
+        },
+        "required": [
+          "date"
+        ]
+      }
+    },
+    {
+      "name": "get_regime_history",
+      "description": "Get a lightweight summary of gamma regime classifications over time. Returns an array of dates with: regime (POSITIVE/NEGATIVE/NEUTRAL/TRANSITIONAL), net GEX value, GEX flip level, forecast type, confidence score, trade signal (GO/CAUTION/WAIT), regime streak count, SPX close, put wall, call wall, and VIX. Use this for regime transition analysis, streak tracking, and understanding how dealer positioning evolved over time. Much faster than pulling full reports for each date — this returns only the key structural fields. Default: last 30 days, max: 90 days. This endpoint may require a USDC micropayment via x402. If payment is required, the response will include pricing and payment instructions.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "start": {
+            "type": "string",
+            "description": "Start date in YYYY-MM-DD format (optional — if omitted, returns most recent data)"
+          },
+          "end": {
+            "type": "string",
+            "description": "End date in YYYY-MM-DD format (optional)"
+          },
+          "limit": {
+            "type": "number",
+            "description": "Maximum number of dates to return (default: 30, max: 90)"
+          }
+        }
+      }
+    }
+  ],
+  "host": "gexlog.com",
+  "source": "webmcp.com/api/directory.json"
+}

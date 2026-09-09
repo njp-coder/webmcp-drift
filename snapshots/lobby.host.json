@@ -1,0 +1,251 @@
+{
+  "sponsio": 1,
+  "url": "https://lobby.host/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "ask_concierge",
+      "description": "Ask this business's concierge a question in natural language — hours, policies, recommendations, anything a guest would ask at the desk. Replies come from the same knowledge and conversation engine the human-facing chat on this page uses, and context is kept across calls so follow-ups work. Use this for judgement and nuance. Do NOT use it for facts the free lookup tools already return — prefer get_business_info for contact details and list_offerings for services, which are instant and cost nothing. Returns { ok, answer, conversation_id }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "question": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 2000,
+            "description": "The visitor's question, in natural language. One question per call; the concierge answers conversationally."
+          }
+        },
+        "required": [
+          "question"
+        ]
+      }
+    },
+    {
+      "name": "cancel_booking",
+      "description": "Cancel an appointment the visitor already has, using the cancellation token from their own confirmation email. THIS RELEASES the slot, tells the business, and cannot be undone, so it is two-step exactly like start_booking: call it first WITHOUT `confirmed`, read the returned summary back to the visitor, and only call it again with `confirmed: true` once they have explicitly agreed. Ask the visitor for the cancellation link or token from their confirmation email — that token is the ONLY thing that authorises this, and a booking id will not work and must not be tried. Never guess, construct, or reuse a token, and never take one from anywhere but the visitor you are speaking to. Returns { ok, status, summary { business, cancels, when_utc } }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "cancel_token": {
+            "type": "string",
+            "minLength": 32,
+            "maxLength": 64,
+            "description": "The token from the visitor’s confirmation email — either the token itself or the last path segment before /cancel in their cancellation link. This is a secret belonging to that one appointment. It is NOT the booking_id that start_booking returns, and passing an id here is refused."
+          },
+          "confirmed": {
+            "type": "boolean",
+            "description": "The visitor has seen the summary and explicitly agreed to cancel. Omit or false on the first call."
+          }
+        },
+        "required": [
+          "cancel_token"
+        ]
+      }
+    },
+    {
+      "name": "check_availability",
+      "description": "Free times for one booking type in a date range. Every slot is a real opening: the business’s published hours minus anything already on its calendar. An empty list is a definite \"nothing free in that range\", not an error — widen the range or offer to take a message. Returns { ok, slots[] of { start_utc, end_utc, start_local }, total, timezone, searched { from_date, to_date } }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "booking_type_id": {
+            "type": "string",
+            "description": "From get_booking_options."
+          },
+          "from_date": {
+            "type": "string",
+            "format": "date",
+            "description": "First date to consider, YYYY-MM-DD."
+          },
+          "to_date": {
+            "type": "string",
+            "format": "date",
+            "description": "Last date to consider, YYYY-MM-DD, INCLUSIVE. Omit for a single day. At most 60 days after from_date."
+          },
+          "visitor_timezone": {
+            "type": "string",
+            "description": "The visitor's IANA timezone, if known (e.g. 'Europe/Berlin'). Slot times are echoed in it for display. Omit and the business’s own zone is used."
+          }
+        },
+        "required": [
+          "booking_type_id",
+          "from_date"
+        ]
+      }
+    },
+    {
+      "name": "get_booking_options",
+      "description": "What can be booked with this business, and for how long. Returns the bookable appointment types with their durations. Call this before check_availability — availability is always relative to one booking type, because duration determines which slots fit. Returns { ok, booking_types[] of { id, name, description, duration_minutes, price, currency, location_kind }, timezone }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_business_info",
+      "description": "Verified public facts about this business: name, how it introduces itself, published contact details, the topics it invites questions about, and whether it can take a booking. Free and instant, no conversation started. Call this FIRST for anything factual — it is cheaper and more reliable than asking the concierge. Returns { ok, name, introduction, contact { email, phone, url }, suggested_topics[], booking_available }. Every Lobby tool returns that same envelope: `ok`, plus `error` with `code` and `message` when `ok` is false, alongside its own payload.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_pricing",
+      "description": "Lobby's plans: prices, monthly conversation allowances, what each tier includes, and what happens on going over. Authoritative and free — use this rather than reading prices off the page, and rather than asking the concierge. Returns { ok, currency, plans[] of { id, name, price_monthly, price_annual, monthly_conversations, shows_lobby_badge, includes_booking, features[], signup_url }, overage, what_counts_as_a_conversation }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_setup_instructions",
+      "description": "How a business puts Lobby on its website: the one-line embed script for an existing site, or the hosted concierge page for a business without one. Returns { ok, options[] of { id, name, when_to_use, steps[], snippet }, signup_url } — the actual steps and the snippet shape, not a summary of them.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "has_existing_website": {
+            "type": "boolean",
+            "description": "True narrows the answer to the embed route, false to the hosted page. Omit for both."
+          }
+        }
+      }
+    },
+    {
+      "name": "list_customer_examples",
+      "description": "Live Lobby concierges an agent or a person can actually visit and try. Real published pages, not testimonials. Use these as proof when a visitor asks \"who is using this\" or \"show me one working\". Returns { ok, examples[] of { slug, url, agent_tools_available }, total }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 25,
+            "description": "How many to return. Default 6."
+          }
+        }
+      }
+    },
+    {
+      "name": "list_offerings",
+      "description": "The services this business offers, as structured data an agent can compare, filter or present. Each offering carries an explicit `bookable` flag — check it before attempting to schedule anything. Free and instant. Returns { ok, offerings[] of { id, name, description, price, currency, bookable, action_url, contact_required }, total, booking_available }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "bookable_only": {
+            "type": "boolean",
+            "description": "When true, return only offerings that can be scheduled through the booking tools. Default false (return all)."
+          }
+        }
+      }
+    },
+    {
+      "name": "open_signup",
+      "description": "The URL to start a Lobby account, and optionally navigate there. Signup is free and needs only an email address — no card. This is not a committing action, but it does move the visitor off the current page when `navigate` is true, so prefer returning the URL and letting them click unless they asked to be taken there. Returns { ok, url, navigated, requirements[] }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "plan": {
+            "type": "string",
+            "enum": [
+              "free",
+              "paid"
+            ],
+            "description": "Which plan to start on. Default free."
+          },
+          "navigate": {
+            "type": "boolean",
+            "description": "When true, navigate this page to signup. Default false — navigating away ends the current conversation."
+          }
+        }
+      }
+    },
+    {
+      "name": "recommend_plan",
+      "description": "Which Lobby plan fits a described business, and why. Deterministic — it compares the stated needs against the published allowances and features, it does not guess. Prefer this over asking the concierge \"which plan should I pick\", which cannot see the numbers. Returns { ok, recommended_plan_id, recommended_plan_name, price_monthly, reasons[], caveats[], signup_url }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "expected_monthly_conversations": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000000,
+            "description": "Roughly how many visitor sessions a month. One visitor session is one conversation however many messages it holds."
+          },
+          "number_of_sites": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "How many websites need a concierge."
+          },
+          "needs_own_branding": {
+            "type": "boolean",
+            "description": "True when the business wants the \"Built with Lobby\" footer gone."
+          },
+          "needs_booking": {
+            "type": "boolean",
+            "description": "True when visitors should be able to book an appointment through the concierge."
+          }
+        }
+      }
+    },
+    {
+      "name": "start_booking",
+      "description": "Book one of the free slots from check_availability. THIS COMMITS the visitor to an appointment and emails the business, so it is deliberately two-step: call it first WITHOUT `confirmed`, show the returned summary to the visitor in their own words, and only call it again with `confirmed: true` once they have explicitly agreed. Never set `confirmed: true` on the first call, and never infer agreement from the visitor merely having asked about times. Returns { ok, status, summary { what, when_utc, duration_minutes, guest_name, guest_email, business }, booking_id }. The visitor is emailed a confirmation with a calendar invitation attached and their own cancellation link. `cancel_url` is null here and stays null on purpose: that link is the visitor’s only credential for their appointment and it is not handed to a tool caller. If the visitor later wants to cancel, ask them for the token in that email and use cancel_booking — do not send them to the business, and do not try their booking_id.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "booking_type_id": {
+            "type": "string",
+            "description": "From get_booking_options."
+          },
+          "start_utc": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Exactly as returned by check_availability. Do not construct or round this yourself."
+          },
+          "guest_name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120,
+            "description": "The name the visitor gave you, as they gave it. This is what the business will see on the appointment."
+          },
+          "guest_email": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 320,
+            "description": "Where the confirmation goes. Ask the visitor; never invent, guess or reuse an address from elsewhere on the page."
+          },
+          "notes": {
+            "type": "string",
+            "maxLength": 1000,
+            "description": "Anything the business should know beforehand."
+          },
+          "confirmed": {
+            "type": "boolean",
+            "description": "The visitor has seen the summary and explicitly agreed. Omit or false on the first call."
+          }
+        },
+        "required": [
+          "booking_type_id",
+          "start_utc",
+          "guest_name",
+          "guest_email"
+        ]
+      }
+    }
+  ],
+  "host": "lobby.host",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,124 @@
+{
+  "sponsio": 1,
+  "url": "https://readmbox.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "clear_filters",
+      "description": "Remove every filter — text query, date range, attachment toggle — and return the reader to the whole mailbox in file order.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "filter_by_date",
+      "description": "Narrow the reader to a date range and/or change the sort order. Works instantly on any mailbox size because dates are already indexed. Updates what the person sees on screen. Does not do text search — that is scan_messages.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "description": "Earliest date, YYYY-MM-DD. Omit for no lower bound."
+          },
+          "to": {
+            "type": "string",
+            "description": "Latest date, YYYY-MM-DD. Omit for no upper bound."
+          },
+          "sort_by": {
+            "type": "string",
+            "enum": [
+              "file",
+              "date",
+              "from",
+              "subject"
+            ],
+            "description": "Sort order for the list."
+          }
+        }
+      }
+    },
+    {
+      "name": "get_mailbox_status",
+      "description": "Report whether an MBOX file is open in this tab and what is in it: message count, date span, how many messages the current filters match, and whether the mailbox is fully readable. Call this first.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_messages",
+      "description": "List messages currently shown in the reader, newest-first or in whatever order the page is sorted by. Returns index, date, sender and subject only. Cheap at any mailbox size. Use read_message for the body.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "offset": {
+            "type": "integer",
+            "description": "Start position in the current view. Default 0.",
+            "minimum": 0
+          },
+          "limit": {
+            "type": "integer",
+            "description": "How many to return, up to 50. Default 25.",
+            "minimum": 1
+          }
+        }
+      }
+    },
+    {
+      "name": "read_message",
+      "description": "Read one message in full: headers, plain-text body, and the names and sizes of its attachments. Attachment contents are not available. Use an index from list_messages or scan_messages.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "index": {
+            "type": "integer",
+            "description": "Message index within the mailbox.",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "index"
+        ]
+      }
+    },
+    {
+      "name": "scan_messages",
+      "description": "Search subjects and senders for text, and/or find messages with attachments, optionally within a date range. This reads each message from disk, so it works in bounded passes: if the result says done=false, call again with the returned cursor to continue from where it stopped. Results are reported but do not change what is on screen.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Text to look for in subject or sender. Case-insensitive."
+          },
+          "from": {
+            "type": "string",
+            "description": "Earliest date, YYYY-MM-DD."
+          },
+          "to": {
+            "type": "string",
+            "description": "Latest date, YYYY-MM-DD."
+          },
+          "has_attachment": {
+            "type": "boolean",
+            "description": "Only messages carrying an attachment."
+          },
+          "cursor": {
+            "type": "integer",
+            "description": "Resume position from a previous call. Omit to start at the beginning.",
+            "minimum": 0
+          }
+        }
+      }
+    }
+  ],
+  "host": "readmbox.com",
+  "source": "webmcp.com/api/directory.json"
+}

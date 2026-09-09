@@ -1,0 +1,101 @@
+{
+  "sponsio": 1,
+  "url": "https://modelrunner.ai/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "ask_site",
+      "description": "Answer questions about ModelRunner from the site's own reference content — what the platform is, how pricing modes work, the request lifecycle, supported model categories and providers, the REST/SDK/MCP interfaces, and blog guides. Use this for any 'how does X work' or policy/concept question about ModelRunner. Returns the matching content sections with their source URLs; compose the answer from them.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "question": {
+            "type": "string",
+            "description": "The visitor's question, in their own words."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "How many content sections to return (1-10).",
+            "minimum": 1,
+            "maximum": 10,
+            "default": 5
+          }
+        },
+        "required": [
+          "question"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_model_details",
+      "description": "Get the full reference for one ModelRunner model by its owner/alias endpoint (e.g. 'google/imagen4'): what it does, its pricing, every input and output field with types and defaults, and copy-paste cURL/JavaScript/Python examples. Use this after search_models when the visitor asks what a model costs, what inputs it takes, or how to call it. Returns the model's llms.txt reference as markdown.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "endpoint": {
+            "type": "string",
+            "description": "The model endpoint as 'ownerName/alias' — exactly as search_models returns it. The alias itself may contain slashes."
+          }
+        },
+        "required": [
+          "endpoint"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "prepare_model_run",
+      "description": "Fill the Run form on a ModelRunner model's page with the given inputs and open that page, so the visitor can review the settings and press Run themselves. Use this when the visitor asks to run or try a model with particular inputs. This does NOT run the model and does NOT charge anything — running is a paid action only the visitor can confirm. Returns which inputs were applied, which were ignored because the model does not declare them, and any required inputs still missing.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "endpoint": {
+            "type": "string",
+            "description": "The model endpoint as 'ownerName/alias', exactly as search_models returns it."
+          },
+          "input": {
+            "type": "object",
+            "description": "The input fields to fill in, as a JSON object keyed by the model's own field names — call get_model_details first to see them.",
+            "additionalProperties": true
+          }
+        },
+        "required": [
+          "endpoint",
+          "input"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_models",
+      "description": "Search the ModelRunner catalog for AI models by keyword, capability or modality (e.g. 'text to video', 'image upscaler', 'flux'). Use this when the visitor asks what models are available for a task. Returns matching models with their owner/alias endpoint, name, short description and thumbnail. Use get_model_details for pricing and input schema.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "A few keywords. Short queries match best — the catalog search is keyword-based, not natural language."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "How many results to return (1-20).",
+            "minimum": 1,
+            "maximum": 20,
+            "default": 10
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "modelrunner.ai",
+  "source": "webmcp.com/api/directory.json"
+}

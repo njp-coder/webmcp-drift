@@ -1,0 +1,227 @@
+{
+  "sponsio": 1,
+  "url": "https://www.ourmanynames.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "about_site",
+      "description": "What Our Many Names is: a family tree written together, with the memories that go with each name. Says what a visitor can do without an account, what an account gives for free, and where the public pages are.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "clear_focus",
+      "description": "Leave lineage focus and show the whole tree again.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "describe_relationship",
+      "description": "How two people are related: the kinship term each way (grandmother, cousin, sensei…), the number of family hops, and the chain of people between them. \"from\" defaults to the signed-in member's own card.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "description": "The first person: a person id from find_people, or a name that matches one person"
+          },
+          "to": {
+            "type": "string",
+            "description": "The second person: a person id from find_people, or a name that matches one person"
+          }
+        },
+        "required": [
+          "to"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "find_people",
+      "description": "Search people in this tree by name, maiden name or byname; a misspelt name still finds its person. Returns compact rows (id, name, dates) in pages of up to 50; use the id in other tools. Omit the query to list everyone.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Words to match; all must appear somewhere in the name"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "description": "Rows per page, default 20"
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Rows to skip, for the next page"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "focus_lineage",
+      "description": "Show only one ancestor and their descendants with partners, hiding everyone else. clear_focus undoes it.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "ancestor": {
+            "type": "string",
+            "description": "Whose line to show: a person id from find_people, or a name that matches one person"
+          }
+        },
+        "required": [
+          "ancestor"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_person",
+      "description": "One person in full: names, dates, status, and their immediate family — parents with pedigree, partners with the union, children, siblings and social bonds — each with an id.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "person": {
+            "type": "string",
+            "description": "Who: a person id from find_people, or a name that matches one person"
+          }
+        },
+        "required": [
+          "person"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_pricing",
+      "description": "What is free and what is paid: the free allowance an account starts with, each upgrade with its price in credits and money, and the smallest credit top-up.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_tree_overview",
+      "description": "The family tree on screen: its name, whose it is (owners and member count), your role, counts of people, living and deceased, unions and generations, and the eldest person recorded. Start here.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_gaps",
+      "description": "What is incomplete or contradictory: children born before a parent, living people over 110, adults with no parents recorded, missing birth or death years. Worst first, paged.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "description": "Rows to return, default 25"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "open_page",
+      "description": "Go to one of the public pages: home (the front page), explore (the directory of published trees), pricing (what an account and its upgrades cost), attribution (credits for the fictional trees on show), terms (terms and conditions), register (the sign-up form), login (the sign-in form). Takes a visitor to the sign-up form, never through it.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "string",
+            "enum": [
+              "home",
+              "explore",
+              "pricing",
+              "attribution",
+              "terms",
+              "register",
+              "login"
+            ]
+          }
+        },
+        "required": [
+          "page"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "open_public_tree",
+      "description": "Open a published tree by its slug or name. Its own tools (find_people, describe_relationship, show_person…) appear once it is on screen.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tree": {
+            "type": "string",
+            "description": "A slug or name from search_public_trees"
+          }
+        },
+        "required": [
+          "tree"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_public_trees",
+      "description": "Published family trees anyone can read, by name — each with its address slug and how many people it holds. Omit the query to list them all.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Part of a tree name"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "show_person",
+      "description": "Pan the canvas to a person and highlight their card, so the human sees who you mean. Optionally open their profile.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "person": {
+            "type": "string",
+            "description": "Who: a person id from find_people, or a name that matches one person"
+          },
+          "openProfile": {
+            "type": "boolean",
+            "description": "Also open their profile panel"
+          }
+        },
+        "required": [
+          "person"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "ourmanynames.com",
+  "source": "webmcp.com/api/directory.json"
+}

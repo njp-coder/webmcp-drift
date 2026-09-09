@@ -1,0 +1,56 @@
+{
+  "sponsio": 1,
+  "url": "https://cosine.club/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "get_similar_tracks",
+      "description": "find tracks that sound similar to a given track. similarity is computed from the audio itself, not tags, genres or listening history, so matches cross genre lines. returns the source track plus ranked matches, each scored 0 to 1 by cosine similarity where 1 is most alike.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "track": {
+            "type": "string",
+            "description": "the track to match against. accepts a cosine.club /track/ url, a numeric track id, or free text like \"moodymann - jan\" which is resolved by searching first. omit on a track page to use the track being viewed."
+          },
+          "limit": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 10,
+            "default": 10,
+            "description": "how many similar tracks to return, 1 to 10."
+          }
+        }
+      }
+    },
+    {
+      "name": "search_tracks",
+      "description": "search the cosine.club catalog by artist name or track title. over two million tracks, mostly electronic and underground music: house, techno, uk garage, jungle, breakbeat, electro, ambient, dub, disco and more. returns matching tracks with their cosine.club urls.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 200,
+            "description": "an artist name, a track title, or both together like \"moodymann - jan\". only artist and track text is indexed, so searching a label or release name matches those words in artist and track names instead."
+          },
+          "limit": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 10,
+            "default": 10,
+            "description": "how many tracks to return, 1 to 10."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "cosine.club",
+  "source": "webmcp.com/api/directory.json"
+}

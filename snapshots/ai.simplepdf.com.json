@@ -1,0 +1,106 @@
+{
+  "sponsio": 1,
+  "url": "https://ai.simplepdf.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "focus_field",
+      "description": "Scroll an existing field into view and focus it, addressed by its id (from get_fields). Returns a hint describing the user action expected next.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "field_id": {
+            "description": "ID of the field to focus and scroll into view.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "field_id"
+        ]
+      }
+    },
+    {
+      "name": "get_document_content",
+      "description": "Extract the document's content page by page as Markdown (pass extraction_mode 'ocr' to force optical recognition, which returns plain text). Use it to read what the document says. Returns { name, pages: [{ page, content }] }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "extraction_mode": {
+            "description": "Extraction strategy: 'auto' (default) or 'ocr' to force optical recognition.",
+            "enum": [
+              "auto",
+              "ocr"
+            ],
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "get_fields",
+      "description": "List every fillable field in the loaded document, including native dropdown and radio AcroFields. Each field reports its id, name, type, page, and current value. Call this first to discover field ids before reading or setting values. Returns { fields }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object"
+      }
+    },
+    {
+      "name": "load_document",
+      "description": "Load a document into the editor from a base64 data URL. This is a host/setup action (no agentic tool); it returns no data.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "data_url": {
+            "description": "The document to load, as a data URL.",
+            "type": "string"
+          },
+          "name": {
+            "description": "Optional display name for the document.",
+            "type": "string"
+          },
+          "page": {
+            "description": "Optional 1-based page to open the document on.",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "data_url"
+        ]
+      }
+    },
+    {
+      "name": "set_field_value",
+      "description": "Set the value of an existing field addressed by its id (from get_fields), or clear it with null. If the field has options (see get_fields), value must be one of them; otherwise value is a string (text or checkbox value) or a data URL (signature, picture). Returns no data.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "field_id": {
+            "description": "ID of the field to update.",
+            "type": "string"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "New value for the field, or null to clear it. If the field has options (see get_fields), it must be one of them; otherwise a string (text/checkbox) or a data URL (signature/picture)."
+          }
+        },
+        "required": [
+          "field_id",
+          "value"
+        ]
+      }
+    }
+  ],
+  "host": "ai.simplepdf.com",
+  "source": "webmcp.com/api/directory.json"
+}

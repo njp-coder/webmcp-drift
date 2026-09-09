@@ -1,0 +1,1282 @@
+{
+  "sponsio": 1,
+  "url": "https://makinai.co/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "build_makinai_project_brief",
+      "description": "Use only after qualify_makinai_project and consume its qualification result. Returns JSON {kind, language, sourceQualificationId, readinessStage, title, objective, successMeasure, proposedScope[], dependencies[], principalRisks[], recommendedNextTool, recommendedNextStep, consultationPrefill, consultationUrl}; exact contract: inputSchema.x-outputSchema.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "businessGoal": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 240,
+            "description": "Business outcome or operational challenge to address."
+          },
+          "industry": {
+            "type": "string",
+            "maxLength": 120,
+            "description": "Company industry or business sector."
+          },
+          "successMeasure": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 180,
+            "description": "Metric or observable outcome that defines success."
+          },
+          "currentSystems": {
+            "type": "string",
+            "maxLength": 300,
+            "description": "Relevant systems, data and current workflow."
+          },
+          "constraints": {
+            "type": "string",
+            "maxLength": 300,
+            "description": "Known security, compliance, budget or operating constraints."
+          },
+          "dataReadiness": {
+            "type": "string",
+            "enum": [
+              "unknown",
+              "fragmented",
+              "accessible",
+              "production_ready"
+            ],
+            "description": "Current data readiness."
+          },
+          "timeline": {
+            "type": "string",
+            "enum": [
+              "exploring",
+              "within_90_days",
+              "three_to_six_months",
+              "later"
+            ],
+            "description": "Desired decision or delivery timing."
+          },
+          "region": {
+            "type": "string",
+            "enum": [
+              "us",
+              "brazil",
+              "latam",
+              "global"
+            ],
+            "description": "Primary operating region."
+          },
+          "language": {
+            "type": "string",
+            "enum": [
+              "pt",
+              "en",
+              "es"
+            ],
+            "description": "Response language: pt, en or es. Defaults to the page language."
+          },
+          "qualification": {
+            "type": "object",
+            "additionalProperties": false,
+            "description": "The exact readiness result returned by qualify_makinai_project.",
+            "properties": {
+              "qualificationId": {
+                "type": "string",
+                "minLength": 4,
+                "maxLength": 80
+              },
+              "readinessStage": {
+                "type": "string",
+                "enum": [
+                  "ready_for_discovery",
+                  "needs_foundation",
+                  "needs_more_context"
+                ]
+              },
+              "readinessGaps": {
+                "type": "array",
+                "maxItems": 5,
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 180
+                }
+              }
+            },
+            "required": [
+              "qualificationId",
+              "readinessStage",
+              "readinessGaps"
+            ]
+          }
+        },
+        "required": [
+          "businessGoal",
+          "successMeasure",
+          "qualification"
+        ],
+        "$comment": "Chrome WebMCP currently exposes inputSchema but not outputSchema. x-outputSchema documents the exact JSON result contract for agents.",
+        "x-outputSchema": {
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "kind": {
+                  "const": "preliminary_project_brief"
+                },
+                "language": {
+                  "type": "string",
+                  "enum": [
+                    "pt",
+                    "en",
+                    "es"
+                  ]
+                },
+                "sourceQualificationId": {
+                  "type": "string",
+                  "maxLength": 80
+                },
+                "readinessStage": {
+                  "type": "string",
+                  "enum": [
+                    "ready_for_discovery",
+                    "needs_foundation",
+                    "needs_more_context"
+                  ]
+                },
+                "title": {
+                  "type": "string",
+                  "maxLength": 120
+                },
+                "objective": {
+                  "type": "string",
+                  "maxLength": 130
+                },
+                "successMeasure": {
+                  "type": "string",
+                  "maxLength": 120
+                },
+                "proposedScope": {
+                  "type": "array",
+                  "maxItems": 5,
+                  "items": {
+                    "type": "string",
+                    "maxLength": 240
+                  }
+                },
+                "dependencies": {
+                  "type": "array",
+                  "maxItems": 5,
+                  "items": {
+                    "type": "string",
+                    "maxLength": 240
+                  }
+                },
+                "principalRisks": {
+                  "type": "array",
+                  "maxItems": 5,
+                  "items": {
+                    "type": "string",
+                    "maxLength": 240
+                  }
+                },
+                "recommendedNextTool": {
+                  "const": "find_makinai_services"
+                },
+                "recommendedNextStep": {
+                  "type": "string",
+                  "maxLength": 120
+                },
+                "consultationPrefill": {
+                  "type": "string",
+                  "maxLength": 300
+                },
+                "consultationUrl": {
+                  "type": "string",
+                  "format": "uri",
+                  "maxLength": 240
+                }
+              },
+              "required": [
+                "kind",
+                "language",
+                "sourceQualificationId",
+                "readinessStage",
+                "title",
+                "objective",
+                "successMeasure",
+                "proposedScope",
+                "dependencies",
+                "principalRisks",
+                "recommendedNextTool",
+                "recommendedNextStep",
+                "consultationPrefill",
+                "consultationUrl"
+              ]
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "kind": {
+                  "const": "error"
+                },
+                "code": {
+                  "type": "string",
+                  "maxLength": 80
+                },
+                "message": {
+                  "type": "string",
+                  "maxLength": 240
+                }
+              },
+              "required": [
+                "kind",
+                "code",
+                "message"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "estimate_makinai_engagement",
+      "description": "Estimate a non-binding delivery model, timeline and investment profile when type and complexity are known; do not select a service or quote a price. Returns JSON {kind, language, estimateBasis, deliveryModel, indicativeTimelineWeeks, investmentProfile, assumptions[], recommendedNextTool, recommendedNextStep, consultationPrefill, consultationUrl}; exact contract: inputSchema.x-outputSchema.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "businessGoal": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 240,
+            "description": "Business outcome or operational challenge to address."
+          },
+          "projectType": {
+            "type": "string",
+            "enum": [
+              "strategy",
+              "pilot",
+              "implementation",
+              "managed_service"
+            ],
+            "description": "Expected engagement type."
+          },
+          "complexity": {
+            "type": "string",
+            "enum": [
+              "focused",
+              "cross_functional",
+              "enterprise"
+            ],
+            "description": "Organizational and delivery complexity."
+          },
+          "integrationCount": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 20,
+            "description": "Approximate number of required integrations."
+          },
+          "dataReadiness": {
+            "type": "string",
+            "enum": [
+              "unknown",
+              "fragmented",
+              "accessible",
+              "production_ready"
+            ],
+            "description": "Current data readiness."
+          },
+          "compliance": {
+            "type": "string",
+            "enum": [
+              "standard",
+              "regulated"
+            ],
+            "description": "Compliance context."
+          },
+          "timeline": {
+            "type": "string",
+            "enum": [
+              "exploring",
+              "within_90_days",
+              "three_to_six_months",
+              "later"
+            ],
+            "description": "Desired decision or delivery timing."
+          },
+          "region": {
+            "type": "string",
+            "enum": [
+              "us",
+              "brazil",
+              "latam",
+              "global"
+            ],
+            "description": "Primary operating region."
+          },
+          "language": {
+            "type": "string",
+            "enum": [
+              "pt",
+              "en",
+              "es"
+            ],
+            "description": "Response language: pt, en or es. Defaults to the page language."
+          }
+        },
+        "required": [
+          "projectType",
+          "complexity"
+        ],
+        "$comment": "Chrome WebMCP currently exposes inputSchema but not outputSchema. x-outputSchema documents the exact JSON result contract for agents.",
+        "x-outputSchema": {
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "kind": {
+                  "const": "indicative_engagement_estimate"
+                },
+                "language": {
+                  "type": "string",
+                  "enum": [
+                    "pt",
+                    "en",
+                    "es"
+                  ]
+                },
+                "estimateBasis": {
+                  "type": "string",
+                  "maxLength": 160
+                },
+                "deliveryModel": {
+                  "type": "string",
+                  "enum": [
+                    "strategy_and_roadmap",
+                    "paid_pilot",
+                    "phased_implementation",
+                    "transition_then_managed_operation"
+                  ]
+                },
+                "indicativeTimelineWeeks": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "minimum": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 52
+                    },
+                    "maximum": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 52
+                    }
+                  },
+                  "required": [
+                    "minimum",
+                    "maximum"
+                  ]
+                },
+                "investmentProfile": {
+                  "type": "string",
+                  "enum": [
+                    "focused",
+                    "cross_functional",
+                    "enterprise_multi_phase"
+                  ]
+                },
+                "assumptions": {
+                  "type": "array",
+                  "maxItems": 5,
+                  "items": {
+                    "type": "string",
+                    "maxLength": 240
+                  }
+                },
+                "recommendedNextTool": {
+                  "const": "find_makinai_services"
+                },
+                "recommendedNextStep": {
+                  "type": "string",
+                  "maxLength": 300
+                },
+                "consultationPrefill": {
+                  "type": "string",
+                  "maxLength": 300
+                },
+                "consultationUrl": {
+                  "type": "string",
+                  "format": "uri",
+                  "maxLength": 240
+                }
+              },
+              "required": [
+                "kind",
+                "language",
+                "estimateBasis",
+                "deliveryModel",
+                "indicativeTimelineWeeks",
+                "investmentProfile",
+                "assumptions",
+                "recommendedNextTool",
+                "recommendedNextStep",
+                "consultationPrefill",
+                "consultationUrl"
+              ]
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "kind": {
+                  "const": "error"
+                },
+                "code": {
+                  "type": "string",
+                  "maxLength": 80
+                },
+                "message": {
+                  "type": "string",
+                  "maxLength": 240
+                }
+              },
+              "required": [
+                "kind",
+                "code",
+                "message"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "find_makinai_availability",
+      "description": "Use after the user provides a topic, timezone and preferred window. Never invent live slots. Returns JSON {kind, language, status, liveSlotsAvailable, timezone, preferredWindow, consultationTopic, schedulingProcess, nextAction, consultationPrefill, consultationUrl}; exact contract: inputSchema.x-outputSchema.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "timezone": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 80,
+            "description": "Preferred IANA timezone or UTC offset, for example America/Sao_Paulo or UTC-3."
+          },
+          "preferredWindow": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 120,
+            "description": "Preferred days and time window, for example Tuesday or Thursday, 14:00–17:00."
+          },
+          "consultationTopic": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 240,
+            "description": "Concrete project or decision to discuss during the consultation."
+          },
+          "region": {
+            "type": "string",
+            "enum": [
+              "us",
+              "brazil",
+              "latam",
+              "global"
+            ],
+            "description": "Primary operating region."
+          },
+          "language": {
+            "type": "string",
+            "enum": [
+              "pt",
+              "en",
+              "es"
+            ],
+            "description": "Response language: pt, en or es. Defaults to the page language."
+          }
+        },
+        "required": [
+          "timezone",
+          "preferredWindow",
+          "consultationTopic"
+        ],
+        "$comment": "Chrome WebMCP currently exposes inputSchema but not outputSchema. x-outputSchema documents the exact JSON result contract for agents.",
+        "x-outputSchema": {
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "kind": {
+                  "const": "consultation_availability"
+                },
+                "language": {
+                  "type": "string",
+                  "enum": [
+                    "pt",
+                    "en",
+                    "es"
+                  ]
+                },
+                "status": {
+                  "const": "request_required"
+                },
+                "liveSlotsAvailable": {
+                  "const": false
+                },
+                "timezone": {
+                  "type": "string",
+                  "maxLength": 80
+                },
+                "preferredWindow": {
+                  "type": "string",
+                  "maxLength": 120
+                },
+                "consultationTopic": {
+                  "type": "string",
+                  "maxLength": 240
+                },
+                "schedulingProcess": {
+                  "type": "string",
+                  "maxLength": 300
+                },
+                "nextAction": {
+                  "type": "string",
+                  "maxLength": 240
+                },
+                "consultationPrefill": {
+                  "type": "string",
+                  "maxLength": 500
+                },
+                "consultationUrl": {
+                  "type": "string",
+                  "format": "uri",
+                  "maxLength": 240
+                }
+              },
+              "required": [
+                "kind",
+                "language",
+                "status",
+                "liveSlotsAvailable",
+                "timezone",
+                "preferredWindow",
+                "consultationTopic",
+                "schedulingProcess",
+                "nextAction",
+                "consultationPrefill",
+                "consultationUrl"
+              ]
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "kind": {
+                  "const": "error"
+                },
+                "code": {
+                  "type": "string",
+                  "maxLength": 80
+                },
+                "message": {
+                  "type": "string",
+                  "maxLength": 240
+                }
+              },
+              "required": [
+                "kind",
+                "code",
+                "message"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "find_makinai_insights",
+      "description": "Retrieve MAKINAI articles and decision frameworks for guidance, not service recommendations. Returns JSON {kind, language, topic, count, articles[]}; the exact contract is in inputSchema.x-outputSchema.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "topic": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 240,
+            "description": "AI or transformation decision the user wants guidance about."
+          },
+          "language": {
+            "type": "string",
+            "enum": [
+              "pt",
+              "en",
+              "es"
+            ],
+            "description": "Response language: pt, en or es. Defaults to the page language."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 4,
+            "default": 3,
+            "description": "Maximum articles, from 1 to 4."
+          }
+        },
+        "required": [
+          "topic"
+        ],
+        "$comment": "Chrome WebMCP currently exposes inputSchema but not outputSchema. x-outputSchema documents the exact JSON result contract for agents.",
+        "x-outputSchema": {
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "kind": {
+                  "const": "insight_matches"
+                },
+                "language": {
+                  "type": "string",
+                  "enum": [
+                    "pt",
+                    "en",
+                    "es"
+                  ]
+                },
+                "topic": {
+                  "type": "string",
+                  "maxLength": 240
+                },
+                "count": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 4
+                },
+                "articles": {
+                  "type": "array",
+                  "maxItems": 4,
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "title": {
+                        "type": "string",
+                        "maxLength": 110
+                      },
+                      "summary": {
+                        "type": "string",
+                        "maxLength": 170
+                      },
+                      "category": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 60
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "url": {
+                        "type": "string",
+                        "format": "uri",
+                        "maxLength": 240
+                      },
+                      "publishedAt": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 40
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      }
+                    },
+                    "required": [
+                      "title",
+                      "summary",
+                      "category",
+                      "url",
+                      "publishedAt"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "kind",
+                "language",
+                "topic",
+                "count",
+                "articles"
+              ]
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "kind": {
+                  "const": "error"
+                },
+                "code": {
+                  "type": "string",
+                  "maxLength": 80
+                },
+                "message": {
+                  "type": "string",
+                  "maxLength": 240
+                }
+              },
+              "required": [
+                "kind",
+                "code",
+                "message"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "find_makinai_services",
+      "description": "Use only to map a concrete business need to MAKINAI services. It ranks capabilities; it does not assess readiness or create a brief. Returns JSON {kind, language, businessNeed, count, matches[], recommendation, consultationPrefill, consultationUrl}; the exact contract is in inputSchema.x-outputSchema.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "businessNeed": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 240,
+            "description": "Business outcome, challenge or capability the user needs."
+          },
+          "language": {
+            "type": "string",
+            "enum": [
+              "pt",
+              "en",
+              "es"
+            ],
+            "description": "Response language: pt, en or es. Defaults to the page language."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 4,
+            "default": 3,
+            "description": "Maximum ranked matches, from 1 to 4."
+          }
+        },
+        "required": [
+          "businessNeed"
+        ],
+        "$comment": "Chrome WebMCP currently exposes inputSchema but not outputSchema. x-outputSchema documents the exact JSON result contract for agents.",
+        "x-outputSchema": {
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "kind": {
+                  "const": "service_matches"
+                },
+                "language": {
+                  "type": "string",
+                  "enum": [
+                    "pt",
+                    "en",
+                    "es"
+                  ]
+                },
+                "businessNeed": {
+                  "type": "string",
+                  "maxLength": 240
+                },
+                "count": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 4
+                },
+                "matches": {
+                  "type": "array",
+                  "maxItems": 4,
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "maxLength": 160
+                      },
+                      "summary": {
+                        "type": "string",
+                        "maxLength": 160
+                      },
+                      "url": {
+                        "type": "string",
+                        "format": "uri",
+                        "maxLength": 240
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "summary",
+                      "url"
+                    ]
+                  }
+                },
+                "recommendation": {
+                  "anyOf": [
+                    {
+                      "type": "null"
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "service": {
+                          "type": "string",
+                          "maxLength": 160
+                        },
+                        "confidence": {
+                          "type": "string",
+                          "enum": [
+                            "high",
+                            "medium",
+                            "exploratory"
+                          ]
+                        },
+                        "whyFit": {
+                          "type": "string",
+                          "maxLength": 280
+                        },
+                        "recommendedFirstStep": {
+                          "type": "string",
+                          "maxLength": 240
+                        },
+                        "qualificationQuestions": {
+                          "type": "array",
+                          "maxItems": 5,
+                          "items": {
+                            "type": "string",
+                            "maxLength": 240
+                          }
+                        }
+                      },
+                      "required": [
+                        "service",
+                        "confidence",
+                        "whyFit",
+                        "recommendedFirstStep",
+                        "qualificationQuestions"
+                      ]
+                    }
+                  ]
+                },
+                "consultationPrefill": {
+                  "type": "string",
+                  "maxLength": 500
+                },
+                "consultationUrl": {
+                  "type": "string",
+                  "format": "uri",
+                  "maxLength": 240
+                }
+              },
+              "required": [
+                "kind",
+                "language",
+                "businessNeed",
+                "count",
+                "matches",
+                "recommendation",
+                "consultationPrefill",
+                "consultationUrl"
+              ]
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "kind": {
+                  "const": "error"
+                },
+                "code": {
+                  "type": "string",
+                  "maxLength": 80
+                },
+                "message": {
+                  "type": "string",
+                  "maxLength": 240
+                }
+              },
+              "required": [
+                "kind",
+                "code",
+                "message"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "prepare_makinai_consultation",
+      "description": "Prepare—not submit—the visible consultation form after validated contact details and project context. Returns JSON {kind, status, language, requestKind, selectedService, fieldsPrepared[], manualSubmissionRequired, nextAction, consultationUrl}; the user must review and manually submit. Exact contract: inputSchema.x-outputSchema.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 120,
+            "description": "Full name of the person requesting contact."
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "minLength": 5,
+            "maxLength": 254,
+            "description": "Valid business email for MAKINAI's reply."
+          },
+          "company": {
+            "type": "string",
+            "maxLength": 160,
+            "description": "Optional company or organization name."
+          },
+          "challenge": {
+            "type": "string",
+            "minLength": 20,
+            "maxLength": 3000,
+            "description": "Business challenge, desired outcome, context and relevant constraints."
+          },
+          "requestKind": {
+            "type": "string",
+            "enum": [
+              "consultation",
+              "assessment"
+            ],
+            "description": "Whether the user wants a project consultation or a preliminary assessment."
+          },
+          "selectedService": {
+            "type": "string",
+            "maxLength": 160,
+            "description": "Optional MAKINAI service selected by find_makinai_services."
+          },
+          "language": {
+            "type": "string",
+            "enum": [
+              "pt",
+              "en",
+              "es"
+            ],
+            "description": "Response language: pt, en or es. Defaults to the page language."
+          }
+        },
+        "required": [
+          "name",
+          "email",
+          "challenge",
+          "requestKind"
+        ],
+        "$comment": "Chrome WebMCP currently exposes inputSchema but not outputSchema. x-outputSchema documents the exact JSON result contract for agents.",
+        "x-outputSchema": {
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "kind": {
+                  "const": "consultation_draft"
+                },
+                "status": {
+                  "const": "prepared_for_user_review"
+                },
+                "language": {
+                  "type": "string",
+                  "enum": [
+                    "pt",
+                    "en",
+                    "es"
+                  ]
+                },
+                "requestKind": {
+                  "type": "string",
+                  "enum": [
+                    "consultation",
+                    "assessment"
+                  ]
+                },
+                "selectedService": {
+                  "type": "string",
+                  "maxLength": 160
+                },
+                "fieldsPrepared": {
+                  "type": "array",
+                  "minItems": 4,
+                  "maxItems": 5,
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "name",
+                      "email",
+                      "company",
+                      "challenge",
+                      "requestKind"
+                    ]
+                  }
+                },
+                "manualSubmissionRequired": {
+                  "const": true
+                },
+                "nextAction": {
+                  "type": "string",
+                  "maxLength": 180
+                },
+                "consultationUrl": {
+                  "type": "string",
+                  "format": "uri",
+                  "maxLength": 240
+                }
+              },
+              "required": [
+                "kind",
+                "status",
+                "language",
+                "requestKind",
+                "selectedService",
+                "fieldsPrepared",
+                "manualSubmissionRequired",
+                "nextAction",
+                "consultationUrl"
+              ]
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "kind": {
+                  "const": "error"
+                },
+                "code": {
+                  "type": "string",
+                  "maxLength": 80
+                },
+                "message": {
+                  "type": "string",
+                  "maxLength": 240
+                }
+              },
+              "required": [
+                "kind",
+                "code",
+                "message"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "qualify_makinai_project",
+      "description": "Assess readiness, missing prerequisites and decisions for a defined initiative; do not select a service or write a brief. Returns JSON {kind, language, qualificationId, readinessStage, readinessScore, assessment, readinessGaps[], decisionsNeeded[], recommendedNextTool, recommendedNextStep, consultationPrefill, consultationUrl}; pass qualificationId, readinessStage and readinessGaps to build_makinai_project_brief. Exact contract: inputSchema.x-outputSchema.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "businessGoal": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 240,
+            "description": "Business outcome or operational challenge to address."
+          },
+          "industry": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 120,
+            "description": "Company industry or business sector."
+          },
+          "currentSystems": {
+            "type": "string",
+            "maxLength": 300,
+            "description": "Relevant systems, data sources and current workflow."
+          },
+          "dataReadiness": {
+            "type": "string",
+            "enum": [
+              "unknown",
+              "fragmented",
+              "accessible",
+              "production_ready"
+            ],
+            "description": "Current data readiness."
+          },
+          "timeline": {
+            "type": "string",
+            "enum": [
+              "exploring",
+              "within_90_days",
+              "three_to_six_months",
+              "later"
+            ],
+            "description": "Desired decision or delivery timing."
+          },
+          "region": {
+            "type": "string",
+            "enum": [
+              "us",
+              "brazil",
+              "latam",
+              "global"
+            ],
+            "description": "Primary operating region."
+          },
+          "language": {
+            "type": "string",
+            "enum": [
+              "pt",
+              "en",
+              "es"
+            ],
+            "description": "Response language: pt, en or es. Defaults to the page language."
+          }
+        },
+        "required": [
+          "businessGoal",
+          "industry"
+        ],
+        "$comment": "Chrome WebMCP currently exposes inputSchema but not outputSchema. x-outputSchema documents the exact JSON result contract for agents.",
+        "x-outputSchema": {
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "kind": {
+                  "const": "project_qualification"
+                },
+                "language": {
+                  "type": "string",
+                  "enum": [
+                    "pt",
+                    "en",
+                    "es"
+                  ]
+                },
+                "qualificationId": {
+                  "type": "string",
+                  "maxLength": 80
+                },
+                "readinessStage": {
+                  "type": "string",
+                  "enum": [
+                    "ready_for_discovery",
+                    "needs_foundation",
+                    "needs_more_context"
+                  ]
+                },
+                "readinessScore": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 100
+                },
+                "assessment": {
+                  "type": "string",
+                  "maxLength": 300
+                },
+                "readinessGaps": {
+                  "type": "array",
+                  "maxItems": 5,
+                  "items": {
+                    "type": "string",
+                    "maxLength": 240
+                  }
+                },
+                "decisionsNeeded": {
+                  "type": "array",
+                  "maxItems": 5,
+                  "items": {
+                    "type": "string",
+                    "maxLength": 240
+                  }
+                },
+                "recommendedNextTool": {
+                  "const": "build_makinai_project_brief"
+                },
+                "recommendedNextStep": {
+                  "type": "string",
+                  "maxLength": 300
+                },
+                "consultationPrefill": {
+                  "type": "string",
+                  "maxLength": 300
+                },
+                "consultationUrl": {
+                  "type": "string",
+                  "format": "uri",
+                  "maxLength": 240
+                }
+              },
+              "required": [
+                "kind",
+                "language",
+                "qualificationId",
+                "readinessStage",
+                "readinessScore",
+                "assessment",
+                "readinessGaps",
+                "decisionsNeeded",
+                "recommendedNextTool",
+                "recommendedNextStep",
+                "consultationPrefill",
+                "consultationUrl"
+              ]
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "kind": {
+                  "const": "error"
+                },
+                "code": {
+                  "type": "string",
+                  "maxLength": 80
+                },
+                "message": {
+                  "type": "string",
+                  "maxLength": 240
+                }
+              },
+              "required": [
+                "kind",
+                "code",
+                "message"
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "host": "makinai.co",
+  "source": "webmcp.com/api/directory.json"
+}

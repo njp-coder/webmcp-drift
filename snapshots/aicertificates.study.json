@@ -1,0 +1,200 @@
+{
+  "sponsio": 1,
+  "url": "https://aicertificates.study/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "check_answer",
+      "description": "Grades the user's choice and returns an explanation for EVERY option, including the ones they did not pick. On this exam two options are frequently defensible and only one is credited, so the reasons the wrong options lose are the part worth teaching.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "exam": {
+            "type": "string",
+            "enum": [
+              "ccar-p",
+              "ccdv-f",
+              "ccao-f",
+              "ccar-f"
+            ],
+            "description": "Exam slug."
+          },
+          "question_id": {
+            "type": "string",
+            "description": "The id from get_practice_question."
+          },
+          "selected": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Option letters the user chose, e.g. [\"B\"] or [\"B\",\"D\"]."
+          }
+        },
+        "required": [
+          "exam",
+          "question_id",
+          "selected"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "explain_current",
+      "description": "The full reasoning for the question on screen: why the credited option wins and why each other option loses. Refuses until the person has committed to an answer, because the explanations name the correct option.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_practice_question",
+      "description": "Returns one original practice question with its options and no answer key. Present it to the user and let them choose before calling check_answer. Pass every id already served in exclude_ids — this server is stateless and remembers nothing.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "exam": {
+            "type": "string",
+            "enum": [
+              "ccar-p",
+              "ccdv-f",
+              "ccao-f",
+              "ccar-f"
+            ],
+            "description": "Exam slug from list_exams."
+          },
+          "domain": {
+            "type": "string",
+            "description": "Optional domain id (e.g. \"d3\") to drill one area. Domain ids come from list_exams."
+          },
+          "exclude_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Question ids already served in this session, so they are not repeated."
+          }
+        },
+        "required": [
+          "exam"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_screen",
+      "description": "What the person is looking at right now in the practice player: the question, its options, which they have selected, and how far through the form they are. Before they commit to an answer this deliberately does NOT include the answer key — you are coaching, not solving. Call this before answering any question about 'this question' or 'the one on screen'.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_session_progress",
+      "description": "How this sitting is going, by blueprint domain: answered, correct, and accuracy for the questions committed so far in this form. Use it to decide what to review, not to predict an exam score — a single form is a small sample.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_exams",
+      "description": "The Claude certifications covered here, with exam codes, item counts, fees and the full domain list with published weights. Call this first to get valid exam slugs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "my_progress",
+      "description": "Their recorded history for one exam, broken down by blueprint domain with the weakest first. Call this at the start of a study session to decide what to drill, and after a run of questions to show what moved. Only a signed-in account has history; anonymous callers are told so rather than shown zeros.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "exam": {
+            "type": "string",
+            "enum": [
+              "ccar-p",
+              "ccdv-f",
+              "ccao-f",
+              "ccar-f"
+            ],
+            "description": "Exam slug from list_exams."
+          }
+        },
+        "required": [
+          "exam"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "open_study",
+      "description": "Open or resume the study page for an exam, optionally focused on a domain or a sub-objective. Use this when someone asks to study rather than to be quizzed in chat: the page gives them a visible question they answer themselves, and once it is open a richer set of tools appears for reading and steering that screen. Returns the URL; a browser agent should navigate there.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "exam": {
+            "type": "string",
+            "description": "Exam slug from list_exams."
+          },
+          "domain": {
+            "type": "string",
+            "description": "Optional blueprint domain, e.g. \"d3\"."
+          },
+          "sub_objective": {
+            "type": "string",
+            "description": "Optional concept, e.g. \"d1.5\". Ids are per-exam."
+          }
+        },
+        "required": [
+          "exam"
+        ]
+      }
+    },
+    {
+      "name": "present_question",
+      "description": "Put a specific question from this form on the person's screen — the one you think they need next. To follow up a specific miss, pass related_to_question_id: it finds another item testing the SAME blueprint sub-objective, which is the grain at which someone actually fails. A domain is far too coarse for that; d1 is seventeen percent of the exam. Falls back to the same domain when this form has no sibling for that concept, and tells you which it did. You must say why you chose it; that reason is shown to them on the page, so write it for them to read.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "related_to_question_id": {
+            "type": "string",
+            "description": "Follow up this item, e.g. \"u1-d1-09\". Prefers another question on the same sub-objective; falls back to the same domain and says so."
+          },
+          "domain": {
+            "type": "string",
+            "description": "Blueprint domain id, e.g. \"d3\". Ignored when related_to_question_id is given."
+          },
+          "sub_objective": {
+            "type": "string",
+            "description": "Target a concept directly, e.g. \"d1.5\". Get these from get_screen."
+          },
+          "only_unanswered": {
+            "type": "boolean",
+            "description": "Skip items they have already committed to. Default true."
+          },
+          "reason": {
+            "type": "string",
+            "description": "One sentence, addressed to them, on why this question next."
+          }
+        },
+        "required": [
+          "reason"
+        ]
+      }
+    }
+  ],
+  "host": "aicertificates.study",
+  "source": "webmcp.com/api/directory.json"
+}

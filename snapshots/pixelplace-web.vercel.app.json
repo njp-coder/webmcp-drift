@@ -1,0 +1,167 @@
+{
+  "sponsio": 1,
+  "url": "https://pixelplace-web.vercel.app/studio",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "check_program",
+      "description": "Compile a PixelCraft program WITHOUT putting it on the canvas, and report exactly what is wrong or right with it: error codes with line numbers, the palette it declares, the colors it actually paints (which can differ if it used a raw hex literal), how much of the canvas it covers, and any warnings. This is the cheap iteration loop — check a draft here as many times as you need, then call set_program once it is right.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "source": {
+            "type": "string",
+            "description": "The PixelCraft program to compile."
+          }
+        },
+        "required": [
+          "source"
+        ]
+      }
+    },
+    {
+      "name": "describe_canvas",
+      "description": "Get a coarse TEXT MAP of what is currently drawn — a small character grid where each character is the dominant color of a region and \".\" is transparent, plus a legend, the painted bounding box, and coverage. Tool results cannot contain images, so this is how you check that a shape landed where you meant, that the subject is centred, or that you did not accidentally fill the background. It shows layout and silhouette, not detail — for anything about how the art LOOKS, ask the person.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "frame": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Frame to describe. Defaults to the visible one."
+          },
+          "detail": {
+            "type": "integer",
+            "minimum": 8,
+            "maximum": 48,
+            "description": "Maximum grid size on the long edge. The map preserves aspect ratio and reports its actual mapWidth/mapHeight. Default 24. Higher costs more tokens."
+          }
+        }
+      }
+    },
+    {
+      "name": "export_artwork",
+      "description": "Save the current artwork to the person's device: \"png\" for a still image, \"gif\" for an animated loop, \"spritesheet\" for an exact PNG frame grid a game engine can slice, or \"source\" for the .pc program itself — the editable format that can be opened again in the Studio. The browser starts the download and returns its metadata.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "format": {
+            "type": "string",
+            "enum": [
+              "png",
+              "gif",
+              "spritesheet",
+              "source"
+            ]
+          },
+          "scale": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 16,
+            "description": "Integer upscale for png/gif/spritesheet. Defaults to native 1x for spritesheets and 8x for display-oriented PNG/GIF exports."
+          }
+        },
+        "required": [
+          "format"
+        ]
+      }
+    },
+    {
+      "name": "get_pixelcraft_guide",
+      "description": "Read the PixelCraft language guide before writing any program. PixelCraft is the pixel-art DSL this app compiles: a program declares a canvas and a palette, then draws with commands like rect, circ, line, poly, and animates with frames or timeline. The guide is generated from the compiler's own docs, so it never drifts from what actually compiles. Call this first in any session.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_program",
+      "description": "Read the program currently on the canvas, along with what it compiles to. Use this to pick up where things stand before editing — the person may have changed the source by hand since you last wrote it.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_examples",
+      "description": "List the example PixelCraft programs bundled with this app — finished pieces covering tilesets, particle effects, character animation, HUD widgets and full scenes. Load one with load_example to study how something is done, or as a starting point to remix.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "search": {
+            "type": "string",
+            "description": "Optional filter on name or tags."
+          }
+        }
+      }
+    },
+    {
+      "name": "load_example",
+      "description": "Put one of the bundled examples on the canvas and return its source, so you can read how it works or edit it into something new.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Slug from list_examples."
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "open_pixelplace_studio",
+      "description": "Open PixelPlace Studio, where the full WebMCP toolset can create, inspect, revise, animate, and export game-ready pixel art. Call this before trying to edit artwork.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "set_frame",
+      "description": "Show a specific frame of an animated program, and stop playback so it stays there. Useful for pointing the person at one moment of a loop.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "frame": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "frame"
+        ]
+      }
+    },
+    {
+      "name": "set_program",
+      "description": "Put a PixelCraft program on the canvas, replacing what is there. The person watching the page sees the result immediately. Rejected if it does not compile, so the canvas never holds a broken program — check_program first if unsure.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "source": {
+            "type": "string",
+            "description": "The complete PixelCraft program."
+          }
+        },
+        "required": [
+          "source"
+        ]
+      }
+    }
+  ],
+  "host": "pixelplace-web.vercel.app",
+  "source": "webmcp.com/api/directory.json"
+}

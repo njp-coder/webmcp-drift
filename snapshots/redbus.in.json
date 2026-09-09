@@ -1,0 +1,101 @@
+{
+  "sponsio": 1,
+  "url": "https://www.redbus.in/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "get_bus_offers",
+      "description": "Fetch active promo codes and discounts for bus bookings on redBus. Optionally provide a route (e.g., \"Bangalore to Chennai\") to get route-specific offers. Returns a list of promo codes, discount details, and validity information.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "route": {
+            "type": "string",
+            "description": "Bus route in \"City to City\" format (e.g., \"Bangalore to Chennai\"). Optional — if omitted, returns all active platform-wide offers."
+          }
+        }
+      }
+    },
+    {
+      "name": "searchBuses",
+      "description": "Search for available buses between two cities on a specific date. Resolves city names automatically. Use this tool on the HOME page when the user gives route + date + filters in one prompt. Optionally include filter preferences (AC, seat type, departure/arrival slots, operator/brand keyword like Volvo) — they are applied after navigation to the results page. Use runAfterSearchResultsLoad (same shape as runSrpBookingFlow) so open-bus + seat + continue runs automatically after results load — required for multi-step prompts because navigation unloads the home page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "source": {
+            "type": "string",
+            "description": "Source city name (e.g., \"Bangalore\", \"Singapore\", \"Kuala Lumpur\", \"Phnom Penh\")"
+          },
+          "destination": {
+            "type": "string",
+            "description": "Destination city name (e.g., \"Chennai\", \"Johor Bahru\", \"Penang\", \"Siem Reap\")"
+          },
+          "date": {
+            "type": "string",
+            "description": "Travel date. Use ISO YYYY-MM-DD with the correct calendar year (same as the user's \"today\"). Accepts natural language (\"today\", \"tomorrow\") or \"in N days\". If the year is wrong/outdated, it is corrected to this year or next."
+          },
+          "filters": {
+            "type": "object",
+            "description": "Optional filters to pre-apply on the results page. Include every criterion the user asked for (e.g. AC + SLEEPER + Volvo) in one object.",
+            "properties": {
+              "acType": {
+                "type": "string",
+                "enum": [
+                  "AC",
+                  "NON_AC"
+                ],
+                "description": "AC or Non-AC bus preference"
+              },
+              "seatType": {
+                "type": "string",
+                "enum": [
+                  "SEATER",
+                  "SLEEPER",
+                  "SEMI_SLEEPER"
+                ],
+                "description": "Seat type preference"
+              },
+              "departureTime": {
+                "type": "string",
+                "enum": [
+                  "MORNING",
+                  "AFTERNOON",
+                  "EVENING",
+                  "NIGHT"
+                ],
+                "description": "Preferred departure time slot: MORNING (6AM-12PM), AFTERNOON (12PM-6PM), EVENING (6PM-12AM), NIGHT (12AM-6AM)"
+              },
+              "arrivalTime": {
+                "type": "string",
+                "enum": [
+                  "MORNING",
+                  "AFTERNOON",
+                  "EVENING",
+                  "NIGHT"
+                ],
+                "description": "Preferred arrival time slot: MORNING (6AM-12PM), AFTERNOON (12PM-6PM), EVENING (6PM-12AM), NIGHT (12AM-6AM)"
+              },
+              "operatorOrBusBrandKeyword": {
+                "type": "string",
+                "description": "Operator or bus brand mentioned by the user (e.g. \"Volvo\", \"Benz\"). Resolved on the results page against live filter data."
+              }
+            }
+          },
+          "runAfterSearchResultsLoad": {
+            "type": "object",
+            "description": "Optional. Same fields as runSrpBookingFlow (openBus, selectSeats, continueToBoardingPoints, applyFilters, waitForSearchResultsMs). Stored for the results page to execute after tuples load."
+          }
+        },
+        "required": [
+          "source",
+          "destination",
+          "date"
+        ]
+      }
+    }
+  ],
+  "host": "redbus.in",
+  "source": "webmcp.com/api/directory.json"
+}

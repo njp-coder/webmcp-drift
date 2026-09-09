@@ -1,0 +1,127 @@
+{
+  "sponsio": 1,
+  "url": "https://zkxp.xyz/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "get_current_page",
+      "description": "Returns the pathname and full URL of the page the user is viewing.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_site_info",
+      "description": "Returns structured metadata about ZKXP Innovation: company details, service categories, primary pages, and contact email.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_pages",
+      "description": "Lists indexable public pages on zkxp.xyz with paths, URLs, change frequency, and sitemap priority.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_services",
+      "description": "Lists ZKXP service category ids and labels. Use these ids for submit_contact_message.serviceCategory.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "navigate",
+      "description": "Navigates the browser to a public ZKXP page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "enum": [
+              "/",
+              "/contact",
+              "/services/embedded-engineering",
+              "/presentations/wjscl-agm"
+            ],
+            "description": "Destination path on zkxp.xyz."
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "submit_contact_message",
+      "description": "Submits the public contact form to hello@zkxp.xyz. Requires name, email, message, and a serviceCategory id from list_services.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "description": "Sender full name."
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 320,
+            "description": "Reply-to email address."
+          },
+          "phone": {
+            "type": "string",
+            "description": "Optional North American phone number (10 digits, with or without +1).",
+            "maxLength": 40,
+            "pattern": "^(?:\\+?1)?\\d{10}$|^\\(\\d{3}\\) \\d{3}-\\d{4}$"
+          },
+          "message": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 10000,
+            "description": "Message body for the ZKXP team."
+          },
+          "serviceCategory": {
+            "type": "string",
+            "enum": [
+              "software",
+              "data",
+              "ai",
+              "infrastructure",
+              "cybersecurity",
+              "physical-security",
+              "embedded-engineering"
+            ],
+            "description": "Service area id. Use list_services to see labels."
+          }
+        },
+        "required": [
+          "name",
+          "email",
+          "message",
+          "serviceCategory"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "zkxp.xyz",
+  "source": "webmcp.com/api/directory.json"
+}

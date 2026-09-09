@@ -1,0 +1,579 @@
+{
+  "sponsio": 1,
+  "url": "https://webroom.openai.chatgpt.site/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "apply_filter",
+      "description": "Select one canonical Webroom filter as an independent undoable layer. Manual adjustment values are preserved; use none to remove only the filter.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "filter": {
+            "type": "string",
+            "enum": [
+              "none",
+              "vivid",
+              "warm",
+              "cool",
+              "mono",
+              "film",
+              "fade"
+            ]
+          }
+        },
+        "required": [
+          "filter"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "crop_image",
+      "description": "Crop using whole-pixel x, y, width, and height in the current oriented image coordinates returned by get_document_info.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "y": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "width": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "height": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "x",
+          "y",
+          "width",
+          "height"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "export_image",
+      "description": "Export the current full-resolution edit as JPEG, PNG, or WebP. Delivery defaults to a local download; bounded data_url delivery returns image data.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "format": {
+            "type": "string",
+            "enum": [
+              "jpeg",
+              "png",
+              "webp"
+            ]
+          },
+          "quality": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 90
+          },
+          "delivery": {
+            "type": "string",
+            "enum": [
+              "download",
+              "data_url"
+            ],
+            "default": "download"
+          }
+        },
+        "required": [
+          "format"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "flip_image",
+      "description": "Flip the active image across its horizontal or vertical axis.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "axis": {
+            "type": "string",
+            "enum": [
+              "horizontal",
+              "vertical"
+            ]
+          }
+        },
+        "required": [
+          "axis"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_document_info",
+      "description": "Get safe metadata for the active Webroom image, including source and current output pixel dimensions, revision, dirty state, and history counts.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_edit_history",
+      "description": "Get concise ordered edit history and redo entries. Returns command summaries and sources without pixel data.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_edit_state",
+      "description": "Get every manual adjustment, non-destructive geometry value, independently selected filter, and revision for the active image. Manual values are applied on top of the filter.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_image_preview",
+      "description": "Return an original or edited image preview as a bounded data URL. maxDimension is 64–2048 pixels and quality is 1–100.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "variant": {
+            "type": "string",
+            "enum": [
+              "original",
+              "edited"
+            ],
+            "default": "edited",
+            "description": "Whether to render the untouched source or current edit."
+          },
+          "format": {
+            "type": "string",
+            "enum": [
+              "jpeg",
+              "png",
+              "webp"
+            ],
+            "default": "jpeg"
+          },
+          "maxDimension": {
+            "type": "integer",
+            "minimum": 64,
+            "maximum": 2048,
+            "default": 1024
+          },
+          "quality": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 85
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "open_image_from_data_url",
+      "description": "Open a JPEG, PNG, or WebP data URL up to 12 MiB encoded length. Set replace true only to discard unexported edits.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "dataUrl": {
+            "type": "string",
+            "description": "Required supported image data URL."
+          },
+          "filename": {
+            "type": "string",
+            "description": "Optional safe display filename."
+          },
+          "replace": {
+            "type": "boolean",
+            "default": false
+          }
+        },
+        "required": [
+          "dataUrl"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "open_image_from_url",
+      "description": "Open a JPEG, PNG, or WebP from an HTTPS URL using a CORS request without credentials. Set replace true only to discard unexported edits.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "Required HTTPS image URL."
+          },
+          "filename": {
+            "type": "string",
+            "description": "Optional safe display filename."
+          },
+          "replace": {
+            "type": "boolean",
+            "default": false
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "redo_edit",
+      "description": "Redo one previously undone edit in the active Webroom document.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "reset_edits",
+      "description": "Reset all adjustments and geometry to the untouched source as one undoable command.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "resize_image",
+      "description": "Resize to positive whole-pixel dimensions. Supply width, height, or both; one omitted dimension preserves aspect ratio.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "width": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "height": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "rotate_image",
+      "description": "Rotate the active image by -90, 90, or 180 degrees. Positive values rotate clockwise.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "degrees": {
+            "type": "integer",
+            "enum": [
+              -90,
+              90,
+              180
+            ]
+          }
+        },
+        "required": [
+          "degrees"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_blacks",
+      "description": "Set the manual blacks layer to an absolute value from -100 through 100. It is applied on top of the selected filter and creates one undoable edit.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "number",
+            "minimum": -100,
+            "maximum": 100,
+            "description": "Absolute blacks value."
+          }
+        },
+        "required": [
+          "value"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_blur",
+      "description": "Set the manual blur layer to an absolute value from 0 through 100. It is applied on top of the selected filter and creates one undoable edit.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100,
+            "description": "Absolute blur value."
+          }
+        },
+        "required": [
+          "value"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_brightness",
+      "description": "Set the manual brightness layer to an absolute value from -100 through 100. It is applied on top of the selected filter and creates one undoable edit.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "number",
+            "minimum": -100,
+            "maximum": 100,
+            "description": "Absolute brightness value."
+          }
+        },
+        "required": [
+          "value"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_contrast",
+      "description": "Set the manual contrast layer to an absolute value from -100 through 100. It is applied on top of the selected filter and creates one undoable edit.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "number",
+            "minimum": -100,
+            "maximum": 100,
+            "description": "Absolute contrast value."
+          }
+        },
+        "required": [
+          "value"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_exposure",
+      "description": "Set the manual exposure layer to an absolute value from -5 through 5. It is applied on top of the selected filter and creates one undoable edit.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "number",
+            "minimum": -5,
+            "maximum": 5,
+            "description": "Absolute exposure value."
+          }
+        },
+        "required": [
+          "value"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_highlights",
+      "description": "Set the manual highlights layer to an absolute value from -100 through 100. It is applied on top of the selected filter and creates one undoable edit.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "number",
+            "minimum": -100,
+            "maximum": 100,
+            "description": "Absolute highlights value."
+          }
+        },
+        "required": [
+          "value"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_saturation",
+      "description": "Set the manual saturation layer to an absolute value from -100 through 100. It is applied on top of the selected filter and creates one undoable edit.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "number",
+            "minimum": -100,
+            "maximum": 100,
+            "description": "Absolute saturation value."
+          }
+        },
+        "required": [
+          "value"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_shadows",
+      "description": "Set the manual shadows layer to an absolute value from -100 through 100. It is applied on top of the selected filter and creates one undoable edit.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "number",
+            "minimum": -100,
+            "maximum": 100,
+            "description": "Absolute shadows value."
+          }
+        },
+        "required": [
+          "value"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_sharpening",
+      "description": "Set the manual sharpening layer to an absolute value from 0 through 100. It is applied on top of the selected filter and creates one undoable edit.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100,
+            "description": "Absolute sharpening value."
+          }
+        },
+        "required": [
+          "value"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_temperature",
+      "description": "Set the manual temperature layer to an absolute value from -100 through 100. It is applied on top of the selected filter and creates one undoable edit.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "number",
+            "minimum": -100,
+            "maximum": 100,
+            "description": "Absolute temperature value."
+          }
+        },
+        "required": [
+          "value"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_tint",
+      "description": "Set the manual tint layer to an absolute value from -100 through 100. It is applied on top of the selected filter and creates one undoable edit.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "number",
+            "minimum": -100,
+            "maximum": 100,
+            "description": "Absolute tint value."
+          }
+        },
+        "required": [
+          "value"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_vibrance",
+      "description": "Set the manual vibrance layer to an absolute value from -100 through 100. It is applied on top of the selected filter and creates one undoable edit.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "number",
+            "minimum": -100,
+            "maximum": 100,
+            "description": "Absolute vibrance value."
+          }
+        },
+        "required": [
+          "value"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_whites",
+      "description": "Set the manual whites layer to an absolute value from -100 through 100. It is applied on top of the selected filter and creates one undoable edit.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "number",
+            "minimum": -100,
+            "maximum": 100,
+            "description": "Absolute whites value."
+          }
+        },
+        "required": [
+          "value"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "undo_edit",
+      "description": "Undo one committed human or agent edit in the active Webroom document.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "webroom.openai.chatgpt.site",
+  "source": "webmcp.com/api/directory.json"
+}

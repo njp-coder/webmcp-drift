@@ -1,0 +1,304 @@
+{
+  "sponsio": 1,
+  "url": "https://www.nektronic.com.ar/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "calculate_service_price",
+      "description": "Calculates exact price of a NEKTRONIC service in requested currency (ARS or USD), applying reference MEP exchange rate and platform rounding rules.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "serviceId": {
+            "type": "string",
+            "enum": [
+              "SR-01",
+              "SR-02",
+              "SR-03",
+              "SR-04",
+              "ST-01",
+              "ST-02",
+              "ST-03",
+              "ST-04",
+              "ST-05",
+              "ST-06",
+              "SD-01",
+              "SD-02",
+              "SD-03"
+            ],
+            "description": "Unique service identifier (e.g. \"SR-01\", \"ST-02\", \"ST-06\")."
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "ARS",
+              "USD"
+            ],
+            "description": "Desired currency for calculation (\"ARS\" or \"USD\")."
+          }
+        },
+        "required": [
+          "serviceId",
+          "currency"
+        ]
+      }
+    },
+    {
+      "name": "get_about_info",
+      "description": "Retrieves about us information, mission, core values, and operational stats of Nektronic.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_business_info",
+      "description": "Obtains NEKTRONIC general business information: name, description, location, operating hours, contact channels, and social media links.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "get_contact_channels",
+      "description": "Returns NEKTRONIC active contact channels with ready-to-redirect URLs (WhatsApp with pre-loaded message, corporate email).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "get_faqs",
+      "description": "Returns NEKTRONIC FAQs regarding remote access security, payment methods, pricing, and work process.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "get_service_catalog",
+      "description": "Returns NEKTRONIC full technical services catalog with base USD prices or Coming Soon if in development, categories (Remote/Workshop/Development), and hiring readiness info.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "description": "Filter by category: \"remoto\" (Remote Support), \"taller\" (On-site Workshop in Rawson), \"desarrollo\" (Software and Web) or \"todos\" to return all services.",
+            "enum": [
+              "remoto",
+              "taller",
+              "desarrollo",
+              "todos"
+            ]
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "share_site",
+      "description": "Generates official preconfigured links and recommended text to share or recommend the Nektronic website across social networks (X, Facebook, LinkedIn, Instagram, Reddit, WhatsApp). If a platform is specified, returns data for that platform; if omitted, returns all available options.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "platform": {
+            "type": "string",
+            "enum": [
+              "x",
+              "facebook",
+              "linkedin",
+              "instagram",
+              "reddit",
+              "whatsapp"
+            ],
+            "description": "Specific social media platform for sharing. If omitted, returns list of all supported platforms."
+          }
+        }
+      }
+    },
+    {
+      "name": "submit_custom_cart_request",
+      "description": "Creates a custom technical support cart, calculates budget estimate in pesos (ARS) or dollars (USD) (MEP rate and commercial rounding), and submits official form to Nektronic backend, returning registration status and direct pre-qualified WhatsApp link.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 50,
+            "description": "Client full name or nickname."
+          },
+          "contactMethod": {
+            "type": "string",
+            "enum": [
+              "whatsapp",
+              "email"
+            ],
+            "description": "Preferred contact method."
+          },
+          "phone": {
+            "type": "string",
+            "minLength": 6,
+            "maxLength": 15,
+            "description": "WhatsApp phone number (mandatory if contactMethod is \"whatsapp\"). Digits only."
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Contact email (mandatory if contactMethod is \"email\")."
+          },
+          "problemDescription": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 1000,
+            "description": "Detailed description of technical issue."
+          },
+          "fiscalType": {
+            "type": "string",
+            "enum": [
+              "particular",
+              "empresa"
+            ],
+            "description": "Client tax/commercial status (\"particular\" or \"empresa\")."
+          },
+          "serviceIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "SR-01",
+                "SR-02",
+                "SR-03",
+                "SR-04",
+                "ST-01",
+                "ST-02",
+                "ST-03",
+                "ST-04",
+                "ST-05",
+                "ST-06",
+                "SD-01",
+                "SD-02",
+                "SD-03"
+              ]
+            },
+            "minItems": 1,
+            "description": "Array of unique selected service identifiers (e.g. [\"SR-01\", \"ST-02\"])."
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "ARS",
+              "USD"
+            ],
+            "description": "Preferred quotation currency (\"ARS\" or \"USD\")."
+          },
+          "acceptTerms": {
+            "type": "boolean",
+            "enum": [
+              true
+            ],
+            "description": "Must be true to accept Nektronic terms and conditions."
+          }
+        },
+        "required": [
+          "name",
+          "contactMethod",
+          "problemDescription",
+          "fiscalType",
+          "serviceIds",
+          "currency",
+          "acceptTerms"
+        ],
+        "anyOf": [
+          {
+            "properties": {
+              "contactMethod": {
+                "const": "whatsapp"
+              }
+            },
+            "required": [
+              "phone"
+            ]
+          },
+          {
+            "properties": {
+              "contactMethod": {
+                "const": "email"
+              }
+            },
+            "required": [
+              "email"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "submit_service_request",
+      "description": "Pre-qualifies a service request and generates a direct transactional link to NEKTRONIC WhatsApp Business with a formatted technical diagnostic message.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 50,
+            "description": "Client full name or nickname."
+          },
+          "problemDescription": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 1000,
+            "description": "Detailed description of issue or technical query."
+          },
+          "clientType": {
+            "type": "string",
+            "enum": [
+              "particular",
+              "empresa"
+            ],
+            "description": "Commercial condition: \"particular\" or \"empresa\"."
+          },
+          "serviceId": {
+            "type": "string",
+            "enum": [
+              "SR-01",
+              "SR-02",
+              "SR-03",
+              "SR-04",
+              "ST-01",
+              "ST-02",
+              "ST-03",
+              "ST-04",
+              "ST-05",
+              "ST-06",
+              "SD-01",
+              "SD-02",
+              "SD-03"
+            ],
+            "description": "Optional related service identifier (e.g. \"SR-01\", \"ST-02\")."
+          }
+        },
+        "required": [
+          "name",
+          "problemDescription",
+          "clientType"
+        ]
+      }
+    }
+  ],
+  "host": "nektronic.com.ar",
+  "source": "webmcp.com/api/directory.json"
+}

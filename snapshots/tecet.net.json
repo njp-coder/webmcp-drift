@@ -1,0 +1,172 @@
+{
+  "sponsio": 1,
+  "url": "https://tecet.net/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "booking_availability",
+      "description": "Check consultation booking availability and working hours. Can check if a specific date (YYYY-MM-DD) is available, or return general booking schedule rules, working days, and upcoming open dates.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "description": "Optional ISO date string (YYYY-MM-DD) to check availability for.",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "content_search",
+      "description": "Search published portfolio projects, journal articles, and service offers by keyword. Returns ranked, bounded summary results.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search keywords (1-120 chars)",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "types": {
+            "type": "array",
+            "description": "Optional content types to filter results",
+            "items": {
+              "type": "string",
+              "enum": [
+                "project",
+                "journal",
+                "service"
+              ]
+            },
+            "minItems": 1,
+            "maxItems": 3,
+            "uniqueItems": true
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum number of results to return (1-10, default 5)",
+            "minimum": 1,
+            "maximum": 10
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "journal_get",
+      "description": "Retrieve bounded public details and key takeaways of a published journal article by its canonical slug.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Canonical journal article slug",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "maxLength": 120
+          }
+        },
+        "required": [
+          "slug"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "project_get",
+      "description": "Retrieve bounded public details of a published portfolio project by its canonical slug.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Canonical project slug (e.g. \"mytorbay\")",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "maxLength": 120
+          }
+        },
+        "required": [
+          "slug"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "service_get",
+      "description": "Retrieve bounded details of a structured service offer by its canonical slug.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Canonical service offer slug (e.g. \"premium-hosting\")",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "maxLength": 120
+          }
+        },
+        "required": [
+          "slug"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "site_navigate",
+      "description": "Visibly navigate to an approved public page, section, or open the human booking/contact dialog.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "target": {
+            "type": "string",
+            "description": "Navigation target destination",
+            "enum": [
+              "home",
+              "about",
+              "portfolio",
+              "project",
+              "journal",
+              "journal_article",
+              "services",
+              "service",
+              "booking",
+              "contact"
+            ]
+          },
+          "slug": {
+            "type": "string",
+            "description": "Required for project, journal_article, and service targets. Must be omitted for all other targets.",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "maxLength": 120
+          }
+        },
+        "required": [
+          "target"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "site_overview",
+      "description": "Provides an overview of Tecet Dev, canonical origin, available content types, major site sections, and the current safe page path.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "tecet.net",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,95 @@
+{
+  "sponsio": 1,
+  "url": "https://knock.app/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "navigate_to_page",
+      "description": "Navigate the current browser tab to a page on the Knock marketing site. Only known internal paths are accepted. Use `search_pages` first to discover valid paths.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Internal path starting with '/', e.g. '/pricing' or '/features/workflows'.",
+            "enum": [
+              "/features/workflows",
+              "/features/guides",
+              "/features/broadcasts",
+              "/features/agents",
+              "/features/observability",
+              "/features/template-management",
+              "/features/preferences",
+              "/channels/in-app-notifications",
+              "/channels/slackkit",
+              "/channels/email",
+              "/channels/mobile",
+              "/integrations",
+              "/cli",
+              "/changelog",
+              "/blog",
+              "/about"
+            ]
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    },
+    {
+      "name": "open_contact_sales",
+      "description": "Navigate to the Knock contact sales page so the user can talk to the sales team. This does not submit the form.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "search_pages",
+      "description": "Search the Knock marketing site for pages matching a free-text query. Returns matching pages with their path, title, and description. Use this to help a user find the right page before navigating.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Free-text search query. Matches title, description, path, and keywords (case-insensitive)."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 25,
+            "default": 10,
+            "description": "Maximum number of results to return."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "subscribe_to_newsletter",
+      "description": "Subscribe an email address to the Knock newsletter. The email is added to the 'newsletter-subscribers' audience. Ask the user for confirmation before calling this tool.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "The email address to subscribe."
+          }
+        },
+        "required": [
+          "email"
+        ]
+      }
+    }
+  ],
+  "host": "knock.app",
+  "source": "webmcp.com/api/directory.json"
+}

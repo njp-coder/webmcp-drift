@@ -1,0 +1,98 @@
+{
+  "sponsio": 1,
+  "url": "https://status.networkthinking.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "check_service_status",
+      "description": "Current, right-now status of one monitored service (e.g. 'Slack', 'AWS', 'Google Workspace'): live status, active issue, subservice breakdown, and a link to details. Accepts a service name or id; fuzzy matching is applied. For historical reliability (uptime % over past weeks), use get_service_uptime instead.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Service name or id, e.g. 'slack', 'Microsoft', 'newbook-api'."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_overall_status",
+      "description": "Overall health summary of all cloud services monitored by NTS Status Central: counts by status, which services currently have issues, and how fresh the data is. Use this first to answer 'is anything down right now?'.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_service_uptime",
+      "description": "Historical reliability of one monitored service: weighted uptime percentage over the trailing N days (max 90), plus counts of outage/degraded/maintenance days and the current run of consecutive operational days. For the live right-now status, use check_service_status instead.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Service name or id, e.g. 'slack' or 'aws'."
+          },
+          "days": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 90,
+            "description": "Lookback window in days (1-90). Defaults to 90."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_current_incidents",
+      "description": "All services with an ongoing issue right now (outage, degraded performance, or scheduled maintenance), including when each started and the latest note. Empty list means everything monitored is operational.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_services",
+      "description": "List all services monitored by NTS Status Central, optionally filtered by current status (operational, degraded, outage, maintenance) or category (e.g. 'Cloud Services', 'Security', 'Communication').",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "operational",
+              "degraded",
+              "outage",
+              "maintenance",
+              "informational",
+              "unknown"
+            ],
+            "description": "Only include services currently in this status."
+          },
+          "category": {
+            "type": "string",
+            "description": "Only include services in this category (case-insensitive substring)."
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "status.networkthinking.com",
+  "source": "webmcp.com/api/directory.json"
+}

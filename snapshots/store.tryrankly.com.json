@@ -1,0 +1,247 @@
+{
+  "sponsio": 1,
+  "url": "https://store.tryrankly.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "add_to_cart",
+      "description": "Add a product to the signed-in user cart. Identify the product by `slug` (preferred), `productId`, or `name` (fuzzy). If none are provided AND the user is on a /p/<slug> page, the product on screen is used. Quantity defaults to 1. Optional variantId. Requires sign-in (use sign_in_demo if needed).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string"
+          },
+          "productId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "default": 1
+          },
+          "variantId": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "authenticate",
+      "description": "Return whether the user is currently signed in and their basic profile.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "best_sellers",
+      "description": "Return the products tagged as best sellers. Optionally restrict by category.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "default": 6
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "faq_support",
+      "description": "Canned answers to common store questions: shipping, returns, sizing, payment, contact.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "question": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "question"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "find_deals",
+      "description": "Return products currently discounted (price below MRP) or tagged sale, with discount percent.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "default": 6
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_product",
+      "description": "Return full details for a product. Provide `slug` (preferred) or `name` (fuzzy).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_categories",
+      "description": "Return every category slug + name available in the catalog.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "navigate",
+      "description": "Navigate within the storefront. Provide either `path` (absolute, e.g. /p/foo) or `to` (one of: home, cart, checkout, account, login, product (needs slug)).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string",
+            "enum": [
+              "home",
+              "cart",
+              "checkout",
+              "account",
+              "login",
+              "product"
+            ]
+          },
+          "slug": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "place_demo_order",
+      "description": "Complete checkout end-to-end for the current cart using the signed-in demo account. A dummy shipping address is used and the backend applies a 100% demo discount so no real card is charged. Only works for accounts created via sign_in_demo (email suffix @webmcp-demo.dev); regular accounts must use the /checkout form. After success the user is navigated to the order detail page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "returns_policy",
+      "description": "Store-wide return policy summary.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Search the Rankly Merch catalog. Returns up to `limit` products matching the query and/or category. Each result includes slug (use it with get_product or navigate), name, color, priceCents, and stock summary.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Free-text search across name, description, tags, category."
+          },
+          "category": {
+            "type": "string",
+            "description": "Category slug. Use list_categories to discover valid values."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 12
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "sign_in",
+      "description": "Sign in with email + password.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "sign_in_demo",
+      "description": "Synthesize a unique demo email + password, register it, and sign in. Use when not signed in for cart/checkout demo.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "view_cart",
+      "description": "Return the current cart contents and subtotal.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "store.tryrankly.com",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,108 @@
+{
+  "sponsio": 1,
+  "url": "https://h3.dev/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "get_current_page",
+      "description": "Get metadata for the page the user is viewing: path, URL, title, description and heading outline.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_project_info",
+      "description": "Get project metadata and links: website, source repository, issues, releases, community, `llms.txt` bundles and versions.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_pages",
+      "description": "List pages in the documentation navigation with titles, paths, URLs and available descriptions. Use for browsing; use `search_docs` for a specific topic.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "navigate",
+      "description": "Open a documentation page in the user's browser, optionally at a heading. Returns the page it landed on. Use only when the user asks to navigate; use `read_page` to inspect content without moving them.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Route path to open, e.g. '/guide/getting-started'."
+          },
+          "hash": {
+            "type": "string",
+            "description": "Heading anchor to scroll to, e.g. '#installation'."
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    },
+    {
+      "name": "read_page",
+      "description": "Read a documentation page as Markdown by route path. Links in it are route paths for this tool. If `truncated`, continue with `nextOffset` as `offset`. Generated pages have no Markdown source.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Route path of the page, e.g. '/guide/getting-started'."
+          },
+          "offset": {
+            "type": "integer",
+            "description": "Character offset; use `nextOffset` to continue (default 0).",
+            "minimum": 0
+          },
+          "maxLength": {
+            "type": "integer",
+            "description": "Maximum Markdown characters to return (1-40000, default 40000).",
+            "minimum": 1,
+            "maximum": 40000
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    },
+    {
+      "name": "search_docs",
+      "description": "Search pages and sections in H3. Returns ranked matches with previews, route paths and optional heading anchors. Use `read_page` to read a result.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search terms, e.g. 'deploy to vercel' or 'defineNitroPlugin'."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum number of results (1-50, default 10).",
+            "minimum": 1,
+            "maximum": 50
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "h3.dev",
+  "source": "webmcp.com/api/directory.json"
+}

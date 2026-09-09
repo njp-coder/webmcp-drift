@@ -1,0 +1,371 @@
+{
+  "sponsio": 1,
+  "url": "https://wandernote.openai.chatgpt.site/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "add_itinerary_activity",
+      "description": "Add an agent suggestion to an empty hourly slot. Never overwrites an existing activity or a traveler-protected edit.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "description": "Local date in YYYY-MM-DD format."
+          },
+          "hour": {
+            "type": "integer",
+            "minimum": 7,
+            "maximum": 22,
+            "description": "Local start hour on a 24-hour clock, from 7 through 22."
+          },
+          "title": {
+            "type": "string",
+            "description": "A concise, human-readable activity title."
+          },
+          "description": {
+            "type": "string",
+            "description": "A useful reason to visit or practical tip."
+          },
+          "location": {
+            "type": "string",
+            "description": "Venue name, neighborhood, or address."
+          },
+          "latitude": {
+            "type": "number",
+            "minimum": -85,
+            "maximum": 85,
+            "description": "Accurate latitude for plotting the activity on the interactive itinerary map."
+          },
+          "longitude": {
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180,
+            "description": "Accurate longitude for plotting the activity on the interactive itinerary map."
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "eat",
+              "explore",
+              "culture",
+              "coffee",
+              "rest",
+              "stay"
+            ]
+          },
+          "duration": {
+            "type": "number",
+            "minimum": 0.5,
+            "maximum": 8,
+            "description": "Activity duration in hours."
+          }
+        },
+        "required": [
+          "date",
+          "hour",
+          "title"
+        ]
+      }
+    },
+    {
+      "name": "export_itinerary_pdf",
+      "description": "Generate and download a real PDF of the visible, current multi-day itinerary.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_itinerary_map",
+      "description": "Read the selected day or complete-trip map, including geolocated stops in itinerary order, numbered pins, routes, and places that still need coordinates.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "scope": {
+            "type": "string",
+            "enum": [
+              "day",
+              "trip"
+            ],
+            "description": "Read one travel day or every day in the trip."
+          },
+          "date": {
+            "type": "string",
+            "description": "Local date in YYYY-MM-DD format."
+          }
+        }
+      }
+    },
+    {
+      "name": "get_traveler_feedback",
+      "description": "Read traveler comments and dismissed suggestions. Use these as instructions for revising the itinerary.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "open",
+              "resolved",
+              "all"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "get_trip_state",
+      "description": "Read the destination, dates, traveler preferences, linked Notion source document, hour-by-hour itinerary, protected traveler edits, and open feedback before proposing changes.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_time_slots",
+      "description": "List all hourly slots, their current activities, and traveler-protected edits for one travel date.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "description": "Local date in YYYY-MM-DD format."
+          }
+        },
+        "required": [
+          "date"
+        ]
+      }
+    },
+    {
+      "name": "remove_itinerary_activity",
+      "description": "Remove an existing agent-created activity without removing protected traveler edits.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "activityId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "activityId"
+        ]
+      }
+    },
+    {
+      "name": "respond_to_traveler_feedback",
+      "description": "Resolve a traveler comment, optionally replacing the referenced activity with a better suggestion in the requested slot.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "feedbackId": {
+            "type": "string",
+            "description": "The open traveler feedback ID."
+          },
+          "response": {
+            "type": "string",
+            "description": "Explain how the traveler comment was addressed."
+          },
+          "date": {
+            "type": "string",
+            "description": "Local date in YYYY-MM-DD format."
+          },
+          "hour": {
+            "type": "integer",
+            "minimum": 7,
+            "maximum": 22,
+            "description": "Local start hour on a 24-hour clock, from 7 through 22."
+          },
+          "title": {
+            "type": "string",
+            "description": "A concise, human-readable activity title."
+          },
+          "description": {
+            "type": "string",
+            "description": "A useful reason to visit or practical tip."
+          },
+          "location": {
+            "type": "string",
+            "description": "Venue name, neighborhood, or address."
+          },
+          "latitude": {
+            "type": "number",
+            "minimum": -85,
+            "maximum": 85,
+            "description": "Accurate latitude for plotting the activity on the interactive itinerary map."
+          },
+          "longitude": {
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180,
+            "description": "Accurate longitude for plotting the activity on the interactive itinerary map."
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "eat",
+              "explore",
+              "culture",
+              "coffee",
+              "rest",
+              "stay"
+            ]
+          },
+          "duration": {
+            "type": "number",
+            "minimum": 0.5,
+            "maximum": 8,
+            "description": "Activity duration in hours."
+          }
+        },
+        "required": [
+          "feedbackId",
+          "response"
+        ]
+      }
+    },
+    {
+      "name": "set_map_view",
+      "description": "Select a travel day or the full-trip map, optionally focus a particular itinerary stop, and keep the visible itinerary synchronized.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "scope": {
+            "type": "string",
+            "enum": [
+              "day",
+              "trip"
+            ],
+            "description": "Show a single day or the full trip."
+          },
+          "date": {
+            "type": "string",
+            "description": "Local date in YYYY-MM-DD format."
+          },
+          "activityId": {
+            "type": "string",
+            "description": "Focus the map and itinerary on an existing activity."
+          }
+        }
+      }
+    },
+    {
+      "name": "set_trip_details",
+      "description": "Set the trip destination, inclusive travel dates, preferences, and optional Notion source attribution. Activities outside new dates are removed.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "destination": {
+            "type": "string",
+            "description": "City, region, or destination."
+          },
+          "startDate": {
+            "type": "string",
+            "description": "Local date in YYYY-MM-DD format."
+          },
+          "endDate": {
+            "type": "string",
+            "description": "Local date in YYYY-MM-DD format."
+          },
+          "preferences": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "sourceTitle": {
+            "type": "string",
+            "description": "Title of the Notion itinerary used as agent context."
+          },
+          "sourceUrl": {
+            "type": "string",
+            "description": "HTTPS link to the source Notion itinerary."
+          }
+        }
+      }
+    },
+    {
+      "name": "update_itinerary_activity",
+      "description": "Edit an existing agent suggestion by activity ID. Traveler-edited activities are protected; respond to their feedback instead.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "activityId": {
+            "type": "string",
+            "description": "The existing activity ID."
+          },
+          "date": {
+            "type": "string",
+            "description": "Local date in YYYY-MM-DD format."
+          },
+          "hour": {
+            "type": "integer",
+            "minimum": 7,
+            "maximum": 22,
+            "description": "Local start hour on a 24-hour clock, from 7 through 22."
+          },
+          "title": {
+            "type": "string",
+            "description": "A concise, human-readable activity title."
+          },
+          "description": {
+            "type": "string",
+            "description": "A useful reason to visit or practical tip."
+          },
+          "location": {
+            "type": "string",
+            "description": "Venue name, neighborhood, or address."
+          },
+          "latitude": {
+            "type": "number",
+            "minimum": -85,
+            "maximum": 85,
+            "description": "Accurate latitude for plotting the activity on the interactive itinerary map."
+          },
+          "longitude": {
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180,
+            "description": "Accurate longitude for plotting the activity on the interactive itinerary map."
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "eat",
+              "explore",
+              "culture",
+              "coffee",
+              "rest",
+              "stay"
+            ]
+          },
+          "duration": {
+            "type": "number",
+            "minimum": 0.5,
+            "maximum": 8,
+            "description": "Activity duration in hours."
+          }
+        },
+        "required": [
+          "activityId"
+        ]
+      }
+    }
+  ],
+  "host": "wandernote.openai.chatgpt.site",
+  "source": "webmcp.com/api/directory.json"
+}

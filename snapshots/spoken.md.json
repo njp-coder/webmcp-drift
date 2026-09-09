@@ -1,0 +1,60 @@
+{
+  "sponsio": 1,
+  "url": "https://spoken.md/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "get_podcast_transcript",
+      "description": "Fetch a full podcast episode as clean Markdown with real speaker names (not \"Speaker 1\"), timestamps, and paragraph breaks — sized for an LLM context window. Takes the numeric episode id from search_podcast_episodes or list_podcast_episodes. Spends 1 credit on the first fetch of an episode; re-fetching the same episode is free. Without an API key saved in this browser, only the free demo episode (1000651996090) is available.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "episodeId": {
+            "type": "string",
+            "description": "Numeric episode id, e.g. \"1000651996090\"."
+          }
+        },
+        "required": [
+          "episodeId"
+        ]
+      }
+    },
+    {
+      "name": "list_podcast_episodes",
+      "description": "List a show's entire back catalog in one call — every episode id, title, and release date. Use the podcastId from any search_podcast_episodes result, then loop the ids through get_podcast_transcript to build a full archive. Costs no credits.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "podcastId": {
+            "type": "string",
+            "description": "Numeric show id, as returned in the podcastId field of search results."
+          }
+        },
+        "required": [
+          "podcastId"
+        ]
+      }
+    },
+    {
+      "name": "search_podcast_episodes",
+      "description": "Search 50M+ podcast episodes by topic, show name, guest name, or by pasting an episode URL from Spotify, Apple Podcasts, YouTube, Overcast, or any other podcast app. Returns matching episodes with the id needed by get_podcast_transcript and the podcastId needed by list_podcast_episodes. Costs no credits.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Free text (e.g. \"huberman sleep\") or a full episode URL from any podcast platform."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "spoken.md",
+  "source": "webmcp.com/api/directory.json"
+}

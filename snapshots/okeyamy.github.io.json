@@ -1,0 +1,322 @@
+{
+  "sponsio": 1,
+  "url": "https://okeyamy.github.io/nullrun/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "assess_tile",
+      "description": "Explain a single tile: what terrain it is, whether it is walkable, whether it gives cover, and exactly which guards or cameras currently have eyes on it. Use to sanity-check a hiding spot before committing the operative to it.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "number",
+            "description": "Tile column, 0-indexed from the left edge."
+          },
+          "y": {
+            "type": "number",
+            "description": "Tile row, 0-indexed from the top edge."
+          }
+        },
+        "required": [
+          "x",
+          "y"
+        ]
+      }
+    },
+    {
+      "name": "begin_infiltration",
+      "description": "Start the floor. Call this once the briefing has been read; no other action is possible until it is called.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "cut_power",
+      "description": "Kill the facility grid for several turns, shortening every guard and camera vision cone to 40% of its range. Expensive in bandwidth; best saved for crossing a wide open room.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "cycle_door",
+      "description": "Remotely open a door, or seal it shut so guards physically cannot path through it for several turns. Sealing a door mid-chase is the strongest escape tool the agent has.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "number",
+            "description": "Door column."
+          },
+          "y": {
+            "type": "number",
+            "description": "Door row."
+          },
+          "seal": {
+            "type": "boolean",
+            "description": "true locks the door against guards; false opens it."
+          }
+        },
+        "required": [
+          "x",
+          "y"
+        ]
+      }
+    },
+    {
+      "name": "end_turn",
+      "description": "End the operative's turn. Guards then move, cameras sweep, timers tick down, and AP and bandwidth refill. Ending a turn while standing in a vision cone is how runs die.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "extract",
+      "description": "Extract from the floor. Only works when the operative is standing on the extraction pad and every data core has been siphoned. Clearing a floor offers an implant choice.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_run_status",
+      "description": "Report roguelite run progress: current floor, installed implants, intel gathered this run, banked intel across runs, and how the run ended if it is over.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_situation",
+      "description": "Read the complete tactical picture of the current floor: operative position and resources, alarm level, every discovered guard with facing and alert state, cameras, objectives, and the threat on the tile the operative is standing on. Call this before deciding anything. The response ends with a nextSteps list telling you which tools are worth calling right now and why — keep acting on it until the floor is cleared or the run ends.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "grab_intel",
+      "description": "Pick up the intel cache on the operative's current tile. Intel is banked between runs and unlocks progression.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "hack_terminal",
+      "description": "Hack a terminal the operative is standing next to. Data cores are the floor objective; security nodes reveal the whole floor map and cut the alarm by 30. Costs AP.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "terminal_id": {
+            "type": "string",
+            "description": "Optional terminal id; defaults to whichever is adjacent."
+          }
+        }
+      }
+    },
+    {
+      "name": "list_abilities",
+      "description": "List every operative action and agent ability with its live cost, whether you can currently afford it, and what it does. Use this to plan a turn against the real AP and bandwidth economy instead of guessing.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "loop_camera",
+      "description": "Loop a camera feed so it stops seeing anything for several turns. Use get_situation to read camera ids.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "camera_id": {
+            "type": "string",
+            "description": "Camera id, e.g. \"cam-0\"."
+          }
+        },
+        "required": [
+          "camera_id"
+        ]
+      }
+    },
+    {
+      "name": "move_operative",
+      "description": "Order the operative to walk to a tile, spending 1 AP per step. Set sprint=true to dash up to 3 tiles for 2 AP total — fast but it makes noise that pulls guards. Movement stops early if AP runs out.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "number",
+            "description": "Destination column."
+          },
+          "y": {
+            "type": "number",
+            "description": "Destination row."
+          },
+          "sprint": {
+            "type": "boolean",
+            "description": "Dash instead of sneaking. Faster, but generates a noise event."
+          }
+        },
+        "required": [
+          "x",
+          "y"
+        ]
+      }
+    },
+    {
+      "name": "operate_door",
+      "description": "Have the operative physically open or shut an adjacent door. Costs AP and makes noise — the agent ability cycle_door is quieter and works at range.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "number",
+            "description": "Tile column, 0-indexed from the left edge."
+          },
+          "y": {
+            "type": "number",
+            "description": "Tile row, 0-indexed from the top edge."
+          }
+        },
+        "required": [
+          "x",
+          "y"
+        ]
+      }
+    },
+    {
+      "name": "ping_scan",
+      "description": "Sweep an area of the facility from the network side, revealing terrain, guards and cameras around a point even where the operative cannot see. Guards inside the sweep notice the probe and the alarm ticks up slightly, so do not spam it.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "number",
+            "description": "Tile column, 0-indexed from the left edge."
+          },
+          "y": {
+            "type": "number",
+            "description": "Tile row, 0-indexed from the top edge."
+          }
+        },
+        "required": [
+          "x",
+          "y"
+        ]
+      }
+    },
+    {
+      "name": "plan_route",
+      "description": "Compute the walking route from the operative to a target tile and return a per-step risk breakdown — which step is exposed, to whom, and where cover exists. Returns the AP cost so you can tell whether the move fits in this turn. This does not move anyone.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "number",
+            "description": "Tile column, 0-indexed from the left edge."
+          },
+          "y": {
+            "type": "number",
+            "description": "Tile row, 0-indexed from the top edge."
+          }
+        },
+        "required": [
+          "x",
+          "y"
+        ]
+      }
+    },
+    {
+      "name": "reroute_patrol",
+      "description": "Spoof a guard's patrol orders so it walks to a waypoint you choose. Only works on guards that are not already hunting the operative.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "guard_id": {
+            "type": "string",
+            "description": "Guard id, e.g. \"guard-2\"."
+          },
+          "x": {
+            "type": "number",
+            "description": "Waypoint column."
+          },
+          "y": {
+            "type": "number",
+            "description": "Waypoint row."
+          }
+        },
+        "required": [
+          "guard_id",
+          "x",
+          "y"
+        ]
+      }
+    },
+    {
+      "name": "set_play_mode",
+      "description": "Set or change who is at the controls, and hand control over mid-run. \"coop\" means a human moves the operative while you work the facility network — scanning, looping cameras, sealing doors, cutting power. \"agent\" means you take both roles and play the whole run yourself. Callable at any point during a run.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "coop",
+              "agent"
+            ],
+            "description": "coop = human operative + agent handler; agent = you play both roles."
+          }
+        },
+        "required": [
+          "mode"
+        ]
+      }
+    },
+    {
+      "name": "trigger_distraction",
+      "description": "Blow a speaker somewhere in the facility to create a loud noise. Every guard in range abandons what they are doing and investigates that spot — the core tool for opening a path for the operative.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "number",
+            "description": "Tile column, 0-indexed from the left edge."
+          },
+          "y": {
+            "type": "number",
+            "description": "Tile row, 0-indexed from the top edge."
+          }
+        },
+        "required": [
+          "x",
+          "y"
+        ]
+      }
+    }
+  ],
+  "host": "okeyamy.github.io",
+  "source": "webmcp.com/api/directory.json"
+}

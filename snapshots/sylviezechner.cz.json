@@ -1,0 +1,190 @@
+{
+  "sponsio": 1,
+  "url": "https://sylviezechner.cz/kontakt/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "get_case_studies",
+      "description": "Vrátí stručné případové studie s doloženými výsledky Sylvie Zechner, volitelně filtrované podle přesné kategorie. Použij k doložení zkušeností a výsledků pro klienty.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5,
+            "default": 3,
+            "description": "Nejvyšší počet vrácených případových studií, od 1 do 5."
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "E-shop, UX a PPC",
+              "Přírodní kosmetika",
+              "Oděvní průmysl",
+              "Povlečení a domácí textil",
+              "Fotovoltaika, služby",
+              "Šperky, e-shop",
+              "Uzeniny a potraviny, e-shop"
+            ],
+            "description": "Volitelná přesná kategorie případové studie."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_pricing",
+      "description": "Vrátí ceny, reklamní kanály a obsah všech tarifů správy reklam nebo jednoho zvoleného tarifu. Použij pro dotazy na cenu, kombinace kanálů a položky zahrnuté v tarifu.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "plan": {
+            "type": "string",
+            "enum": [
+              "Start",
+              "Pro",
+              "Premium"
+            ],
+            "description": "Volitelný přesný název tarifu. Bez něj se vrátí všechny tarify."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_service_details",
+      "description": "Vrátí rozsah, hlavní přínosy a orientační cenu jedné konkrétní služby Sylvie Zechner podle jejího slugu. Použij, když už je známá služba a potřebuješ její podrobnosti.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "service": {
+            "type": "string",
+            "enum": [
+              "google-ads",
+              "meta-ads",
+              "linkedin-ads",
+              "e-mailing"
+            ],
+            "description": "Slug služby z nabídky vrácené nástrojem list_services."
+          }
+        },
+        "required": [
+          "service"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_services",
+      "description": "Vrátí kompaktní přehled reklamních a marketingových služeb, se kterými může Sylvie Zechner pomoci. Použij při zjišťování nabídky; pro podrobnosti jedné služby slouží get_service_details.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "prepare_contact_request",
+      "description": "Připraví a zobrazí kontaktní požadavek ve formuláři, aby jej uživatel mohl zkontrolovat. Neodešle žádnou zprávu ani nevytvoří externí kontaktní požadavek. Pro skutečné odeslání slouží samostatný nástroj submit_contact_request.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 100,
+            "description": "Jméno a příjmení člověka, který chce Sylvii kontaktovat."
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 255,
+            "description": "Kontaktní e-mail pro odpověď."
+          },
+          "phone": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50,
+            "description": "Kontaktní telefon včetně předvolby, pokud ji uživatel uvedl."
+          },
+          "company": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "description": "Název firmy nebo adresa jejího webu."
+          },
+          "message": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 5000,
+            "description": "Konkrétní dotaz nebo popis požadované pomoci s PPC kampaněmi."
+          }
+        },
+        "required": [
+          "name",
+          "email",
+          "phone",
+          "company",
+          "message"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "submit_contact_request",
+      "description": "Odešle kontaktní zprávu Sylvii Zechner a vytvoří externí kontaktní požadavek. Použij pouze tehdy, když uživatel výslovně požaduje skutečné odeslání zprávy.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 100,
+            "description": "Jméno a příjmení člověka, který chce Sylvii kontaktovat."
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 255,
+            "description": "Kontaktní e-mail pro odpověď."
+          },
+          "phone": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50,
+            "description": "Kontaktní telefon včetně předvolby, pokud ji uživatel uvedl."
+          },
+          "company": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "description": "Název firmy nebo adresa jejího webu."
+          },
+          "message": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 5000,
+            "description": "Konkrétní dotaz nebo popis požadované pomoci s PPC kampaněmi."
+          }
+        },
+        "required": [
+          "name",
+          "email",
+          "phone",
+          "company",
+          "message"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "sylviezechner.cz",
+  "source": "webmcp.com/api/directory.json"
+}

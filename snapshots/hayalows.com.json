@@ -1,0 +1,134 @@
+{
+  "sponsio": 1,
+  "url": "https://hayalows.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "ask_hayalows",
+      "description": "Find authoritative Hayalows information when a visitor asks about services, business fit, approach, enquiries, payments, refunds, privacy or terms. Read-only. Returns a stable JSON object with schemaVersion, schemaUrl, query, matches (each with id, title, text, tags and url), note, and contact (an object or null). The machine-readable AskHayalowsResult contract is published at https://hayalows.com/webmcp/results.schema.json.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 300,
+            "description": "The visitor's question or the Hayalows topic to find."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "browse_hayalows_services",
+      "description": "Browse Hayalows service areas when a visitor wants to compare the available work or identify a likely fit. Reversible page action; never submits an enquiry. Returns a stable JSON object with schemaVersion, schemaUrl, offerings (key, name and bestFor), selected, sourceUrl, pageEffect and navigationStarted. The machine-readable BrowseHayalowsServicesResult contract is published at https://hayalows.com/webmcp/results.schema.json.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "service": {
+            "type": "string",
+            "enum": [
+              "all",
+              "business_clarity",
+              "brand_communication",
+              "websites_tools"
+            ],
+            "default": "all",
+            "description": "The service area to highlight, or all to show the complete offering."
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "navigate_hayalows",
+      "description": "Navigate directly to a public Hayalows destination when a visitor wants to view services, the working approach, the guided enquiry, payments, refunds, privacy or terms. Reversible navigation only; it never submits an enquiry or starts a payment. Returns destination, label, canonical url, navigationStarted and nextStep as structured content enforced by outputSchema.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "destination": {
+            "type": "string",
+            "enum": [
+              "home",
+              "services",
+              "approach",
+              "enquiry",
+              "payments",
+              "payments_refunds",
+              "privacy",
+              "terms"
+            ],
+            "description": "The exact Hayalows page or section to open."
+          }
+        },
+        "required": [
+          "destination"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "prepare_hayalows_enquiry",
+      "description": "Prepare the Hayalows guided-enquiry form when a visitor is ready to discuss a business problem. Reversible draft-only action: it fills the visible form or opens the homepage with the draft, but never sends, submits or opens a payment. Returns a stable JSON object with schemaVersion, schemaUrl, status, helpType, message, contactDetailsIncluded, sent (always false), navigationStarted, nextStep and sourceUrl. The machine-readable PrepareHayalowsEnquiryResult contract is published at https://hayalows.com/webmcp/results.schema.json.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "help_type": {
+            "type": "string",
+            "enum": [
+              "business_clarity",
+              "brand_communication",
+              "websites_tools",
+              "product_venture",
+              "partnership",
+              "general"
+            ],
+            "description": "The closest Hayalows enquiry category."
+          },
+          "message": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 2000,
+            "description": "What is happening now and what the visitor wants to improve."
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 120,
+            "description": "Optional visitor name."
+          },
+          "business": {
+            "type": "string",
+            "maxLength": 160,
+            "description": "Optional business name."
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 254,
+            "description": "Optional email address."
+          },
+          "phone": {
+            "type": "string",
+            "maxLength": 40,
+            "description": "Optional phone or WhatsApp number."
+          }
+        },
+        "required": [
+          "help_type",
+          "message"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "hayalows.com",
+  "source": "webmcp.com/api/directory.json"
+}

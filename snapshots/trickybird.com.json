@@ -1,0 +1,153 @@
+{
+  "sponsio": 1,
+  "url": "https://trickybird.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "cancel_launch",
+      "description": "Stop an open_site or open_this_site launch on this page, before it navigates. Returns cancelled when a launch was in progress, or nothing_to_cancel when none was or a check is waiting on the person at the screen. Opens nothing, starts no session, navigates nowhere.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_article",
+      "description": "Return the explainer this page is about, in the page's order: title, the answer it leads with, opening, sections and the questions it answers. Read-only, opens nothing.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_comparison",
+      "description": "Return the comparison TrickyBird publishes between a web proxy and a VPN: the rows in the page's order, with the answer and the balance note the page prints beside them. Read-only, opens nothing.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_faq",
+      "description": "Return the questions and answers TrickyBird publishes on its FAQ page, in the page's order. Read-only, opens nothing.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_security_overview",
+      "description": "Return the sections TrickyBird publishes on its security page, in the page's order. Read-only, opens nothing.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_site_status",
+      "description": "Return what TrickyBird publishes for one checked site: status, category, page address and the date a person last checked it. A domain outside this schema returns unknown_site. Read-only, opens nothing. open_site is not limited to these domains.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "domain": {
+            "type": "string",
+            "description": "The site's domain. Only the domains listed in this schema are accepted.",
+            "enum": [
+              "youtube.com",
+              "tiktok.com",
+              "reddit.com",
+              "instagram.com",
+              "facebook.com",
+              "pinterest.com",
+              "open.spotify.com",
+              "bbc.com",
+              "wikipedia.org",
+              "en.wiktionary.org",
+              "web.telegram.org",
+              "duckduckgo.com",
+              "search.yahoo.com",
+              "openstreetmap.org",
+              "imgur.com",
+              "twitch.tv",
+              "dailymotion.com",
+              "kick.com",
+              "soundcloud.com",
+              "vimeo.com",
+              "chatgpt.com",
+              "claude.ai",
+              "flickr.com",
+              "giphy.com",
+              "knowyourmeme.com",
+              "bandcamp.com",
+              "audiomack.com",
+              "mixcloud.com",
+              "chat.mistral.ai",
+              "huggingface.co",
+              "theguardian.com",
+              "dw.com",
+              "aljazeera.com",
+              "abc.net.au",
+              "en.wikibooks.org",
+              "web.whatsapp.com",
+              "discord.com",
+              "app.slack.com",
+              "snapchat.com",
+              "crazygames.com",
+              "poki.com",
+              "slither.io",
+              "skribbl.io",
+              "www.curseforge.com",
+              "archive.org",
+              "search.brave.com",
+              "tineye.com",
+              "deviantart.com"
+            ]
+          }
+        },
+        "required": [
+          "domain"
+        ]
+      }
+    },
+    {
+      "name": "list_checked_sites",
+      "description": "List the sites TrickyBird publishes checked pages for. Read-only, opens nothing. A site not listed has no such page, which does not mean it is blocked or unchecked, and open_site is not limited to the list.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "open_site",
+      "description": "Open a website through TrickyBird in this tab. The proxied page loads in place of this one. Returns ok (launch started), invalid_url (not a web address), busy (already launching), cancelled (call cancelled), failed (launch incomplete).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "The address to open, with or without https://. Up to 2048 characters.",
+            "pattern": "^(https?://)?[^\\s/]+(/\\S*)?$",
+            "examples": [
+              "example.com",
+              "https://example.org/some/page"
+            ],
+            "maxLength": 2048
+          }
+        },
+        "required": [
+          "url"
+        ]
+      }
+    }
+  ],
+  "host": "trickybird.com",
+  "source": "webmcp.com/api/directory.json"
+}

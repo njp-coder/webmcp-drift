@@ -1,0 +1,62 @@
+{
+  "sponsio": 1,
+  "url": "https://nodecraft.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "list_locations",
+      "description": "List Nodecraft datacenter regions and their cities, including country code and lat/lon coordinates. Useful for helping a user pick the closest region for their game server, or answering \"where does Nodecraft host servers?\".",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_supported_games",
+      "description": "List the games Nodecraft offers server hosting for. Returns each game's name, slug, public landing page URL (which includes pricing), minimum RAM in MB, and a `comingSoon` flag for unreleased titles. Useful for answering \"does Nodecraft host X?\" or recommending a game page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "includeComingSoon": {
+            "type": "boolean",
+            "description": "Include games that are announced but not yet available. Defaults to true.",
+            "default": true
+          }
+        }
+      }
+    },
+    {
+      "name": "search_knowledgebase",
+      "description": "Search the Nodecraft knowledgebase for articles covering game server setup, configuration, troubleshooting, and Nodecraft platform features. Returns article titles, canonical URLs, category, and a short preview.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Natural language search query — e.g. a game name, error message, or feature.",
+            "minLength": 1
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum number of articles to return (1-10).",
+            "minimum": 1,
+            "maximum": 10,
+            "default": 4
+          },
+          "game": {
+            "type": "string",
+            "description": "Optional game slug to scope results to a single game (e.g. \"minecraft\", \"valheim\"). Omit to search across all games."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "nodecraft.com",
+  "source": "webmcp.com/api/directory.json"
+}

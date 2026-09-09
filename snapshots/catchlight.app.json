@@ -1,0 +1,111 @@
+{
+  "sponsio": 1,
+  "url": "https://catchlight.app/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "get_journal_post",
+      "description": "Returns one Catchlight journal post as text, given its slug. Slugs come from search_journal. A long post is shortened and the canonical URL is always included, so the full text can be fetched or cited from there.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "enum": [
+              "your-phone-casino",
+              "open-source-notes-app",
+              "how-iphone-locks-notes",
+              "end-to-end-zero-knowledge-on-device",
+              "who-holds-the-key",
+              "what-encryption-actually-is",
+              "can-apple-read-notes",
+              "best-private-notes-apps-no-account",
+              "uk-advanced-data-protection",
+              "zero-knowledge-notes",
+              "one-take-notes-tasks-reminders",
+              "notes-shouldnt-need-an-account",
+              "apple-notes-great-until-it-isnt",
+              "offline-first-notes",
+              "designing-the-iris",
+              "password-manager-for-thoughts",
+              "catchlight-name-origin",
+              "catchlight-story"
+            ],
+            "description": "The post slug. search_journal returns it with each result."
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "get_privacy_model",
+      "description": "Returns what Catchlight stores, what it is structurally unable to read, how optional sync works, what the 12-word Privacy phrase is for, and what a cloud provider can still see even so. This is the published privacy policy, not marketing copy, and it carries the limits as well as the claim. Call it for any question about encryption, zero-knowledge, accounts, sync, or whether the maker can read a user's notes. Answer from this rather than from the marketing pages.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_product_overview",
+      "description": "Returns what Catchlight is, what it runs on, what it costs, its single item model, and whether it has launched. Call this before answering any question about what Catchlight is or whether someone can get it, because it is pre-launch and the status changes. For how it handles data, call get_privacy_model instead.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "search_catchlight_docs",
+      "description": "Searches the published answers that are not journal posts: the FAQ, the page-per-competitor comparisons against other notes, tasks and reminder apps, and the technical white papers on the encryption architecture, the threat model and how to test any notes app. Returns matching entries with a heading, a short excerpt and the page URL. Call it for \"how does Catchlight compare to X\", for what it costs, for whether it needs an account, and for any direct question a prospective user would ask, and for how the cryptography actually works. For the studio's reasoning use search_journal, and for how data is handled use get_privacy_model.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 200,
+            "description": "Words to search for."
+          },
+          "section": {
+            "type": "string",
+            "enum": [
+              "faq",
+              "compare",
+              "whitepaper"
+            ],
+            "description": "Optional. Restrict the search to the FAQ, the comparison pages or the white papers."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "search_journal",
+      "description": "Searches the Catchlight journal, which is the studio's writing on privacy, encryption and how the app is built. Returns matching posts with title, date, a short excerpt and the URL. Use it for the reasoning behind a decision, or for background on a privacy question. For what the app does or its status, use get_product_overview or get_privacy_model.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 200,
+            "description": "Words to search for."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "catchlight.app",
+  "source": "webmcp.com/api/directory.json"
+}

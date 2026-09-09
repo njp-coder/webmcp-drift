@@ -1,0 +1,126 @@
+{
+  "sponsio": 1,
+  "url": "https://agagentready.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "check_webmcp",
+      "description": "Answer one question about a public website: does it expose WebMCP (document.modelContext) tools to AI agents? Returns webmcp_detected and detection_status (what AG AgentReady knows: runtime_validated, static_signal_detected, no_webmcp_detected, runtime_validation_unavailable or check_failed) separately from live_check_status (this attempt only: completed, site_access_denied, bot_protection_detected, dns_resolution_failed, validator_network_failure, redirect_safety_block, navigation_timeout, browser_unavailable, runtime_validation_unavailable or check_failed). If a live attempt cannot complete for a previously runtime-verified site, the last verified tool count and tools are returned, labelled last_verified with last_verified_at and the verified page URL, plus a neutral warning.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "website_url": {
+            "type": "string",
+            "description": "Public website address to check for WebMCP support"
+          }
+        },
+        "required": [
+          "website_url"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_directory_listing",
+      "description": "Read one public AG AgentReady WebMCP directory profile by its site key (the domain), including its published capability description and the public list of WebMCP tools that site exposes.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "site_key": {
+            "type": "string",
+            "description": "Directory site key (the domain), e.g. example.com"
+          }
+        },
+        "required": [
+          "site_key"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_scan_report",
+      "description": "Read an existing AG AgentReady report using the public report token from a report link (/report/<token>). Read-only — it never starts a scan. Returns the free public snapshot only; paid or locked findings and private data are never returned.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "report_token": {
+            "type": "string",
+            "description": "Public report token from a report URL, e.g. /report/<token> (48 hex characters)"
+          }
+        },
+        "required": [
+          "report_token"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "run_website_scan",
+      "description": "Run an AG AgentReady readiness scan on ONE public website and return its free public snapshot: overall, WebMCP/agent, revenue and trust scores, an executive summary, the WebMCP detection block, the visible findings and the public report link. In-page WebMCP tool. If the scan is still running after about a minute it returns status \"processing\" plus the report URL — that is not a failure.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "website_url": {
+            "type": "string",
+            "description": "Public website address to analyse, for example https://example.com"
+          }
+        },
+        "required": [
+          "website_url"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_webmcp_directory",
+      "description": "Search AG AgentReady's public WebMCP directory of websites that expose agent-callable capability. Supports free-text search, category, verification tier, sort order and pagination. Returns public capability information only — no scores, findings or owner data.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "search": {
+            "type": "string",
+            "description": "Optional free-text query (domain or display name)"
+          },
+          "category": {
+            "type": "string",
+            "description": "Optional public directory category key"
+          },
+          "tier": {
+            "type": "string",
+            "enum": [
+              "verified",
+              "signals_detected"
+            ],
+            "description": "Optional verification tier filter"
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "recently_verified",
+              "most_tools",
+              "name",
+              "recently_listed"
+            ],
+            "description": "Optional sort order"
+          },
+          "limit": {
+            "type": "number",
+            "description": "Page size, 1-60 (default 24)"
+          },
+          "offset": {
+            "type": "number",
+            "description": "Result offset for pagination"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "agagentready.com",
+  "source": "webmcp.com/api/directory.json"
+}

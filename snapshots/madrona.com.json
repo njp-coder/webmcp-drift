@@ -1,0 +1,224 @@
+{
+  "sponsio": 1,
+  "url": "https://www.madrona.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "get_company",
+      "description": "Fetch detailed information for a specific portfolio company by name or slug (params: name — defaults to first portfolio company) -> {id, name, description, initial_investment_year, leadership, investment_journey, website, jobs_url}",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [],
+        "properties": {
+          "id": {
+            "type": "string",
+            "default": "",
+            "description": "Exact company id (e.g. 'company-amperity')"
+          },
+          "name": {
+            "type": "string",
+            "default": "",
+            "description": "Company name or identifier substring (e.g. 'Amperity', 'Amazon', 'A-Alpha Bio')"
+          }
+        }
+      }
+    },
+    {
+      "name": "get_insight",
+      "description": "Fetch the full text and details of an insight article or podcast episode (params: url — defaults to latest insight) -> {title, date, author, url, content}",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [],
+        "properties": {
+          "url": {
+            "type": "string",
+            "default": "",
+            "description": "Direct URL of the insight article (e.g. 'https://www.madrona.com/celebrating-highspot/')"
+          }
+        }
+      }
+    },
+    {
+      "name": "get_team_member",
+      "description": "Fetch the full biography, title, department, and social links for a specific team member (params: name or url — defaults to first investor) -> {name, role, bio, social_links, profile_url}",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [],
+        "properties": {
+          "url": {
+            "type": "string",
+            "default": "",
+            "description": "Direct profile URL (e.g. 'https://www.madrona.com/team-profiles/scott-jacobson/')"
+          },
+          "name": {
+            "type": "string",
+            "default": "",
+            "description": "Name of the team member (e.g. 'Scott Jacobson', 'Matt McIlwain')"
+          }
+        }
+      }
+    },
+    {
+      "name": "list_companies",
+      "description": "Browse and filter Madrona portfolio companies by sector category, status, and investment stage (params: category, status, stage, navigate=true) -> navigates to filtered portfolio; navigate:false returns {filters, count, companies: [{id, name, description, initial_investment_year, leadership, investment_journey, website, jobs_url}]}",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [],
+        "properties": {
+          "stage": {
+            "enum": [
+              "",
+              "seed",
+              "early",
+              "acceleration"
+            ],
+            "type": "string",
+            "default": "",
+            "description": "Investment stage: 'seed', 'early', 'acceleration', or '' for all"
+          },
+          "status": {
+            "enum": [
+              "",
+              "active",
+              "exit"
+            ],
+            "type": "string",
+            "default": "",
+            "description": "Company status filter: 'active', 'exit', or '' for all"
+          },
+          "category": {
+            "enum": [
+              "",
+              "ai-enabled-biotech",
+              "ai-intelligent-apps",
+              "consumer-marketplace",
+              "data-infrastructure",
+              "deep-tech",
+              "developer-platforms-tools",
+              "enterprise-apps",
+              "security"
+            ],
+            "type": "string",
+            "default": "",
+            "description": "Sector category filter slug"
+          },
+          "navigate": {
+            "type": "boolean",
+            "default": true,
+            "description": "Whether to navigate to the filtered companies page (defaults to true)"
+          }
+        }
+      }
+    },
+    {
+      "name": "list_insights",
+      "description": "List latest articles, podcasts, news, and perspectives from Madrona (params: category, navigate=true) -> navigates to insights feed; navigate:false returns {category, count, insights: [{title, url, date, author, category_classes}]}",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [],
+        "properties": {
+          "category": {
+            "enum": [
+              "all",
+              "madrona-news",
+              "perspectives",
+              "podcast"
+            ],
+            "type": "string",
+            "default": "all",
+            "description": "Category of insight: 'all', 'madrona-news', 'perspectives', 'podcast'"
+          },
+          "navigate": {
+            "type": "boolean",
+            "default": true,
+            "description": "Whether to navigate to the insights page (defaults to true)"
+          }
+        }
+      }
+    },
+    {
+      "name": "list_team",
+      "description": "List Madrona team members and partners by department/group (params: section, navigate=true) -> navigates to team section; navigate:false returns {section, count, members: [{name, role, department, section_id, profile_url, photo_url}]}",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [],
+        "properties": {
+          "section": {
+            "enum": [
+              "all",
+              "investors",
+              "venture-growth",
+              "operations-support",
+              "co-founders",
+              "strategic-director"
+            ],
+            "type": "string",
+            "default": "all",
+            "description": "Department section to filter by (defaults to 'all')"
+          },
+          "navigate": {
+            "type": "boolean",
+            "default": true,
+            "description": "Whether to navigate to the team page in the browser (defaults to true)"
+          }
+        }
+      }
+    },
+    {
+      "name": "search_content",
+      "description": "Search Madrona content including companies, team members, and insights (params: query, post_type, navigate=true) -> navigates to search results; navigate:false returns {query, post_type, count, results: [{title, url, snippet, type}]}",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [],
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Keyword to search for (e.g. 'AI', 'Biotech', 'Enterprise')"
+          },
+          "navigate": {
+            "type": "boolean",
+            "default": true,
+            "description": "Whether to navigate to the search results page in the browser (defaults to true)"
+          },
+          "post_type": {
+            "enum": [
+              "",
+              "portfolio-companies",
+              "team-profiles",
+              "post"
+            ],
+            "type": "string",
+            "default": "",
+            "description": "Optional filter by post type: 'portfolio-companies', 'team-profiles', 'post' (insights), or '' for all"
+          }
+        }
+      }
+    },
+    {
+      "name": "start_newsletter_subscription",
+      "description": "Pre-fill and initiate the newsletter signup form on the page (params: email) -> {status, email, action_url, message}",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "email"
+        ],
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Email address to subscribe with"
+          }
+        }
+      }
+    }
+  ],
+  "host": "madrona.com",
+  "source": "webmcp.com/api/directory.json"
+}

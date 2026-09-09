@@ -1,0 +1,58 @@
+{
+  "sponsio": 1,
+  "url": "https://nycrsvps.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "find_restaurants",
+      "description": "Search and filter NYC restaurants tracked by this site. Use this tool when the user wants to find restaurants, browse dining options, or look up reservation details for a specific restaurant.\n\nAll filter parameters are optional and case-insensitive partial matches — combine any number of them to narrow results. When no filters are provided, returns all restaurants.\n\nEach result includes: restaurant name, cuisine, NYC neighborhood, reservation platform (e.g. Resy, OpenTable, Phone), direct booking link, how far in advance reservations open, and the daily release time in Eastern Time.\n\nExamples of when to use this tool:\n- \"What Italian restaurants do you have?\" → { cuisine: \"Italian\" }\n- \"Show me restaurants in the West Village\" → { neighborhood: \"West Village\" }\n- \"What restaurants use Resy?\" → { reservation_method: \"Resy\" }\n- \"Tell me about Don Angie\" → { name: \"Don Angie\" }\n- \"Find Japanese restaurants in Soho\" → { cuisine: \"Japanese\", neighborhood: \"Soho\" }\n\nDo NOT use this tool for:\n- Calculating when reservations open for a specific date (use get_reservation_open_date instead)\n- Finding restaurants not tracked by NYC RSVPs\n- Making or managing actual reservations",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Restaurant name to search for. Partial match, case-insensitive. Example: 'carbone', 'Don Angie'"
+          },
+          "cuisine": {
+            "type": "string",
+            "description": "Cuisine type to filter by. Partial match, case-insensitive. Examples: 'Italian', 'Japanese', 'Mexican', 'French'"
+          },
+          "neighborhood": {
+            "type": "string",
+            "description": "NYC neighborhood/area to filter by. Partial match, case-insensitive. Examples: 'West Village', 'Soho', 'Williamsburg', 'Lower East Side'"
+          },
+          "reservation_method": {
+            "type": "string",
+            "description": "Booking platform to filter by. Partial match, case-insensitive. Examples: 'Resy', 'OpenTable', 'Phone', 'Tock'"
+          }
+        }
+      }
+    },
+    {
+      "name": "get_reservation_open_date",
+      "description": "Calculate exactly when reservations open for a specific restaurant on a desired date. Use this tool when the user wants to know when to book, when reservations drop, or when to set a reminder for a specific dining date.\n\nReturns one of two outcomes:\n- If reservations are already open: tells the user they can book now and provides the booking link.\n- If reservations are not yet open: returns the exact date and time (in Eastern Time) when reservations will be released, plus the booking link.\n\nThe restaurant_name must match a restaurant tracked by this site. If unsure of the exact name, use find_restaurants first to look it up.\n\nExamples of when to use this tool:\n- \"When do reservations open for Carbone on March 15?\" → { restaurant_name: \"Carbone\", desired_date: \"2026-03-15\" }\n- \"I want to eat at Don Angie on my birthday April 20th\" → { restaurant_name: \"Don Angie\", desired_date: \"2026-04-20\" }\n- \"When should I check Resy for a July 4th dinner at 4 Charles?\" → { restaurant_name: \"4 Charles Prime Rib\", desired_date: \"2026-07-04\" }\n\nDo NOT use this tool for:\n- Browsing or searching for restaurants (use find_restaurants instead)\n- Dates in the past\n- Restaurants not tracked by this site",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "restaurant_name": {
+            "type": "string",
+            "description": "Exact name of the restaurant as it appears on NYC RSVPs. Use find_restaurants first if unsure of the exact name."
+          },
+          "desired_date": {
+            "type": "string",
+            "description": "The date the user wants to dine, in YYYY-MM-DD format. Must be a future date.",
+            "format": "date"
+          }
+        },
+        "required": [
+          "restaurant_name",
+          "desired_date"
+        ]
+      }
+    }
+  ],
+  "host": "nycrsvps.com",
+  "source": "webmcp.com/api/directory.json"
+}

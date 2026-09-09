@@ -1,0 +1,77 @@
+{
+  "sponsio": 1,
+  "url": "https://googlechromelabs.github.io/webmcp-tools/demos/ticket-booking/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "query_content",
+      "description": "Filters the movie catalog by a specific genre.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "genre": {
+            "type": "string",
+            "description": "The genre to filter by (e.g., horror, action, comedy)."
+          }
+        },
+        "required": [
+          "genre"
+        ]
+      }
+    },
+    {
+      "name": "select_showtime",
+      "description": "Selects a movie and a specific showtime to initiate the checkout process.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "movie_id": {
+            "type": "string",
+            "description": "The ID of the movie to select."
+          },
+          "date": {
+            "type": "string",
+            "description": "The date of the show in YYYY-MM-DD format (e.g., '2026-09-02').",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          },
+          "time": {
+            "type": "string",
+            "description": "The start time of the show in 12-hour format with AM/PM (e.g., '8:30 PM').",
+            "pattern": "^[1-12]:[0-5][0-9] (AM|PM)$"
+          },
+          "tickets": {
+            "type": "number",
+            "description": "Number of tickets.",
+            "default": 1
+          }
+        },
+        "required": [
+          "movie_id",
+          "date",
+          "time"
+        ]
+      }
+    },
+    {
+      "name": "update_location",
+      "description": "Updates the user's location.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "city": {
+            "type": "string",
+            "description": "The city to set as the user's location. (e.g. Montpelier, Paris, New York)"
+          }
+        },
+        "required": [
+          "city"
+        ]
+      }
+    }
+  ],
+  "host": "ticket-booking",
+  "source": "webmcp.com/api/directory.json"
+}

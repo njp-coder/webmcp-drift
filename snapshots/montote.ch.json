@@ -1,0 +1,218 @@
+{
+  "sponsio": 1,
+  "url": "https://montote.ch/demander-une-offre/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "add_item_to_cart",
+      "description": "Ajoute la configuration en cours au panier de devis. Nécessite qu’un logo ait été déposé par le client et qu’une technique soit calculée.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "configure_item",
+      "description": "Configure le parcours de commande dans la page : sélectionne le modèle et la couleur du sac, la quantité, les options du logo (couleurs, effet) et, si un logo a déjà été déposé par le client, ses dimensions et sa position. Ouvre l’écran de placement.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "model_code": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9]{2,12}$",
+            "maxLength": 12,
+            "description": "Code du modèle (ex. W801)."
+          },
+          "color": {
+            "type": "string",
+            "maxLength": 40,
+            "description": "Nom de la couleur du sac."
+          },
+          "nb_pieces": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100000,
+            "description": "Nombre de sacs."
+          },
+          "nb_couleurs": {
+            "type": "string",
+            "enum": [
+              "1",
+              "2",
+              "multi"
+            ]
+          },
+          "effet": {
+            "type": "string",
+            "enum": [
+              "aucun",
+              "fluo",
+              "phospho"
+            ]
+          },
+          "logo_w_cm": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 60,
+            "description": "Largeur du logo en cm (logo déjà déposé uniquement)."
+          },
+          "position_x_pct": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100,
+            "description": "Position horizontale 0-100."
+          },
+          "position_y_pct": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100,
+            "description": "Position verticale 0-100."
+          }
+        },
+        "required": [
+          "model_code"
+        ]
+      }
+    },
+    {
+      "name": "estimate_price",
+      "description": "Calcule le prix complet d’un projet de tote bags personnalisés en CHF : la technique d’impression la moins chère est choisie automatiquement selon la quantité, les dimensions du logo, le nombre de couleurs et l’effet. Retourne aussi le prix du sac par palier et le total estimé. Aucune donnée client requise.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "nb_pieces": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100000,
+            "description": "Nombre de sacs."
+          },
+          "logo_w_cm": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 60,
+            "description": "Largeur du logo en cm."
+          },
+          "logo_h_cm": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 60,
+            "description": "Hauteur du logo en cm."
+          },
+          "nb_couleurs": {
+            "type": "string",
+            "enum": [
+              "1",
+              "2",
+              "multi"
+            ],
+            "description": "Couleurs du logo (multi = photo/dégradés)."
+          },
+          "effet": {
+            "type": "string",
+            "enum": [
+              "aucun",
+              "fluo",
+              "phospho"
+            ],
+            "description": "Effet spécial éventuel."
+          },
+          "model_code": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9]{2,12}$",
+            "maxLength": 12,
+            "description": "Modèle de sac (ex. W801) pour inclure son prix."
+          },
+          "color": {
+            "type": "string",
+            "maxLength": 40,
+            "description": "Couleur du sac (influence le palier nature/couleur)."
+          }
+        },
+        "required": [
+          "nb_pieces",
+          "logo_w_cm",
+          "logo_h_cm"
+        ]
+      }
+    },
+    {
+      "name": "get_bag_details",
+      "description": "Détails d’un modèle de tote bag : couleurs disponibles (teinte nature ou couleur), paliers de prix du sac en CHF (dégressif par quantité), dimensions et zone d’impression maximale en cm.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "model_code": {
+            "type": "string",
+            "description": "Code du modèle, ex. W801 (voir list_bag_models).",
+            "pattern": "^[A-Za-z0-9]{2,12}$",
+            "maxLength": 12
+          }
+        },
+        "required": [
+          "model_code"
+        ]
+      }
+    },
+    {
+      "name": "get_cart",
+      "description": "Contenu du panier de devis en cours : articles (modèle, couleur, quantité, technique, prix CHF) et total.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_bag_models",
+      "description": "Liste les tote bags personnalisables Montote : code, nom, matière, prix du sac « dès » en CHF et minimum de commande par modèle (1 = à l’unité). Utiliser get_bag_details pour dimensions, couleurs et paliers de prix complets.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "prefill_quote_form",
+      "description": "Pré-remplit le formulaire de demande de devis (prénom, nom, email, téléphone suisse, remarques) sur l’écran final. N’envoie JAMAIS la demande : le client vérifie et clique lui-même sur Envoyer.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "firstname": {
+            "type": "string",
+            "maxLength": 80,
+            "description": "Prénom du client."
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 80,
+            "description": "Nom du client."
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 120,
+            "description": "Email du client."
+          },
+          "phone": {
+            "type": "string",
+            "maxLength": 30,
+            "pattern": "^[+0-9 ().-]{7,}$",
+            "description": "Téléphone suisse (+41…)."
+          },
+          "remarques": {
+            "type": "string",
+            "maxLength": 2000,
+            "description": "Remarques pour l’atelier."
+          }
+        }
+      }
+    }
+  ],
+  "host": "montote.ch",
+  "source": "webmcp.com/api/directory.json"
+}

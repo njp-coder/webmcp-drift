@@ -1,0 +1,308 @@
+{
+  "sponsio": 1,
+  "url": "https://thepromogroup.co.za/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "add_to_cart",
+      "description": "Add a supplier-stocked product to the shopping cart for immediate purchase via PayFast. Only works on products with stock at a supplier — for branded or large-volume orders use add_to_quote_list instead.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_slug": {
+            "type": "string",
+            "description": "The product slug from search_products."
+          },
+          "quantity": {
+            "type": "number",
+            "description": "Number of units to add.",
+            "minimum": 1,
+            "maximum": 999
+          },
+          "variants": {
+            "type": "object",
+            "description": "Optional variant selections, e.g. {\"color\": \"Navy\", \"size\": \"L\"}. Use exact strings from get_product.variant_options.",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "product_slug",
+          "quantity"
+        ]
+      }
+    },
+    {
+      "name": "add_to_quote_list",
+      "description": "Add a product to the user's quote request list (B2B path — for branded promotional products, no immediate payment). Use this for ANY branded order or order over ~50 units. Use add_to_cart instead for small, unbranded supplier-stocked orders.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_slug": {
+            "type": "string",
+            "description": "The product slug from search_products, e.g. \"frost-melange-beanie\"."
+          },
+          "quantity": {
+            "type": "number",
+            "description": "Number of units. Quote-flow typical minimums are 25-100.",
+            "minimum": 1,
+            "maximum": 100000
+          },
+          "variants": {
+            "type": "object",
+            "description": "Optional variant selections as a flat object, e.g. {\"color\": \"Navy\", \"size\": \"L\"}. Use exact option strings from get_product.variant_options.",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "is_branded": {
+            "type": "boolean",
+            "description": "Whether the item should be branded (default true). Set false for plain/unbranded."
+          },
+          "branding_method": {
+            "type": "string",
+            "description": "How the branding should be applied. Required when is_branded is true.",
+            "enum": [
+              "screen_print",
+              "embroidery",
+              "laser_engraving",
+              "pad_print",
+              "digital_transfer",
+              "uv_print",
+              "heat_transfer",
+              "sublimation",
+              "debossing",
+              "none"
+            ]
+          },
+          "branding_position": {
+            "type": "string",
+            "description": "Where the branding goes, e.g. \"Front\", \"Back\", \"Left Chest\", \"Lid\"."
+          },
+          "artwork_notes": {
+            "type": "string",
+            "description": "Free-text artwork instructions, e.g. \"Use logo from attached file, white on dark\"."
+          },
+          "notes": {
+            "type": "string",
+            "description": "Any other customisation notes for this item."
+          }
+        },
+        "required": [
+          "product_slug",
+          "quantity"
+        ]
+      }
+    },
+    {
+      "name": "find_product_by_sku",
+      "description": "Look up a single product by its exact SKU code (e.g. \"BP4580\", \"BAS-8040-BU\"). Use when the user mentions an SKU directly — from an email, an old quote, a printed catalogue, or a previous tool response. Returns the same shape as get_product. Use search_products instead if you only have a name or description.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sku": {
+            "type": "string",
+            "description": "The exact SKU code, case-insensitive. Examples: \"BP4580\", \"BAS-8040-BU\", \"PEN24016\"."
+          }
+        },
+        "required": [
+          "sku"
+        ]
+      }
+    },
+    {
+      "name": "get_product",
+      "description": "Get full details for a single product including variants (colour, size), available branding methods, and stock. ALWAYS call search_products FIRST to obtain a valid slug — never invent or guess slugs. Use the exact slug string from search_products.results[].slug.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "The exact product slug copied from a search_products result (e.g. \"mens-solo-hooded-sweater-blue\"). Do not shorten, modify, or invent slugs — only use values returned by search_products."
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "remove_from_cart",
+      "description": "Remove a line item from the shopping cart. Use update_cart_quantity to change the quantity instead.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "string",
+            "description": "The product ID to remove."
+          },
+          "variants": {
+            "type": "object",
+            "description": "Variant selections that identify the specific line item (omit for products with no variants).",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "product_id"
+        ]
+      }
+    },
+    {
+      "name": "remove_from_quote_list",
+      "description": "Remove a specific line item from the quote list. Use update_quote_quantity to change quantity instead.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "string",
+            "description": "The product ID to remove."
+          },
+          "variants": {
+            "type": "object",
+            "description": "Variant selections that identify the specific line item (omit for products with no variants).",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "product_id"
+        ]
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Search The Promo Group product catalogue by keyword. Returns up to 20 matching products with name, slug, price, and stock status. Use to find products the user wants to add to their quote list or shopping cart. Use get_product for full details (variants, branding options) of a specific result.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search keywords, e.g. \"branded coffee mug\" or \"leather notebook\"."
+          },
+          "category": {
+            "type": "string",
+            "description": "Optional category slug to narrow results, e.g. \"drinkware\", \"bags\", \"clothing\", \"tech-gadgets\", \"office-stationery\", \"headwear\", \"home-living\"."
+          },
+          "min_price": {
+            "type": "number",
+            "description": "Optional minimum unit price in ZAR.",
+            "minimum": 0
+          },
+          "max_price": {
+            "type": "number",
+            "description": "Optional maximum unit price in ZAR.",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "submit_contact_form",
+      "description": "Send a general inquiry message to The Promo Group sales team. Use for questions about products, services, lead times, or B2B partnerships when no specific product or quote is involved. Use submit_quote_request instead if the user wants pricing on specific items they have already added to their quote list.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "John Smith"
+          },
+          "email": {
+            "type": "string",
+            "description": "john@company.com"
+          },
+          "phone": {
+            "type": "string",
+            "description": "0123456789"
+          },
+          "company": {
+            "type": "string",
+            "description": "Your Company"
+          },
+          "message": {
+            "type": "string",
+            "description": "Tell us about your requirements..."
+          }
+        }
+      }
+    },
+    {
+      "name": "update_cart_quantity",
+      "description": "Change the quantity of an item already in the shopping cart. Use remove_from_cart to delete an item.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "string",
+            "description": "The product ID in the cart."
+          },
+          "quantity": {
+            "type": "number",
+            "description": "New quantity. Setting to 0 removes the item.",
+            "minimum": 0,
+            "maximum": 999
+          },
+          "variants": {
+            "type": "object",
+            "description": "Variant selections that identify the specific line item, if the product has multiple variants in the cart.",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "product_id",
+          "quantity"
+        ]
+      }
+    },
+    {
+      "name": "update_quote_quantity",
+      "description": "Change the quantity of an item already in the quote list. Use remove_from_quote_list to delete an item.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "string",
+            "description": "The product ID (from add_to_quote_list result or the quote list state)."
+          },
+          "quantity": {
+            "type": "number",
+            "description": "New quantity. Setting to 0 removes the item.",
+            "minimum": 0,
+            "maximum": 100000
+          },
+          "variants": {
+            "type": "object",
+            "description": "Variant selections that identify the specific line item, if the product has multiple variants in the list.",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "product_id",
+          "quantity"
+        ]
+      }
+    }
+  ],
+  "host": "thepromogroup.co.za",
+  "source": "webmcp.com/api/directory.json"
+}

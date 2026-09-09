@@ -1,0 +1,117 @@
+{
+  "sponsio": 1,
+  "url": "https://eurodz.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "convert-currency",
+      "description": "Convert amounts between DZD and supported currencies using the latest buy or sell rates.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Amount to convert."
+          },
+          "currencyCode": {
+            "type": "string",
+            "enum": [
+              "EUR",
+              "USD",
+              "GBP",
+              "CAD",
+              "CNY",
+              "TRY",
+              "CHF",
+              "SAR",
+              "AED",
+              "TND",
+              "MAD"
+            ],
+            "description": "Currency code to convert to or from DZD."
+          },
+          "direction": {
+            "type": "string",
+            "enum": [
+              "toDZD",
+              "fromDZD"
+            ],
+            "description": "Conversion direction. Use \"toDZD\" to convert foreign currency into DZD, or \"fromDZD\" to convert DZD into foreign currency."
+          },
+          "rateType": {
+            "type": "string",
+            "enum": [
+              "buy",
+              "sell"
+            ],
+            "default": "buy",
+            "description": "Whether to use the buy or sell rate for conversion."
+          }
+        },
+        "required": [
+          "amount",
+          "currencyCode",
+          "direction"
+        ]
+      }
+    },
+    {
+      "name": "get-euro-historical-rate",
+      "description": "Returns EUR parallel market and official historical rates for a given date.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "description": "Historical date in YYYY-MM-DD format."
+          }
+        },
+        "required": [
+          "date"
+        ]
+      }
+    },
+    {
+      "name": "get-latest-exchange-rates",
+      "description": "Returns the latest supported currency rates in DZD and optional official EUR rates.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "currencyCodes": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "EUR",
+                "USD",
+                "GBP",
+                "CAD",
+                "CNY",
+                "TRY",
+                "CHF",
+                "SAR",
+                "AED",
+                "TND",
+                "MAD",
+                "DZD"
+              ]
+            },
+            "description": "Optional list of currency codes to return. Defaults to all supported currencies."
+          },
+          "includeOfficial": {
+            "type": "boolean",
+            "description": "Whether to include the official EUR rate in the response.",
+            "default": true
+          }
+        },
+        "required": []
+      }
+    }
+  ],
+  "host": "eurodz.com",
+  "source": "webmcp.com/api/directory.json"
+}

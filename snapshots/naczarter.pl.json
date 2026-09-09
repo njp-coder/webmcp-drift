@@ -1,0 +1,161 @@
+{
+  "sponsio": 1,
+  "url": "https://naczarter.pl/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "book_charter",
+      "description": "Create a provisional (unpaid) reservation holding the dates and return a secure payment link; the customer pays at checkoutUrl — this never charges. The customer will see a confirmation dialog in their browser and must approve it. Collect first name, last name, email, phone and explicit consent to the booking & cancellation terms (agreementAccepted=true) first.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Yacht slug from search_charters"
+          },
+          "from": {
+            "type": "string",
+            "description": "Start date YYYY-MM-DD"
+          },
+          "to": {
+            "type": "string",
+            "description": "End date YYYY-MM-DD"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "description": "Customer email (confirmation + payment link)"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Customer phone, at least 9 digits"
+          },
+          "agreementAccepted": {
+            "type": "boolean",
+            "description": "true only after the customer accepted the booking & cancellation terms"
+          },
+          "oneWay": {
+            "type": "boolean"
+          },
+          "paymentProvider": {
+            "type": "string",
+            "enum": [
+              "payu",
+              "stripe"
+            ],
+            "description": "Default payu"
+          }
+        },
+        "required": [
+          "slug",
+          "from",
+          "to",
+          "firstName",
+          "lastName",
+          "email",
+          "phone",
+          "agreementAccepted"
+        ]
+      }
+    },
+    {
+      "name": "get_charter_details",
+      "description": "Specification and stay rules of one yacht: model, year, berths, length, engine, home port, rentable without a sailing licence / with a skipper, min/max stay. No price — use quote_charter.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Yacht slug from search_charters"
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "quote_charter",
+      "description": "Authoritative, server-computed price and availability for one yacht and exact dates: charter price payable online, mandatory fees paid on-site, total, currency — or a reason the dates cannot be booked (min/max stay, week-only, taken). This is the source of truth for prices.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Yacht slug from search_charters"
+          },
+          "from": {
+            "type": "string",
+            "description": "Start date YYYY-MM-DD"
+          },
+          "to": {
+            "type": "string",
+            "description": "End date YYYY-MM-DD"
+          },
+          "oneWay": {
+            "type": "boolean",
+            "description": "Return at a different port (adds the one-way fee)"
+          }
+        },
+        "required": [
+          "slug",
+          "from",
+          "to"
+        ]
+      }
+    },
+    {
+      "name": "search_charters",
+      "description": "Search yacht charters on the Masurian Lakes (Mazury). Filter by city/port, dates, category, people and max daily price. Returns up to 6 yachts per page with a 'from' price per day; yacht page URL = yachtBase + slug. Then call quote_charter for the exact price.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "city": {
+            "type": "string",
+            "description": "City or port, e.g. Giżycko, Mikołajki, Węgorzewo, Ryn"
+          },
+          "from": {
+            "type": "string",
+            "description": "Charter start, YYYY-MM-DD"
+          },
+          "to": {
+            "type": "string",
+            "description": "Charter end, YYYY-MM-DD"
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "sailing",
+              "motor",
+              "houseboat",
+              "scooter"
+            ]
+          },
+          "minPeople": {
+            "type": "integer",
+            "description": "Minimum berths/people"
+          },
+          "priceMax": {
+            "type": "number",
+            "description": "Max price per day (PLN)"
+          },
+          "page": {
+            "type": "integer",
+            "description": "0-based page, 6 results each"
+          }
+        }
+      }
+    }
+  ],
+  "host": "naczarter.pl",
+  "source": "webmcp.com/api/directory.json"
+}

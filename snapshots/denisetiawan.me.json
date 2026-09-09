@@ -1,0 +1,126 @@
+{
+  "sponsio": 1,
+  "url": "https://www.denisetiawan.me/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "get_article",
+      "description": "Fetches the full content of one published article on denisetiawan.me by its slug. Use this after search_articles or list_recent_articles when the visitor wants to read or discuss a specific article's full text, not just its title/excerpt.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "The article's URL slug, e.g. \"3d-printed-egg-opener-makerworld-bambu-lab-a1-mini\"."
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "get_author_profile",
+      "description": "Fetch the author bio, social media profiles, and core topic areas (params: none) -> {name, bio, social_links: [{platform, url}], topics: [{category, title, description, url}]}",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [],
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_post",
+      "description": "Fetch the full content and metadata of a specific blog post (params: id, slug, url, navigate=false) -> {id, title, url, author, date_published, category, headings, content}",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Post ID, slug or URL path (e.g. 'why-i-use-n8n-for-automation')"
+          },
+          "navigate": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether to navigate to the post page in the browser"
+          }
+        }
+      }
+    },
+    {
+      "name": "list_posts",
+      "description": "Fetch a list of published blog posts, optionally filtered by category (params: category) -> {category, count, posts: [{id, title, url, category, excerpt}]}",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [],
+        "properties": {
+          "category": {
+            "type": "string",
+            "description": "Optional category filter: ai, 3d-printing, coding, automation, gadget, tutorial"
+          }
+        }
+      }
+    },
+    {
+      "name": "list_recent_articles",
+      "description": "Lists the most recently published articles on denisetiawan.me, newest first. Use this when the visitor asks what's new or wants a general reading list.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "number",
+            "description": "Number of articles to return (default 5, max 20)."
+          }
+        }
+      }
+    },
+    {
+      "name": "search_articles",
+      "description": "Searches published article titles and summaries on denisetiawan.me. Returns titles, slugs, excerpts, and publish dates for matching posts. Note: this matches titles and summaries only, not full article body text (the body is rich text and isn't substring-searchable). Use this when the visitor asks to find content about a topic.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search terms (keywords, topic, or title fragment)."
+          },
+          "limit": {
+            "type": "number",
+            "description": "Max number of results to return (default 5, max 20)."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "search_posts",
+      "description": "Search blog posts by keyword or topic (params: query, navigate=true) -> navigates to search results page; navigate=false returns {query, total_results, results: [{id, title, url, category, excerpt}]}",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [],
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Keyword or topic to search for"
+          },
+          "navigate": {
+            "type": "boolean",
+            "default": true,
+            "description": "Whether to navigate to the search page in the browser (default true)"
+          }
+        }
+      }
+    }
+  ],
+  "host": "denisetiawan.me",
+  "source": "webmcp.com/api/directory.json"
+}

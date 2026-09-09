@@ -1,0 +1,520 @@
+{
+  "sponsio": 1,
+  "url": "https://corpuslaw.us/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "formation.apply_draft",
+      "description": "WRITE: form a company with the user on this Corpus page. Applies a formation draft to the live /formation intake so they can see it, review, sign in, and pay. Does NOT charge a card, does NOT create a payment, does NOT file with the state. Call formation.requirements first, collect answers in conversation, use formation.lookup_naics for the industry code, then call this with everything you have. If this browser is not on /formation, the result includes a same-origin link — open that link here so the draft loads. Repeat until COMPLETE, then tell the user to review and pay on the page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "entityType": {
+            "type": "string",
+            "enum": [
+              "llc",
+              "nonprofit"
+            ],
+            "description": "Entity type to form."
+          },
+          "state": {
+            "type": "string",
+            "description": "Two-letter US state code, e.g. 'MS', 'WY', 'DE'."
+          },
+          "proposedName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "description": "Proposed company name."
+          },
+          "contactEmail": {
+            "type": "string",
+            "maxLength": 254,
+            "description": "Founder contact email."
+          },
+          "naicsCode": {
+            "type": "string",
+            "pattern": "^\\d{2,6}$",
+            "description": "NAICS industry code, 2–6 digits (use formation.lookup_naics to find it)."
+          },
+          "principalOffice": {
+            "type": "object",
+            "description": "Principal office address (street, city, state required for a complete draft).",
+            "properties": {
+              "line1": {
+                "type": "string"
+              },
+              "line2": {
+                "type": "string"
+              },
+              "city": {
+                "type": "string"
+              },
+              "state": {
+                "type": "string"
+              },
+              "postalCode": {
+                "type": "string"
+              }
+            }
+          },
+          "management": {
+            "type": "string",
+            "enum": [
+              "member_managed",
+              "manager_managed"
+            ],
+            "description": "LLC management type."
+          },
+          "parties": {
+            "type": "array",
+            "description": "The people. LLC: at least one 'member' and an 'organizer'. Nonprofit: an 'incorporator' and at least 3 'director' entries.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "role": {
+                  "type": "string",
+                  "enum": [
+                    "organizer",
+                    "member",
+                    "manager",
+                    "director",
+                    "incorporator",
+                    "president",
+                    "secretary",
+                    "treasurer"
+                  ]
+                },
+                "fullName": {
+                  "type": "string",
+                  "maxLength": 120
+                },
+                "email": {
+                  "type": "string",
+                  "maxLength": 254
+                }
+              },
+              "required": [
+                "role",
+                "fullName"
+              ]
+            }
+          },
+          "nonprofit": {
+            "type": "object",
+            "description": "Nonprofit-only fields.",
+            "properties": {
+              "purposeStatement": {
+                "type": "string"
+              },
+              "hasDissolutionClause": {
+                "type": "boolean"
+              },
+              "exemptionIntent": {
+                "type": "string",
+                "enum": [
+                  "none",
+                  "501c3_later",
+                  "501c3_now"
+                ]
+              }
+            }
+          },
+          "ein": {
+            "type": "object",
+            "description": "Optional EIN add-on answers. NEVER include a Social Security Number — the founder types it on corpuslaw.us.",
+            "properties": {
+              "wanted": {
+                "type": "boolean"
+              },
+              "responsibleParty": {
+                "type": "object",
+                "properties": {
+                  "fullName": {
+                    "type": "string"
+                  },
+                  "phone": {
+                    "type": "string"
+                  }
+                }
+              },
+              "startDate": {
+                "type": "string"
+              },
+              "principalActivity": {
+                "type": "string"
+              },
+              "numberOfMembers": {
+                "type": "number"
+              },
+              "hasEmployees": {
+                "type": "boolean"
+              },
+              "firstDateWagesPaid": {
+                "type": "string"
+              },
+              "agriculturalEmployees": {
+                "type": "number"
+              },
+              "otherEmployees": {
+                "type": "number"
+              },
+              "taxLiabilityUnder1000": {
+                "type": "boolean"
+              },
+              "trucking": {
+                "type": "boolean"
+              },
+              "gambling": {
+                "type": "boolean"
+              },
+              "exciseTax": {
+                "type": "boolean"
+              },
+              "sellsTobaccoAlcoholFirearms": {
+                "type": "boolean"
+              }
+            }
+          },
+          "stateSpecificAnswers": {
+            "type": "object",
+            "additionalProperties": {
+              "type": [
+                "string",
+                "boolean"
+              ]
+            }
+          },
+          "referral_code": {
+            "type": "string",
+            "description": "Optional referral code from account.status. Omit if you do not have one."
+          }
+        },
+        "required": [
+          "entityType",
+          "state"
+        ]
+      }
+    },
+    {
+      "name": "formation.get_draft",
+      "description": "Read the formation draft currently shown on this Corpus /formation page (entity, state, name, completeness, missing fields). Does not change anything. If the formation page is not open, open https://corpuslaw.us/formation first.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "formation.handoff",
+      "description": "Validate a formation draft and generate the prefilled handoff link on corpuslaw.us. Pass EVERYTHING you have collected (people, address, management, EIN answers, state-specific answers — see formation.requirements for the checklist). The response says exactly what is still missing — keep collecting and call again until COMPLETE, then give the user the link: it opens the formation agent with every detail pre-loaded, so they only review, sign in, and pay. Free; does not consume credits.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "entityType": {
+            "type": "string",
+            "enum": [
+              "llc",
+              "nonprofit"
+            ],
+            "description": "Entity type to form."
+          },
+          "state": {
+            "type": "string",
+            "description": "Two-letter US state code, e.g. 'MS', 'WY', 'DE'."
+          },
+          "proposedName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "description": "Proposed company name."
+          },
+          "contactEmail": {
+            "type": "string",
+            "maxLength": 254,
+            "description": "Founder contact email."
+          },
+          "naicsCode": {
+            "type": "string",
+            "pattern": "^\\d{2,6}$",
+            "description": "NAICS industry code, 2–6 digits (use formation.lookup_naics to find it)."
+          },
+          "principalOffice": {
+            "type": "object",
+            "description": "Principal office address (street, city, state required for a complete draft).",
+            "properties": {
+              "line1": {
+                "type": "string"
+              },
+              "line2": {
+                "type": "string"
+              },
+              "city": {
+                "type": "string"
+              },
+              "state": {
+                "type": "string"
+              },
+              "postalCode": {
+                "type": "string"
+              }
+            }
+          },
+          "management": {
+            "type": "string",
+            "enum": [
+              "member_managed",
+              "manager_managed"
+            ],
+            "description": "LLC management type."
+          },
+          "parties": {
+            "type": "array",
+            "description": "The people. LLC: at least one 'member' and an 'organizer' (same person may hold both roles — pass two entries). Nonprofit: an 'incorporator' and at least 3 'director' entries (plus officers where the state requires them).",
+            "items": {
+              "type": "object",
+              "properties": {
+                "role": {
+                  "type": "string",
+                  "enum": [
+                    "organizer",
+                    "member",
+                    "manager",
+                    "director",
+                    "incorporator",
+                    "president",
+                    "secretary",
+                    "treasurer"
+                  ]
+                },
+                "fullName": {
+                  "type": "string",
+                  "maxLength": 120
+                },
+                "email": {
+                  "type": "string",
+                  "maxLength": 254
+                }
+              },
+              "required": [
+                "role",
+                "fullName"
+              ]
+            }
+          },
+          "nonprofit": {
+            "type": "object",
+            "description": "Nonprofit-only fields.",
+            "properties": {
+              "purposeStatement": {
+                "type": "string",
+                "description": "At least 20 characters."
+              },
+              "hasDissolutionClause": {
+                "type": "boolean"
+              },
+              "exemptionIntent": {
+                "type": "string",
+                "enum": [
+                  "none",
+                  "501c3_later",
+                  "501c3_now"
+                ]
+              }
+            }
+          },
+          "ein": {
+            "type": "object",
+            "description": "Optional $75 EIN (federal tax ID) add-on, when available — formation.requirements says whether it can currently be sold. Set wanted=true/false once the user decides. NEVER include a Social Security Number anywhere — the founder types it into a secure panel on corpuslaw.us, never in chat.",
+            "properties": {
+              "wanted": {
+                "type": "boolean"
+              },
+              "responsibleParty": {
+                "type": "object",
+                "properties": {
+                  "fullName": {
+                    "type": "string"
+                  },
+                  "phone": {
+                    "type": "string"
+                  }
+                }
+              },
+              "startDate": {
+                "type": "string",
+                "description": "Company start date, MM/DD/YYYY."
+              },
+              "principalActivity": {
+                "type": "string",
+                "description": "Principal business activity in a few plain words."
+              },
+              "numberOfMembers": {
+                "type": "number"
+              },
+              "hasEmployees": {
+                "type": "boolean",
+                "description": "W-2 employees expected in the next 12 months."
+              },
+              "firstDateWagesPaid": {
+                "type": "string",
+                "description": "MM/DD/YYYY — only when hasEmployees."
+              },
+              "agriculturalEmployees": {
+                "type": "number"
+              },
+              "otherEmployees": {
+                "type": "number"
+              },
+              "taxLiabilityUnder1000": {
+                "type": "boolean"
+              },
+              "trucking": {
+                "type": "boolean"
+              },
+              "gambling": {
+                "type": "boolean"
+              },
+              "exciseTax": {
+                "type": "boolean"
+              },
+              "sellsTobaccoAlcoholFirearms": {
+                "type": "boolean"
+              }
+            }
+          },
+          "stateSpecificAnswers": {
+            "type": "object",
+            "description": "Per-state quirk answers under the EXACT keys shown by formation.requirements (e.g. \"would_you_like_to_list_members_managers_on_the_state_record\"). Values are strings or booleans.",
+            "additionalProperties": {
+              "type": [
+                "string",
+                "boolean"
+              ]
+            }
+          },
+          "referral_code": {
+            "type": "string",
+            "description": "Your referral code from account.status, if you have one. The founder saves 25% of the Corpus service fee and the order is credited to your code. Omit it if you do not have one — an absent or unrecognised code changes nothing about the link."
+          }
+        },
+        "required": [
+          "entityType",
+          "state"
+        ]
+      }
+    },
+    {
+      "name": "formation.lookup_naics",
+      "description": "Find candidate NAICS industry codes for a plain-English business description (needed for every LLC, and for nonprofits in AK, CT, LA, MS, TN, WV). Present 2–6 options to the user and confirm before recording one. Free; does not consume credits.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "businessDescription": {
+            "type": "string",
+            "description": "What the business does, in plain words."
+          }
+        },
+        "required": [
+          "businessDescription"
+        ]
+      }
+    },
+    {
+      "name": "formation.requirements",
+      "description": "Get the EXACT intake checklist to form an LLC or nonprofit in a state: every required field, that state's quirk questions, live all-in pricing, and the optional $75 EIN add-on when available. Call this FIRST when the user wants to form a company, then collect the answers from them in conversation yourself — you are the intake agent. Free; does not consume credits.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "entityType": {
+            "type": "string",
+            "enum": [
+              "llc",
+              "nonprofit"
+            ],
+            "description": "Entity type to form."
+          },
+          "state": {
+            "type": "string",
+            "description": "Two-letter US state code, e.g. 'MS', 'WY', 'DE'."
+          }
+        },
+        "required": [
+          "entityType",
+          "state"
+        ]
+      }
+    },
+    {
+      "name": "law.get_node",
+      "description": "Fetch the full text, citation, and hierarchy of a single legal provision by its node id (a UUID returned by law.search).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Node UUID, as returned in law.search results."
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "law.list_coverage",
+      "description": "List which jurisdictions are ingested (federal, state, and municipal), with per-jurisdiction provision counts, searchable-chunk counts, GIS status, and a placeholder flag. Call this to see what law is available and searchable before searching.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "law.search",
+      "description": "Search US federal, state, and municipal law by topic or keyword — use it for any question about what the law currently says (legality, permits, zoning, licensing, compliance, filing requirements) rather than relying on training data, which has a cutoff. Returns ranked provisions with verbatim citations, headings, and snippets. Call this first to discover relevant law, then law.get_node for the full official text. Pass `jurisdiction` to scope to one state/federal/city (see law.list_coverage for codes).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Natural-language or keyword query, e.g. 'distillery permit requirements'."
+          },
+          "jurisdiction": {
+            "type": "string",
+            "description": "Optional short code to scope the search, e.g. 'TX', 'US', or 'CA-SF'. Call law.list_coverage for valid codes. Includes the jurisdiction's sub-jurisdictions."
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "hybrid",
+              "semantic",
+              "keyword"
+            ],
+            "default": "hybrid",
+            "description": "Retrieval mode. 'hybrid' (default) fuses vector similarity with keyword search."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 25,
+            "default": 8,
+            "description": "Number of results to return (1–25)."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "corpuslaw.us",
+  "source": "webmcp.com/api/directory.json"
+}

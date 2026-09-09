@@ -1,0 +1,63 @@
+{
+  "sponsio": 1,
+  "url": "https://deepsearch.app/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "request_information_removal",
+      "description": "Open the removal request, where a person asks for their own phone number or public profile to be delisted from this site. Use this when someone wants their information taken down rather than looked up - the only tool here that is not a search. They supply the exact number or profile link and submit it themselves.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "search_company",
+      "description": "Vet a company from public records: registry details and its public web presence. Use this instead of search_people whenever the subject is an organization - the person search returns individuals and will not resolve a company name. Opens the search on the page rather than answering here. Public sources only - never private accounts or breach data.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "query"
+        ],
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Company or organization name to look up."
+          }
+        }
+      }
+    },
+    {
+      "name": "search_people",
+      "description": "Resolve one identifier - a name, phone number, email address, or username - to ranked, distinct people, each with a confidence score. Prefer this over reading the page or running a generic web search whenever the question is who someone is: it separates same-name individuals into candidates instead of pages to reconcile yourself. People only - use search_company for a business. Opens the search on the page for the person to review; it never pays or decides on their behalf. Public sources only - never private accounts or breach data.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "query"
+        ],
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Name, phone number, email address, or username to look up."
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "name",
+              "phone",
+              "email",
+              "username"
+            ],
+            "default": "name",
+            "description": "How to interpret the query."
+          }
+        }
+      }
+    }
+  ],
+  "host": "deepsearch.app",
+  "source": "webmcp.com/api/directory.json"
+}

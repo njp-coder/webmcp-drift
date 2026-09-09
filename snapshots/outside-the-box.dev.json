@@ -1,0 +1,96 @@
+{
+  "sponsio": 1,
+  "url": "https://outside-the-box.dev/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "dotb_get_speaker",
+      "description": "Get one guest or meetup speaker by slug, with the episodes and talks they appear in. Use dotb_search_catalog first to find the slug.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Speaker slug, e.g. 'gil-tayar'."
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "dotb_list_episodes",
+      "description": "List podcast episodes newest first, optionally narrowed to one season, format or guest slug.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "season": {
+            "type": "number",
+            "description": "Season number."
+          },
+          "format": {
+            "type": "string",
+            "enum": [
+              "audio",
+              "video",
+              "bonus"
+            ],
+            "description": "Episode format."
+          },
+          "speaker": {
+            "type": "string",
+            "description": "Guest slug, e.g. 'gil-tayar'."
+          }
+        }
+      }
+    },
+    {
+      "name": "dotb_list_talks",
+      "description": "List the talks given at the community's meetups, newest first, optionally narrowed to one meetup or speaker slug. Every talk carries a YouTube link.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "meetup": {
+            "type": "string",
+            "description": "Meetup slug, e.g. 'meetup-04'."
+          },
+          "speaker": {
+            "type": "string",
+            "description": "Speaker slug."
+          }
+        }
+      }
+    },
+    {
+      "name": "dotb_search_catalog",
+      "description": "Search every מפתחים מחוץ לקופסה podcast episode and meetup talk by topic, technology, guest name or free text. Hebrew and English queries both work. Returns titles, dates, guests, tags and listening links.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Topic, technology, guest name or phrase."
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "episode",
+              "talk"
+            ],
+            "description": "Restrict to one kind of content."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "outside-the-box.dev",
+  "source": "webmcp.com/api/directory.json"
+}

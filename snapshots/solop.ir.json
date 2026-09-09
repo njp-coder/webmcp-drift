@@ -1,0 +1,134 @@
+{
+  "sponsio": 1,
+  "url": "https://solop.ir/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "add_product_to_cart",
+      "description": "محصول همین صفحه را بدون نیاز به ورود به سبد خرید اضافه می‌کند. اگر چند تنوع وجود دارد و رنگ یا سایز مشخص نشده، هیچ تغییری ایجاد نمی‌کند و فقط گزینه ناقص را می‌پرسد. این ابزار پرداخت یا ثبت نهایی سفارش را انجام نمی‌دهد.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "detailId": {
+            "type": "string",
+            "description": "شناسه دقیق تنوع؛ فقط وقتی از خروجی قبلی همین ابزار معلوم است ارسال شود."
+          },
+          "color": {
+            "type": "string",
+            "description": "عنوان یا کد رنگ درخواستی کاربر."
+          },
+          "size": {
+            "type": "string",
+            "description": "عنوان سایز درخواستی کاربر."
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 3,
+            "default": 1,
+            "description": "تعداد موردنظر، بین ۱ تا ۳."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "navigate_to_assistant_section",
+      "description": "کاربر را به بخش مجاز مدیریت دستیار می‌برد. اگر assistantId معلوم نیست، صفحه انتخاب دستیار را باز می‌کند و انتخاب کاربر را برای ادامه لازم می‌داند.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "destination": {
+            "type": "string",
+            "enum": [
+              "overview",
+              "analytics",
+              "products",
+              "products/new",
+              "orders",
+              "orders/pending",
+              "customers",
+              "comments",
+              "discount",
+              "people",
+              "instagram",
+              "chat"
+            ],
+            "description": "بخش مقصد در مدیریت دستیار."
+          },
+          "assistantId": {
+            "type": "string",
+            "description": "شناسه واقعی دستیار از search_my_assistants؛ در صورت نامعلوم‌بودن ارسال نشود."
+          }
+        },
+        "required": [
+          "destination"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "navigate_to_page",
+      "description": "کاربر را به یکی از بخش‌های ثابت و مجاز سایت می‌برد. برای مقصدهای وابسته به یک دستیار از navigate_to_assistant_section استفاده کنید.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "destination": {
+            "type": "string",
+            "enum": [
+              "home",
+              "products",
+              "cart",
+              "about",
+              "contact",
+              "faq",
+              "sign_in",
+              "game",
+              "dashboard",
+              "dashboard_assistants",
+              "dashboard_account",
+              "dashboard_settings",
+              "dashboard_notifications_settings",
+              "dashboard_billing",
+              "dashboard_purchases",
+              "dashboard_pending_purchases",
+              "dashboard_applications",
+              "dashboard_divar",
+              "dashboard_telegram",
+              "dashboard_bale",
+              "dashboard_basalam",
+              "dashboard_digikala",
+              "dashboard_club",
+              "dashboard_notifications"
+            ],
+            "description": "کلید مقصد مجاز در سایت."
+          }
+        },
+        "required": [
+          "destination"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_my_assistants",
+      "description": "دستیارهای متعلق به کاربر واردشده را با نام یا slug جست‌وجو می‌کند. پیش از navigation مستقیم به بخش مدیریت یک دستیار نام‌برده‌شده استفاده شود.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "نام یا slug دستیار؛ برای فهرست کوتاه می‌تواند خالی باشد."
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "solop.ir",
+  "source": "webmcp.com/api/directory.json"
+}

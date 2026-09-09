@@ -1,0 +1,98 @@
+{
+  "sponsio": 1,
+  "url": "https://jobspipe.dev/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "get_api_catalog",
+      "description": "Fetch the JobsPipe API catalog (RFC 9727 linkset) listing the API endpoints, OpenAPI spec, documentation, and health status for agent discovery.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "navigate_to_page",
+      "description": "Navigate the current browser tab to a JobsPipe page such as /developers, /jobs-api, /signup, or /changelog.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Site-relative path beginning with a slash."
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    },
+    {
+      "name": "scan_company_tech_stack",
+      "description": "Detect the technologies a company runs by scanning its website domain. Returns the detected technology stack. Some scans require an authenticated session.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "domain": {
+            "type": "string",
+            "description": "Company domain to scan, e.g. stripe.com."
+          }
+        },
+        "required": [
+          "domain"
+        ]
+      }
+    },
+    {
+      "name": "search_job_postings",
+      "description": "Search live job postings from the JobsPipe dataset. Returns normalized rows (title, budget, skills, client country, posted date) from the public Jobs API. The first 100 results are available without authentication.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 200,
+            "description": "Number of postings to return (max 200)."
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Number of postings to skip for pagination."
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "posted_on",
+              "title",
+              "budget",
+              "hourly_min",
+              "proposals",
+              "client_total_spent",
+              "client_rating",
+              "client_country",
+              "tier"
+            ],
+            "description": "Field to sort by."
+          },
+          "order": {
+            "type": "string",
+            "enum": [
+              "asc",
+              "desc"
+            ],
+            "description": "Sort direction."
+          }
+        },
+        "required": []
+      }
+    }
+  ],
+  "host": "jobspipe.dev",
+  "source": "webmcp.com/api/directory.json"
+}

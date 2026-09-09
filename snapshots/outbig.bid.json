@@ -1,0 +1,128 @@
+{
+  "sponsio": 1,
+  "url": "https://outbig.bid/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "compare_outbig_listings",
+      "description": "Read two to five active public OutBIG listings in one call and return the same verifiable fields for each. This does not rank product quality.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "identities": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 5,
+            "uniqueItems": true,
+            "description": "Two to five distinct listing identities in the order they should be compared.",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048
+            }
+          }
+        },
+        "required": [
+          "identities"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "explain_outbig_placement_options",
+      "description": "Explain paid listings, free promoted listings, and separate sponsor ads using OutBIG's current read-only stats and shared pricing rules. This never starts checkout or reserves a place.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_outbig_listing",
+      "description": "Read one active public OutBIG listing by identity key, domain, repository path, or @handle, including placement and ranks.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "identity": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2048,
+            "description": "A raw identity key such as website:example.com or x:alice, or a page slug such as example.com, github.com/owner/repo, or @alice."
+          }
+        },
+        "required": [
+          "identity"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_outbig_listings",
+      "description": "Search or list active public OutBIG marketplace listings through the existing read-only API. Rank is paid placement, not a quality score.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 64,
+            "description": "Optional 2-64 character search across listing name, resolved site title, and description."
+          },
+          "categorySlug": {
+            "type": "string",
+            "enum": [
+              "seo-ai-visibility",
+              "ai-agents-infrastructure",
+              "ai-media-generation",
+              "marketing-advertising",
+              "developer-tools",
+              "productivity-personal-tools",
+              "people-profiles",
+              "design-creative",
+              "social-media-creator-tools",
+              "writing-content",
+              "sales-lead-generation",
+              "business-finance-legal",
+              "games-entertainment",
+              "education-learning",
+              "health-fitness-wellness",
+              "ecommerce-retail",
+              "directories-launch-discovery",
+              "hiring-jobs-careers",
+              "audio-voice-podcasting",
+              "crypto-web3-investing",
+              "agencies-studios-services",
+              "security-privacy-compliance",
+              "travel-local-lifestyle",
+              "media-news",
+              "domains-web-assets",
+              "leaderboards-attention-markets",
+              "real-estate-property",
+              "other"
+            ],
+            "description": "Optional category slug from OutBIG's fixed catalogue."
+          },
+          "countryCode": {
+            "type": "string",
+            "pattern": "^[A-Za-z]{2}$",
+            "description": "Optional ISO 3166-1 alpha-2 country code, for example AT or US."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 20,
+            "description": "Maximum number of listings to return, 1-50."
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "outbig.bid",
+  "source": "webmcp.com/api/directory.json"
+}

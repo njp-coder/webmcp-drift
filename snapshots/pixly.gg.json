@@ -1,0 +1,1371 @@
+{
+  "sponsio": 1,
+  "url": "https://pixly.gg/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "mc_backup_download_url",
+      "description": "Get a time-limited signed download URL for a backup that has finished exporting (exportState=ready).",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "serverId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The server id (ULID) that owns the backup."
+          },
+          "backupId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The backupId of the backup, from mc_list_backups. For an EBS snapshot backup this is the snapshot id; the archived world uses the literal id \"archive\". Never pass storage.snapshotId."
+          }
+        },
+        "required": [
+          "serverId",
+          "backupId"
+        ]
+      }
+    },
+    {
+      "name": "mc_console_logs",
+      "description": "Fetch recent console log lines for a server. Pass `cursor` (from a previous call's nextCursor) to page further back.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "serverId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The target server id (ULID), as returned by mc_list_servers."
+          },
+          "cursor": {
+            "description": "Pagination cursor.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "serverId"
+        ]
+      }
+    },
+    {
+      "name": "mc_create_backup",
+      "description": "Take a new on-demand backup (snapshot) of a server's world. Billable; may return a 402 when the balance is too low.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "serverId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The server id (ULID) that owns the backup."
+          }
+        },
+        "required": [
+          "serverId"
+        ]
+      }
+    },
+    {
+      "name": "mc_create_server",
+      "description": "Create a new Minecraft server. `region` must be an awsRegion id from mc_list_regions. Per-account server limits and wallet balance are enforced server-side; a 402/403 result means the action was blocked, not that it failed transiently.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "region": {
+            "type": "string",
+            "minLength": 1
+          },
+          "config": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "VANILLA",
+                  "FABRIC",
+                  "FORGE",
+                  "NEOFORGE",
+                  "PAPER",
+                  "PUFFERFISH",
+                  "PURPUR",
+                  "LEAF",
+                  "FOLIA",
+                  "QUILT"
+                ]
+              },
+              "version": {
+                "type": "string",
+                "maxLength": 20
+              },
+              "serverImage": {
+                "type": "string",
+                "enum": [
+                  "itzg/minecraft-server:java25-alpine",
+                  "itzg/minecraft-server:java21-alpine",
+                  "itzg/minecraft-server:java17",
+                  "itzg/minecraft-server:java8"
+                ]
+              },
+              "motd": {
+                "type": "string",
+                "maxLength": 2048
+              },
+              "icon": {
+                "type": "string",
+                "maxLength": 32768
+              },
+              "maxPlayers": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 1000
+              },
+              "difficulty": {
+                "type": "string",
+                "enum": [
+                  "peaceful",
+                  "easy",
+                  "normal",
+                  "hard"
+                ]
+              },
+              "onlineMode": {
+                "default": true,
+                "type": "boolean"
+              },
+              "projects": {
+                "maxItems": 256,
+                "type": "array",
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 1024
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "source": {
+                          "default": "modrinth",
+                          "type": "string",
+                          "enum": [
+                            "modrinth",
+                            "curseforge",
+                            "url",
+                            "upload"
+                          ]
+                        },
+                        "coord": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 1024
+                        },
+                        "kind": {
+                          "type": "string",
+                          "enum": [
+                            "mod",
+                            "modpack",
+                            "plugin",
+                            "datapack"
+                          ]
+                        },
+                        "crc64nvme": {
+                          "type": "string",
+                          "pattern": "^[A-Za-z0-9+/]{11}=$"
+                        },
+                        "bytes": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 9007199254740991
+                        },
+                        "settings": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string",
+                            "maxLength": 64
+                          },
+                          "additionalProperties": {
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "maxLength": 256
+                              },
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "boolean"
+                              }
+                            ]
+                          }
+                        }
+                      },
+                      "required": [
+                        "coord"
+                      ]
+                    }
+                  ]
+                }
+              },
+              "modpack": {
+                "type": "object",
+                "properties": {
+                  "source": {
+                    "default": "modrinth",
+                    "type": "string",
+                    "enum": [
+                      "modrinth",
+                      "curseforge",
+                      "upload"
+                    ]
+                  },
+                  "coord": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 1024
+                  },
+                  "crc64nvme": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9+/]{11}=$"
+                  },
+                  "bytes": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 9007199254740991
+                  },
+                  "minecraft": {
+                    "type": "string"
+                  },
+                  "loader": {
+                    "type": "string",
+                    "enum": [
+                      "VANILLA",
+                      "FABRIC",
+                      "FORGE",
+                      "NEOFORGE",
+                      "PAPER",
+                      "PUFFERFISH",
+                      "PURPUR",
+                      "LEAF",
+                      "FOLIA",
+                      "QUILT"
+                    ]
+                  }
+                },
+                "required": [
+                  "coord"
+                ]
+              },
+              "whitelist": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "uuid": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "name": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 16
+                    }
+                  },
+                  "required": [
+                    "name"
+                  ]
+                }
+              },
+              "ops": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "uuid": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "name": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 16
+                    },
+                    "level": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 4
+                    },
+                    "bypassesPlayerLimit": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "level",
+                    "bypassesPlayerLimit"
+                  ]
+                }
+              },
+              "bannedPlayers": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "uuid": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "name": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 16
+                    },
+                    "created": {
+                      "type": "string"
+                    },
+                    "source": {
+                      "type": "string"
+                    },
+                    "expires": {
+                      "type": "string"
+                    },
+                    "reason": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "uuid",
+                    "name",
+                    "created",
+                    "source",
+                    "expires",
+                    "reason"
+                  ]
+                }
+              },
+              "bannedIps": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "ip": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "created": {
+                      "type": "string"
+                    },
+                    "source": {
+                      "type": "string"
+                    },
+                    "expires": {
+                      "type": "string"
+                    },
+                    "reason": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "ip",
+                    "created",
+                    "source",
+                    "expires",
+                    "reason"
+                  ]
+                }
+              },
+              "whitelistEnabled": {
+                "type": "boolean"
+              },
+              "gamemode": {
+                "type": "string",
+                "enum": [
+                  "survival",
+                  "creative",
+                  "adventure",
+                  "spectator"
+                ]
+              },
+              "forceGamemode": {
+                "type": "boolean"
+              },
+              "allowFlight": {
+                "type": "boolean"
+              },
+              "enableCommandBlock": {
+                "type": "boolean"
+              },
+              "spawnProtection": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 256
+              },
+              "viewDistance": {
+                "type": "integer",
+                "minimum": 3,
+                "maximum": 32
+              },
+              "simulationDistance": {
+                "type": "integer",
+                "minimum": 3,
+                "maximum": 32
+              },
+              "playerIdleTimeout": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 1440
+              },
+              "pvp": {
+                "type": "boolean"
+              },
+              "hardcore": {
+                "type": "boolean"
+              },
+              "bedrockEnabled": {
+                "type": "boolean"
+              },
+              "voiceChatEnabled": {
+                "type": "boolean"
+              },
+              "voiceChatProvider": {
+                "type": "string",
+                "enum": [
+                  "simple-voice-chat",
+                  "plasmo-voice"
+                ]
+              },
+              "reviewNotice": {
+                "type": "string",
+                "maxLength": 2048
+              }
+            }
+          },
+          "instanceType": {
+            "type": "string",
+            "enum": [
+              "c6g.medium",
+              "m6g.medium",
+              "c6g.large",
+              "m6g.large",
+              "r6g.large",
+              "c6g.xlarge",
+              "m6g.xlarge",
+              "r6g.xlarge",
+              "m6g.2xlarge",
+              "r6g.2xlarge"
+            ]
+          }
+        },
+        "required": [
+          "name",
+          "region"
+        ]
+      }
+    },
+    {
+      "name": "mc_current_bill",
+      "description": "Get the current month's running cost estimate and per-server breakdown (accrual-based, no CUR query).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "mc_delete_backup",
+      "description": "Delete a backup. Irreversible. Prompts the user to confirm. When it is the last remaining copy of a world that has no live copy on the server, the delete is refused and the user - not the model - is asked a second time before it goes through; there is no input that skips either prompt.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "serverId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The server id (ULID) that owns the backup."
+          },
+          "backupId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The backupId of the backup, from mc_list_backups. For an EBS snapshot backup this is the snapshot id; the archived world uses the literal id \"archive\". Never pass storage.snapshotId."
+          }
+        },
+        "required": [
+          "serverId",
+          "backupId"
+        ]
+      }
+    },
+    {
+      "name": "mc_delete_backup_export",
+      "description": "Delete the exported ZIP for a backup (the snapshot itself is kept).",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "serverId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The server id (ULID) that owns the backup."
+          },
+          "backupId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The backupId of the backup, from mc_list_backups. For an EBS snapshot backup this is the snapshot id; the archived world uses the literal id \"archive\". Never pass storage.snapshotId."
+          }
+        },
+        "required": [
+          "serverId",
+          "backupId"
+        ]
+      }
+    },
+    {
+      "name": "mc_delete_server",
+      "description": "Permanently delete a server and its world data. Irreversible. Prompts the user to confirm before proceeding.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "serverId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The target server id (ULID), as returned by mc_list_servers."
+          }
+        },
+        "required": [
+          "serverId"
+        ]
+      }
+    },
+    {
+      "name": "mc_export_backup",
+      "description": "Start exporting a snapshot backup to a downloadable ZIP. Poll mc_list_backups for exportState=ready, then call mc_backup_download_url. An s3-archive backup cannot be exported - start the server to bring the world back first.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "serverId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The server id (ULID) that owns the backup."
+          },
+          "backupId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The backupId of the backup, from mc_list_backups. For an EBS snapshot backup this is the snapshot id; the archived world uses the literal id \"archive\". Never pass storage.snapshotId."
+          }
+        },
+        "required": [
+          "serverId",
+          "backupId"
+        ]
+      }
+    },
+    {
+      "name": "mc_get_server",
+      "description": "Get full details for one server by id (status, config, instance size, connection address, players).",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "serverId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The target server id (ULID), as returned by mc_list_servers."
+          }
+        },
+        "required": [
+          "serverId"
+        ]
+      }
+    },
+    {
+      "name": "mc_get_wallet",
+      "description": "Get the signed-in user's wallet: current balance plus credited/debited totals. Useful to explain a 402 'insufficient balance' result from a start/create action.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "mc_list_backups",
+      "description": "List the backups for a server, with state, size, reason and export status. Each row carries a storage field: ebs-snapshot, or s3-archive for a world in cold storage.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "serverId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The server id (ULID) that owns the backup."
+          }
+        },
+        "required": [
+          "serverId"
+        ]
+      }
+    },
+    {
+      "name": "mc_list_bills",
+      "description": "List the user's past monthly bills with per-server line items.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "mc_list_regions",
+      "description": "List the regions available for hosting servers, with their awsRegion id, display name and enabled flag. Use an awsRegion value as the `region` when creating a server.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "mc_list_servers",
+      "description": "List every Minecraft server owned by the signed-in user, including id, name, domain, region, status and online players.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "mc_pricing_catalog",
+      "description": "Get the full pricing catalog: per-region, per-instance-type and per-plan-tier hourly/monthly prices. Use it to quote costs or pick a plan size before creating a server.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "mc_recommended_region",
+      "description": "Get the server-recommended region id for the current user (geo/latency heuristic). A good default for `region` when creating a server.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "mc_region_ping",
+      "description": "Measure round-trip latency (in milliseconds) from the user's browser to a region's router. Lower is better; use it to recommend the fastest region before creating a server.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "awsRegion": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 32,
+            "pattern": "^[a-z]{2}-[a-z]+-\\d+$",
+            "description": "The awsRegion id from mc_list_regions, e.g. ap-southeast-1."
+          }
+        },
+        "required": [
+          "awsRegion"
+        ]
+      }
+    },
+    {
+      "name": "mc_reset_world",
+      "description": "Wipe the server's world and provision a fresh empty one (a backup is taken first). Domain and settings are preserved. Irreversible. Prompts the user to confirm.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "serverId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The target server id (ULID), as returned by mc_list_servers."
+          }
+        },
+        "required": [
+          "serverId"
+        ]
+      }
+    },
+    {
+      "name": "mc_restore_backup",
+      "description": "Restore a server's world from a backup, replacing the current world. Irreversible. Prompts the user to confirm. An s3-archive backup can only be restored while the server has no data volume.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "serverId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The server id (ULID) that owns the backup."
+          },
+          "backupId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The backupId of the backup, from mc_list_backups. For an EBS snapshot backup this is the snapshot id; the archived world uses the literal id \"archive\". Never pass storage.snapshotId."
+          }
+        },
+        "required": [
+          "serverId",
+          "backupId"
+        ]
+      }
+    },
+    {
+      "name": "mc_server_action",
+      "description": "Run a lifecycle action on a server: start, stop, restart (full EC2 reboot) or restart-container (in-place). `start` may return a 402 billing error when the wallet balance is too low.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "serverId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The target server id (ULID), as returned by mc_list_servers."
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "start",
+              "stop",
+              "restart",
+              "restart-container"
+            ]
+          }
+        },
+        "required": [
+          "serverId",
+          "action"
+        ]
+      }
+    },
+    {
+      "name": "mc_update_server",
+      "description": "Update a server's name, instance size, autostart, or world config (MOTD, max players, difficulty, version, mods, etc.). Some fields require a restart to take effect.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "serverId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The target server id (ULID), as returned by mc_list_servers."
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "config": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "VANILLA",
+                      "FABRIC",
+                      "FORGE",
+                      "NEOFORGE",
+                      "PAPER",
+                      "PUFFERFISH",
+                      "PURPUR",
+                      "LEAF",
+                      "FOLIA",
+                      "QUILT"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "version": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "maxLength": 20
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "serverImage": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "itzg/minecraft-server:java25-alpine",
+                      "itzg/minecraft-server:java21-alpine",
+                      "itzg/minecraft-server:java17",
+                      "itzg/minecraft-server:java8"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "motd": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "maxLength": 2048
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "icon": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "maxLength": 32768
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "maxPlayers": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 1000
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "difficulty": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "peaceful",
+                      "easy",
+                      "normal",
+                      "hard"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "onlineMode": {
+                "type": "boolean"
+              },
+              "projects": {
+                "anyOf": [
+                  {
+                    "maxItems": 256,
+                    "type": "array",
+                    "items": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 1024
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "source": {
+                              "default": "modrinth",
+                              "type": "string",
+                              "enum": [
+                                "modrinth",
+                                "curseforge",
+                                "url",
+                                "upload"
+                              ]
+                            },
+                            "coord": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 1024
+                            },
+                            "kind": {
+                              "type": "string",
+                              "enum": [
+                                "mod",
+                                "modpack",
+                                "plugin",
+                                "datapack"
+                              ]
+                            },
+                            "crc64nvme": {
+                              "type": "string",
+                              "pattern": "^[A-Za-z0-9+/]{11}=$"
+                            },
+                            "bytes": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 9007199254740991
+                            },
+                            "settings": {
+                              "type": "object",
+                              "propertyNames": {
+                                "type": "string",
+                                "maxLength": 64
+                              },
+                              "additionalProperties": {
+                                "anyOf": [
+                                  {
+                                    "type": "string",
+                                    "maxLength": 256
+                                  },
+                                  {
+                                    "type": "number"
+                                  },
+                                  {
+                                    "type": "boolean"
+                                  }
+                                ]
+                              }
+                            }
+                          },
+                          "required": [
+                            "coord"
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "modpack": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "source": {
+                        "default": "modrinth",
+                        "type": "string",
+                        "enum": [
+                          "modrinth",
+                          "curseforge",
+                          "upload"
+                        ]
+                      },
+                      "coord": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 1024
+                      },
+                      "crc64nvme": {
+                        "type": "string",
+                        "pattern": "^[A-Za-z0-9+/]{11}=$"
+                      },
+                      "bytes": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 9007199254740991
+                      },
+                      "minecraft": {
+                        "type": "string"
+                      },
+                      "loader": {
+                        "type": "string",
+                        "enum": [
+                          "VANILLA",
+                          "FABRIC",
+                          "FORGE",
+                          "NEOFORGE",
+                          "PAPER",
+                          "PUFFERFISH",
+                          "PURPUR",
+                          "LEAF",
+                          "FOLIA",
+                          "QUILT"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "coord"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "whitelist": {
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "uuid": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "name": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 16
+                        }
+                      },
+                      "required": [
+                        "name"
+                      ]
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "ops": {
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "uuid": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "name": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 16
+                        },
+                        "level": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 4
+                        },
+                        "bypassesPlayerLimit": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "name",
+                        "level",
+                        "bypassesPlayerLimit"
+                      ]
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "bannedPlayers": {
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "uuid": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "name": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 16
+                        },
+                        "created": {
+                          "type": "string"
+                        },
+                        "source": {
+                          "type": "string"
+                        },
+                        "expires": {
+                          "type": "string"
+                        },
+                        "reason": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "uuid",
+                        "name",
+                        "created",
+                        "source",
+                        "expires",
+                        "reason"
+                      ]
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "bannedIps": {
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "ip": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "created": {
+                          "type": "string"
+                        },
+                        "source": {
+                          "type": "string"
+                        },
+                        "expires": {
+                          "type": "string"
+                        },
+                        "reason": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "ip",
+                        "created",
+                        "source",
+                        "expires",
+                        "reason"
+                      ]
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "whitelistEnabled": {
+                "anyOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "gamemode": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "survival",
+                      "creative",
+                      "adventure",
+                      "spectator"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "forceGamemode": {
+                "anyOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "allowFlight": {
+                "anyOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "enableCommandBlock": {
+                "anyOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "spawnProtection": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 256
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "viewDistance": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 3,
+                    "maximum": 32
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "simulationDistance": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 3,
+                    "maximum": 32
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "playerIdleTimeout": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 1440
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "pvp": {
+                "anyOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "hardcore": {
+                "anyOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "bedrockEnabled": {
+                "anyOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "voiceChatEnabled": {
+                "anyOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "voiceChatProvider": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "simple-voice-chat",
+                      "plasmo-voice"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          },
+          "instanceType": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "c6g.medium",
+                  "m6g.medium",
+                  "c6g.large",
+                  "m6g.large",
+                  "r6g.large",
+                  "c6g.xlarge",
+                  "m6g.xlarge",
+                  "r6g.xlarge",
+                  "m6g.2xlarge",
+                  "r6g.2xlarge"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "autoStartEnabled": {
+            "type": "boolean"
+          },
+          "resetWorld": {
+            "description": "Confirms a version downgrade by resetting the world in the same save",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "serverId"
+        ]
+      }
+    }
+  ],
+  "host": "pixly.gg",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,101 @@
+{
+  "sponsio": 1,
+  "url": "https://jonhulsinger.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "get_article",
+      "description": "Read one public CMS article section or the next bounded content chunk.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^cms:[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "maxLength": 128,
+            "description": "Stable article ID returned by list_articles."
+          },
+          "section": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "maxLength": 64,
+            "description": "Optional section key returned by an article read."
+          },
+          "cursor": {
+            "type": "string",
+            "maxLength": 256,
+            "description": "Opaque cursor returned when more section text remains."
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_page",
+      "description": "Read one approved Pages-owned public page section or bounded continuation.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "enum": [
+              "home",
+              "about"
+            ],
+            "description": "Approved public page ID."
+          },
+          "section": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "maxLength": 64,
+            "description": "Optional section key returned by a page read."
+          },
+          "cursor": {
+            "type": "string",
+            "maxLength": 256,
+            "description": "Opaque cursor returned when more section text remains."
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_articles",
+      "description": "List bounded metadata for public articles published on this site.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "maxLength": 80,
+            "description": "Optional title or excerpt search text."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "description": "Maximum number of articles to return."
+          },
+          "cursor": {
+            "type": "string",
+            "maxLength": 256,
+            "description": "Opaque cursor returned by a previous list call."
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "jonhulsinger.com",
+  "source": "webmcp.com/api/directory.json"
+}

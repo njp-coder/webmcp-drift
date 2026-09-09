@@ -1,0 +1,69 @@
+{
+  "sponsio": 1,
+  "url": "https://tramitapp.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "buscar_articulos_del_blog",
+      "description": "Busca artículos del blog de TramitApp por tema y devuelve los que mejor encajan, con su título, su URL, su categoría y un extracto. El blog cubre normativa laboral, gestión de RRHH y casos de uso; para las páginas de producto usa buscar_en_tramitapp. Un artículo se lee entero con leer_pagina_tramitapp.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "consulta": {
+            "type": "string",
+            "description": "Qué se busca, en lenguaje natural. Ej.: \"registro de jornada obligatorio\", \"cómo se calcula el finiquito\"."
+          }
+        },
+        "required": [
+          "consulta"
+        ]
+      }
+    },
+    {
+      "name": "buscar_en_tramitapp",
+      "description": "Busca en las páginas de producto de tramitapp.com y devuelve las que responden a una consulta, con su título, su URL y una descripción. Úsalo antes de leer_pagina_tramitapp para saber qué página leer. Para artículos del blog, usa buscar_articulos_del_blog.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "consulta": {
+            "type": "string",
+            "description": "Qué se busca, en lenguaje natural. Ej.: \"control horario por WhatsApp\", \"planificar turnos de un hospital\"."
+          }
+        },
+        "required": [
+          "consulta"
+        ]
+      }
+    },
+    {
+      "name": "leer_pagina_tramitapp",
+      "description": "Devuelve el contenido de una página de tramitapp.com en Markdown, sin HTML ni navegación. Acepta la ruta (\"/control-horario/\") o la URL completa.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "ruta": {
+            "type": "string",
+            "description": "Ruta o URL de la página. Ej.: \"/control-horario/\" o \"https://www.tramitapp.com/planificacion-de-turnos/\"."
+          }
+        },
+        "required": [
+          "ruta"
+        ]
+      }
+    },
+    {
+      "name": "resumen_de_tramitapp",
+      "description": "Explica qué es TramitApp en una respuesta corta: qué hace el producto, para quién es y cómo se contrata. Úsalo como primer paso si no sabes nada del sitio.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    }
+  ],
+  "host": "tramitapp.com",
+  "source": "webmcp.com/api/directory.json"
+}

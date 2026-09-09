@@ -1,0 +1,149 @@
+{
+  "sponsio": 1,
+  "url": "https://agentronics.dev/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "book_demo",
+      "description": "Take the visitor to the Agentronics demo-booking page (Calendly) to schedule a technical demo.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "note": {
+            "type": "string",
+            "description": "Optional context about what to cover."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "compare_features",
+      "description": "Get the full Agentronics plan-by-plan feature comparison matrix (SDK & governance, measurement & analytics, and platform limits) as structured data.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_pricing",
+      "description": "Get Agentronics pricing: all plans with monthly and yearly prices (USD) and headline features. Yearly billing is 16% off.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_product_overview",
+      "description": "Explain what Agentronics is, what WebMCP is, what the SDK does, and how it works in three steps.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "navigate_to",
+      "description": "Navigate the visitor to a page on the Agentronics site: home, pricing, docs, book (demo), sign-up, or sign-in.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "destination": {
+            "type": "string",
+            "enum": [
+              "home",
+              "pricing",
+              "docs",
+              "book",
+              "sign-up",
+              "sign-in"
+            ],
+            "description": "Where to go."
+          }
+        },
+        "required": [
+          "destination"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "recommend_plan",
+      "description": "Recommend the best-fit Agentronics plan from a customer's needs (monthly agent request volume and which governance features they need), with the price and the reasons.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "monthlyAgentRequests": {
+            "type": "number",
+            "description": "Expected agent requests per month."
+          },
+          "needSSO": {
+            "type": "boolean",
+            "description": "Requires SSO / SAML."
+          },
+          "needAuthz": {
+            "type": "boolean",
+            "description": "Requires scoped authorization (per-agent permissions)."
+          },
+          "needMemory": {
+            "type": "boolean",
+            "description": "Requires agent memory & context transfer across sessions."
+          },
+          "dataSources": {
+            "description": "Number of connected data sources, or \"all\".",
+            "oneOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string",
+                "enum": [
+                  "all"
+                ]
+              }
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_docs",
+      "description": "Find the most relevant Agentronics documentation pages for a query. Returns doc titles, summaries, and links.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "What you want to find in the docs."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "start_signup",
+      "description": "Take the visitor to the Agentronics sign-up page to create an account.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "agentronics.dev",
+  "source": "webmcp.com/api/directory.json"
+}

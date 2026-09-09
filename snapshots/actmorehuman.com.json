@@ -1,0 +1,570 @@
+{
+  "sponsio": 1,
+  "url": "https://www.actmorehuman.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "build_humanizer_prompt",
+      "description": "Build a custom voice prompt the visitor can paste into their AI assistant's custom instructions, from their stated preferences. Every field is optional and sensible defaults fill the rest, so pass only what the visitor actually asked for. Call get_wizard_options first to get valid option ids. Returns the finished prompt text, ready to copy.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "communicationStyle": {
+            "type": "object",
+            "properties": {
+              "selectedOption": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "knowledgeable-friend",
+                      "helpful-colleague",
+                      "thoughtful-mentor",
+                      "creative-partner",
+                      "professional-advisor",
+                      "casual-buddy",
+                      "expert-consultant"
+                    ]
+                  },
+                  {
+                    "type": "string",
+                    "const": "other"
+                  }
+                ]
+              },
+              "customValue": {
+                "anyOf": [
+                  {
+                    "anyOf": [
+                      {
+                        "not": {}
+                      },
+                      {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "selectedOption"
+            ],
+            "additionalProperties": false
+          },
+          "responseLength": {
+            "type": "object",
+            "properties": {
+              "selectedOption": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "brief-concise",
+                      "balanced",
+                      "thorough",
+                      "depends-on-topic",
+                      "ultra-brief",
+                      "very-detailed",
+                      "context-dependent"
+                    ]
+                  },
+                  {
+                    "type": "string",
+                    "const": "other"
+                  }
+                ]
+              },
+              "customValue": {
+                "anyOf": [
+                  {
+                    "anyOf": [
+                      {
+                        "not": {}
+                      },
+                      {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "selectedOption"
+            ],
+            "additionalProperties": false
+          },
+          "personalityTraits": {
+            "type": "object",
+            "properties": {
+              "selectedOptions": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "warm-empathetic",
+                    "direct-straightforward",
+                    "thoughtful-reflective",
+                    "enthusiastic-energetic",
+                    "calm-patient",
+                    "curious-inquisitive",
+                    "witty-humorous",
+                    "analytical-logical",
+                    "supportive-encouraging",
+                    "assertive-confident",
+                    "playful-creative",
+                    "serious-professional"
+                  ]
+                }
+              },
+              "customValues": {
+                "anyOf": [
+                  {
+                    "anyOf": [
+                      {
+                        "not": {}
+                      },
+                      {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "selectedOptions"
+            ],
+            "additionalProperties": false
+          },
+          "languageStyles": {
+            "type": "object",
+            "properties": {
+              "selectedOptions": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "use-contractions",
+                    "vary-sentence-length",
+                    "natural-pauses-tangents",
+                    "simple-friendly",
+                    "metaphors-analogies",
+                    "colloquialisms-slang",
+                    "technical-precise",
+                    "storytelling-narrative",
+                    "question-driven",
+                    "example-heavy",
+                    "conversational-flow"
+                  ]
+                }
+              },
+              "customValues": {
+                "anyOf": [
+                  {
+                    "anyOf": [
+                      {
+                        "not": {}
+                      },
+                      {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "selectedOptions"
+            ],
+            "additionalProperties": false
+          },
+          "avoidances": {
+            "type": "object",
+            "properties": {
+              "selectedOptions": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "corporate-jargon",
+                    "overly-formal",
+                    "too-casual",
+                    "certainty-phrases",
+                    "excessive-bullets",
+                    "robotic-transitions",
+                    "ai-disclaimers",
+                    "repetitive-phrases",
+                    "filler-words",
+                    "over-qualification",
+                    "passive-voice",
+                    "abstract-concepts"
+                  ]
+                }
+              },
+              "customValues": {
+                "anyOf": [
+                  {
+                    "anyOf": [
+                      {
+                        "not": {}
+                      },
+                      {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "selectedOptions"
+            ],
+            "additionalProperties": false
+          },
+          "emotionalConnection": {
+            "anyOf": [
+              {
+                "anyOf": [
+                  {
+                    "not": {}
+                  },
+                  {
+                    "type": "string",
+                    "maxLength": 300
+                  }
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "punctuationPreferences": {
+            "anyOf": [
+              {
+                "anyOf": [
+                  {
+                    "not": {}
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "selectedOptions": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "enum": [
+                            "no-em-dashes",
+                            "no-semicolons",
+                            "minimal-punctuation",
+                            "no-parentheses",
+                            "no-colons",
+                            "no-ellipses"
+                          ]
+                        }
+                      },
+                      "customValues": {
+                        "anyOf": [
+                          {
+                            "anyOf": [
+                              {
+                                "not": {}
+                              },
+                              {
+                                "type": "array",
+                                "items": {
+                                  "type": "string",
+                                  "minLength": 1
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      }
+                    },
+                    "required": [
+                      "selectedOptions"
+                    ],
+                    "additionalProperties": false
+                  }
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "keywordsToAvoid": {
+            "anyOf": [
+              {
+                "anyOf": [
+                  {
+                    "not": {}
+                  },
+                  {
+                    "type": "string",
+                    "maxLength": 1000
+                  }
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "get_guide",
+      "description": "Fetch the full text of one guide by its slug, as returned by search_guides. Returns the guide's title, summary, body and URL. Use it after search_guides when you need the detail to answer accurately rather than the summary. Fails if no guide has that slug.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "description": "The guide slug, exactly as search_guides returned it."
+          }
+        },
+        "required": [
+          "slug"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "get_setup_steps",
+      "description": "Get the step-by-step instructions for applying a custom voice prompt to one AI assistant, optionally for a specific platform such as \"Web & Desktop\" or \"iOS & Android\". Returns numbered steps with any links, plus the date the steps were last checked. Use it when a visitor asks how to install or apply their prompt. Returns covered: false when nobody has written steps for that combination, which means you should say so rather than guessing.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "assistant": {
+            "type": "string",
+            "enum": [
+              "chatgpt",
+              "claude",
+              "gemini",
+              "perplexity",
+              "grok",
+              "copilot"
+            ],
+            "description": "Which assistant, by id, as list_assistants returns it."
+          },
+          "platform": {
+            "type": "string",
+            "maxLength": 64,
+            "description": "Platform label, exactly as list_assistants reports it. Omit for the default steps."
+          }
+        },
+        "required": [
+          "assistant"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "get_wizard_options",
+      "description": "List every option the voice-prompt builder accepts: communication styles, response lengths, personality traits, language styles, things to avoid, and punctuation preferences. Returns each question with its exact option ids and labels, and whether it takes one answer or several. Call this before build_humanizer_prompt so you use real option ids instead of guessing at them. Takes no arguments.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "list_assistants",
+      "description": "List the AI assistants this site has setup instructions for: ChatGPT, Claude, Gemini, Perplexity, Grok and Copilot. Returns each one's id, display name and which platforms have written steps. Pass compare with two or more ids to get them side by side instead. Use it when a visitor asks which assistants are supported, or how two of them differ.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "compare": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "chatgpt",
+                "claude",
+                "gemini",
+                "perplexity",
+                "grok",
+                "copilot"
+              ]
+            },
+            "minItems": 2,
+            "maxItems": 6,
+            "description": "Assistant ids to compare side by side. Omit to list them all."
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "list_products",
+      "description": "List what this site sells, with current prices: the Rollout Pack, the Voice Review, the Company Voice engagement and the one-to-one consultation. Only products currently on sale are returned, so the list may be short. Pass configuration to price a Company Voice engagement including add-ons. Use it whenever a visitor asks about cost, or before start_checkout to confirm a product is available.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "configuration": {
+            "type": "object",
+            "properties": {
+              "expeditedDelivery": {
+                "type": "boolean",
+                "description": "Expedited delivery, three business days."
+              },
+              "consultantHours": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 10,
+                "description": "Additional consultant hours, billed per hour, capped at 10."
+              },
+              "exampleTesting": {
+                "type": "boolean",
+                "description": "The 100-example testing package."
+              }
+            },
+            "additionalProperties": false,
+            "description": "Only for pricing a Company Voice engagement. Omit to list the catalogue."
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "search_guides",
+      "description": "Search this site's guides about making AI-written text sound human: which tells give AI writing away, how to fix them, and how to set up each AI assistant. Returns matching guide titles, summaries and slugs, ranked by relevance, without the full text. Use it to answer a visitor's question about AI writing, then call get_guide for the one you want to read. Returns an empty list with a note when nothing matches.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 200,
+            "description": "What to search for, in the visitor's own words."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "description": "How many results to return. Defaults to 5."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "start_checkout",
+      "description": "Begin buying the Rollout Pack or the Voice Review. Creates a Stripe checkout session and returns its URL, where the visitor enters payment details and completes the purchase themselves. This tool never takes payment and never completes an order. Confirm the product and price with list_products first, and check the visitor actually wants to buy before calling it.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product": {
+            "type": "string",
+            "enum": [
+              "rollout_pack",
+              "voice_review"
+            ],
+            "description": "Which product to buy."
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 255,
+            "description": "The buyer's email, used to prefill Stripe and deliver the purchase."
+          }
+        },
+        "required": [
+          "product",
+          "email"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "subscribe_to_updates",
+      "description": "Ask to receive email updates from Act More Human — either new guides on making AI writing sound human, or occasional notes about new products. Sends a confirmation email to the address given; the visitor must click the link in it before anything is subscribed. Returns confirmation that the email was sent, not that the subscription is active. Use only when the visitor has said they want updates, and tell them to check their inbox.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "minLength": 1,
+            "format": "email",
+            "maxLength": 255
+          },
+          "topic": {
+            "type": "string",
+            "enum": [
+              "guides",
+              "products"
+            ],
+            "default": "guides"
+          }
+        },
+        "required": [
+          "email"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    }
+  ],
+  "host": "actmorehuman.com",
+  "source": "webmcp.com/api/directory.json"
+}

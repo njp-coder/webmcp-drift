@@ -1,0 +1,202 @@
+{
+  "sponsio": 1,
+  "url": "https://cuvo.co/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "book_discovery_call",
+      "description": "Book a real 30-minute Cuvo discovery call for the user. Requires their explicit confirmation of a specific slot from get_availability plus their real full name and email; the calendar invite goes to that email. Do not book without the user's consent.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "User's full name"
+          },
+          "email": {
+            "type": "string",
+            "description": "User's email (receives the invite)"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Optional phone number"
+          },
+          "slot_start_iso": {
+            "type": "string",
+            "description": "startIso of the chosen slot, exactly as returned by get_availability"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "IANA timezone used when fetching availability"
+          }
+        },
+        "required": [
+          "name",
+          "email",
+          "slot_start_iso",
+          "timezone"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_article",
+      "description": "Full text (markdown) of one published article, by slug from list_articles.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Article slug, e.g. \"dea-telemedicine-flexibilities-2026\""
+          }
+        },
+        "required": [
+          "slug"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_availability",
+      "description": "Next open 30-minute discovery-call slots on the Cuvo team's calendar, in the user's timezone. Call before offering any times; returns each slot's startIso and human label.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "timezone": {
+            "type": "string",
+            "description": "IANA timezone of the user, e.g. \"America/New_York\". Defaults to America/New_York."
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_comparison",
+      "description": "Full text (markdown) of one Cuvo-vs-competitor comparison page, by slug from list_comparisons.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Comparison slug, e.g. \"cuvo-vs-wheel\""
+          }
+        },
+        "required": [
+          "slug"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_overview",
+      "description": "What Cuvo Health is, who it is for, and the canonical FAQ: the white label telehealth platform that operates the licensed clinic behind consumer brands.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_pricing",
+      "description": "Cuvo's published pricing as markdown: plan tiers with setup fees, the flat $25 per-consult fee, 0% medication markup, commercial terms, and add-ons.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "inspect_image_c2pa",
+      "description": "Fetch a single image (by CSS selector or URL) and return its fully decoded C2PA manifest store: every manifest's claim, assertions (e.g. c2pa.actions edit history, schema.org authorship), and the COSE signature details (algorithm and signing-certificate identity). Provide exactly one of `selector` or `url`. Note: the signature is decoded but NOT cryptographically verified.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "selector": {
+            "type": "string",
+            "maxLength": 8192,
+            "description": "CSS selector for an <img> element on the page."
+          },
+          "url": {
+            "type": "string",
+            "maxLength": 8192,
+            "description": "Image URL (absolute, or relative to the current page) to fetch and inspect."
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "list_articles",
+      "description": "List every published article on the Cuvo blog (slug, title, excerpt, date, category): telehealth compliance, pharmacy, and growth guides.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_comparisons",
+      "description": "List every Cuvo-vs-competitor comparison page (slug, competitor name, one-line summary, facts-reviewed date).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "request_callback",
+      "description": "Ask the Cuvo team to phone the user back, when live booking is unavailable or the user prefers a callback. Requires the user's consent, name, and phone number.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "phone"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "scan_images_c2pa",
+      "description": "Scan every <img> on the current page for C2PA Content Credentials (content provenance metadata) and return a per-image summary: whether a manifest is present, the claim generator (the tool that produced or edited the image), the title, and the signer name. Use this to find which images on a page carry provenance data. Note: provenance is decoded but NOT cryptographically verified.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 25,
+            "description": "Maximum number of images to fetch and scan (default 25, max 100)."
+          }
+        },
+        "required": []
+      }
+    }
+  ],
+  "host": "cuvo.co",
+  "source": "webmcp.com/api/directory.json"
+}

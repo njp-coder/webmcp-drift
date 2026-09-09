@@ -1,0 +1,163 @@
+{
+  "sponsio": 1,
+  "url": "https://crossword-desk-studio.openai.chatgpt.site/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "construct_crossword",
+      "description": "Build a crossword from a compatible subset of theme candidates, keeping key theme words and adding ordinary crossing fill. Auto size finds a fitting grid; a fixed size or locked answers keep the current dimensions. A successful construction has met the theme requirements for its grid size. After success, finish missing clues. Do not resize or rebuild solely to increase theme density unless the user asks.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "expected_revision": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Puzzle revision being edited. A newer revision prevents the change from being applied."
+          }
+        },
+        "required": [
+          "expected_revision"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_puzzle_state",
+      "description": "View the crossword, word pool, clues, validation, and current size limits.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "since_revision": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Include changes made after this puzzle revision."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_puzzle_title",
+      "description": "Change the crossword title.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "expected_revision": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Puzzle revision being edited. A newer revision prevents the change from being applied."
+          }
+        },
+        "required": [
+          "title",
+          "expected_revision"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "update_clues",
+      "description": "Edit clues for placed answers without changing their words or positions.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "entries": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "properties": {
+                "entry_id": {
+                  "type": "string"
+                },
+                "clue": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "entry_id",
+                "clue"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "expected_revision": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Puzzle revision being edited. A newer revision prevents the change from being applied."
+          }
+        },
+        "required": [
+          "entries",
+          "expected_revision"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "upsert_word_candidates",
+      "description": "Add or update answers, clues, and theme labels. Mixed batches keep valid entries and report rejected entries separately. Key theme words are kept; other theme words are alternatives.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "candidates": {
+            "type": "array",
+            "minItems": 1,
+            "description": "For a new theme, about 12–16 related answers of varied lengths, including some 3–5-letter alternatives, give the crossword more ways to fit. These are alternatives, not a placement target; only a compatible subset needs to appear. Small updates can contain fewer words.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "word": {
+                  "type": "string",
+                  "minLength": 2,
+                  "description": "Answer letters, within get_puzzle_state.constraints.max_answer_length. Auto size accepts up to 18 letters; fixed sizes and locked answers limit new words to the current dimensions. New oversized answers are skipped without discarding valid entries in the batch."
+                },
+                "clue": {
+                  "type": "string"
+                },
+                "theme": {
+                  "type": "boolean",
+                  "description": "Whether this answer is part of the theme. New answers are themed by default; existing labels stay unchanged when omitted."
+                },
+                "theme_anchor": {
+                  "type": "boolean",
+                  "description": "An optional must-include theme answer. Zero or one anchor is usually enough; a short, distinctive answer of 3–7 letters gives more layout choices. Long phrases or multiple anchors make construction harder. The puzzle title need not be an answer. Also marks the word as themed."
+                },
+                "replaces_candidate_id": {
+                  "type": "string",
+                  "description": "ID of the word being replaced; an adjustment note is required."
+                }
+              },
+              "required": [
+                "word"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "expected_revision": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Puzzle revision being edited. A newer revision prevents the change from being applied."
+          }
+        },
+        "required": [
+          "candidates",
+          "expected_revision"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "crossword-desk-studio.openai.chatgpt.site",
+  "source": "webmcp.com/api/directory.json"
+}

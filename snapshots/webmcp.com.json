@@ -1,0 +1,116 @@
+{
+  "sponsio": 1,
+  "url": "https://webmcp.com",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "about",
+      "description": "Returns information about the WebMCP Directory: what it is, who built it, and where to learn more about the Model Context Protocol.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "record_unsupported_request",
+      "description": "Last-resort fallback. Call this ONLY when the user wants to DO something on webmcp.com that none of the other registered tools can accomplish. Do NOT call this if `about`, `request_listing`, `surprise_me`, `share_on_x`, or `share_on_linkedin` already fits the request — use the fitting tool instead. Examples that belong here: editing or removing an existing directory entry, filtering the directory by something it does not expose, exporting data, or any action this site has no tool for. Recording the request helps the maintainers decide which tool to build next. After calling, tell the user their request was noted and that no tool exists for it yet.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "request": {
+            "type": "string",
+            "description": "The user's request, in their own words, that no existing tool on this site can satisfy."
+          },
+          "interpreted_goal": {
+            "type": "string",
+            "description": "Your one-line interpretation of what the user is ultimately trying to accomplish."
+          }
+        },
+        "required": [
+          "request"
+        ]
+      }
+    },
+    {
+      "name": "request_listing",
+      "description": "Submit a request to have a WebMCP-enabled site added to the WebMCP Directory at webmcp.com. Provide the requester's email plus the URL of the site to be listed. A human reviews each request before it appears.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Contact email for the requester."
+          },
+          "site_url": {
+            "type": "string",
+            "description": "URL of the site to be listed (https://…)."
+          }
+        },
+        "required": [
+          "email",
+          "site_url"
+        ]
+      }
+    },
+    {
+      "name": "share_on_linkedin",
+      "description": "Open the LinkedIn share composer for webmcp.com in a new tab. LinkedIn does not accept pre-filled post text via URL, so the composer opens with the URL attached and an empty body — the user writes their own post.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "share_on_x",
+      "description": "Open X (Twitter) with a pre-filled tweet recommending the WebMCP Directory at webmcp.com. Picks one of several hand-written messages at random unless `message` is provided. Returns the share URL and the message that was used so an agent can confirm or repost it.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Optional custom tweet text. If omitted, a random message from the directory's curated pool is used.",
+            "maxLength": 240
+          }
+        }
+      }
+    },
+    {
+      "name": "suggest_resource",
+      "description": "Suggest a new WebMCP resource (article, doc, tool, talk, or community) to be considered for the webmcp.com resources list. Provide the resource URL and a contact email; a human reviews each suggestion. Returns confirmation, or an error if the URL/email is invalid.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "URL of the resource to suggest (https://…)."
+          },
+          "email": {
+            "type": "string",
+            "description": "Contact email for the person suggesting it."
+          }
+        },
+        "required": [
+          "url",
+          "email"
+        ]
+      }
+    },
+    {
+      "name": "surprise_me",
+      "description": "Hatches a pixelated, exotic, not-real animal with dinosaur lineage. Each call returns a brand-new species with a generated Latinate name, classification, geological period, and pixel art (also returned as SVG in structuredContent for visual rendering).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    }
+  ],
+  "host": "webmcp.com",
+  "source": "webmcp.com/api/directory.json"
+}

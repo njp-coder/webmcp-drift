@@ -1,0 +1,62 @@
+{
+  "sponsio": 1,
+  "url": "https://doana.ca/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "browse_offerings",
+      "description": "List Doana's visitor-facing offerings: inbox-first customs extraction, AOG email triage, industry solutions, MCP and developer access, and pricing. Use when the visitor wants to know what they can buy, try, or connect to. Returns short cards with a title, a one-line summary, and a localized path. Does not start signup and does not send email.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "topic": {
+            "type": "string",
+            "enum": [
+              "extraction",
+              "aog",
+              "mcp",
+              "solutions",
+              "pricing"
+            ],
+            "description": "Narrow the list to one area of the offering."
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_doana_content",
+      "description": "Answer a visitor question from Doana's own public content (product overview, developers and MCP access, pricing, contact, privacy). Use when the visitor asks what Doana does, which documents it reads, or how MCP access and signup work. Returns matching excerpts plus the source path each came from, in English. Does not invent answers and does not call /api/mcp.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "The visitor's question, in their own words.",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "start_signup",
+      "description": "Open Doana's self-serve signup so the visitor can test extraction on their own documents. Use when they ask to try Doana, create an account, or configure a first agent. Navigates to the signup page for the current locale and returns that URL. Does not create an account and does not submit credentials — the visitor completes signup in the UI.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "doana.ca",
+  "source": "webmcp.com/api/directory.json"
+}

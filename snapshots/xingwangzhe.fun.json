@@ -1,0 +1,124 @@
+{
+  "sponsio": 1,
+  "url": "https://xingwangzhe.fun/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "stalux_current_post",
+      "description": "返回用户当前正在浏览的那篇文章的元信息。当用户说「这篇文章」「当前页面」时先调用它确定上下文，比读正文便宜得多。不在文章页时返回错误。",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "stalux_get_post",
+      "description": "按 abbrlink 或标题关键词定位一篇文章，返回其元信息（标题、日期、分类、标签、摘要、字数、文章页 URL）。只要元信息时用它，比读取正文便宜得多；读正文请用 stalux_read_post。获取 abbrlink 可先用 stalux_list_posts 或 stalux_search_posts。",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "文章 abbrlink（如 f4442947）或标题关键词（模糊匹配，取第一条命中）"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "stalux_list_posts",
+      "description": "分页列出博客的全部已发布文章，返回标题、永久链接（abbrlink）、日期、分类、标签、摘要与文章页 URL。需要浏览全站文章、确认某篇文章的 abbrlink 时使用；不返回正文，只要某篇元信息用 stalux_get_post，读正文请用 stalux_read_post。pageSize 建议设 50 一次拿完，减少翻页；页码越界时会自动返回最后一页（clamped 标记）。",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1,
+            "description": "页码，从 1 开始"
+          },
+          "pageSize": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 10,
+            "description": "每页条数，最大 50"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "stalux_random_post",
+      "description": "随机挑选一篇文章并返回其元信息（标题、abbrlink、日期、摘要、URL）。适合推荐、探索、或不确定从哪篇开始时使用；不返回正文，不导航。",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "stalux_read_post",
+      "description": "按 abbrlink（文章永久链接 ID）读取一篇博客文章的 Markdown 全文，包含规范化 frontmatter、正文与版权脚注。需要文章完整内容、引用或摘要时使用；只要元信息用 stalux_get_post（更便宜）。获取 abbrlink 可先用 stalux_list_posts 或 stalux_search_posts。",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "文章的 abbrlink，如 f4442947"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "stalux_search_posts",
+      "description": "用关键词搜索博客文章的标题、标签、分类与正文全文，返回命中文章的标题、链接与摘要片段。适合「博客里写过 X 吗」「帮我找一下关于 Y 的文章」这类问题；定位到具体文章后再用 stalux_read_post 读正文、stalux_get_post 取元信息。",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "keyword": {
+            "type": "string",
+            "description": "搜索关键词"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "default": 10,
+            "description": "最多返回条数"
+          }
+        },
+        "required": [
+          "keyword"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "stalux_site_info",
+      "description": "返回博客的站点信息（标题、简介、站点 URL），并给出更完整的机器可读内容入口：/llms.txt（站点导航与文章链接列表）与 /llms-full.txt（全站 Markdown 镜像，含全部文章正文）。适合需要了解博客主题、定位内容、或批量获取全站数据时使用。",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "xingwangzhe.fun",
+  "source": "webmcp.com/api/directory.json"
+}

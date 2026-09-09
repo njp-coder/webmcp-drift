@@ -1,0 +1,93 @@
+{
+  "sponsio": 1,
+  "url": "https://placeholders.dev/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "explain_placeholder_image_url",
+      "description": "Break an existing placeholders.dev URL into the options it actually uses, filling in the defaults the image API would apply and listing any query parameters it ignores. Useful before editing placeholder URLs already in a codebase.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "An absolute placeholders.dev image URL, e.g. `https://images.placeholders.dev/?width=350&text=Hello`.",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "url"
+        ]
+      }
+    },
+    {
+      "name": "generate_placeholder_image_url",
+      "description": "Build a placeholders.dev image URL from a description of the placeholder wanted, such as \"1200x630 dark social share image saying Hello World\". Returns the URL plus ready-to-paste HTML and Markdown, and shows a preview on the page. Every value is validated the way the image API validates it, so an unusable color or font stack is reported rather than silently ignored.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "width": {
+            "type": "integer",
+            "description": "Image width in pixels. Defaults to 300.",
+            "minimum": 1,
+            "maximum": 10000
+          },
+          "height": {
+            "type": "integer",
+            "description": "Image height in pixels. Defaults to 150.",
+            "minimum": 1,
+            "maximum": 10000
+          },
+          "text": {
+            "type": "string",
+            "description": "Text to draw on the image. Defaults to the image dimensions."
+          },
+          "fontFamily": {
+            "type": "string",
+            "description": "Unquoted CSS font stack, e.g. `Inter, sans-serif`. Defaults to `sans-serif`."
+          },
+          "fontWeight": {
+            "type": "integer",
+            "description": "Numeric font weight between 100 and 900. Keywords like `bold` are not accepted by the image API, use 700 instead. Defaults to bold.",
+            "minimum": 100,
+            "maximum": 900
+          },
+          "fontSize": {
+            "type": "integer",
+            "description": "Font size in pixels. Defaults to 20% of the shortest image dimension.",
+            "minimum": 1,
+            "maximum": 2000
+          },
+          "dy": {
+            "type": "number",
+            "description": "Vertical nudge applied to the text baseline in pixels. Defaults to 35% of the font size."
+          },
+          "bgColor": {
+            "type": "string",
+            "description": "CSS background color, e.g. `#313131` or `rgba(0,0,0,0.5)`. Defaults to `#ddd`."
+          },
+          "textColor": {
+            "type": "string",
+            "description": "CSS text color. Use an rgba or hsla value for transparency. Defaults to `rgba(0,0,0,0.5)`."
+          },
+          "darkBgColor": {
+            "type": "string",
+            "description": "CSS background color used when the viewer prefers a dark color scheme."
+          },
+          "darkTextColor": {
+            "type": "string",
+            "description": "CSS text color used when the viewer prefers a dark color scheme."
+          },
+          "textWrap": {
+            "type": "boolean",
+            "description": "Wrap long text onto multiple lines. Font size is not reduced, so very long strings can still overflow. Defaults to false."
+          }
+        }
+      }
+    }
+  ],
+  "host": "placeholders.dev",
+  "source": "webmcp.com/api/directory.json"
+}

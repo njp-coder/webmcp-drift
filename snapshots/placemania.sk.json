@@ -1,0 +1,351 @@
+{
+  "sponsio": 1,
+  "url": "https://www.placemania.sk/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "site_get_chunk",
+      "description": "Continue reading a long public content item. Returns one bounded plain-text chunk and next_offset for pagination.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Post ID",
+            "description": "WordPress post ID."
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset",
+            "minimum": 0,
+            "default": 0
+          },
+          "limit_chars": {
+            "type": "integer",
+            "title": "Character limit",
+            "minimum": 1,
+            "maximum": 1500,
+            "default": 1500
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "site_get_content",
+      "description": "Read one public content item by ID, slug or canonical URL. Returns bounded text, public metadata, terms, image data and optional schema.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Post ID",
+            "description": "WordPress post ID."
+          },
+          "slug": {
+            "type": "string",
+            "title": "Slug",
+            "description": "Post slug."
+          },
+          "url": {
+            "type": "string",
+            "title": "URL",
+            "description": "Canonical public URL."
+          },
+          "post_type": {
+            "type": "string",
+            "title": "Post type",
+            "description": "Optional post type for slug lookup."
+          },
+          "include_text": {
+            "type": "boolean",
+            "title": "Include text",
+            "default": true
+          },
+          "include_structured_data": {
+            "type": "boolean",
+            "title": "Include structured data",
+            "default": true
+          },
+          "include_taxonomies": {
+            "type": "boolean",
+            "title": "Include taxonomies",
+            "default": true
+          },
+          "include_images": {
+            "type": "boolean",
+            "title": "Include images",
+            "default": true
+          },
+          "text_chars": {
+            "type": "integer",
+            "title": "Text characters",
+            "minimum": 0,
+            "maximum": 1500,
+            "default": 1500
+          }
+        }
+      }
+    },
+    {
+      "name": "site_get_schema",
+      "description": "Fetch normalized JSON-LD or fallback structured data for one public post or taxonomy term.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "ID",
+            "description": "WordPress post or term ID."
+          },
+          "slug": {
+            "type": "string",
+            "title": "Slug",
+            "description": "Post slug."
+          },
+          "url": {
+            "type": "string",
+            "title": "URL",
+            "description": "Canonical public URL."
+          },
+          "post_type": {
+            "type": "string",
+            "title": "Post type",
+            "description": "Optional post type."
+          },
+          "taxonomy": {
+            "type": "string",
+            "title": "Taxonomy",
+            "description": "Taxonomy for term lookup."
+          },
+          "term": {
+            "type": "string",
+            "title": "Term slug",
+            "description": "Term slug."
+          }
+        }
+      }
+    },
+    {
+      "name": "site_get_term",
+      "description": "Read one public taxonomy term by taxonomy and ID or slug. Returns URL, hierarchy, counts, metadata and schema.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "taxonomy": {
+            "type": "string",
+            "title": "Taxonomy",
+            "description": "Public taxonomy name."
+          },
+          "id": {
+            "type": "integer",
+            "title": "Term ID",
+            "description": "Term ID."
+          },
+          "term": {
+            "type": "string",
+            "title": "Term slug",
+            "description": "Term slug."
+          },
+          "slug": {
+            "type": "string",
+            "title": "Term slug",
+            "description": "Term slug."
+          }
+        },
+        "required": [
+          "taxonomy"
+        ]
+      }
+    },
+    {
+      "name": "site_list_terms",
+      "description": "List public taxonomy terms by taxonomy, search, parent or identifiers. Returns URLs, names, counts and public metadata.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "taxonomy": {
+            "type": "string",
+            "title": "Taxonomy",
+            "description": "Public taxonomy name."
+          },
+          "search": {
+            "type": "string",
+            "title": "Term search",
+            "description": "Optional term search."
+          },
+          "parent": {
+            "type": "integer",
+            "title": "Parent term ID",
+            "description": "Optional parent term ID."
+          },
+          "hide_empty": {
+            "type": "boolean",
+            "title": "Hide empty terms",
+            "default": true
+          },
+          "qid": {
+            "type": "string",
+            "title": "Wikidata QID",
+            "description": "Optional Wikidata QID."
+          },
+          "geonames_id": {
+            "type": "string",
+            "title": "GeoNames ID",
+            "description": "Optional GeoNames ID."
+          },
+          "page": {
+            "type": "integer",
+            "title": "Page",
+            "minimum": 1,
+            "default": 1
+          },
+          "per_page": {
+            "type": "integer",
+            "title": "Terms per page",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 25
+          }
+        },
+        "required": [
+          "taxonomy"
+        ]
+      }
+    },
+    {
+      "name": "site_manifest",
+      "description": "Inspect available public content types, taxonomies, read-only tools, discovery URLs and output limits before calling other site tools.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "site_recent",
+      "description": "List public content modified after an ISO date or datetime. Returns URLs, titles, post types and modification dates.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "modified_after": {
+            "type": "string",
+            "title": "Modified after",
+            "description": "ISO date or datetime. Required."
+          },
+          "post_type": {
+            "type": "string",
+            "title": "Post type",
+            "description": "Optional public post type."
+          },
+          "page": {
+            "type": "integer",
+            "title": "Page",
+            "minimum": 1,
+            "default": 1
+          },
+          "per_page": {
+            "type": "integer",
+            "title": "Recent items per page",
+            "minimum": 1,
+            "maximum": 25,
+            "default": 10
+          }
+        },
+        "required": [
+          "modified_after"
+        ]
+      }
+    },
+    {
+      "name": "site_search",
+      "description": "Search public site content by query or filters. Returns public URLs, titles, excerpts, post types, taxonomy terms and identifiers.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string",
+            "title": "Search query",
+            "description": "Search query."
+          },
+          "post_type": {
+            "type": "string",
+            "title": "Post type",
+            "description": "Optional public post type."
+          },
+          "taxonomy": {
+            "type": "string",
+            "title": "Taxonomy",
+            "description": "Optional taxonomy filter."
+          },
+          "term": {
+            "type": "string",
+            "title": "Term slug",
+            "description": "Optional term slug filter."
+          },
+          "qid": {
+            "type": "string",
+            "title": "Wikidata QID",
+            "description": "Optional Wikidata QID."
+          },
+          "geonames_id": {
+            "type": "string",
+            "title": "GeoNames ID",
+            "description": "Optional GeoNames ID."
+          },
+          "google_place_id": {
+            "type": "string",
+            "title": "Google Place ID",
+            "description": "Optional Google Place ID."
+          },
+          "modified_after": {
+            "type": "string",
+            "title": "Modified after",
+            "description": "Optional ISO date or datetime."
+          },
+          "page": {
+            "type": "integer",
+            "title": "Page",
+            "minimum": 1,
+            "default": 1
+          },
+          "per_page": {
+            "type": "integer",
+            "title": "Results per page",
+            "minimum": 1,
+            "maximum": 10,
+            "default": 10
+          }
+        }
+      }
+    },
+    {
+      "name": "site_search_form",
+      "description": "Search public site content and return matching public pages.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "s": {
+            "type": "string",
+            "description": "Zadajte hľadaný výraz a stlačte Enter..."
+          }
+        },
+        "required": [
+          "s"
+        ]
+      }
+    }
+  ],
+  "host": "placemania.sk",
+  "source": "webmcp.com/api/directory.json"
+}

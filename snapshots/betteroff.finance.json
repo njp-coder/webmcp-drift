@@ -1,0 +1,114 @@
+{
+  "sponsio": 1,
+  "url": "https://betteroff.finance/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "get_feature_details",
+      "description": "Use this when an agent needs public details about one BetterOff feature from the allow-listed corpus. Do not use it for authenticated product state.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "feature": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          }
+        },
+        "required": [
+          "feature"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_pricing",
+      "description": "Use this when an agent needs BetterOff's canonical public pricing facts and assumptions. Do not use it for customer billing or account data.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_public_calculator_contract",
+      "description": "Use this before running a calculator to retrieve its exact bounded input schema, output schema, methodology, assumptions, and canonical source.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "calculator": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          }
+        },
+        "required": [
+          "calculator"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_public_calculators",
+      "description": "Use this to discover BetterOff's free public calculators before choosing one. Results contain canonical URLs and never access customer data.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "enum": [
+              "personal-finance",
+              "investing",
+              "crypto",
+              "real-estate",
+              "business",
+              "utility"
+            ]
+          },
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "limit": {
+            "default": 15,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 25
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_public_docs",
+      "description": "Use this when an agent needs to search BetterOff public product, pricing, trust, or calculator documents. Do not use it for customer, household, account, or personalized financial data.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "betteroff.finance",
+  "source": "webmcp.com/api/directory.json"
+}

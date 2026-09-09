@@ -1,0 +1,67 @@
+{
+  "sponsio": 1,
+  "url": "https://webmcp.flightsweeper.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "read_flight_mission",
+      "description": "Read the active flight mission, its exact purchasing limits, current state, and safe booking status.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "revoke_purchase_authority",
+      "description": "Revoke the active mission authority so future purchase attempts are denied.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_flights",
+      "description": "Search the challenge flight inventory using the active mission. The caller cannot expand the stored route or spending authority.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "tighten_flight_mission",
+      "description": "Make the active mission safer or narrower. The agent may lower the price cap, require an earlier arrival, reduce connections, or require refundability, but can never expand its authority.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "maxTotalCents": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 500000
+          },
+          "maxStops": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2
+          },
+          "arriveBefore": {
+            "type": "string",
+            "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$"
+          },
+          "refundableOnly": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "webmcp.flightsweeper.com",
+  "source": "webmcp.com/api/directory.json"
+}

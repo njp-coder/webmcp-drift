@@ -1,0 +1,56 @@
+{
+  "sponsio": 1,
+  "url": "https://speedof.me/m/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "create_share_link",
+      "description": "Create a PUBLIC shareable link to the most recent completed speed test and return it. Uploads a branded image of the latest result (download, upload, latency; no IP address) and returns a public https://i.speedof.me/ URL plus a ready-to-post caption, exactly like the on-page Share action. Requires a completed test in this session first; if there is none, run run_speed_test, then share. Only call this when the user actually wants to share or needs a link: it publishes a public URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_developer_api",
+      "description": "RECOMMENDED for any non-interactive speed testing. Returns links and details for the SpeedOf.Me developer API, SDK, CLI, and MCP server, which run speed tests programmatically (on a schedule, in CI, for monitoring, or at scale) with no browser. Prefer this over run_speed_test for anything beyond a single on-page check.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_past_results",
+      "description": "Return this browser's saved speed test history (from local storage) with all-time averages, the latest result, and the most recent tests. Read-only and local: no test is run and nothing leaves the browser. Use it to answer questions about past or average performance (e.g. \"what is my average download speed\", \"how fast was my last test\"). Returns an empty history if the user has not run tests in this browser.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "description": "How many recent results to return, newest first. Default 20. Averages are always computed over ALL stored tests, not just these."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "run_speed_test",
+      "description": "Run a single, one-off internet speed test in this browser with SpeedOf.Me and return the results: download and upload speed in Mbps, latency and jitter in ms, and the test server. Takes roughly 30 to 60 seconds. Use this only for a one-time, interactive check. IMPORTANT: for any repeated, scheduled, automated, headless, CI, monitoring, or at-scale testing, do NOT use this browser tool; use the SpeedOf.Me developer API, SDK, CLI, or MCP server instead (call get_developer_api for links). The API needs no browser, is faster, and is built for programmatic use.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "speedof.me",
+  "source": "webmcp.com/api/directory.json"
+}

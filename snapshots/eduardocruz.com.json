@@ -1,0 +1,128 @@
+{
+  "sponsio": 1,
+  "url": "https://eduardocruz.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "compare_packages",
+      "description": "Put two weekly packages side by side: marks both on the page for the person and returns what actually separates them, so the size can be argued about with numbers rather than impressions. Commits to nothing and sends nothing. Returns JSON {packages: [a, b], difference: {hours_per_week, weekly_cost, monthly_estimate, currency}}, where each difference is b minus a. Two equal or unknown values come back as an error.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "package_a": {
+            "type": "integer",
+            "enum": [
+              5,
+              10,
+              20
+            ],
+            "description": "Hours per week of the first package."
+          },
+          "package_b": {
+            "type": "integer",
+            "enum": [
+              5,
+              10,
+              20
+            ],
+            "description": "Hours per week of the second, to compare against the first."
+          }
+        },
+        "required": [
+          "package_a",
+          "package_b"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_engagement_packages",
+      "description": "List the weekly engagement packages available with Eduardo Cruz: hours per week, the hourly rate, the weekly cost, a four-week estimate, and what each size is a good fit for. Availability changes, so read this rather than quoting a remembered number. Read-only: it changes nothing on screen — call simulate_package to select one. Returns JSON {currency, billing, packages: [{hours_per_week, rate: {amount, currency, unit}, weekly_cost: {amount, currency}, monthly_estimate: {amount, currency, note}, good_fit_for}]}.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "prepare_inquiry",
+      "description": "Fill the inquiry form on this page with the person's name, email and what they want to build, so they can read it before sending. This does NOT send anything — call send_inquiry only after they have seen the filled form and agreed to it. Returns JSON {filled, sent: false, ready_to_send, problems: [...], next_step}; a call that leaves the form unsendable comes back as an error carrying the same fields.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120,
+            "description": "The person's name."
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 180,
+            "description": "Their reply address."
+          },
+          "problem": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 5000,
+            "description": "What they are trying to ship, in their own words."
+          },
+          "hours_per_week": {
+            "type": "integer",
+            "enum": [
+              5,
+              10,
+              20
+            ],
+            "description": "Optional: the package they are considering."
+          }
+        },
+        "required": [
+          "name",
+          "email",
+          "problem"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "send_inquiry",
+      "description": "Send the inquiry currently shown in the form on this page to Eduardo Cruz. SIDE EFFECT: this transmits the name, email and message off this page. It stores them and emails Eduardo immediately, and it cannot be undone from this page. Only call it after the person has read the filled form and explicitly asked for it to be sent. Call prepare_inquiry first — this tool sends exactly what is on screen and nothing else. Returns JSON {sent: true, ref, reply_from} on success; a refusal or failure comes back as an error with {sent: false, ...}.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "simulate_package",
+      "description": "Select one of the weekly packages so the person sees it highlighted on the page, with its weekly and monthly cost. Use this to compare options with them. Changes only what is displayed; it commits to nothing and sends nothing — call prepare_inquiry to compose a message. Returns JSON {selected: true, package: {...}}; an unknown value comes back as an error with {selected: false, error, available}.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "hours_per_week": {
+            "type": "integer",
+            "enum": [
+              5,
+              10,
+              20
+            ],
+            "description": "Hours per week of the package to select."
+          }
+        },
+        "required": [
+          "hours_per_week"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "eduardocruz.com",
+  "source": "webmcp.com/api/directory.json"
+}

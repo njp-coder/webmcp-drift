@@ -1,0 +1,188 @@
+{
+  "sponsio": 1,
+  "url": "https://sbox.watch/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "get_activity_history",
+      "description": "Read bounded player history for all public games, all dedicated servers, or one game.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "kind": {
+            "default": "game",
+            "type": "string",
+            "enum": [
+              "game",
+              "server"
+            ]
+          },
+          "game": {
+            "type": "string",
+            "pattern": "^[a-z0-9_-]+\\.[a-z0-9_-]+$"
+          },
+          "range": {
+            "default": "24h",
+            "type": "string",
+            "enum": [
+              "24h",
+              "7d",
+              "30d",
+              "1y",
+              "all"
+            ]
+          },
+          "maxPoints": {
+            "default": 100,
+            "type": "integer",
+            "minimum": 10,
+            "maximum": 200
+          }
+        }
+      }
+    },
+    {
+      "name": "get_ecosystem_snapshot",
+      "description": "Read current package, player, and dedicated-server totals from s&box watch.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_package",
+      "description": "Read compact details, recent publisher updates, and live-server links for one public s&box package.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "kind": {
+            "default": "game",
+            "type": "string",
+            "enum": [
+              "game",
+              "library",
+              "map"
+            ]
+          },
+          "ident": {
+            "type": "string",
+            "pattern": "^[a-z0-9_-]+\\.[a-z0-9_-]+$"
+          }
+        },
+        "required": [
+          "ident"
+        ]
+      }
+    },
+    {
+      "name": "get_server",
+      "description": "Read the current state and related servers for one s&box dedicated-server ID.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9:._-]{1,128}$"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "search_packages",
+      "description": "Find public s&box games, maps, or libraries with live rankings and canonical source URLs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "kind": {
+            "default": "game",
+            "type": "string",
+            "enum": [
+              "game",
+              "library",
+              "map"
+            ]
+          },
+          "query": {
+            "default": "",
+            "type": "string",
+            "maxLength": 160
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "players",
+              "change24h",
+              "created",
+              "updated",
+              "favorites",
+              "upvotes",
+              "score",
+              "servers"
+            ]
+          },
+          "limit": {
+            "default": 10,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 25
+          }
+        }
+      }
+    },
+    {
+      "name": "search_servers",
+      "description": "Find dedicated s&box servers by name, game, or map with current occupancy and source URLs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "query": {
+            "default": "",
+            "type": "string",
+            "maxLength": 160
+          },
+          "game": {
+            "type": "string",
+            "pattern": "^[a-z0-9_-]+\\.[a-z0-9_-]+$"
+          },
+          "map": {
+            "type": "string",
+            "pattern": "^[a-z0-9_-]+\\.[a-z0-9_-]+$"
+          },
+          "sort": {
+            "default": "players",
+            "type": "string",
+            "enum": [
+              "players",
+              "capacity",
+              "server",
+              "game"
+            ]
+          },
+          "limit": {
+            "default": 10,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 25
+          }
+        }
+      }
+    }
+  ],
+  "host": "sbox.watch",
+  "source": "webmcp.com/api/directory.json"
+}

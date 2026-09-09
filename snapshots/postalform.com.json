@@ -1,0 +1,215 @@
+{
+  "sponsio": 1,
+  "url": "https://postalform.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "postalform.get_workflow_state",
+      "description": "Return the current PostalForm home workflow state, including step, addresses, delivery settings, and submit readiness.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    },
+    {
+      "name": "postalform.go_to_step",
+      "description": "Jump to a specific workflow step by index (0-6) or step id (upload, recipient_address, recipient_name, sender_name, sender_address, review, submission).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "step": {
+            "description": "Step index or id.",
+            "oneOf": [
+              {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 6
+              },
+              {
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "required": [
+          "step"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "postalform.set_delivery_options",
+      "description": "Update delivery and print options on review: color, double-sided, mail class, certified, and certified electronic return receipt.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "color": {
+            "type": "boolean"
+          },
+          "double_sided": {
+            "type": "boolean"
+          },
+          "mail_class": {
+            "type": "string",
+            "enum": [
+              "standard",
+              "express",
+              "priority"
+            ]
+          },
+          "certified": {
+            "type": "boolean"
+          },
+          "certified_return_receipt": {
+            "type": "boolean"
+          },
+          "signature_required": {
+            "type": "boolean"
+          },
+          "go_to_review": {
+            "type": "boolean",
+            "description": "When true (default), move to review step if the workflow has required sender/recipient details."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "postalform.set_pdf_from_data_url",
+      "description": "Set the workflow PDF using a data:application/pdf;base64 URL, then optionally advance to the recipient-address step.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "data_url": {
+            "type": "string",
+            "description": "A data URL formatted as data:application/pdf;base64,..."
+          },
+          "file_name": {
+            "type": "string",
+            "description": "Optional PDF file name. Defaults to uploaded-document.pdf."
+          },
+          "advance_to_recipient_step": {
+            "type": "boolean",
+            "description": "When true (default), move the workflow to step 1."
+          }
+        },
+        "required": [
+          "data_url"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "postalform.set_recipient_details",
+      "description": "Update recipient name and/or recipient address in the home workflow. Can optionally advance to the next relevant step.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Recipient full name (minimum 3 characters)."
+          },
+          "address": {
+            "type": "object",
+            "description": "Recipient address object with text, optional description, optional id, and optional type.",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "Address",
+                  "Container",
+                  "Manual"
+                ]
+              },
+              "text": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "text"
+            ]
+          },
+          "advance_to_next_step": {
+            "type": "boolean",
+            "description": "When true (default), move to the next workflow step after updates."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "postalform.set_sender_details",
+      "description": "Update sender name and/or sender address in the home workflow. Can optionally advance to the next relevant step.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Sender full name (minimum 3 characters)."
+          },
+          "address": {
+            "type": "object",
+            "description": "Sender address object with text, optional description, optional id, and optional type.",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "Address",
+                  "Container",
+                  "Manual"
+                ]
+              },
+              "text": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "text"
+            ]
+          },
+          "advance_to_next_step": {
+            "type": "boolean",
+            "description": "When true (default), move to the next workflow step after updates."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "postalform.submit_order",
+      "description": "Submit the current order draft for checkout using the same validation and confirmation behavior as the review button.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "request_confirmation": {
+            "type": "boolean",
+            "description": "When true (default), require visible user confirmation before submission."
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "postalform.com",
+  "source": "webmcp.com/api/directory.json"
+}

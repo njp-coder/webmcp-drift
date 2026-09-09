@@ -1,0 +1,41 @@
+{
+  "sponsio": 1,
+  "url": "https://webmcp-blackjack.heejae.dev/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "get_game_state",
+      "description": "Returns the current blackjack table status: game phase, whose turn it is, round number, your chips and bet, whether the game is waiting for you, and a hint about what to do next. Call this anytime to orient yourself.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "start_game",
+      "description": "Start a new blackjack round. Moves the table to the betting phase, where the place_bet tool becomes available. You MUST call this tool to actually start — just saying \"start\" does nothing.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "wait_for_phase_change",
+      "description": "Long-poll: resolves once the game reaches a different stable phase (transient dealing/settling states are skipped), or when timeout_ms elapses. Returns the get_game_state payload plus a changed flag. Call repeatedly while Alex or the dealer play; when the result has waiting_for_you true, act instead of waiting again.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "timeout_ms": {
+            "type": "number",
+            "description": "Maximum wait in milliseconds, clamped to 1000-60000. Default 15000, kept below typical agent-bridge evaluation limits (~20-30s) so this tool answers before your host cuts the call — on changed: false simply call again."
+          }
+        }
+      }
+    }
+  ],
+  "host": "webmcp-blackjack.heejae.dev",
+  "source": "webmcp.com/api/directory.json"
+}

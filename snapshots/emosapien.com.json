@@ -1,0 +1,154 @@
+{
+  "sponsio": 1,
+  "url": "https://emosapien.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "compare_to",
+      "description": "Compare Emosapien against a named competing product for therapists (Upheal, Mentalyc, Blueprint, Heidi) capability by capability, with each capability rated full, partial, or not available for both products. Use this to answer \"how does Emosapien compare to X?\" or \"what does Emosapien do that X does not?\".",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "vendor": {
+            "type": "string",
+            "description": "Competitor slug. Supported: upheal, mentalyc, blueprint, heidi."
+          }
+        },
+        "required": [
+          "vendor"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "estimate_roi",
+      "description": "Estimate the time and money a therapy practice could recover by cutting clinical documentation time — hours saved per week and per year, gross and net annual value, and the payback window against tool cost. All inputs are optional and fall back to typical values. Use this for \"how much would this save me?\" questions.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sessions": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Completed client sessions per week (default 20)."
+          },
+          "weeks": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Weeks worked per year (default 48)."
+          },
+          "noteMinutesNow": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Minutes spent writing each note today (default 25)."
+          },
+          "noteMinutesAfter": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Expected minutes per note with an AI scribe (default 8)."
+          },
+          "adminHoursNow": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Other admin hours per week today (default 5)."
+          },
+          "adminHoursAfter": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Expected other admin hours per week after (default 2)."
+          },
+          "hourlyRate": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Effective hourly rate in USD (default 75)."
+          },
+          "toolCostMonthly": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Monthly tool cost in USD (default 79)."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_pricing",
+      "description": "Get current Emosapien subscription pricing for therapists and group practices: plan names, monthly and annual prices, included sessions, monthly Emo Credits, features, and credit top-up pack prices. Use this to answer any question about what Emosapien costs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tier": {
+            "type": "string",
+            "enum": [
+              "free",
+              "solo",
+              "practice",
+              "all"
+            ],
+            "description": "Which plans to return. \"solo\" is individual practitioners, \"practice\" is group practices, \"all\" (the default) returns everything."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_resources",
+      "description": "Search Emosapien's library of articles and clinical guides for therapists — progress notes (SOAP, DAP, BIRP, GIRP), treatment planning, HIPAA and compliance, CPT and ICD-10 coding, group therapy, and private-practice operations. Returns titles, summaries, and URLs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Free-text search terms."
+          },
+          "collection": {
+            "type": "string",
+            "enum": [
+              "blog",
+              "resources",
+              "all"
+            ],
+            "description": "Restrict to blog posts or resource guides. Defaults to all."
+          },
+          "limit": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 25,
+            "description": "Maximum results to return (default 10, max 25)."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "subscribe_to_newsletter",
+      "description": "Subscribe an email address to the Emosapien therapist newsletter. Requires the user's explicit confirmation in the browser before anything is sent. Only use this when the user has asked to subscribe and has given their own email address.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "The user's own email address."
+          },
+          "name": {
+            "type": "string",
+            "description": "Optional first name for the greeting."
+          }
+        },
+        "required": [
+          "email"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "emosapien.com",
+  "source": "webmcp.com/api/directory.json"
+}

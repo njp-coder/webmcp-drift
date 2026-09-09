@@ -1,0 +1,156 @@
+{
+  "sponsio": 1,
+  "url": "https://store.nekuda.ai",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "add_to_cart",
+      "description": "Add a specified product and selected variant options (size, color, quantity) to the user's active shopping cart in local storage.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "required": [
+          "product_id"
+        ],
+        "properties": {
+          "size": {
+            "type": "string",
+            "description": "Selected size option if applicable (e.g. 'One Size', 'M', 'L')"
+          },
+          "color": {
+            "type": "string",
+            "description": "Selected color option if applicable (e.g. 'Black', 'Bone', 'Moss')"
+          },
+          "quantity": {
+            "type": "integer",
+            "default": 1,
+            "description": "Quantity to add (positive integer, default 1)"
+          },
+          "product_id": {
+            "type": "string",
+            "description": "The ID of the product to add (e.g. 'space-explorer', 'origin-tote')"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_cart",
+      "description": "Inspect all line items currently in the shopping cart, including selected options, unit prices, total item count, and formatted subtotal.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_product",
+      "description": "Retrieve comprehensive product details by product ID or URL, including title, price, descriptions, materials, specifications, variant options, stock count, rating, and gallery images.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Product identifier (e.g. 'space-explorer', 'origin-tote', 'dot-grid-notebook')"
+          },
+          "url": {
+            "type": "string",
+            "description": "Full product URL (e.g. 'https://store.nekuda.ai/product.html?id=space-explorer')"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_categories",
+      "description": "List all product departments and categories in the nekuda store with catalog counts and descriptions.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_products",
+      "description": "Discover and search products in the nekuda store with optional keyword search, category filter, tag filter, sort ordering, stock filter, and pagination.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "properties": {
+          "tag": {
+            "type": "string",
+            "description": "Filter by specific product tag"
+          },
+          "sort": {
+            "enum": [
+              "price_asc",
+              "price_desc",
+              "rating",
+              "newest",
+              "reviews"
+            ],
+            "type": "string",
+            "description": "Sort order for returned products"
+          },
+          "limit": {
+            "type": "integer",
+            "default": 20,
+            "description": "Maximum number of products to return (default 20)"
+          },
+          "query": {
+            "type": "string",
+            "description": "Keyword search for product title, description, or tags"
+          },
+          "offset": {
+            "type": "integer",
+            "default": 0,
+            "description": "Pagination offset (default 0)"
+          },
+          "category": {
+            "type": "string",
+            "description": "Filter by category name or slug (e.g. 'hats', 'apparel', 'drinkware', 'desk-office', 'tech', 'bags', 'limited')"
+          },
+          "in_stock_only": {
+            "type": "boolean",
+            "description": "When true, returns only items currently in stock"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_stores",
+      "description": "List physical nekuda store flagships and pickup point locations with addresses, opening hours, and available services.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "properties": {
+          "city": {
+            "type": "string",
+            "description": "Filter by city name (e.g. 'Tel Aviv', 'New York', 'London')"
+          },
+          "type": {
+            "enum": [
+              "flagship",
+              "pickup-point"
+            ],
+            "type": "string",
+            "description": "Filter by location type: 'flagship' or 'pickup-point'"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "store.nekuda.ai",
+  "source": "webmcp.com/api/directory.json"
+}

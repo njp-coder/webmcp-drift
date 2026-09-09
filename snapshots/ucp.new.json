@@ -1,0 +1,242 @@
+{
+  "sponsio": 1,
+  "url": "https://ucp.new/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "add_to_cart",
+      "description": "Add an exact visible catalog variant to its merchant cart. First call get_search_results with product_id and copy the product_id and variant_id exactly; never guess a size, option, seller, or unavailable variant. This adds to an existing line when present and schedules merchant Cart MCP sync, but does not begin checkout.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2048,
+            "description": "Exact product id from get_search_results in the active session."
+          },
+          "variant_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2048,
+            "description": "Exact available variant id returned for that product by get_search_results with product_id."
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 999,
+            "default": 1,
+            "description": "Number of units to add to this exact line; defaults to 1."
+          }
+        },
+        "required": [
+          "product_id",
+          "variant_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "create_permalink",
+      "description": "Construct and validate a UCP shopping permalink from a merchant-advertised HTTPS permalink endpoint and exact item identifiers. Use the endpoint from the merchant's dev.ucp.shopping.permalink capability; never invent or substitute a storefront URL. Include optional context only when the user requested it. This returns a link but does not open it, update a cart, or begin checkout.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "endpoint": {
+            "type": "string",
+            "maxLength": 2048,
+            "description": "Exact HTTPS endpoint advertised in dev.ucp.shopping.permalink; no trailing slash, query, or fragment."
+          },
+          "items": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 50,
+            "description": "Exact merchant item or variant identifiers and positive quantities.",
+            "items": {
+              "type": "object",
+              "description": "One exact merchant item and the quantity to initialize.",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048,
+                  "description": "Exact item identifier."
+                },
+                "quantity": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 999,
+                  "description": "Number of this exact item to initialize, from 1 to 999."
+                }
+              },
+              "required": [
+                "id",
+                "quantity"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "continue_to": {
+            "type": "string",
+            "maxLength": 2048,
+            "description": "Optional safe same-origin path beginning with one slash, such as /collections/sale."
+          },
+          "discount_codes": {
+            "type": "array",
+            "maxItems": 20,
+            "description": "Optional discount codes explicitly requested by the user, in application order.",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "description": "One exact merchant discount code."
+            }
+          },
+          "country": {
+            "type": "string",
+            "pattern": "^[A-Za-z]{2}$",
+            "description": "Optional ISO 3166-1 alpha-2 country code."
+          },
+          "postal_code": {
+            "type": "string",
+            "maxLength": 32,
+            "description": "Optional buyer postal code used to initialize merchant context."
+          },
+          "language": {
+            "type": "string",
+            "maxLength": 35,
+            "description": "Optional BCP 47 language tag."
+          },
+          "attribution_ref": {
+            "type": "string",
+            "maxLength": 256,
+            "description": "Optional non-sensitive attribution reference explicitly supplied by the user."
+          },
+          "utm_source": {
+            "type": "string",
+            "maxLength": 256,
+            "description": "Optional UTM source explicitly supplied by the user."
+          }
+        },
+        "required": [
+          "endpoint",
+          "items"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_cart",
+      "description": "Read the shopper's current UCP Playground carts, grouped by merchant because each merchant owns a separate cart and checkout. Returns visible line items, quantities, cached prices, merchant totals, and sync state. It does not refresh stale details, change quantities, clear a cart, or begin checkout.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_search_results",
+      "description": "Read products already loaded in the active UCP Playground session. Use after search_catalog or when the user refers to a visible product. Pass product_id to return that product's exact variant ids, options, availability, price, and merchant before add_to_cart. This does not perform a network request or reveal hidden catalog data.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "turn_id": {
+            "type": "string",
+            "maxLength": 160,
+            "description": "Optional turn id returned by search_catalog or get_site_state."
+          },
+          "product_id": {
+            "type": "string",
+            "maxLength": 2048,
+            "description": "Optional exact visible product id; when present, returns that product and up to 50 exact variants for add_to_cart."
+          },
+          "max_results": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 10,
+            "description": "Maximum number of currently loaded products to return."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_site_state",
+      "description": "Read the current UCP Playground page, active session, session history, and high-level search/cart counts. Call this first when you need to orient yourself or obtain a session_id. It does not return product results or cart lines; use get_search_results or get_cart for those.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "navigate",
+      "description": "Navigate the visible UCP Playground page. Use destination=session only with a session_id returned by get_site_state, and destination=product only with a product_id returned by get_search_results. Other destinations need no id. This changes only the visible page; it does not search, change carts, or begin checkout.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "destination": {
+            "type": "string",
+            "enum": [
+              "home",
+              "session",
+              "product",
+              "cart",
+              "tools",
+              "profile_validator",
+              "permalink_generator",
+              "profile_comparison",
+              "webmcp_inspector",
+              "settings",
+              "protocol_inspector"
+            ],
+            "description": "The UCP Playground surface to open."
+          },
+          "session_id": {
+            "type": "string",
+            "maxLength": 160,
+            "description": "Required only when destination is session; copy it exactly from get_site_state."
+          },
+          "product_id": {
+            "type": "string",
+            "maxLength": 2048,
+            "description": "Required only when destination is product; copy it exactly from get_search_results."
+          }
+        },
+        "required": [
+          "destination"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_catalog",
+      "description": "Start a text search in the Global Catalog using the UCP Playground's current filters, buyer context, language, currency, and page-size settings. Use for a shopper's product query, not for a known product id. Results arrive asynchronously: after calling, wait for completion and call get_search_results. This opens the active session and does not add anything to the cart.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500,
+            "description": "Natural-language product search, for example 'waterproof trail shoes under $150'."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "ucp.new",
+  "source": "webmcp.com/api/directory.json"
+}

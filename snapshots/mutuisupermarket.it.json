@@ -1,0 +1,284 @@
+{
+  "sponsio": 1,
+  "url": "https://mutuisupermarket.it/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "apri_scheda_mutuo",
+      "description": "Apre la scheda di dettaglio di un mutuo dai risultati dell'ultima ricerca. Indica il CodiceMutuo oppure il nome della banca (es. 'Intesa'); almeno uno dei due e` obbligatorio.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "codiceMutuo": {
+            "type": "string",
+            "description": "CodiceMutuo restituito da una ricerca."
+          },
+          "banca": {
+            "type": "string",
+            "description": "Nome (anche parziale) della banca o del prodotto."
+          }
+        }
+      }
+    },
+    {
+      "name": "apri_verifica_fattibilita",
+      "description": "Avvia la verifica di fattibilita` per un mutuo dai risultati dell'ultima ricerca. Indica il CodiceMutuo oppure il nome della banca; almeno uno dei due e` obbligatorio.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "codiceMutuo": {
+            "type": "string",
+            "description": "CodiceMutuo restituito da una ricerca."
+          },
+          "banca": {
+            "type": "string",
+            "description": "Nome (anche parziale) della banca o del prodotto."
+          }
+        }
+      }
+    },
+    {
+      "name": "cerca_mutuo_avanzato",
+      "description": "Cerca mutui sul sito con tutti i parametri disponibili, inclusi provincia, eta`, reddito e classe energetica. Funziona da qualsiasi pagina.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "finalita": {
+            "type": "string",
+            "enum": [
+              "APC",
+              "ASC",
+              "AST",
+              "SUR",
+              "SL",
+              "SOSLIQ",
+              "RIS",
+              "LIQ",
+              "CD",
+              "COMPL",
+              "AL"
+            ],
+            "description": "Finalita` del mutuo. Valori ammessi: APC = Acquisto prima casa; ASC = Acquisto seconda casa; AST = Acquisto in Asta; SUR = Surroga; SL = Surroga + Liquidità; SOSLIQ = Sostituzione + Liquidità; RIS = Ristrutturazione casa; LIQ = Liquidità; CD = Consolidamento debiti; COMPL = Costruzione; AL = Acquisto + Liquidità."
+          },
+          "importoMutuo": {
+            "type": "number",
+            "minimum": 50000,
+            "maximum": 50000000,
+            "description": "Importo del mutuo richiesto in euro."
+          },
+          "valoreImmobile": {
+            "type": "number",
+            "minimum": 50000,
+            "maximum": 50000000,
+            "description": "Valore dell'immobile in euro."
+          },
+          "durata": {
+            "type": "number",
+            "minimum": 5,
+            "maximum": 40,
+            "description": "Durata del mutuo in anni."
+          },
+          "tipoTasso": {
+            "type": "string",
+            "enum": [
+              "F",
+              "V",
+              "VRC",
+              "VC",
+              "M",
+              "OV"
+            ],
+            "description": "Tipo di tasso del mutuo. Valori ammessi: F = Fisso; V = Variabile; VRC = Variab. rata costante; VC = Variabile con cap; M = Misto; OV = Variabile offset."
+          },
+          "provinciaImmobile": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 2,
+            "description": "Sigla provincia dell'immobile (2 lettere, es. MI)."
+          },
+          "etaRichiedente": {
+            "type": "number",
+            "minimum": 18,
+            "maximum": 70,
+            "description": "Eta` del richiedente."
+          },
+          "redditoMensile": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1000000,
+            "description": "Reddito mensile netto in euro."
+          },
+          "classeEnergetica": {
+            "type": "string",
+            "enum": [
+              "A",
+              "B",
+              "C",
+              "D",
+              "E",
+              "F",
+              ""
+            ],
+            "description": "Classe energetica dell'immobile. Valori ammessi: A = A; B = B; C = C; D = D; E = E; F = F o inferiore; (vuoto) = Non lo so."
+          }
+        }
+      }
+    },
+    {
+      "name": "cerca_mutuo_rapido",
+      "description": "Cerca mutui sul sito con i parametri principali (finalita`, importo, valore immobile, durata, tipo tasso). I campi mancanti usano i valori di default. Funziona da qualsiasi pagina.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "finalita": {
+            "type": "string",
+            "enum": [
+              "APC",
+              "ASC",
+              "AST",
+              "SUR",
+              "SL",
+              "SOSLIQ",
+              "RIS",
+              "LIQ",
+              "CD",
+              "COMPL",
+              "AL"
+            ],
+            "description": "Finalita` del mutuo. Valori ammessi: APC = Acquisto prima casa; ASC = Acquisto seconda casa; AST = Acquisto in Asta; SUR = Surroga; SL = Surroga + Liquidità; SOSLIQ = Sostituzione + Liquidità; RIS = Ristrutturazione casa; LIQ = Liquidità; CD = Consolidamento debiti; COMPL = Costruzione; AL = Acquisto + Liquidità."
+          },
+          "importoMutuo": {
+            "type": "number",
+            "minimum": 50000,
+            "maximum": 50000000,
+            "description": "Importo del mutuo richiesto in euro."
+          },
+          "valoreImmobile": {
+            "type": "number",
+            "minimum": 50000,
+            "maximum": 50000000,
+            "description": "Valore dell'immobile in euro."
+          },
+          "durata": {
+            "type": "number",
+            "minimum": 5,
+            "maximum": 40,
+            "description": "Durata del mutuo in anni."
+          },
+          "tipoTasso": {
+            "type": "string",
+            "enum": [
+              "F",
+              "V",
+              "VRC",
+              "VC",
+              "M",
+              "OV"
+            ],
+            "description": "Tipo di tasso del mutuo. Valori ammessi: F = Fisso; V = Variabile; VRC = Variab. rata costante; VC = Variabile con cap; M = Misto; OV = Variabile offset."
+          }
+        }
+      }
+    },
+    {
+      "name": "cerca_news",
+      "description": "Cerca tra le news del sito (articoli del blog e rassegna stampa) per parola chiave e/o tag. Puo` anche aprire il primo articolo o la pagina-archivio del tag. I tag valgono solo per gli articoli del blog (usa prima lista_tag_news).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Parola chiave su titolo/estratto."
+          },
+          "tag": {
+            "type": "string",
+            "description": "Nome o slug di un tag (solo blog). Vedi lista_tag_news."
+          },
+          "tipo": {
+            "type": "string",
+            "enum": [
+              "tutti",
+              "blog",
+              "rassegna"
+            ],
+            "description": "Tipo di contenuto da cercare. Default: tutti."
+          },
+          "limite": {
+            "type": "number",
+            "description": "Numero massimo di risultati (1-20). Default 5."
+          },
+          "naviga": {
+            "type": "string",
+            "enum": [
+              "articolo",
+              "tag"
+            ],
+            "description": "Se 'articolo' apre il primo risultato; se 'tag' apre la pagina-archivio del tag."
+          }
+        }
+      }
+    },
+    {
+      "name": "lista_tag_news",
+      "description": "Elenca i tag disponibili per le news del blog (con conteggio articoli e URL della pagina-archivio). Usalo per scoprire i tag validi prima di chiamare cerca_news.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "filtro": {
+            "type": "string",
+            "description": "Sottostringa opzionale per filtrare i nomi dei tag."
+          }
+        }
+      }
+    },
+    {
+      "name": "richiedi_consulenza_gratuita",
+      "description": "Invia una richiesta di consulenza gratuita per un mutuo. Chiedi sempre all'utente il consenso esplicito al trattamento dei dati personali prima di chiamare questo tool. Funziona da qualsiasi pagina del sito.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "nome": {
+            "type": "string",
+            "description": "Nome del richiedente."
+          },
+          "cognome": {
+            "type": "string",
+            "description": "Cognome del richiedente."
+          },
+          "telefono": {
+            "type": "string",
+            "description": "Numero di telefono (es. 3401234567 o +393401234567)."
+          },
+          "email": {
+            "type": "string",
+            "description": "Indirizzo e-mail."
+          },
+          "note": {
+            "type": "string",
+            "description": "Note o messaggio aggiuntivo (facoltativo)."
+          },
+          "privacyAccettata": {
+            "type": "boolean",
+            "description": "Deve essere true solo se l'utente ha esplicitamente dichiarato di accettare il trattamento dei propri dati personali. Non impostare a true senza aver ricevuto conferma verbale dall'utente."
+          }
+        },
+        "required": [
+          "nome",
+          "cognome",
+          "telefono",
+          "email",
+          "privacyAccettata"
+        ]
+      }
+    }
+  ],
+  "host": "mutuisupermarket.it",
+  "source": "webmcp.com/api/directory.json"
+}

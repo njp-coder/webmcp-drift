@@ -1,0 +1,119 @@
+{
+  "sponsio": 1,
+  "url": "https://www.aupfinanzservice.eu/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "aup_denkmal_cashflow_berechnen",
+      "description": "Denkmal-/AfA-Cashflow-Rechner: Steuerersparnis Jahr 1 und ueber die AfA-Laufzeit, Bruttomietrendite sowie monatlicher Cashflow vor und nach Steuer und Eigenkapitalrendite fuer eine finanzierte Kapitalanlage. Modellrechnung ohne Gewaehr.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "kaufpreis": {
+            "type": "number",
+            "minimum": 50000,
+            "description": "Kaufpreis der Immobilie in Euro"
+          },
+          "sanierungsanteil_pct": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100,
+            "description": "Sanierungs- bzw. Gebaeudeanteil in Prozent"
+          },
+          "steuersatz": {
+            "type": "string",
+            "enum": [
+              "0.32",
+              "0.37",
+              "0.42",
+              "0.45"
+            ],
+            "description": "Persoenlicher Grenzsteuersatz als Dezimalwert"
+          },
+          "modell": {
+            "type": "string",
+            "enum": [
+              "denkmal",
+              "qng",
+              "bestand"
+            ],
+            "description": "AfA-Modell: denkmal (§7i), qng (§7b+§7 Abs. 5a), bestand (§7b)"
+          },
+          "kaltmiete_monat": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Monatliche Kaltmiete in Euro"
+          },
+          "eigenkapital": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Eingesetztes Eigenkapital in Euro"
+          },
+          "bewirtschaftung_monat": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Nicht umlagefaehige Bewirtschaftung pro Monat in Euro"
+          },
+          "rate_monat": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Monatliche Finanzierungsrate (Zins und Tilgung) in Euro"
+          }
+        },
+        "required": [
+          "kaufpreis"
+        ]
+      }
+    },
+    {
+      "name": "aup_unterlagen_anfordern",
+      "description": "SCHREIBEND, mit Seiteneffekt: Fordert die AUP-Unterlagen (Musterberechnung, Excel-Investitionsrechner, Werbungskosten-Checkliste, Abschreibungs-Hinweise) an und VERSENDET sie per E-Mail an die angegebene Adresse; zugleich geht eine Lead-Benachrichtigung an AUP. Erfordert eine gueltige E-Mail-Adresse und die ausdrueckliche Zustimmung zum Datenschutzhinweis (consent = true). Nur mit Einverstaendnis der Person ausloesen.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "maxLength": 120,
+            "description": "E-Mail-Adresse, an die die Unterlagen gesendet werden"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 80,
+            "description": "Name der Person (optional)"
+          },
+          "docs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "musterberechnung",
+                "aerzte-kapitalanlage",
+                "investitionsrechner",
+                "checkliste-werbungskosten",
+                "hinweise-abschreibung"
+              ]
+            },
+            "description": "Welche Unterlagen angefordert werden; ohne Angabe die Musterberechnung"
+          },
+          "consent": {
+            "type": "boolean",
+            "description": "Muss true sein: Zustimmung zum Datenschutzhinweis. Ohne Zustimmung lehnt der Server ab."
+          },
+          "source": {
+            "type": "string",
+            "maxLength": 200,
+            "description": "Herkunft/Kontext der Anfrage (optional)"
+          }
+        },
+        "required": [
+          "email",
+          "consent"
+        ]
+      }
+    }
+  ],
+  "host": "aupfinanzservice.eu",
+  "source": "webmcp.com/api/directory.json"
+}

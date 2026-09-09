@@ -1,0 +1,345 @@
+{
+  "sponsio": 1,
+  "url": "https://cadence-webmcp.ashrafahmed1232.workers.dev/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "bulk_update",
+      "description": "Apply a status/priority/assignee/cycle patch to many issues at once. Requires human confirmation and returns a preview if not yet confirmed.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "backlog",
+              "todo",
+              "in_progress",
+              "in_review",
+              "done",
+              "cancelled"
+            ]
+          },
+          "priority": {
+            "type": "string",
+            "enum": [
+              "none",
+              "low",
+              "medium",
+              "high",
+              "urgent"
+            ]
+          },
+          "assignee": {
+            "type": "string"
+          },
+          "cycleId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "ids"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "create_issue",
+      "description": "Create a new issue on the board.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "body": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "string",
+            "enum": [
+              "none",
+              "low",
+              "medium",
+              "high",
+              "urgent"
+            ]
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "title"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "estimate_and_rank",
+      "description": "Propose a priority ordering for a set of issues, with reasoning for each position.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "ids"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "find_duplicates",
+      "description": "Find clusters of likely-duplicate issues by title/body similarity, with a 0-1 score. Pass results to merge_duplicates.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "minScore": {
+            "type": "number",
+            "description": "Similarity threshold, default 0.2. Real paraphrased duplicates rarely exceed 0.3 on bag-of-words overlap, so this is tuned low on purpose — expect some false positives at the low end and read the score."
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_activity",
+      "description": "Get recent tool-call activity on this board, with actor attribution.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "number"
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_board_state",
+      "description": "Get board-level summary: counts per status column, active filters, current view.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_current_selection",
+      "description": "Get what the human currently has selected or open in the UI.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_issue",
+      "description": "Get full details of one issue by id or key, including comments and links.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Issue id or key, e.g. CAD-142"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_cycles",
+      "description": "List all cycles (sprints) with their date ranges.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_issues",
+      "description": "List issues, optionally filtered by status, assignee, priority, labels, or cycle.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "backlog",
+              "todo",
+              "in_progress",
+              "in_review",
+              "done",
+              "cancelled"
+            ]
+          },
+          "assignee": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "string",
+            "enum": [
+              "none",
+              "low",
+              "medium",
+              "high",
+              "urgent"
+            ]
+          },
+          "cycleId": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "number",
+            "description": "Max results, default 50"
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_labels",
+      "description": "List all labels available on the board.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "merge_duplicates",
+      "description": "Merge a cluster of duplicate issues into one primary issue, preserving comments and closing the rest as duplicates. Requires human confirmation.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "primaryId": {
+            "type": "string"
+          },
+          "duplicateIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "primaryId",
+          "duplicateIds"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_issues",
+      "description": "Search issues by text across title and body.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "split_issue",
+      "description": "Split one issue into several sub-issues under it, each inheriting its priority, labels, and cycle. Requires human confirmation.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "subtitles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Titles for the new sub-issues"
+          }
+        },
+        "required": [
+          "id",
+          "subtitles"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "summarize_cycle",
+      "description": "Summarize a cycle: scope, progress, at-risk items, and blocked issues.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "cycleId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "cycleId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "triage_inbox",
+      "description": "List untriaged issues (backlog, no priority set) with a suggested priority for each, for the agent to act on with set_priority.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "cadence-webmcp.ashrafahmed1232.workers.dev",
+  "source": "webmcp.com/api/directory.json"
+}

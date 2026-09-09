@@ -1,0 +1,132 @@
+{
+  "sponsio": 1,
+  "url": "https://madrid-day-spa.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "get_availability",
+      "description": "Find real free time slots for a treatment on a given day or short date range. Always call this before telling the customer a time is available — never guess or infer times.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "treatmentId",
+          "from_date"
+        ],
+        "properties": {
+          "treatmentId": {
+            "type": "string",
+            "description": "Full catalog id including the option index, exactly as get_services returns it, for example MA-7-0."
+          },
+          "from_date": {
+            "type": "string",
+            "description": "First day to check, YYYY-MM-DD."
+          },
+          "to_date": {
+            "type": "string",
+            "description": "Last day to check, YYYY-MM-DD. Omit to check only from_date."
+          },
+          "couple": {
+            "type": "boolean",
+            "description": "True when the booking is for two people sharing the slot. Defaults to false."
+          }
+        }
+      }
+    },
+    {
+      "name": "get_digest",
+      "description": "Read detailed information about the spa: what a treatment category involves, the FAQ (location, parking, payment and booking policy, what to bring, cancellations), how gift cards work, and review summaries. Use this before answering anything the treatment list does not already say — do not fill gaps from general knowledge.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "topic"
+        ],
+        "properties": {
+          "topic": {
+            "type": "string",
+            "enum": [
+              "massages",
+              "couples",
+              "hammam",
+              "facials",
+              "body-rituals",
+              "specific-treatments",
+              "massages-reviews",
+              "couples-reviews",
+              "hammam-reviews",
+              "facials-reviews",
+              "body-rituals-reviews",
+              "specific-treatments-reviews",
+              "gifts-reviews",
+              "faq",
+              "reviews",
+              "gifts"
+            ],
+            "description": "Which digest to read. Use \"faq\" for location, parking, payment, booking and cancellation questions."
+          },
+          "lang": {
+            "type": "string",
+            "enum": [
+              "es",
+              "en",
+              "fr",
+              "de",
+              "it"
+            ],
+            "description": "Language. Defaults to the page's current language."
+          }
+        }
+      }
+    },
+    {
+      "name": "get_services",
+      "description": "List the spa treatments with their duration and price. Optionally filter by a word in the name, for example \"hammam\", \"facial\" or \"massage\". Use this to find a treatment id before calling other tools.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Optional word to filter treatment names by. Omit to get the whole catalog."
+          },
+          "lang": {
+            "type": "string",
+            "enum": [
+              "es",
+              "en",
+              "fr",
+              "de",
+              "it"
+            ],
+            "description": "Language for treatment names. Defaults to the page's current language."
+          }
+        }
+      }
+    },
+    {
+      "name": "navigate_to",
+      "description": "Take the user to a treatment's page on this site, optionally opened on a specific date and for one or two people. Use after the customer has settled on a treatment. Omit treatmentId to go to the general booking page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "treatmentId": {
+            "type": "string",
+            "description": "Catalog id of the treatment, exactly as returned by the treatment catalog (for example MA-7-0). Omit for the general booking page."
+          },
+          "date": {
+            "type": "string",
+            "description": "Day to open the page on, YYYY-MM-DD. Omit if the customer has not named a day — the page then opens on today."
+          },
+          "couple": {
+            "type": "boolean",
+            "description": "Pass only when the customer has said whether it is for one person or two. Omit when unknown; never pass a guess."
+          }
+        }
+      }
+    }
+  ],
+  "host": "madrid-day-spa.com",
+  "source": "webmcp.com/api/directory.json"
+}

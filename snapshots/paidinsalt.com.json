@@ -1,0 +1,132 @@
+{
+  "sponsio": 1,
+  "url": "https://paidinsalt.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "compose_contact_email",
+      "description": "Open the user’s own email client with a pre-filled draft to the channel’s public contact address. Nothing is sent by this tool — the user reviews and sends (or discards) the draft themselves. Returns JSON {status: \"mail_draft_opened\", to, subject}.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "subject": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 150,
+            "description": "Subject line for the draft email."
+          },
+          "body": {
+            "type": "string",
+            "maxLength": 1500,
+            "default": "",
+            "description": "Optional body text for the draft email."
+          }
+        },
+        "required": [
+          "subject"
+        ]
+      }
+    },
+    {
+      "name": "get_channel_info",
+      "description": "Return structured facts about this documentary channel: name, premise, YouTube channel URL, contact email, signature sign-off, and the latest posts. No input. Read-only, no side effects. Returns JSON {name, tagline, premise, youtube, email, signoff, latest_posts: [{title, slug, url, date, description}]}.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "get_current_post",
+      "description": "Return the blog post open in this tab right now: its metadata plus the full markdown source (frontmatter includes the cited sources). No input. Read-only, no side effects. Returns JSON {slug, url, title, date, description, markdown} — or {error}.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "get_post",
+      "description": "Fetch one blog post: its metadata plus the full markdown source (which includes the frontmatter with the post’s cited sources). Input: the post slug (e.g. \"why-x-happened\") or its /posts/<slug>/ URL, as returned by search_posts. Read-only, no side effects. Returns JSON {slug, url, title, date, description, markdown} — or {error} for an unknown slug.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "description": "Post slug or /posts/<slug>/ URL from search_posts."
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "get_post_sources",
+      "description": "Return the cited sources (the receipts) of one blog post: each source’s note and URL where one exists. Input: the post slug from search_posts. Read-only, no side effects. Returns JSON {slug, title, sources: [{note, url}]} — or {error} for an unknown slug.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "description": "Post slug or /posts/<slug>/ URL from search_posts."
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "open_youtube_channel",
+      "description": "Navigate this tab to the channel’s YouTube page so the user can watch episodes or subscribe. No input. Changes the current page (reversible with the Back button); performs no purchase, login or subscription by itself. Returns JSON {status: \"navigating\", url}.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "search_posts",
+      "description": "Search this site’s blog posts by keyword over title and description (case-insensitive substring), newest first. An empty or missing query matches every post. Paginated via limit/offset. Read-only, no side effects. Returns JSON {query, total, returned, offset, has_more, next_offset, posts: [{title, slug, url, date, description}]}.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "maxLength": 200,
+            "default": "",
+            "description": "Keyword or phrase to match against post titles and descriptions. Empty matches all posts."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 10,
+            "description": "Maximum posts to return in this page of results."
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Zero-based index of the first result to return; pass next_offset from the previous call to page."
+          }
+        },
+        "required": []
+      }
+    }
+  ],
+  "host": "paidinsalt.com",
+  "source": "webmcp.com/api/directory.json"
+}

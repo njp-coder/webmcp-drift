@@ -1,0 +1,474 @@
+{
+  "sponsio": 1,
+  "url": "https://sauna.guide/tools/sauna-quote-xray",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "build_sauna_contractor_questions",
+      "description": "Create a visible, quote-specific checklist of questions for unresolved or excluded scope. Optionally focus on named scope IDs. The result stays on the page and is not sent to any contractor.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "focusScopeIds": {
+            "type": "array",
+            "maxItems": 10,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "enum": [
+                "sauna-kit",
+                "heater",
+                "delivery",
+                "assembly",
+                "electrical",
+                "panel",
+                "foundation",
+                "permit",
+                "ventilation",
+                "warranty"
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "get_sauna_quote_xray_state",
+      "description": "Call this first whenever you arrive. Read dataMode first so you know whether the canvas contains a synthetic sample or a page-local draft, then inspect the exact quote lines, scope decisions, risk findings, projected total, and contractor questions. Resolve scope, revise explicit cost lines, and build contractor questions. Do not guess missing scope or treat planning ranges as contractor prices. This does not change the page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "load_demo_sauna_quote",
+      "description": "Load one safe synthetic quote into the visible Sauna Quote X-Ray canvas. This changes only page-local state and never stores data, sends email, or creates a customer lead.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "fixtureId": {
+            "type": "string",
+            "enum": [
+              "basement-traditional",
+              "backyard-barrel",
+              "plug-in-infrared"
+            ],
+            "description": "Synthetic quote scenario to load into the shared canvas."
+          }
+        },
+        "required": [
+          "fixtureId"
+        ]
+      }
+    },
+    {
+      "name": "prepare_sauna_quote_request",
+      "description": "Prepare a visible request for Sauna Guide to compare a vetted shortlist of up to three relevant local sauna providers. This tool does not submit the request, share contact details, or opt the user into marketing. The user must review the visible form, accept the privacy terms, and submit it themselves.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "postalCode": {
+            "type": "string",
+            "pattern": "^\\d{5}(?:-\\d{4})?$",
+            "description": "US ZIP code where the sauna will be installed."
+          },
+          "state": {
+            "type": "string",
+            "pattern": "^[A-Z]{2}$",
+            "description": "Two-letter US state code for the project."
+          },
+          "city": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 100,
+            "description": "City where the sauna will be installed."
+          },
+          "contactName": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 100,
+            "description": "Name of the person requesting the quote."
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 254,
+            "description": "Email address for personal provider-search updates."
+          },
+          "phone": {
+            "type": "string",
+            "maxLength": 30,
+            "description": "US phone number for questions about the project."
+          },
+          "projectType": {
+            "type": "string",
+            "enum": [
+              "prebuilt",
+              "custom_indoor",
+              "custom_outdoor",
+              "not_sure"
+            ],
+            "description": "Whether the project is prebuilt, custom indoor, custom outdoor, or not yet decided."
+          },
+          "heatType": {
+            "type": "string",
+            "enum": [
+              "traditional_electric",
+              "wood_fired",
+              "infrared",
+              "hybrid_or_unsure"
+            ],
+            "description": "Preferred sauna heat type, or hybrid_or_unsure when not decided."
+          },
+          "electricalReadiness": {
+            "type": "string",
+            "enum": [
+              "240v_ready",
+              "120v_only",
+              "no_site_power",
+              "not_sure"
+            ],
+            "description": "Optional description of the electrical power currently available at the site."
+          },
+          "budget": {
+            "type": "string",
+            "enum": [
+              "under_5k",
+              "5k_10k",
+              "10k_20k",
+              "20k_plus",
+              "not_sure"
+            ],
+            "description": "Expected project budget range in US dollars."
+          },
+          "timeline": {
+            "type": "string",
+            "enum": [
+              "within_30_days",
+              "1_3_months",
+              "3_6_months",
+              "researching"
+            ],
+            "description": "Expected purchase or installation timeline."
+          },
+          "brandOrModel": {
+            "type": "string",
+            "maxLength": 160,
+            "description": "Optional sauna brand or model already under consideration."
+          },
+          "notes": {
+            "type": "string",
+            "maxLength": 2000,
+            "description": "Optional project details such as space, access, foundation, or electrical work."
+          }
+        },
+        "required": [
+          "postalCode"
+        ]
+      }
+    },
+    {
+      "name": "remove_sauna_quote_line_item",
+      "description": "Remove one mistaken or duplicate line from the visible quote canvas by stable ID. This changes only page-local state and does not delete stored records or contact anyone.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]{1,49}$"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "set_sauna_project_context",
+      "description": "Update the project type, quote title, size, or location shown on the shared canvas. This changes only page-local state and recalculates the visible benchmark and risk ranges.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 100
+          },
+          "location": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 100
+          },
+          "productType": {
+            "type": "string",
+            "enum": [
+              "indoor-traditional",
+              "outdoor-barrel",
+              "infrared"
+            ]
+          },
+          "sizeClass": {
+            "type": "string",
+            "enum": [
+              "1-2p",
+              "3-4p",
+              "5p-plus"
+            ]
+          }
+        },
+        "minProperties": 1
+      }
+    },
+    {
+      "name": "set_sauna_quote_scope",
+      "description": "Mark one or more visible quote-scope items as included, excluded, unclear, or not applicable. This updates the risk cards and hidden-cost projection on the same page without storing or sending anything.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "updates": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 10,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "scopeId": {
+                  "type": "string",
+                  "enum": [
+                    "sauna-kit",
+                    "heater",
+                    "delivery",
+                    "assembly",
+                    "electrical",
+                    "panel",
+                    "foundation",
+                    "permit",
+                    "ventilation",
+                    "warranty"
+                  ]
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "included",
+                    "excluded",
+                    "unclear",
+                    "not_applicable"
+                  ]
+                },
+                "note": {
+                  "type": "string",
+                  "maxLength": 240
+                }
+              },
+              "required": [
+                "scopeId",
+                "status"
+              ]
+            }
+          }
+        },
+        "required": [
+          "updates"
+        ]
+      }
+    },
+    {
+      "name": "start_sauna_quote_xray",
+      "description": "Clear the synthetic demo and start a blank, page-local Sauna Quote X-Ray canvas before structuring a different quote. Nothing is uploaded, persisted, emailed, or sent to a seller.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "submit_sauna_quote_request",
+      "description": "Send a home-sauna project request to Sauna Guide so David can compare a vetted shortlist of up to three relevant local providers. This stores the supplied contact details and sends a confirmation email, but never shares them with a provider. It never opts the user into marketing. Use only after the user explicitly asks to submit the request and confirms processing.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "postalCode": {
+            "type": "string",
+            "pattern": "^\\d{5}(?:-\\d{4})?$",
+            "description": "US ZIP code where the sauna will be installed."
+          },
+          "state": {
+            "type": "string",
+            "pattern": "^[A-Z]{2}$",
+            "description": "Two-letter US state code for the project."
+          },
+          "city": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 100,
+            "description": "City where the sauna will be installed."
+          },
+          "contactName": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 100,
+            "description": "Name of the person requesting the quote."
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 254,
+            "description": "Email address for personal provider-search updates."
+          },
+          "phone": {
+            "type": "string",
+            "maxLength": 30,
+            "description": "US phone number for questions about the project."
+          },
+          "projectType": {
+            "type": "string",
+            "enum": [
+              "prebuilt",
+              "custom_indoor",
+              "custom_outdoor",
+              "not_sure"
+            ],
+            "description": "Whether the project is prebuilt, custom indoor, custom outdoor, or not yet decided."
+          },
+          "heatType": {
+            "type": "string",
+            "enum": [
+              "traditional_electric",
+              "wood_fired",
+              "infrared",
+              "hybrid_or_unsure"
+            ],
+            "description": "Preferred sauna heat type, or hybrid_or_unsure when not decided."
+          },
+          "electricalReadiness": {
+            "type": "string",
+            "enum": [
+              "240v_ready",
+              "120v_only",
+              "no_site_power",
+              "not_sure"
+            ],
+            "description": "Optional description of the electrical power currently available at the site."
+          },
+          "budget": {
+            "type": "string",
+            "enum": [
+              "under_5k",
+              "5k_10k",
+              "10k_20k",
+              "20k_plus",
+              "not_sure"
+            ],
+            "description": "Expected project budget range in US dollars."
+          },
+          "timeline": {
+            "type": "string",
+            "enum": [
+              "within_30_days",
+              "1_3_months",
+              "3_6_months",
+              "researching"
+            ],
+            "description": "Expected purchase or installation timeline."
+          },
+          "brandOrModel": {
+            "type": "string",
+            "maxLength": 160,
+            "description": "Optional sauna brand or model already under consideration."
+          },
+          "notes": {
+            "type": "string",
+            "maxLength": 2000,
+            "description": "Optional project details such as space, access, foundation, or electrical work."
+          },
+          "confirmRequest": {
+            "type": "boolean",
+            "const": true,
+            "description": "Must be true only after the user explicitly asks Sauna Guide to process and send this quote request."
+          }
+        },
+        "required": [
+          "postalCode",
+          "state",
+          "city",
+          "contactName",
+          "email",
+          "phone",
+          "projectType",
+          "heatType",
+          "budget",
+          "timeline",
+          "confirmRequest"
+        ]
+      }
+    },
+    {
+      "name": "upsert_sauna_quote_line_item",
+      "description": "Add a missing cost or revise an existing line on the visible quote canvas. Use stable IDs so later calls can update the same item. This is page-local analysis only and does not contact a seller.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]{1,49}$"
+          },
+          "label": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 100
+          },
+          "amount": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 250000
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "sauna",
+              "heater",
+              "site_work",
+              "electrical",
+              "delivery",
+              "fees",
+              "other"
+            ]
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 240
+          }
+        },
+        "required": [
+          "id",
+          "label",
+          "amount",
+          "category"
+        ]
+      }
+    }
+  ],
+  "host": "sauna.guide",
+  "source": "webmcp.com/api/directory.json"
+}

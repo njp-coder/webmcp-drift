@@ -1,0 +1,197 @@
+{
+  "sponsio": 1,
+  "url": "https://perini-financeandproperty.com/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "fp_hypothek_berechnen",
+      "description": "Berechnet die monatliche Rate, Bank- und KfW-Darlehensanteil, KfW-Zuschuss, gesamte Zinskosten und die Restschuld am Ende der Zinsbindung aus Kaufpreis, Eigenkapital, Sollzins, Laufzeit und Tilgung (optional mit KfW-Programm). Modellrechnung ohne Gewaehr.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "kaufpreis": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Kaufpreis der Immobilie in Euro"
+          },
+          "eigenkapital": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Eingesetztes Eigenkapital in Euro"
+          },
+          "zins_pct": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 15,
+            "description": "Sollzins des Bankdarlehens in Prozent p.a."
+          },
+          "laufzeit_jahre": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 40,
+            "description": "Betrachtungszeitraum / Zinsbindung in Jahren"
+          },
+          "tilgung_pct": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 15,
+            "description": "Anfaengliche Tilgung in Prozent p.a."
+          },
+          "kfw_programm": {
+            "type": "string",
+            "enum": [
+              "0",
+              "297",
+              "261",
+              "300",
+              "159",
+              "124",
+              "308"
+            ],
+            "description": "KfW-Programmnummer, 0 = kein KfW-Darlehen"
+          },
+          "kfw_betrag": {
+            "type": "number",
+            "minimum": 0,
+            "description": "KfW-Darlehensbetrag in Euro"
+          },
+          "kfw_zins_pct": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 15,
+            "description": "KfW-Sollzins in Prozent p.a."
+          },
+          "kfw_zuschuss_pct": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100,
+            "description": "KfW-Tilgungszuschuss in Prozent des KfW-Darlehens"
+          }
+        },
+        "required": [
+          "kaufpreis"
+        ]
+      }
+    },
+    {
+      "name": "fp_rechenergebnis_mailen",
+      "description": "SCHREIBEND, mit Seiteneffekt: Sendet die vollstaendige Auswertung eines Rechners per E-Mail an die angegebene Adresse; der Server rechnet die uebergebenen Eingaben nach. Zugleich geht eine Lead-Benachrichtigung an Perini. Erfordert Rechner-Typ, Name, gueltige E-Mail und die Zustimmung zur Datenverarbeitung (consent = true). Nur mit Einverstaendnis der Person ausloesen.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "typ": {
+            "type": "string",
+            "maxLength": 60,
+            "description": "Rechner-Typ (z. B. mietrendite, tilgung, nebenkosten) — steht am jeweiligen Rechner"
+          },
+          "werte": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Die Eingabewerte des Rechners als Objekt (Schluessel wie im Rechner)"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 80,
+            "description": "Name der Person"
+          },
+          "email": {
+            "type": "string",
+            "maxLength": 120,
+            "description": "E-Mail-Adresse fuer die Auswertung"
+          },
+          "phone": {
+            "type": "string",
+            "maxLength": 40,
+            "description": "Telefonnummer (optional)"
+          },
+          "lang": {
+            "type": "string",
+            "enum": [
+              "de",
+              "en"
+            ],
+            "description": "Sprache (Standard de)"
+          },
+          "consent": {
+            "type": "boolean",
+            "description": "Muss true sein: Zustimmung zur Datenverarbeitung."
+          },
+          "source": {
+            "type": "string",
+            "maxLength": 200,
+            "description": "Herkunft/Kontext (optional)"
+          }
+        },
+        "required": [
+          "typ",
+          "name",
+          "email",
+          "consent"
+        ]
+      }
+    },
+    {
+      "name": "fp_unterlagen_anfordern",
+      "description": "SCHREIBEND, mit Seiteneffekt: Fordert die gewaehlten FP-Checklisten/Unterlagen an und VERSENDET sie per E-Mail (Download-Links) an die angegebene Adresse; zugleich geht eine Lead-Benachrichtigung an Perini. Erfordert mindestens eine Checkliste, Name, gueltige E-Mail und die ausdrueckliche Zustimmung zum Datenschutz (consent = true). Nur mit Einverstaendnis der Person ausloesen.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "docs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "baufi-de",
+                "steuerauslaender",
+                "selbstauskunft",
+                "vermoegensaufstellung",
+                "expose-check",
+                "projektfinanzierung",
+                "aerzte",
+                "kfw-foerderkompass",
+                "tilgungsplan-excel",
+                "foerder-fahrplan"
+              ]
+            },
+            "description": "Welche Checklisten/Unterlagen angefordert werden (mindestens eine)"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 80,
+            "description": "Name der Person"
+          },
+          "email": {
+            "type": "string",
+            "maxLength": 120,
+            "description": "E-Mail-Adresse, an die die Unterlagen gesendet werden"
+          },
+          "phone": {
+            "type": "string",
+            "maxLength": 40,
+            "description": "Telefonnummer (optional)"
+          },
+          "consent": {
+            "type": "boolean",
+            "description": "Muss true sein: Zustimmung zum Datenschutz. Ohne Zustimmung lehnt der Server ab."
+          },
+          "source": {
+            "type": "string",
+            "maxLength": 200,
+            "description": "Herkunft/Kontext der Anfrage (optional)"
+          }
+        },
+        "required": [
+          "docs",
+          "name",
+          "email",
+          "consent"
+        ]
+      }
+    }
+  ],
+  "host": "perini-financeandproperty.com",
+  "source": "webmcp.com/api/directory.json"
+}

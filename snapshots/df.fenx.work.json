@@ -1,0 +1,127 @@
+{
+  "sponsio": 1,
+  "url": "https://df.fenx.work/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "browse_latest",
+      "description": "Return the 20 most recently published Design Fragments items as a compact list (item_id, title, description, url, tags, category, hasNotes). Use this to browse what is new on the site. Does not open an item; call open_item with an item_id for full detail and notes.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "browse_month",
+      "description": "List every Design Fragments item published in a given calendar month. The public archive currently runs from 2021-07 through 2026-08. Use when the visitor asks what was published in a specific year and month. Returns a compact list (item_id, title, description, url, tags, category, hasNotes). Call open_item for full detail.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "year": {
+            "type": "integer",
+            "description": "Four-digit year, e.g. 2024",
+            "minimum": 2021
+          },
+          "month": {
+            "type": "integer",
+            "description": "Calendar month from 1 to 12",
+            "minimum": 1,
+            "maximum": 12
+          }
+        },
+        "required": [
+          "year",
+          "month"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "browse_tag",
+      "description": "List items for one tag (slug or Chinese/English label). Use after list_tags or when an item result includes that tag. Returns a compact list (item_id, title, description, url, tags, category, hasNotes) and opens /tag/{slug}.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tag": {
+            "type": "string",
+            "description": "Tag slug or label, e.g. typography or 排版"
+          }
+        },
+        "required": [
+          "tag"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_similar",
+      "description": "Find items similar to a given item_id. Use only when the visitor asks for related or similar fragments after viewing an item. Returns a compact list (item_id, title, description, url, tags, category, hasNotes). Does not open an item.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "item_id": {
+            "type": "string",
+            "description": "Item id to find similar fragments for"
+          }
+        },
+        "required": [
+          "item_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_tags",
+      "description": "List every public tag on Design Fragments, with label, slug, and /tag/... path. Use when the visitor wants to browse by tag or pick from available tags. Does not list themes; if open_item notes include a theme, open its /theme/{slug} path in the browser. Call browse_tag with a slug or label to see items.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "open_item",
+      "description": "Open one Design Fragments item by item_id and return its full detail, including notes (published knowledge atoms with entity, summary, types, and theme pages) when the item has them. Each theme includes a /theme/{slug} path — open that URL in the browser to view the theme. There is no theme catalog tool. Use after browse_latest, browse_month, search_items, or a tag result. Does not include similar items; call get_similar for those. Also navigates the page to /item?id= so the visitor can see the same item.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "item_id": {
+            "type": "string",
+            "description": "Public item id from a previous list result"
+          }
+        },
+        "required": [
+          "item_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_items",
+      "description": "Keyword-search published Design Fragments items and return a compact result list (item_id, title, description, url, tags, category, hasNotes). Use for finding fragments by title, description, tags, domain, or URL text. This is exact/keyword search only — not semantic search. Does not return knowledge, snippets, or domain tabs. Call open_item for full detail.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Keyword query to search published items"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "df.fenx.work",
+  "source": "webmcp.com/api/directory.json"
+}

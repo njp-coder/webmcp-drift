@@ -1,0 +1,211 @@
+{
+  "sponsio": 1,
+  "url": "https://jsonstat.com/webmcp/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "export_csv",
+      "description": "Export the current data view (including any filters and sorting) to a CSV file for download.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "fetch_dataset",
+      "description": "Fetch a JSON-stat dataset from a URL. Supports both GET and POST requests. For POST requests, provide a JSON payload.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "The URL of the JSON-stat dataset endpoint to fetch"
+          },
+          "payload": {
+            "type": "object",
+            "description": "Optional JSON payload for POST requests"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      }
+    },
+    {
+      "name": "filter_dimension",
+      "description": "Filter a dimension to show only specific categories. Provide an array of category labels to include. Empty array shows all categories.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "dimensionId": {
+            "type": "string",
+            "description": "The ID of the dimension to filter"
+          },
+          "categories": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Array of category labels to include. Empty array means show all categories."
+          }
+        },
+        "required": [
+          "dimensionId",
+          "categories"
+        ]
+      }
+    },
+    {
+      "name": "get_data_summary",
+      "description": "Get a summary of the current data view including row counts, view mode, active filters, and sort settings.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_dimensions",
+      "description": "Get a list of all dimensions in the current dataset with their properties, available categories, and current filter settings.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_metadata",
+      "description": "Get comprehensive metadata about the currently loaded dataset including label, source, dimensions, and observation count.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_preset_endpoints",
+      "description": "Get a list of available preset JSON-stat endpoints that can be quickly loaded.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "search_data",
+      "description": "Search for text across all cells in the current data view. Only available in flat view mode.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "The search query to find in the data. Empty string clears the search."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "select_dataset",
+      "description": "Select a specific dataset from a loaded bundle or collection. Use this after loading a bundle with fetch_dataset.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "datasetIndex": {
+            "type": "number",
+            "description": "The index of the dataset to select (0-based)",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "datasetIndex"
+        ]
+      }
+    },
+    {
+      "name": "set_dimension_role",
+      "description": "Set the role of a dimension for data visualization. In flat mode, use 'row'. In pivot mode, use 'row' or 'column'.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "dimensionId": {
+            "type": "string",
+            "description": "The ID of the dimension to set the role for"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "row",
+              "column"
+            ],
+            "description": "The role to set: 'row' to show as row, 'column' to show as column (pivot only)"
+          }
+        },
+        "required": [
+          "dimensionId",
+          "role"
+        ]
+      }
+    },
+    {
+      "name": "set_view_mode",
+      "description": "Switch between flat (value list) and pivot (cross-tabulation) view modes. Flat mode shows all dimensions as rows, pivot mode allows cross-tabulation.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "flat",
+              "pivot"
+            ],
+            "description": "The view mode to set: 'flat' for value list, 'pivot' for cross-tabulation"
+          }
+        },
+        "required": [
+          "mode"
+        ]
+      }
+    },
+    {
+      "name": "sort_data",
+      "description": "Sort the data by a specific column in ascending or descending order.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "columnIndex": {
+            "type": "number",
+            "description": "The index of the column to sort by (0-based)",
+            "minimum": 0
+          },
+          "direction": {
+            "type": "string",
+            "enum": [
+              "asc",
+              "desc",
+              "ascending",
+              "descending"
+            ],
+            "description": "Sort direction: 'asc' or 'ascending' for ascending, 'desc' or 'descending' for descending"
+          }
+        },
+        "required": [
+          "columnIndex",
+          "direction"
+        ]
+      }
+    }
+  ],
+  "host": "jsonstat.com",
+  "source": "webmcp.com/api/directory.json"
+}

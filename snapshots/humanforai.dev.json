@@ -1,0 +1,320 @@
+{
+  "sponsio": 1,
+  "url": "https://humanforai.dev/",
+  "capturedAt": "2026-09-09T06:43:18.828Z",
+  "tools": [
+    {
+      "name": "await_human",
+      "description": "Block until the human at the keyboard acts — approves, rejects, edits the draft, updates the goal, posts a note to you, or grants/revokes Autopilot — or the timeout passes. Returns the event and a fresh workspace snapshot. This is a tool call resolved by an explicit human action on the shared page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "timeout_seconds": {
+            "type": "number",
+            "minimum": 5,
+            "maximum": 240,
+            "description": "How long to wait. Default 60."
+          }
+        }
+      }
+    },
+    {
+      "name": "check_task_status",
+      "description": "Look up a submitted task by task_id: status (submitted → accepted → delivered, or rejected), status history, seen_by_operator_at, eta, operator notes, and — once delivered — the signed receipt.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "task_id"
+        ],
+        "properties": {
+          "task_id": {
+            "type": "string",
+            "description": "Task ID from submit_human_task, e.g. HFAI-2026-A1B2C3D4E5F60718."
+          }
+        }
+      }
+    },
+    {
+      "name": "draft_task",
+      "description": "Write or revise the shared task draft, field by field. Unlike the site-wide submit_human_task, nothing is sent anywhere — this edits the on-page document the human co-authors. The human watches it appear live and can edit any field directly (fields show who wrote them last). Partial updates are fine — send only the fields you are changing. Values are validated for real (not just by this schema); invalid values come back in \"rejected\" with reasons. Revising the draft resets any per-task approval — including one already requested or granted (Autopilot is unaffected).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "task_type": {
+            "type": "string",
+            "enum": [
+              "real_world_verification",
+              "product_or_app_testing",
+              "human_judgment_and_feedback",
+              "data_collection",
+              "local_physical_task",
+              "ai_output_review",
+              "prompt_and_workflow_testing",
+              "simulation_and_automation_testing",
+              "accessibility_and_usability_check",
+              "decision_escalation",
+              "custom_human_in_the_loop"
+            ],
+            "description": "Service category; custom_human_in_the_loop for anything unlisted."
+          },
+          "description": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 5000,
+            "description": "What to do, where, and what success looks like."
+          },
+          "location_required": {
+            "type": "boolean"
+          },
+          "location_detail": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "deadline": {
+            "type": "string",
+            "description": "ISO 8601 datetime."
+          },
+          "output_format": {
+            "type": "string",
+            "description": "text_report (default), text_report_with_photos, structured_json, annotated_screenshots, or video."
+          },
+          "contact_email": {
+            "type": "string",
+            "description": "Usually leave unset — the human's email from the You lane is used."
+          },
+          "requester": {
+            "type": "string",
+            "maxLength": 200
+          }
+        }
+      }
+    },
+    {
+      "name": "get_human_services",
+      "description": "Fetch the Human For AI manifest: available human services, operator profile, response times, accepted and rejected task types, and trust & safety policy. The starting point: every other tool assumes this manifest has been read. Collaborative drafting with the human at this keyboard (co-edited drafts, click-to-approve or Autopilot, live operator presence) lives at /together, which registers seven workspace tools.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_service_details",
+      "description": "Full detail for one service from the catalog by its task_type: description, example request, response format, and turnaround. The detail view for one entry of the get_human_services catalog.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "task_type"
+        ],
+        "properties": {
+          "task_type": {
+            "type": "string",
+            "enum": [
+              "real_world_verification",
+              "product_or_app_testing",
+              "human_judgment_and_feedback",
+              "data_collection",
+              "local_physical_task",
+              "ai_output_review",
+              "prompt_and_workflow_testing",
+              "simulation_and_automation_testing",
+              "accessibility_and_usability_check",
+              "decision_escalation",
+              "custom_human_in_the_loop"
+            ],
+            "description": "The service identifier, e.g. real_world_verification."
+          }
+        }
+      }
+    },
+    {
+      "name": "message_human_operator",
+      "description": "Send a free-form message to the human operator — questions, scoping, custom projects. reply_to is required: a real mailbox for the reply. The response carries a thread_url + access_token, so the reply is also readable by polling.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "A question, a scoping request, anything — a real human answers."
+          },
+          "reply_to": {
+            "type": "string",
+            "description": "you@example.com"
+          }
+        },
+        "required": [
+          "message",
+          "reply_to"
+        ]
+      }
+    },
+    {
+      "name": "message_operator",
+      "description": "Workspace-scoped variant of the site-wide message_human_operator: no reply_to needed — it uses the reply address the human saved in their lane, keeps one thread per workspace (follow-ups go to the same thread automatically), and renders the conversation on the page for both of you. Use it to scope work or ask questions before committing. The operator replies at human speed.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 5000,
+            "description": "The message. Plain language, English."
+          },
+          "subject": {
+            "type": "string",
+            "maxLength": 200,
+            "description": "Subject for a new thread; ignored on follow-ups."
+          }
+        }
+      }
+    },
+    {
+      "name": "read_workspace",
+      "description": "Read everything on this page: the human's goal and notes to you, the current task draft with per-field provenance, approval state, live tracked tasks, and the operator thread. The starting point, and the refresh after each human action. The human sees the same state rendered on the page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "request_human_approval",
+      "description": "Show the approval bar to the human at the keyboard, asking them to approve or reject the current draft. Follow with await_human to wait for the decision. Not needed while the human has Autopilot on — read_workspace shows which regime you are in.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "message_to_human": {
+            "type": "string",
+            "maxLength": 500,
+            "description": "One line shown in the activity feed, e.g. why this draft is ready."
+          }
+        }
+      }
+    },
+    {
+      "name": "submit_approved_task",
+      "description": "Submit the draft as a real task to the real human operator. Works under either regime the human chose: a per-task approval of the current draft revision, or standing Autopilot authority (see read_workspace). Without either it refuses. On success the task is tracked live on the page for both of you.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "description": "Deliberately empty: the payload IS the shared on-page draft, exactly as the human saw and authorized it. Inspect it first with read_workspace."
+      }
+    },
+    {
+      "name": "submit_human_task",
+      "description": "Submit a task for the verified human operator to perform in the real world. Returns a task_id immediately (async job; check_task_status reports progress). Free during the pilot. contact_email is a real mailbox (MX-checked); delivery: status_poll is the no-mailbox alternative for autonomous agents.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "task_type",
+          "description"
+        ],
+        "properties": {
+          "task_type": {
+            "type": "string",
+            "enum": [
+              "real_world_verification",
+              "product_or_app_testing",
+              "human_judgment_and_feedback",
+              "data_collection",
+              "local_physical_task",
+              "ai_output_review",
+              "prompt_and_workflow_testing",
+              "simulation_and_automation_testing",
+              "accessibility_and_usability_check",
+              "decision_escalation",
+              "custom_human_in_the_loop"
+            ],
+            "description": "Service category; custom_human_in_the_loop for anything unlisted."
+          },
+          "description": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 5000,
+            "description": "What to do, where, and what success looks like."
+          },
+          "location_required": {
+            "type": "boolean",
+            "description": "true if the task needs physical presence."
+          },
+          "location_detail": {
+            "type": "string",
+            "maxLength": 500,
+            "description": "City, address, or area."
+          },
+          "deadline": {
+            "type": "string",
+            "description": "ISO 8601 datetime."
+          },
+          "output_format": {
+            "type": "string",
+            "description": "text_report (default), text_report_with_photos, structured_json, annotated_screenshots, or video."
+          },
+          "contact_email": {
+            "type": "string",
+            "description": "Where the deliverable is sent. Required unless delivery is status_poll."
+          },
+          "delivery": {
+            "type": "string",
+            "enum": [
+              "email",
+              "status_poll"
+            ],
+            "description": "status_poll = no-mailbox path; result arrives via check_task_status."
+          },
+          "requester": {
+            "type": "string",
+            "maxLength": 200,
+            "description": "Your agent or system identifier."
+          }
+        },
+        "anyOf": [
+          {
+            "required": [
+              "contact_email"
+            ]
+          },
+          {
+            "properties": {
+              "delivery": {
+                "const": "status_poll"
+              }
+            },
+            "required": [
+              "delivery"
+            ]
+          }
+        ],
+        "description": "Either contact_email (email delivery) or delivery:\"status_poll\" (no-mailbox path) is required."
+      }
+    },
+    {
+      "name": "track_task_status",
+      "description": "Workspace-scoped variant of the site-wide check_task_status: same live task records (status history, seen_by_operator_at — the moment a real human saw it, eta, operator notes, signed receipt), but it reads the whole shared board at once and keeps the page's live-status cards in sync for the human. Pass task_id to add an existing task to the board — the ID is verified against the live API first, and an unknown ID returns {error:\"task_not_found\"} without touching the board. Omit it to read everything tracked.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "task_id": {
+            "type": "string",
+            "description": "Optional: a task ID to start tracking, e.g. HFAI-2026-A1B2C3D4E5F60718."
+          }
+        }
+      }
+    }
+  ],
+  "host": "humanforai.dev",
+  "source": "webmcp.com/api/directory.json"
+}
