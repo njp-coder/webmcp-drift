@@ -1,0 +1,41 @@
+name: publish page
+
+# Pages is configured as build_type "workflow", so a plain push republishes
+# nothing on its own. This covers human pushes that touch the page.
+#
+# It does NOT cover the nightly and weekly runs: those commit with GITHUB_TOKEN,
+# and pushes made with that token do not trigger other workflows. Each of them
+# therefore deploys Pages itself. The shared concurrency group below is what
+# stops the two paths racing for the same deployment.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "docs/**"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages-deploy
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+      - id: deploy
+        uses: actions/deploy-pages@v4
