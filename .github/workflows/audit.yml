@@ -1,0 +1,60 @@
+name: weekly audit
+
+on:
+  schedule:
+    # Sundays 06:40 UTC. Weekly, not nightly: this measures the shape of the
+    # ecosystem, which moves in weeks. Drift needs daily granularity to date a
+    # change; an aggregate does not, and re-loading 553 third-party sites every
+    # night to publish a number that barely moves is not a cost worth imposing.
+    - cron: "40 6 * * 0"
+  workflow_dispatch:
+    inputs:
+      per_night:
+        description: "Sites to audit (0 = every committed site)"
+        required: false
+        default: "0"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: weekly-audit
+  cancel-in-progress: false
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - run: npm install --no-audit --no-fund
+
+      # Read-only by construction: this loads pages and records the tools they
+      # register. It never invokes one. See the header of scripts/audit.mjs.
+      - name: Audit the directory
+        env:
+          # 0 = full sweep of every committed site.
+          AUDIT_PER_NIGHT: ${{ github.event.inputs.per_night || '0' }}
+        run: node scripts/audit.mjs
+
+      - name: Rebuild the page
+        run: node scripts/render.mjs
+
+      - name: Commit
+        run: |
+          git config user.name  "webmcp-drift"
+          git config user.email "actions@users.noreply.github.com"
+          git pull --rebase --autostash || true
+          # audits/ and reports/audit-*.json are gitignored on purpose.
+          git add reports/aggregate.json docs
+          if git diff --staged --quiet; then
+            echo "nothing to record"
+          else
+            git commit -m "audit: $(date -u +%Y-%m-%d)"
+            git push
+          fi

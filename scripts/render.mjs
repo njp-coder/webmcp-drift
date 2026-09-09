@@ -8,7 +8,7 @@
 
 import { writeFile, mkdir } from "node:fs/promises";
 import { join } from "node:path";
-import { DOCS, HISTORY, LATEST, esc, readJson } from "./lib.mjs";
+import { DOCS, HISTORY, LATEST, ROOT, esc, readJson } from "./lib.mjs";
 
 const report = await readJson(LATEST);
 if (!report) {
@@ -16,6 +16,10 @@ if (!report) {
   process.exit(1);
 }
 const history = (await readJson(HISTORY, [])) ?? [];
+// Only ever the aggregate. The per-site audit results are gitignored: they name
+// third parties and carry heuristic findings, so they are product evidence
+// rather than something to publish.
+const audit = await readJson(join(ROOT, "reports", "aggregate.json"));
 
 const sev = (s) => `<span class="sev ${s}">${s}</span>`;
 
@@ -29,6 +33,20 @@ const firstNight = report.totals.new === report.totals.sites && report.totals.si
 
 // One or two points is not a trend. Sparklines stay hidden until they mean something.
 const showSparks = history.length >= 3;
+
+/**
+ * The headline numbers are the ones that grow.
+ *
+ * "0 breaking today" is the expected result on almost every night, and a page
+ * whose top row is permanently zero teaches a visitor that nothing is
+ * happening here. What is actually accruing is the length of the record and
+ * the total it has caught, so those lead instead. Today's counts are still on
+ * the page — in the section that lists them, where a zero means something.
+ */
+const nights = history.length;
+const totalChanges = history.reduce((n, h) => n + (h.changed ?? 0), 0);
+const lastChangeRow = [...history].reverse().find((h) => (h.changed ?? 0) > 0);
+const lastChange = lastChangeRow?.date ?? null;
 
 const sparkline = (rows, key, label) => {
   if (!showSparks) return "";
@@ -152,9 +170,9 @@ const html = `<!doctype html>
   <div class="grid">
     <div class="card"><div class="n">${report.totals.sites}</div><div class="k">sites tracked</div>${sparkline(history, "sites", "sites")}</div>
     <div class="card"><div class="n">${report.totals.tools}</div><div class="k">tools</div>${sparkline(history, "tools", "tools")}</div>
-    <div class="card"><div class="n">${firstNight ? "—" : report.totals.changed}</div><div class="k">${firstNight ? "no baseline yet" : "changed today"}</div>${sparkline(history, "changed", "changed")}</div>
-    <div class="card"><div class="n">${firstNight ? "—" : report.totals.breaking}</div><div class="k">${firstNight ? "no baseline yet" : "breaking"}</div>${sparkline(history, "breaking", "breaking")}</div>
-    <div class="card"><div class="n">${report.totals.new}</div><div class="k">${firstNight ? "baselines recorded" : "newly listed"}</div>${sparkline(history, "new", "new")}</div>
+    <div class="card"><div class="n">${nights}</div><div class="k">${nights === 1 ? "night watched" : "nights watched"}</div>${sparkline(history, "sites", "sites")}</div>
+    <div class="card"><div class="n">${totalChanges}</div><div class="k">changes recorded</div>${sparkline(history, "changed", "changed")}</div>
+    <div class="card"><div class="n" style="font-size:${lastChange ? "25px" : "17px"}">${lastChange ?? "none yet"}</div><div class="k">last change seen</div></div>
   </div>
 
   <h2>${firstNight ? `Baseline recorded ${esc(report.date)}` : `What changed on ${esc(report.date)}`}</h2>
@@ -173,6 +191,23 @@ const html = `<!doctype html>
   ${
     report.delisted.length
       ? `<h2>No longer listed</h2><div class="quiet">${report.delisted.map(esc).join(", ")}</div>`
+      : ""
+  }
+
+  ${
+    audit
+      ? `<h2>What sites declare</h2>
+  <div class="quiet">
+    <p style="margin-top:0">A weekly read-only pass in a real browser over the sites this repo tracks —
+    loading each page and recording the tools it registers, never calling one. Aggregate only:
+    no site is named here, and none of these counts is an accusation about anyone.</p>
+    <p><strong>${audit.sitesAudited}</strong> sites read ·
+       <strong>${audit.toolsSeen}</strong> tools ·
+       <strong>${audit.toolsDeclaringAnnotations}</strong> tools declare a safety annotation
+       (<strong>${audit.sitesDeclaringAnyAnnotation}</strong> sites) — the public directory records
+       <strong>none</strong> of them.</p>
+    <p style="margin-bottom:0"><em>${esc(audit.caveat)}</em></p>
+  </div>`
       : ""
   }
 
