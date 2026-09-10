@@ -1,0 +1,164 @@
+{
+  "sponsio": 1,
+  "url": "https://usemyresearch.com/research/webmcp-talk",
+  "capturedAt": "2026-09-10T11:10:21.033Z",
+  "tools": [
+    {
+      "name": "get_local_research_context",
+      "description": "Describe the current visible browser-local research without returning private note text or local identity values.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {},
+        "type": "object"
+      }
+    },
+    {
+      "name": "list_local_research_nodes",
+      "description": "List a bounded set of current visible research nodes, types, tags, and connections without private note text or local identity values.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "limit": {
+            "maximum": 100,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "text": {
+            "maxLength": 256,
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "limit"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "prepare_local_research_change",
+      "description": "Prepare one bounded visible change to the current research. It opens a human review and cannot confirm or apply the change. For add_node provide value. For connect provide sourceID, relationshipLabel and targetValue. Other actions use nodeID plus tags, type, identity, or text for add_note.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "action": {
+            "enum": [
+              "add_node",
+              "connect",
+              "add_tags",
+              "set_type",
+              "set_identity",
+              "add_note"
+            ]
+          },
+          "identity": {
+            "maxLength": 128,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "nodeID": {
+            "maxLength": 256,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "relationshipID": {
+            "maxLength": 128,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "relationshipLabel": {
+            "maxLength": 128,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "sourceID": {
+            "maxLength": 256,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "tags": {
+            "maxLength": 1000,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "targetValue": {
+            "maxLength": 4096,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "text": {
+            "description": "Private note text for add_note. Use value when adding a node.",
+            "maxLength": 4000,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "type": {
+            "maxLength": 256,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "value": {
+            "description": "The title or URL of the node to add when action is add_node.",
+            "maxLength": 4096,
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "prepare_research_share",
+      "description": "Prepare a reviewed, privacy-safe research package for ChatGPT Sites, Google Drive, Google Docs, or local download. It opens the same visible review used by the person and never publishes, uploads, or changes permissions.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "destination": {
+            "enum": [
+              "chatgpt-site",
+              "google-drive",
+              "google-docs",
+              "download"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "destination"
+        ],
+        "type": "object"
+      }
+    }
+  ],
+  "host": "usemyresearch.com",
+  "source": "webmcp.com/api/directory.json"
+}

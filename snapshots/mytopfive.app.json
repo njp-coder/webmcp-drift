@@ -1,0 +1,57 @@
+{
+  "sponsio": 1,
+  "url": "https://mytopfive.app/",
+  "capturedAt": "2026-09-10T11:10:21.033Z",
+  "tools": [
+    {
+      "name": "get_my_profile",
+      "description": "The profile of whoever is signed in on this page — username, display name, bio and avatar. Reads the session out of the page, so it answers for the actual viewer and needs no user id passed in. If nobody is signed in, it fails with a missing_page_value error naming the session it could not find — it never falls back to answering about anyone else.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "search_public_lists",
+      "description": "Search public Top Five lists by keyword and return each match with its creator, description and a link. Replays the same query the Discover screen runs, so the results are exactly the lists that screen would show for the same words. Matching is a case-insensitive substring over list title and description — not semantic — so \"sushi\" finds \"Sushi in NYC\" but not \"Best Japanese food\". Public lists only — the query filters on is_public and the call carries no session, so a private list is not reachable through this tool even for the person viewing the page. Results come back under \"rows\", newest first, each with the list's title, creator, description where it has one, and \"url\" — the path to that list's page on this site. An empty rows array means nothing matched.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Keywords to match against list titles and descriptions, e.g. \"sushi\"."
+          },
+          "max_results": {
+            "type": "integer",
+            "description": "Cap on returned lists (default 10; the Discover screen itself uses 20).",
+            "default": 10
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "set_my_display_name",
+      "description": "Rename the signed-in user — the name shown on their profile and beside every list they have made. Writes only the viewer's own row; Row Level Security rejects anything else, so this cannot rename another account even if asked to. Succeeds with status 204 and no body. It does not touch the copy of the name held in auth metadata, so a screen reading that instead of the profile row can lag until the next sign-in. Requires someone to be signed in on this page; signed out it fails rather than doing nothing quietly.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "display_name": {
+            "type": "string",
+            "description": "The new display name, e.g. \"Chip Lay\"."
+          }
+        },
+        "required": [
+          "display_name"
+        ]
+      }
+    }
+  ],
+  "host": "mytopfive.app",
+  "source": "webmcp.com/api/directory.json"
+}

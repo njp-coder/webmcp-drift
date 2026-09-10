@@ -1,0 +1,1109 @@
+{
+  "sponsio": 1,
+  "url": "https://tracinginsights.com/",
+  "capturedAt": "2026-09-10T11:10:21.033Z",
+  "tools": [
+    {
+      "name": "add-favorite-driver",
+      "description": "Saves a 3-letter driver code to the user's favorites (used for auto-selection when the driver is available).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "3-letter driver code, e.g. \"HAM\"."
+          }
+        },
+        "required": [
+          "code"
+        ]
+      }
+    },
+    {
+      "name": "annotation-clear",
+      "description": "Clears all annotations on registered charts (same as Clear All on the toolbar).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "annotation-redo",
+      "description": "Redoes the last undone annotation action on all registered charts.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "annotation-undo",
+      "description": "Undoes the last annotation action on all registered charts.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "clear-favorites",
+      "description": "Removes all saved favorite driver codes.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "clear-selected-laps",
+      "description": "Removes all laps from the Selected Laps control (clears loaded telemetry compare set).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "compare-telemetry",
+      "description": "Distance-aligns lap B onto lap A and returns decimated samples with delta = A − B for a channel (default speed). Both laps must be loaded via select-lap. For cumulative lap-time gap vs Distance (the Time Delta chart), use get-time-delta — do not pass channel \"time\".",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "lapA": {
+            "type": "string",
+            "description": "First lap dataKey or DRV-lap."
+          },
+          "lapB": {
+            "type": "string",
+            "description": "Second lap dataKey or DRV-lap."
+          },
+          "driverA": {
+            "type": "string"
+          },
+          "lapNumberA": {
+            "type": "string"
+          },
+          "driverB": {
+            "type": "string"
+          },
+          "lapNumberB": {
+            "type": "string"
+          },
+          "channel": {
+            "type": "string",
+            "description": "Channel to compare (default \"speed\"). Not \"time\" — use get-time-delta."
+          },
+          "maxPoints": {
+            "type": "number",
+            "description": "Max samples (default 150, max 500)."
+          }
+        }
+      }
+    },
+    {
+      "name": "get-corners",
+      "description": "Returns corners.json for the current session (number, distance m, x/y, angle) plus track rotation. Loaded automatically when the first telemetry lap is selected.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get-current-selection",
+      "description": "Returns the homepage's current state as JSON: selected year, event, session, drivers, active tab (chart/data/docs), view mode (essential/expert), all chart/telemetry toggles, chart visibility picks, annotation mode, and saved favorite drivers.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get-data-status",
+      "description": "Returns whether lap times have finished loading for the currently selected drivers: status idle|no-drivers|loading|partial|ready, plus loaded/missing driver lists.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get-data-table",
+      "description": "Returns the Data-tab style lap table as structured JSON rows (not a file download). Includes compound/stint/life/pos/sectors and clean/outlier flags. Prefer this over trigger-csv-export for agents.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "drivers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Driver codes (default: current selection)."
+          },
+          "fuelCorrection": {
+            "type": "boolean",
+            "description": "Override fuel-correction toggle."
+          },
+          "hideOutliers": {
+            "type": "boolean",
+            "description": "Override outliers toggle (flags only; all rows still returned)."
+          }
+        }
+      }
+    },
+    {
+      "name": "get-fastest-laps",
+      "description": "From loaded lap-times data, returns each selected driver's fastest clean (non pit-in/out, non-outlier) lap with sector times, plus ranking and head-to-head gap. Optional quali segment filter (Q1/Q2/Q3). Use before select-lap / get-time-delta.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "drivers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Driver codes (default: current selection)."
+          },
+          "segment": {
+            "type": "string",
+            "description": "Optional qualifying segment filter, e.g. \"Q3\". Omit for whole session."
+          },
+          "fuelCorrection": {
+            "type": "boolean"
+          },
+          "hideOutliers": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    {
+      "name": "get-lap-times",
+      "description": "Returns per-lap timing for selected drivers from the loaded homepage dataset (respects Fuel Correction and Hide Outliers toggles unless overridden). Default cleanOnly=true excludes pit-in/out, deleted, and 107% outlier laps.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "drivers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Driver codes (default: current selection)."
+          },
+          "cleanOnly": {
+            "type": "boolean",
+            "description": "If true (default), only clean racing laps. If false, all laps with isClean/isOutlier flags."
+          },
+          "fuelCorrection": {
+            "type": "boolean",
+            "description": "Override fuel-correction toggle."
+          },
+          "hideOutliers": {
+            "type": "boolean",
+            "description": "Override outliers toggle (default follows UI)."
+          }
+        }
+      }
+    },
+    {
+      "name": "get-positions",
+      "description": "Returns lap-by-lap race position series for selected drivers from loaded lap data.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "drivers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Driver codes (default: current selection)."
+          }
+        }
+      }
+    },
+    {
+      "name": "get-race-pace-comparison",
+      "description": "Head-to-head clean-lap pace comparison (shared-lap deltas, stint H2H, rolling pace). delta = driverA − driverB (negative = driverA faster). Defaults to the first two selected drivers.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "drivers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Two-or-more driver codes (default: current selection; first two used as A/B)."
+          },
+          "driverA": {
+            "type": "string",
+            "description": "Override first driver code."
+          },
+          "driverB": {
+            "type": "string",
+            "description": "Override second driver code."
+          },
+          "rollingWindow": {
+            "type": "number",
+            "description": "Rolling mean window in laps (default 5)."
+          },
+          "fuelCorrection": {
+            "type": "boolean",
+            "description": "Override fuel-correction toggle."
+          },
+          "hideOutliers": {
+            "type": "boolean",
+            "description": "Override outliers toggle."
+          }
+        }
+      }
+    },
+    {
+      "name": "get-stint-summary",
+      "description": "Returns per-stint pace stats (compound, lap range, best/mean/median, crude deg) for selected drivers from loaded lap data. Uses the same clean-lap / fuel / outlier rules as get-lap-times.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "drivers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Driver codes (default: current selection)."
+          },
+          "fuelCorrection": {
+            "type": "boolean",
+            "description": "Override fuel-correction toggle."
+          },
+          "hideOutliers": {
+            "type": "boolean",
+            "description": "Override outliers toggle."
+          }
+        }
+      }
+    },
+    {
+      "name": "get-telemetry-channel",
+      "description": "Returns distance/time-aligned samples for one channel on a loaded lap (decimated; default maxPoints=150, max 500). Channels: speed, throttle, brake, drs, rpm, gear, acc_x/y/z, x/y/z, DistanceToDriverAhead, etc. Prefer get-telemetry-stats for aggregates.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "lap": {
+            "type": "string",
+            "description": "dataKey or 'ANT-58' / driver+lap via separate fields."
+          },
+          "driver": {
+            "type": "string",
+            "description": "3-letter code if not using full dataKey."
+          },
+          "lapNumber": {
+            "type": "string",
+            "description": "Lap number if not using full dataKey."
+          },
+          "channel": {
+            "type": "string",
+            "description": "Channel id, e.g. \"speed\", \"throttle\", \"acc_y\"."
+          },
+          "maxPoints": {
+            "type": "number",
+            "description": "Max samples to return (default 150, max 500)."
+          }
+        },
+        "required": [
+          "channel"
+        ]
+      }
+    },
+    {
+      "name": "get-telemetry-stats",
+      "description": "Aggregate stats for loaded telemetry laps: top/avg/min speed, throttle/brake/DRS duty, gear shifts, peak accelerations, lap distance. Does not return full sample arrays.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "laps": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "dataKeys or DRV-lap refs (default: all loaded / selected)."
+          }
+        }
+      }
+    },
+    {
+      "name": "get-telemetry-status",
+      "description": "Returns whether selected telemetry laps are present in state.telData: idle|no-laps|loading|partial|ready.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "laps": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Optional dataKeys or 'DRV-lap' pairs; defaults to selectedLaps."
+          }
+        }
+      }
+    },
+    {
+      "name": "get-telemetry-summary",
+      "description": "Returns which telemetry laps are loaded in state.telData (dataKeys, drivers, laps, channel lists, point counts). Call select-lap first. For channel units see list-telemetry-channels.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get-time-delta",
+      "description": "Returns the same Distance-vs-gap series as the telemetry Time Delta chart. reference = first lap (lapA), compare = second (lapB). delta = compare − reference in seconds (positive = compare behind/slower). mode auto uses sector-anchored math when Align is on and sector times exist (same as the UI); otherwise classic length-scaled interpolation. Prefer this over compare-telemetry channel=time.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "lapA": {
+            "type": "string",
+            "description": "Reference lap dataKey or DRV-lap (default: first selected/loaded)."
+          },
+          "lapB": {
+            "type": "string",
+            "description": "Compare lap dataKey or DRV-lap (default: second selected/loaded)."
+          },
+          "driverA": {
+            "type": "string"
+          },
+          "lapNumberA": {
+            "type": "string"
+          },
+          "driverB": {
+            "type": "string"
+          },
+          "lapNumberB": {
+            "type": "string"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "auto",
+              "classic",
+              "sector"
+            ],
+            "description": "auto (default) follows Align toggle; \"classic\" / \"sector\" force an algorithm."
+          },
+          "maxPoints": {
+            "type": "number",
+            "description": "Max samples (default 150, max 500)."
+          }
+        }
+      }
+    },
+    {
+      "name": "list-available-options",
+      "description": "Returns the current year/event/session/driver dropdown options as JSON (including driver full names/teams when the session drivers.json has loaded). Use this before select-race-data to discover valid values.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list-stint-chips",
+      "description": "Returns the current stint analysis chips (driver, stint number, visible, pinned) from the Expert stint driver form. Empty if Expert mode is off or stint data has not rendered.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list-telemetry-channels",
+      "description": "Returns the TracingInsights telemetry channel catalog (ids, aliases, units, descriptions) from DATA_REFERENCE.md / Q.py tel.json fields: speed, throttle, brake, drs, rpm, gear, distance, rel_distance, acc_x/y/z, x/y/z, DriverAhead, DistanceToDriverAhead, time.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "remove-selected-lap",
+      "description": "Removes one lap from Selected Laps (e.g. driver VER lap 10).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "driver": {
+            "type": "string",
+            "description": "3-letter driver code, e.g. \"VER\"."
+          },
+          "lap": {
+            "type": "string",
+            "description": "Lap number, e.g. \"10\"."
+          }
+        },
+        "required": [
+          "driver",
+          "lap"
+        ]
+      }
+    },
+    {
+      "name": "reset-chart-visibility",
+      "description": "Restores the default Chart settings picks so every lap-time and telemetry chart is visible again.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "reset-telemetry-layout",
+      "description": "Restores the default telemetry chart order (same as the Reset layout button next to Edit layout in Expert mode).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "select-f1-data",
+      "description": "Fill in F1 data selections (year, event, session, drivers) plus chart/telemetry toggles and submit; the dashboard applies them.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "year": {
+            "type": "string",
+            "enum": [
+              "2026"
+            ],
+            "description": "Step 1: Select a Year"
+          },
+          "event": {
+            "type": "string",
+            "enum": [
+              "Italian Grand Prix"
+            ],
+            "description": "Step 2: Select an Event"
+          },
+          "session": {
+            "type": "string",
+            "enum": [
+              "Practice 1"
+            ],
+            "description": "Step 3: Select a Session"
+          },
+          "drivers": {
+            "type": "string",
+            "description": "Step 4: Select Drivers"
+          }
+        }
+      }
+    },
+    {
+      "name": "select-lap",
+      "description": "Loads and selects a specific lap's telemetry for the current session (e.g. VER lap 12). Year, event and session must already be selected; the lap appears in the selected-laps control once loaded.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "driver": {
+            "type": "string",
+            "description": "3-letter driver code, e.g. \"VER\"."
+          },
+          "lap": {
+            "type": "string",
+            "description": "Lap number, e.g. \"12\"."
+          }
+        },
+        "required": [
+          "driver",
+          "lap"
+        ]
+      }
+    },
+    {
+      "name": "select-race-data",
+      "description": "Sets the year, event, session and/or drivers on the F1 telemetry homepage in one call. Each provided value is applied in order (year → event → session → drivers), waiting for the UI to load each downstream list. Omit a field to leave it unchanged.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "year": {
+            "type": "string",
+            "description": "Four-digit season, e.g. \"2025\" (2018..current)."
+          },
+          "event": {
+            "type": "string",
+            "description": "Event / Grand Prix name as shown in the dropdown, e.g. \"British Grand Prix\"."
+          },
+          "session": {
+            "type": "string",
+            "description": "Session name, e.g. \"Race\", \"Qualifying\", \"Practice 1\"."
+          },
+          "drivers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "3-letter driver codes to compare, e.g. [\"VER\", \"HAM\"]."
+          }
+        }
+      }
+    },
+    {
+      "name": "set-annotation-color",
+      "description": "Sets the global annotation stroke/fill color (hex, e.g. #00ff00).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "color": {
+            "type": "string",
+            "description": "CSS hex color, e.g. #00ff00."
+          }
+        },
+        "required": [
+          "color"
+        ]
+      }
+    },
+    {
+      "name": "set-annotation-mode",
+      "description": "Switches the chart annotation toolbar on or off (expert mode).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "enabled": {
+            "type": "boolean",
+            "description": "true to enable annotation mode, false to disable."
+          }
+        },
+        "required": [
+          "enabled"
+        ]
+      }
+    },
+    {
+      "name": "set-annotation-tool",
+      "description": "Selects the active annotation toolbar tool (Expert annotation mode): select, pencil, text, arrow, line, rect, ellipse, eraser.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "enum": [
+              "select",
+              "pencil",
+              "text",
+              "arrow",
+              "line",
+              "rect",
+              "ellipse",
+              "eraser"
+            ],
+            "description": "Annotation tool to activate."
+          }
+        },
+        "required": [
+          "tool"
+        ]
+      }
+    },
+    {
+      "name": "set-chart-option",
+      "description": "Enables or disables a homepage toggle. Lap chart: outliers, smoothing, fuel, trackStatus, autoFastest, sessionTime. Race/stint: raceTraceShadow, stintLowess. Telemetry: markers, corners, decimation, align, editLayout. Expert: annotation. enabled must be a real boolean.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "option": {
+            "type": "string",
+            "enum": [
+              "outliers",
+              "smoothing",
+              "fuel",
+              "trackStatus",
+              "autoFastest",
+              "raceTraceShadow",
+              "sessionTime",
+              "stintLowess",
+              "markers",
+              "corners",
+              "decimation",
+              "align",
+              "editLayout",
+              "annotation"
+            ],
+            "description": "Which chart option to change."
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "true to enable, false to disable."
+          }
+        },
+        "required": [
+          "option",
+          "enabled"
+        ]
+      }
+    },
+    {
+      "name": "set-chart-visibility",
+      "description": "Shows or hides a lap-time or telemetry chart (same as the Expert Chart settings modal). Lap charts: lapchart, heatmap, stint, sector, tyre, position, race-trace. Telemetry: speed, delta, throttle, brake, driver-action, gear, rpm, drs, driver-ahead, distance-ahead, gap-ahead, acc-x, acc-y, acc-z, elevation.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chart": {
+            "type": "string",
+            "enum": [
+              "lapchart",
+              "heatmap",
+              "stint",
+              "sector",
+              "tyre",
+              "tyre-strategy",
+              "position",
+              "position-changes",
+              "race-trace",
+              "raceTrace",
+              "speed",
+              "speedchart",
+              "delta",
+              "deltachart-section",
+              "throttle",
+              "throttlechart",
+              "brake",
+              "brakechart",
+              "driver-action",
+              "driveractionchart",
+              "gear",
+              "gearchart",
+              "rpm",
+              "rpchart",
+              "drs",
+              "drschart",
+              "driver-ahead",
+              "driveraheadchart",
+              "distance-ahead",
+              "distancetodriveraheadchart",
+              "gap-ahead",
+              "gaptodriveraheadchart",
+              "acc-x",
+              "acc_xchart",
+              "acc-y",
+              "acc_ychart",
+              "acc-z",
+              "acc_zchart",
+              "elevation",
+              "elevationchart"
+            ],
+            "description": "Which chart to show or hide."
+          },
+          "visible": {
+            "type": "boolean",
+            "description": "true to show, false to hide."
+          }
+        },
+        "required": [
+          "chart",
+          "visible"
+        ]
+      }
+    },
+    {
+      "name": "set-data-table-column",
+      "description": "Shows or hides a Data-tab column group (same as the table column toggles). Columns: compounds, stints, tyre-life, track-status, positions, personal-best, pitstops, sector-times. Open the Data tab first so the table is rendered.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "column": {
+            "type": "string",
+            "enum": [
+              "compounds",
+              "stints",
+              "tyreLife",
+              "tyre-life",
+              "trackStatus",
+              "track-status",
+              "positions",
+              "personalBest",
+              "personal-best",
+              "pitstops",
+              "sectorTimes",
+              "sector-times"
+            ],
+            "description": "Which column group to toggle."
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "true to show, false to hide."
+          }
+        },
+        "required": [
+          "column",
+          "enabled"
+        ]
+      }
+    },
+    {
+      "name": "set-drivers",
+      "description": "Selects which drivers to compare for the current session, by 3-letter code (e.g. VER, HAM). Waits for the driver list to load if needed.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "drivers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "3-letter driver codes, e.g. [\"VER\", \"HAM\"]."
+          }
+        },
+        "required": [
+          "drivers"
+        ]
+      }
+    },
+    {
+      "name": "set-event",
+      "description": "Selects an event / Grand Prix for the currently selected year. Resets session and drivers.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "event": {
+            "type": "string",
+            "description": "Event name as shown in the dropdown, e.g. \"British Grand Prix\"."
+          }
+        },
+        "required": [
+          "event"
+        ]
+      }
+    },
+    {
+      "name": "set-quali-segment",
+      "description": "Filters lap/stint/tyre charts to a qualifying segment (Q1/Q2/Q3/SQ1/…). Pass \"All\" or \"\" to clear. Only available for qualifying-style sessions after data loads.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "segment": {
+            "type": "string",
+            "description": "Segment code (e.g. \"Q1\") or \"All\" to clear."
+          }
+        },
+        "required": [
+          "segment"
+        ]
+      }
+    },
+    {
+      "name": "set-sector-visibility",
+      "description": "Shows or hides a sector series on the Expert sector chart (S1/S2/S3 chips). Requires Expert mode and loaded lap data so the sector controls exist.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sector": {
+            "type": "string",
+            "enum": [
+              "s1",
+              "s2",
+              "s3"
+            ],
+            "description": "Sector key: \"s1\", \"s2\", or \"s3\"."
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "true to show the sector, false to hide it."
+          }
+        },
+        "required": [
+          "sector",
+          "enabled"
+        ]
+      }
+    },
+    {
+      "name": "set-session",
+      "description": "Selects a session (e.g. Race, Qualifying) for the currently selected event. Resets drivers. Waits for the driver list to refresh for the new session.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "session": {
+            "type": "string",
+            "description": "Session name, e.g. \"Race\", \"Qualifying\", \"Practice 1\"."
+          }
+        },
+        "required": [
+          "session"
+        ]
+      }
+    },
+    {
+      "name": "set-stint-lowess-frac",
+      "description": "Sets the stint chart LOWESS smoothing fraction (0.05–1.0), same as the Smoothing slider next to Tyre Performance.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "frac": {
+            "type": "number",
+            "description": "Smoothing fraction between 0.05 and 1.0 (e.g. 0.3)."
+          }
+        },
+        "required": [
+          "frac"
+        ]
+      }
+    },
+    {
+      "name": "set-stint-pin",
+      "description": "Pins/unpins a stint on the Expert stint chart (📌 buttons). Pass driver + stint + pinned, or clearAll:true to unpin every stint.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "driver": {
+            "type": "string",
+            "description": "3-letter driver code, e.g. \"VER\" (required unless clearAll)."
+          },
+          "stint": {
+            "type": "number",
+            "description": "Stint number to pin/unpin."
+          },
+          "pinned": {
+            "type": "boolean",
+            "description": "true to pin, false to unpin."
+          },
+          "clearAll": {
+            "type": "boolean",
+            "description": "If true, clicks Unpin all (ignores other args)."
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "set-stint-visibility",
+      "description": "Toggles a stint checkbox in the Expert stint analysis form (same as the per-stint chips). Pass driver + stint + enabled, or driver + mode \"all\"|\"none\" for Select all / Hide all.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "driver": {
+            "type": "string",
+            "description": "3-letter driver code, e.g. \"VER\"."
+          },
+          "stint": {
+            "type": "number",
+            "description": "Stint number (1-based), required unless mode is set."
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "true to show the stint, false to hide (ignored when mode is set)."
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "all",
+              "none"
+            ],
+            "description": "Bulk action: \"all\" = Select all, \"none\" = Hide all for that driver."
+          }
+        },
+        "required": [
+          "driver"
+        ]
+      }
+    },
+    {
+      "name": "set-telemetry-layout",
+      "description": "Reorders telemetry charts (same as Edit layout drag/up-down). Pass an ordered list of chart ids; omitted ids are appended in the default order. Ids: speedchart, deltachart-section, throttlechart, brakechart, driveractionchart, gearchart, rpchart, drschart, driveraheadchart, distancetodriveraheadchart, gaptodriveraheadchart, acc_xchart, acc_ychart, acc_zchart, elevationchart.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "order": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Desired chart id order (partial lists are completed with defaults)."
+          }
+        },
+        "required": [
+          "order"
+        ]
+      }
+    },
+    {
+      "name": "set-view-mode",
+      "description": "Switches between the Essential (core charts) and Expert (advanced charts) view modes.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "essential",
+              "expert"
+            ],
+            "description": "View mode to activate."
+          }
+        },
+        "required": [
+          "mode"
+        ]
+      }
+    },
+    {
+      "name": "set-year",
+      "description": "Selects a season year on the homepage. Resets event, session and drivers (they must be re-selected afterwards).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "year": {
+            "type": "string",
+            "description": "Four-digit season, e.g. \"2025\" (2018..current)."
+          }
+        },
+        "required": [
+          "year"
+        ]
+      }
+    },
+    {
+      "name": "switch-tab",
+      "description": "Switches the main view between the Chart, Data (lap times table) and Docs (FIA documents) tabs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tab": {
+            "type": "string",
+            "enum": [
+              "chart",
+              "data",
+              "docs"
+            ],
+            "description": "Tab to activate."
+          }
+        },
+        "required": [
+          "tab"
+        ]
+      }
+    },
+    {
+      "name": "trigger-chart-screenshot",
+      "description": "Triggers a PNG download of a chart — the same action as clicking its Download button. Charts: lapchart, heatmap, stint, sector, tyre-strategy, position-changes, race-trace, weather, track-map, speed, delta, throttle, brake, gear, rpm, drs, elevation.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chart": {
+            "type": "string",
+            "enum": [
+              "lapchart",
+              "heatmap",
+              "stint",
+              "sector",
+              "tyre-strategy",
+              "position-changes",
+              "race-trace",
+              "weather",
+              "track-map",
+              "speed",
+              "delta",
+              "throttle",
+              "brake",
+              "gear",
+              "rpm",
+              "drs",
+              "elevation"
+            ],
+            "description": "Which chart to screenshot."
+          }
+        },
+        "required": [
+          "chart"
+        ]
+      }
+    },
+    {
+      "name": "trigger-csv-export",
+      "description": "Triggers a CSV download of the lap-times data table. The Data tab must be populated first (session + drivers selected).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "wait-for-data",
+      "description": "Polls until lap times are loaded for all currently selected drivers (or until timeout). Returns the final get-data-status payload. Call after select-race-data / set-drivers before reading lap tools.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "timeoutMs": {
+            "type": "number",
+            "description": "Max wait in milliseconds (default 20000, max 60000)."
+          },
+          "drivers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Optional subset of driver codes to wait for (defaults to current selection)."
+          }
+        }
+      }
+    },
+    {
+      "name": "wait-for-telemetry",
+      "description": "Polls until the requested (or currently selected) telemetry laps are in state.telData. Use after select-lap / auto-fastest.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "laps": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "dataKeys or 'ANT-58' style refs (defaults to selectedLaps)."
+          },
+          "timeoutMs": {
+            "type": "number",
+            "description": "Max wait ms (default 20000, max 60000)."
+          }
+        }
+      }
+    }
+  ],
+  "host": "tracinginsights.com",
+  "source": "webmcp.com/api/directory.json"
+}

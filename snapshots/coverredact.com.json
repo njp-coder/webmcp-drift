@@ -1,0 +1,310 @@
+{
+  "sponsio": 1,
+  "url": "https://coverredact.com/redact",
+  "capturedAt": "2026-09-10T11:10:21.033Z",
+  "tools": [
+    {
+      "name": "add_redaction",
+      "description": "Add a user-drawn redaction bar on a page at a page-relative rectangle (fractions of the page, origin top-left). The page repaints. Returns the new id and counts. Privacy: the document is processed inside this browser tab (WebAssembly); nothing is uploaded and the document never leaves the page. This tool returns counts, ids, categories, state and page-relative geometry only — never any text from the document.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "document_id": {
+            "type": "string",
+            "description": "document_id from get_status (e.g. \"doc-1\")."
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "1-based page number."
+          },
+          "rect": {
+            "type": "object",
+            "description": "Page-relative rectangle: fractions 0..1 of the page width/height, origin top-left, x0<x1, y0<y1.",
+            "properties": {
+              "x0": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "y0": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "x1": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "y1": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              }
+            },
+            "required": [
+              "x0",
+              "y0",
+              "x1",
+              "y1"
+            ]
+          }
+        },
+        "required": [
+          "document_id",
+          "page",
+          "rect"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "describe_capabilities",
+      "description": "Describe the in-page Cover redaction engine for an agent: what it detects, what it refuses, how a document gets onto the page, what the tools return and what they never return. Read this first. Privacy: the document is processed inside this browser tab (WebAssembly); nothing is uploaded and the document never leaves the page. This tool returns counts, ids, categories, state and page-relative geometry only — never any text from the document. Limits: Cover redacts a document completely or not at all. Person names and the structured detections are ONE redaction that runs in two stages (the instant structured pass, then the ~265 MB in-page name model), not two levels you can get separately: a document whose names could not be checked is REFUSED (error daily_limit | incomplete_redaction) rather than returned partly redacted. Scanned or image-only pages are refused (error needs_ocr) and password-protected PDFs are refused (error encrypted_unsupported): OCR and passwords need the Cover Mac app, https://coverredact.com/. Downloads carry the COVER TRIAL watermark unless this browser is registered with a Cover license (https://coverredact.com/): get_status reports the page-level `watermark` and every document reports its own, so read those rather than assuming either way. How a document gets here: the person using the page drops or opens the PDF; tools cannot accept file bytes or URLs. If get_status lists no document, ask the user to drop one onto the page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "finalize",
+      "description": "Bake the current redaction set into the ORIGINAL document (edited sets go through the engine's apply-rects; an untouched set is the engine's own output) and hand the redacted PDF to the person through the page's download. The file goes to their machine, never through this tool: the result carries filename, byte size, page count, the number of active redactions, and watermark (whether the engine stamped THIS file). Privacy: the document is processed inside this browser tab (WebAssembly); nothing is uploaded and the document never leaves the page. This tool returns counts, ids, categories, state and page-relative geometry only — never any text from the document. Limits: Cover redacts a document completely or not at all. Person names and the structured detections are ONE redaction that runs in two stages (the instant structured pass, then the ~265 MB in-page name model), not two levels you can get separately: a document whose names could not be checked is REFUSED (error daily_limit | incomplete_redaction) rather than returned partly redacted. Scanned or image-only pages are refused (error needs_ocr) and password-protected PDFs are refused (error encrypted_unsupported): OCR and passwords need the Cover Mac app, https://coverredact.com/. Downloads carry the COVER TRIAL watermark unless this browser is registered with a Cover license (https://coverredact.com/): get_status reports the page-level `watermark` and every document reports its own, so read those rather than assuming either way.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "document_id": {
+            "type": "string",
+            "description": "document_id from get_status (e.g. \"doc-1\")."
+          }
+        },
+        "required": [
+          "document_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_redaction_result",
+      "description": "The result of the engine run on one document: redacted (true/false), status, counts by category (detections and painted bars), tier, names_checked, not_covered, watermark, timings and the event log. With wait: true the call blocks until the run finishes (the names tier can take minutes; returns status \"pending\" at timeout_s). A refused document returns {error: \"needs_ocr\" | \"encrypted_unsupported\", next_step}. Privacy: the document is processed inside this browser tab (WebAssembly); nothing is uploaded and the document never leaves the page. This tool returns counts, ids, categories, state and page-relative geometry only — never any text from the document. Limits: Cover redacts a document completely or not at all. Person names and the structured detections are ONE redaction that runs in two stages (the instant structured pass, then the ~265 MB in-page name model), not two levels you can get separately: a document whose names could not be checked is REFUSED (error daily_limit | incomplete_redaction) rather than returned partly redacted. Scanned or image-only pages are refused (error needs_ocr) and password-protected PDFs are refused (error encrypted_unsupported): OCR and passwords need the Cover Mac app, https://coverredact.com/. Downloads carry the COVER TRIAL watermark unless this browser is registered with a Cover license (https://coverredact.com/): get_status reports the page-level `watermark` and every document reports its own, so read those rather than assuming either way.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "document_id": {
+            "type": "string",
+            "description": "document_id from get_status (e.g. \"doc-1\")."
+          },
+          "wait": {
+            "type": "boolean",
+            "description": "Wait for the run to finish (default true)."
+          },
+          "wait_for_names": {
+            "type": "boolean",
+            "description": "When waiting, wait for the names tier too, not just the instant structured tier (default true)."
+          },
+          "timeout_s": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 600,
+            "description": "Maximum seconds to wait (default 120)."
+          }
+        },
+        "required": [
+          "document_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_status",
+      "description": "Where things stand: engine readiness, whether the names tier is enabled, and every document on the page with its document_id, name, page count, state (queued | running | done | refused), stage (waiting | structured | names | done), refusal (error code + next step), counts by category, names_checked, watermark, timings and a structured event log of the run (stages, passes, per-page progress, refusals). Privacy: the document is processed inside this browser tab (WebAssembly); nothing is uploaded and the document never leaves the page. This tool returns counts, ids, categories, state and page-relative geometry only — never any text from the document. How a document gets here: the person using the page drops or opens the PDF; tools cannot accept file bytes or URLs. If get_status lists no document, ask the user to drop one onto the page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "include_events": {
+            "type": "boolean",
+            "description": "Include each document's event log (default true)."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_redactions",
+      "description": "Every redaction on a document as the editor holds it right now: id, page (1-based), category (e.g. US_SSN, PERSON; null for a drawn bar), origin (engine | user), active (false = an engine detection the editor turned off), and its rectangle as page-relative fractions. Ids: \"e<n>\" engine, \"u<n>\" user-drawn; engine ids are reissued when the names tier lands (see revision). Privacy: the document is processed inside this browser tab (WebAssembly); nothing is uploaded and the document never leaves the page. This tool returns counts, ids, categories, state and page-relative geometry only — never any text from the document.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "document_id": {
+            "type": "string",
+            "description": "document_id from get_status (e.g. \"doc-1\")."
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Only this page (1-based). Default: all pages."
+          }
+        },
+        "required": [
+          "document_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "redact_similar",
+      "description": "The magic tool, keyed by an EXISTING redaction id: the engine reads the value under that bar (in-page; it is never returned) and redacts every other occurrence of it across the document, on every page. Returns only the number of bars added. Privacy: the document is processed inside this browser tab (WebAssembly); nothing is uploaded and the document never leaves the page. This tool returns counts, ids, categories, state and page-relative geometry only — never any text from the document.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "document_id": {
+            "type": "string",
+            "description": "document_id from get_status (e.g. \"doc-1\")."
+          },
+          "redaction_id": {
+            "type": "string",
+            "description": "An existing, active redaction id from list_redactions."
+          }
+        },
+        "required": [
+          "document_id",
+          "redaction_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "remove_category",
+      "description": "Turn off every active engine redaction of one category (e.g. PERSON, US_ADDRESS) on a document. The page repaints. Returns counts only. Privacy: the document is processed inside this browser tab (WebAssembly); nothing is uploaded and the document never leaves the page. This tool returns counts, ids, categories, state and page-relative geometry only — never any text from the document.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "document_id": {
+            "type": "string",
+            "description": "document_id from get_status (e.g. \"doc-1\")."
+          },
+          "category": {
+            "type": "string",
+            "description": "A category name as returned by list_redactions / get_redaction_result counts."
+          }
+        },
+        "required": [
+          "document_id",
+          "category"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "remove_redactions",
+      "description": "Turn the given redactions off (an engine detection becomes inactive and can be restored; a user-drawn bar is deleted). The page repaints so the person watching sees the change. Returns counts only. Privacy: the document is processed inside this browser tab (WebAssembly); nothing is uploaded and the document never leaves the page. This tool returns counts, ids, categories, state and page-relative geometry only — never any text from the document.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "document_id": {
+            "type": "string",
+            "description": "document_id from get_status (e.g. \"doc-1\")."
+          },
+          "redaction_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "description": "redaction ids from list_redactions (e.g. [\"e12\", \"u3\"])."
+          }
+        },
+        "required": [
+          "document_id",
+          "redaction_ids"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "restore_category",
+      "description": "Turn every inactive engine redaction of one category back on. The page repaints. Returns counts only. Privacy: the document is processed inside this browser tab (WebAssembly); nothing is uploaded and the document never leaves the page. This tool returns counts, ids, categories, state and page-relative geometry only — never any text from the document.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "document_id": {
+            "type": "string",
+            "description": "document_id from get_status (e.g. \"doc-1\")."
+          },
+          "category": {
+            "type": "string",
+            "description": "A category name as returned by list_redactions."
+          }
+        },
+        "required": [
+          "document_id",
+          "category"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "restore_redactions",
+      "description": "Turn inactive engine redactions (ids \"e<n>\") back on. The page repaints. Returns counts only. Privacy: the document is processed inside this browser tab (WebAssembly); nothing is uploaded and the document never leaves the page. This tool returns counts, ids, categories, state and page-relative geometry only — never any text from the document.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "document_id": {
+            "type": "string",
+            "description": "document_id from get_status (e.g. \"doc-1\")."
+          },
+          "redaction_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "description": "redaction ids from list_redactions (e.g. [\"e12\", \"u3\"])."
+          }
+        },
+        "required": [
+          "document_id",
+          "redaction_ids"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "unredact_similar",
+      "description": "The magic tool in reverse, keyed by an EXISTING redaction id: every other active redaction of the same value across the document is turned off. The keyed bar itself stays. Returns only the number turned off. Privacy: the document is processed inside this browser tab (WebAssembly); nothing is uploaded and the document never leaves the page. This tool returns counts, ids, categories, state and page-relative geometry only — never any text from the document.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "document_id": {
+            "type": "string",
+            "description": "document_id from get_status (e.g. \"doc-1\")."
+          },
+          "redaction_id": {
+            "type": "string",
+            "description": "An existing, active redaction id from list_redactions."
+          }
+        },
+        "required": [
+          "document_id",
+          "redaction_id"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "coverredact.com",
+  "source": "webmcp.com/api/directory.json"
+}

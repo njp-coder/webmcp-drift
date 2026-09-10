@@ -1,0 +1,227 @@
+{
+  "sponsio": 1,
+  "url": "https://kidsuper.dev/",
+  "capturedAt": "2026-09-10T11:10:21.033Z",
+  "tools": [
+    {
+      "name": "add_matching_set",
+      "description": "Add the current product and its confirmed matching set using explicit selections for EVERY piece. Inspect get_product first. No substitutions and no changes when a piece is unavailable.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "handle": {
+                  "type": "string",
+                  "description": "Product handle or exact color slug returned by search."
+                },
+                "variantId": {
+                  "type": "string"
+                },
+                "size": {
+                  "type": "string"
+                },
+                "color": {
+                  "type": "string"
+                },
+                "quantity": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 10
+                }
+              },
+              "required": [
+                "handle"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 2,
+            "maxItems": 25
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "cancel_cart",
+      "description": "Empty the shopper’s cart. Use only when the shopper asks to remove all items.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_cart",
+      "description": "Read the shopper’s current cart with exact variants, quantities and estimated subtotal. No payment details are exposed.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_product",
+      "description": "Read a product, its color variants, prices, stock and matching set.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "handle": {
+            "type": "string",
+            "description": "Product handle or exact color slug returned by search."
+          }
+        },
+        "required": [
+          "handle"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "proceed_to_checkout",
+      "description": "Prepare a real Shopify checkout for the current cart. Returns a checkout URL for buyer payment, and opens cart review. No order is placed and no payment is submitted.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_catalog",
+      "description": "Search a catalog page for products with exact variant IDs, prices and available sizes. Follow pageInfo.endCursor even when a page is empty.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string"
+          },
+          "cursor": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "all",
+              "mens",
+              "womens",
+              "soon"
+            ]
+          },
+          "availableOnly": {
+            "type": "boolean"
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_shop_policies_and_faqs",
+      "description": "Read merchant-published shipping, refunds, privacy and terms. Missing information is unknown.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "show_product",
+      "description": "Navigate to a product page without adding or purchasing it.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "handle": {
+            "type": "string",
+            "description": "Product handle or exact color slug returned by search."
+          }
+        },
+        "required": [
+          "handle"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "update_cart",
+      "description": "Add an exact variant, set a cart line quantity, or remove a line. Ambiguous or unavailable variants return choices without changing the cart. This updates the visible cart; it does not buy anything.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "add",
+              "set_quantity",
+              "remove"
+            ]
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "handle": {
+                  "type": "string",
+                  "description": "Product handle or exact color slug returned by search."
+                },
+                "variantId": {
+                  "type": "string"
+                },
+                "size": {
+                  "type": "string"
+                },
+                "color": {
+                  "type": "string"
+                },
+                "quantity": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 10
+                }
+              },
+              "required": [
+                "handle"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 1,
+            "maxItems": 25
+          },
+          "lineKey": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "kidsuper.dev",
+  "source": "webmcp.com/api/directory.json"
+}

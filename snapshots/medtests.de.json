@@ -1,0 +1,131 @@
+{
+  "sponsio": 1,
+  "url": "https://medtests.de/",
+  "capturedAt": "2026-09-10T11:10:21.033Z",
+  "tools": [
+    {
+      "name": "medtests_get_crisis_resources",
+      "description": "Return official crisis contacts. Use this instead of continuing a screening when there may be immediate danger, severe confusion, or loss of reality testing.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "language": {
+            "type": "string",
+            "enum": [
+              "de",
+              "en"
+            ],
+            "default": "de",
+            "description": "Language for questions and results."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "medtests_get_screening",
+      "description": "Retrieve the exact published questions and allowed answers for one screening. Ask neutrally and do not rewrite or infer answers.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "test_id"
+        ],
+        "properties": {
+          "test_id": {
+            "type": "string",
+            "description": "Screening ID returned by medtests_list_screenings."
+          },
+          "language": {
+            "type": "string",
+            "enum": [
+              "de",
+              "en"
+            ],
+            "default": "de",
+            "description": "Language for questions and results."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "medtests_list_screenings",
+      "description": "List available evidence-based self-screenings. Select by the user’s stated concern, never by guessing a diagnosis.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "language": {
+            "type": "string",
+            "enum": [
+              "de",
+              "en"
+            ],
+            "default": "de",
+            "description": "Language for questions and results."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "medtests_score_screening",
+      "description": "Score a complete answer set without storing or returning the answers. Call only after the user explicitly consents. The result is a screening indication, never a diagnosis.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "test_id",
+          "answers",
+          "consent_confirmed"
+        ],
+        "properties": {
+          "test_id": {
+            "type": "string",
+            "description": "Screening ID."
+          },
+          "language": {
+            "type": "string",
+            "enum": [
+              "de",
+              "en"
+            ],
+            "default": "de",
+            "description": "Language for questions and results."
+          },
+          "consent_confirmed": {
+            "type": "boolean",
+            "const": true,
+            "description": "True only after the user explicitly agrees to submit answers for stateless scoring."
+          },
+          "answers": {
+            "type": "array",
+            "minItems": 1,
+            "description": "One complete answer per published question.",
+            "items": {
+              "type": "object",
+              "required": [
+                "question_id",
+                "value"
+              ],
+              "properties": {
+                "question_id": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "number"
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "medtests.de",
+  "source": "webmcp.com/api/directory.json"
+}

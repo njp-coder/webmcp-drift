@@ -1,0 +1,318 @@
+{
+  "sponsio": 1,
+  "url": "https://creator.lottiefiles.com/",
+  "capturedAt": "2026-09-10T11:10:21.033Z",
+  "tools": [
+    {
+      "name": "discover_tools",
+      "description": "Discover full TypeScript signatures for additional sandbox APIs before using them inside execute_typescript. Discoverable tools: [external_read_scene, external_apply_keyframes, external_apply_motion_preset, external_apply_motion_path, external_set_anchor_point, external_create_shape, external_bend_shape, external_create_text, external_create_text_group, external_create_button, external_create_reference_board, external_set_text, external_set_text_style, external_measure_text_units, external_split_text, external_stagger_layers, external_animate_entrance, external_list_fonts, external_center_layer, external_set_fill, external_set_stroke, external_animate_paint, external_animate_property, external_set_blend_mode, external_add_drop_shadow, external_add_blur, external_add_color_overlay, external_add_tint, external_add_tritone, external_list_layer_effects, external_remove_layer_effect, external_update_layer_effect, external_list_themes, external_list_slots, external_list_motion_system_items, external_link_slot_to_layer, external_create_slot, external_create_slot_from_value, external_update_slot_value, external_unlink_slot, external_add_theme, external_select_theme, external_remove_theme, external_list_segments, external_add_segment, external_rename_segment, external_remove_segment, external_select_segment, external_list_state_machines, external_add_state_machine, external_set_active_state_machine, external_remove_state_machine, external_list_states, external_add_state, external_add_global_state, external_remove_state, external_update_state, external_set_state_actions, external_set_initial_state, external_add_transition, external_remove_transition, external_list_interactions, external_add_pointer_interaction, external_add_state_interaction, external_remove_interaction, external_list_inputs, external_add_input, external_update_input, external_remove_input, external_import_asset, external_vectorize_image, external_remove_keyframes, external_duplicate_layer, external_tile_layer, external_reorder_layer, external_group_layers, external_create_shape_group, external_add_shape_to_layer, external_set_group_transform, external_reorder_shape, external_set_layer_time, external_retime_keyframes, external_delete_layer, external_create_mask, external_update_mask, external_remove_mask, external_set_matte, external_remove_matte, external_rename_node, external_set_layer_visibility, external_set_layer_lock, external_flip_layer, external_align_layer, external_align_layers, external_layout, external_read_keyframes, external_copy_animation, external_list_scenes, external_create_scene, external_switch_scene, external_set_current_frame, external_set_scene_background, external_set_scene_settings, external_create_scene_layer, external_break_scene_layer, external_export_lottie, external_apply_bounce, external_apply_squash, external_apply_coupled_shadow]. Pass the names exactly as shown (the external_ prefix is optional). Each result includes its canonical inputSchema. Use inputSchema for accepted enum values, literals, field descriptions, and constraints; typeStub is a simplified signature.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "toolNames": {
+            "minItems": 1,
+            "maxItems": 20,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "toolNames"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "execute_typescript",
+      "description": "Execute TypeScript in an isolated QuickJS sandbox to edit Creator. First use discover_tools for typed external_<tool_name> functions. Await every external_* call; calls are serialized. Return a JSON-serializable value; console.log captures text. No DOM, storage, network, imports, or persistent globals are available. Each run has a 30-second limit and 32 MB heap. At most two runs can execute at once per editor; additional runs fail immediately as busy and can be retried after an active run finishes. Edits already applied remain if a later call fails or execution is cancelled; read_scene to verify the result.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "typescriptCode": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100000
+          }
+        },
+        "required": [
+          "typescriptCode"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_fonts",
+      "description": "List font families available in the active project — Creator's curated presets, Google Fonts, OS-installed local fonts (when permission has been granted), and project-uploaded font assets. Use this when the user names a specific font you're not sure is loaded ('animate \"Acme\" in Bebas Neue letter-by-letter'), or when you need to recommend a fallback that's actually present.\n\nWhen to call:\n- User names a font you're not certain exists in this project (brand fonts, niche typefaces).\n- You're about to call `create_text` / `set_text_style` with a specific `font_name` and want to verify the family + style are loaded.\n- You're deciding between multiple style options for the same family.\n\nWhen NOT to call:\n- The user didn't specify a font — `create_text` uses the project default. Calling this would just burn a turn.\n- You already called it earlier in the conversation.\n\nReturns `{ families: [{ family, styles, default_style, source }] }`. `source` is one of `'PRESET' | 'GOOGLE_FONT' | 'LOCAL' | 'ASSET'`. If the requested family isn't in the list, fall back to a similar style + tell the user (e.g. 'Bebas Neue isn't loaded; I used Anton, the closest condensed sans available'). Pass `source` to filter to one category.\n\nNote: the catalog is a snapshot of what's currently loaded. Local OS fonts only appear after the user grants the browser's `local-fonts` permission, which Creator does not prompt for automatically.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "source": {
+            "description": "Filter the result to one font origin. 'all' (default) returns every loaded family.",
+            "type": "string",
+            "enum": [
+              "all",
+              "preset",
+              "google",
+              "local",
+              "asset"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_inputs",
+      "description": "List the typed inputs (variables) on the active state machine. Inputs are how state machines store runtime values — booleans for toggle state, numerics for progress / counters, strings for labels, and events for one-shot triggers. Inputs feed guards on transitions and actions in interactions.\n\nReturns `{ inputs: [{ id, name, type, value? }] }`. The `value` is the initial value at machine start (events don't have one).",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_interactions",
+      "description": "List the interactions defined on the active state machine. Interactions BIND runtime pointer / state events to actions — usually a `Fire` action that emits a named event a transition listens for.\n\n**Without an interaction, transition `trigger_event` guards never fire.** If you added an `add_transition({ trigger_event: 'click' })`, you must also `add_pointer_interaction({ pointer_event: 'Click', fire_event: 'click' })` for the click to do anything at runtime.\n\nReturns `{ interactions: [{ id, type, layer_name, state_name, actions, fires_event }] }`. `type` is the pointer event name (Click / PointerEnter / …) for pointer interactions OR `OnComplete` / `OnLoopComplete` for state-event interactions. `layer_name` is set for pointer interactions; `state_name` is set for state-event interactions. `actions[]` is the full action list in the agent-facing shape (snake_case + natural value types). `fires_event` is a legacy convenience: it's the input_name of the first `Fire` action when present, otherwise `null` — inspect `actions[]` for everything else.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_layer_effects",
+      "description": "Return the effects currently attached to a layer, with their ids, types, and enabled state. Call this before stacking another effect, before removing one, or whenever you need to know what's already there.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "layer_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "layer_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_motion_system_items",
+      "description": "Read the user's Motion System library — a separate design library from the file's theme slots. Returns colors / gradients / fonts / easings / durations / motion presets that the user has saved (typically synced from Workflow). Use this when the user names a brand value (e.g. 'brand red', 'standard ease-out', 'fast duration') and `list_slots` did NOT find a match — motion system is the fallback library. The values are returned for inline use (set_fill with the rgb you found, apply_keyframes with the control_points you found, etc.) — they are NOT linked tokens. For multi-property motion presets, use `apply_motion_preset` instead of trying to reconstruct the keyframes.\n\n**Hierarchy:** theme slots beat motion-system entries. Always `list_slots` first; only fall through to `list_motion_system_items` on a miss.\n\n**Colors vs gradients — same UI section, two enum values.** The Motion System UI shows solid colors AND gradients together under one 'Brand Colors' tab, so a name the user thinks is a 'color' may actually be a gradient (e.g. a logo gradient saved as `clogo`). When the user names a color and `type: 'colors'` returns no match, ALWAYS try `type: 'gradients'` before giving up. Only declare 'not found' after BOTH lookups miss.\n\nReturns `{ items: [...] }` typed per family (see schemas below). Pass no `type` to get a summary across all families. Order of `animated_properties` on motion-preset items is not guaranteed; treat as a set.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "type": {
+            "description": "Which asset family to read. Omit to get a `{ count, ids }` summary across all families. 'colors' returns solid colors only; 'gradients' returns linear/radial gradients (motion-system stores both under one section internally — this tool splits them).",
+            "type": "string",
+            "enum": [
+              "colors",
+              "gradients",
+              "fonts",
+              "easings",
+              "durations",
+              "motion_presets"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_scenes",
+      "description": "List every scene in the current project plus which one is active. Cheap read. Use when the user refers to scenes by name ('switch to the outro', 'work on the vertical') so you can find the right `scene_id`, or when deciding whether to create a new scene vs. switch to an existing one.\n\nReturns active scene id, and for each scene: id, name, size, framerate, duration, layer_count, and is_nestable (whether the scene can be used as a source for a nested scene layer).",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_segments",
+      "description": "List the named animation segments (markers) on the active scene. Each segment is a name + a frame range (start_frame, end_frame). Segments are used by Lottie players to loop / play named ranges and by dotLottie state machines as playback targets.\n\nReturns `{ segments: [{ id, name, start_frame, end_frame, duration_frames }] }`. Empty array means the scene has no segments yet.\n\nCall before `add_segment` if you need to check for duplicate names, before `add_state` on a state machine that targets a segment, or whenever the user asks 'what segments / loops / chapters does this animation have?'.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_slots",
+      "description": "List design-token slots defined in the file. Each slot has ONE stable id (e.g. 'brand-red') but can supply different VALUES per theme — Default theme might have brand-red as crimson, a Dark theme might have it as burgundy. The toolkit renders whichever value the currently active theme provides.\n\nUse before inventing hardcoded values whenever the user names a brand concept ('brand red', 'primary blue', 'the header color', 'our headline text'). Filter with `type` to narrow (e.g. COLOR for fill/stroke pickers, TEXT for headline strings).\n\nReturns `{ slots: [{ id, type, values_by_theme: { themeId: value, ... }, active_theme, active_value }] }`. Without `theme_id`, `active_value` is what the canvas renders right now. With a `theme_id` filter for an inactive theme, `active_value` may be that filtered theme's fallback value for inspection, while `active_theme` still names the canvas-rendered theme. The `values_by_theme` map shows variants if the user wants to recolor a specific theme. Empty `slots` means the file has no tokens of that type — fall back to inline values and say so.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "type": {
+            "description": "Optional slot type filter. Omit to list every slot across every theme.",
+            "type": "string",
+            "enum": [
+              "COLOR",
+              "TEXT",
+              "GRADIENT",
+              "POSITION",
+              "VECTOR",
+              "SCALAR"
+            ]
+          },
+          "theme_id": {
+            "description": "Optional theme id to scope the list. Omit to list slots from all themes. Defaults to no filter; use 'Default' for the always-present built-in theme.",
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_state_machines",
+      "description": "List the interactivity state machines defined in this file. Each one is `{ id, name, state_count, transition_count, is_active }`. Returns the active state machine id separately as `active_state_machine_id`. State machines are runtime configurations — Lottie players use them to switch playback based on events (click, hover, completion). Most files have 0 or 1 machine.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_states",
+      "description": "List the states in the active state machine. Each is `{ id, name, type, segment, autoplay, loop, mode, is_initial, transitions: [{ id, to_state_id, trigger?, type }] }`. Returns `state_machine_id` and `initial_state_id` at the top level for convenience. Empty array means the active machine has no states yet.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_themes",
+      "description": "List the themes embedded in this file. Themes group design-token slots (brand colors, named text strings, etc.). The Default theme is always present; users can add named alternates (e.g. 'Dark', 'Holiday'). Returns `{ themes: [{ id, slot_count, is_active }] }`. Call before `list_slots` if the user references a specific theme by name, or to confirm that any tokens exist before suggesting slot-based edits.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "measure_text_units",
+      "description": "Return per-line, per-word, and per-character bounds for an existing text layer. Uses the same canvas.measureText pipeline that powers `read_scene`'s `measured_bounds`, but exposes the cumulative pen position per glyph so per-character recipes can place each new layer at the source's exact kerning — no `bounds.width / char_count` approximation.\n\nWhen to call (REQUIRED before splitting):\n- Any per-character recipe (typewriter, per-character-rise, bottom-up-letters, top-down-letters, kinetic-center-build, short-slide-*).\n- Any per-word recipe where each word needs its own layer (per-word-crossfade, spring-scale-in) so the rebuilt phrase reads as one centered unit.\n- Layout-aware effects that need exact word widths (short-slide-down, short-slide-right, kinetic-center-build).\n\nWhen NOT to call:\n- Whole-layer recipes (micro-scale-fade, fade-through, scale-down-fade, mask-reveal-up) — those animate one layer; `read_scene`'s `visual_bounds` is enough.\n- Layers that aren't text — call returns an error.\n\nReturns (positions match `read_scene`'s coordinate system):\n- `local_bounds` / `world_bounds` for the whole layer (matches `text_style.measured_bounds` and `layout.visual_bounds` from `read_scene`).\n- `font`: `{ name, size, tracking, line_height, alignment }` — pass these to `create_text` per character/word/line to preserve the source typeface.\n- `lines[]`: one entry per `\\n`-separated line. Each line carries `text`, `local_bounds`, `world_bounds`, and optionally `words[]` / `characters[]` depending on `granularity`.\n- `characters[i].local_bounds.x + width/2` is the visual CENTER of glyph i; use that as the `position.x` for the per-character layer.\n- `characters[i].advance_x_local` is the pen position AFTER glyph i (left edge of glyph i+1 with tracking applied). Sum across glyphs and you reproduce the line width.\n\nGranularity:\n- `line` — only line bounds. Cheapest. Use for per-line recipes.\n- `word` — adds word bounds inside each line. Use for per-word recipes.\n- `character` — adds character bounds inside each line. Use for per-character recipes.\n- `all` (default) — words + characters. Cheap; the heavy lifting is already done.\n\nLimits:\n- Measurement uses the active document fonts. If the layer's font hasn't loaded yet, widths fall back to a coarse `0.48 * fontSize` estimate (returned as one-line/zero-words/zero-characters in non-DOM contexts). Verify with `inspect_scene` if you suspect a font-load race.\n- The returned positions are in the same coordinate space as `read_scene` — `local_bounds` is relative to the layer's anchor (alignment already applied), `world_bounds` is in scene coordinates.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "layer_id": {
+            "description": "Text layer id from `read_scene`. Pass the source phrase's layer id before splitting it.",
+            "type": "string"
+          },
+          "granularity": {
+            "description": "Which units to return. Default 'all' (words + characters per line). Use 'character' for per-character recipes, 'word' for per-word, 'line' for per-line.",
+            "type": "string",
+            "enum": [
+              "line",
+              "word",
+              "character",
+              "all"
+            ]
+          }
+        },
+        "required": [
+          "layer_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "read_keyframes",
+      "description": "Read the current keyframes on a layer's keyframe-tool properties. Use this whenever the user asks to TUNE, POLISH, or MODIFY an existing animation ('make the bounce snappier', 'slow down the fade', 'shift this 10 frames later', 'make the rotation smoother') — so you can see what's actually there before changing it, instead of rebuilding from scratch.\n\nWithout `property`, returns a map of the core properties handled by `apply_keyframes` (`position`, `scale`, `rotation`, `opacity`, `fill_color`, trim path fields, and `stroke_width`). With `property`, returns just that explicit core or extended property. Extended properties such as masks, shape paths, gradients, text animator fields, and time mapping must be named explicitly; they are not included in the bulk read.\n\nFor static (non-animated) properties, `is_animated` is false and `static_value` is returned instead of keyframes.\n\n**For `position` on a TEXT layer, `static_value` is the RAW transform (baseline / box-origin anchor) — NOT the visual center. To animate a text position relative to its rest (the only safe way), keyframe from THIS `static_value`, not from `visual_center`. For a settle-into-place entrance, prefer `animate_entrance`, which reads this for you.**\n\nEasing in returned keyframes comes through as the raw stored shape: `{ type: \"LINEAR\" }` or `{ type: \"CUBIC_BEZIER\", x1, y1, x2, y2 }`. (Named presets are expanded at write-time, so reads only see the resolved bezier coefficients.)",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "layer_id": {
+            "type": "string"
+          },
+          "property": {
+            "description": "Optional — restrict to one core or extended keyframe-tool property. Omit to read all core keyframe-tool properties on the layer.",
+            "type": "string",
+            "enum": [
+              "position",
+              "scale",
+              "rotation",
+              "opacity",
+              "fill_color",
+              "trim_start",
+              "trim_end",
+              "trim_offset",
+              "stroke_width",
+              "stroke_color",
+              "fill_opacity",
+              "stroke_opacity",
+              "gradient_stops",
+              "gradient_start",
+              "gradient_end",
+              "highlight_angle",
+              "highlight_length",
+              "shape_path",
+              "shape_size",
+              "rectangle_roundness",
+              "outer_radius",
+              "inner_radius",
+              "outer_roundness",
+              "inner_roundness",
+              "polygon_points",
+              "star_points",
+              "text_fill_color",
+              "text_stroke_color",
+              "text_stroke_width",
+              "mask_path",
+              "mask_opacity",
+              "time_mapping"
+            ]
+          }
+        },
+        "required": [
+          "layer_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "read_scene",
+      "description": "Read the current Creator scene. Returns scene dimensions, framerate, duration, all layers, current selection, render order, visual bounds, scene-center deltas, and clipping/off-canvas flags. Call this once at the start of most turns to understand what's on the canvas. Use each layer's `ordering` and `layout` blocks to avoid wrong-layer, wrong-stack, and off-canvas mistakes. A layer may also carry an `occlusion` block (`likely_hidden: true`, `occluded_by: [ids]`) when an opaque layer in front of it covers it — treat that layer as INVISIBLE on the canvas (e.g. a label buried behind a button fill); reorder it above the cover with `reorder_layer` before reporting done. No input required — always reads the active scene.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "creator.lottiefiles.com",
+  "source": "webmcp.com/api/directory.json"
+}

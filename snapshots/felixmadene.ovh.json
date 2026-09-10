@@ -1,0 +1,110 @@
+{
+  "sponsio": 1,
+  "url": "https://felixmadene.ovh/projects/cv-crossing-world.html",
+  "capturedAt": "2026-09-10T11:10:21.033Z",
+  "tools": [
+    {
+      "name": "get_cv_crossing_session",
+      "description": "Read the shareable CV Crossing session identity. Use this to confirm which browser tab the human is watching before controlling the live game. This never changes the game.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_cv_crossing_state",
+      "description": "Read the live CV Crossing game state before planning a move. Returns the character position, current or nearest island, coin progress, nearest remaining coins, available navigation targets, and visible coin-counter text. This does not move the character or change the game.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "move_cv_crossing_character",
+      "description": "Walk the visible CV Crossing character a bounded distance in one world-space cardinal direction. North increases z and east increases x. This changes the live page, honors the game collision map, can collect nearby coins, updates the visible character and coin counter, and may stop early at water or an island boundary.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "direction": {
+            "type": "string",
+            "enum": [
+              "north",
+              "south",
+              "east",
+              "west"
+            ],
+            "description": "World-space direction. North increases z, east increases x."
+          },
+          "distance": {
+            "type": "number",
+            "minimum": 0.1,
+            "maximum": 8,
+            "description": "Distance to walk in island world units."
+          }
+        },
+        "required": [
+          "direction",
+          "distance"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "navigate_cv_crossing_island",
+      "description": "Navigate the visible CV Crossing character to a named CV island, the nearest remaining coin, or through all remaining coins. This starts the live route and returns immediately; poll get_cv_crossing_state to watch movement and coin collection. A new human or agent movement cancels the current route.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "target": {
+            "type": "string",
+            "enum": [
+              "main_island",
+              "thinkproject",
+              "finastra",
+              "misys",
+              "thomson_reuters",
+              "reuters_singapore",
+              "reuters_financial_software",
+              "effix",
+              "nearest_coin",
+              "all_coins"
+            ],
+            "description": "Named CV island, nearest remaining coin, or all remaining coins."
+          }
+        },
+        "required": [
+          "target"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "open_cv_crossing",
+      "description": "Open the interactive CV Crossing resume island. This navigation changes the current page; after it opens, the agent can inspect live game state, move the visible character, navigate between career islands, and collect coins.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "open_vibe_coding_projects",
+      "description": "Open the Vibe Coding projects page. This navigation changes the current page; after it opens, the agent can discover tools for listing all projects and submitting a project idea.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "felixmadene.ovh",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,120 @@
+{
+  "sponsio": 1,
+  "url": "https://www.nexasoluciones.com.ar/",
+  "capturedAt": "2026-09-10T11:10:21.033Z",
+  "tools": [
+    {
+      "name": "payment.methods",
+      "description": "Devuelve los medios de pago disponibles en NEXA Soluciones: MercadoPago, tarjeta de crédito/débito con Getnet, y transferencia bancaria.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "products.get",
+      "description": "Devuelve información completa de un producto NEXA por su slug: precio con IVA, descripción detallada, colores, compra mínima, accesorios y link.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Slug del producto (ej: piso-rejilla, piso-ciego-trama, piso-ciego-moneda)"
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "products.list",
+      "description": "Lista todos los pisos modulares encastrables y accesorios disponibles en NEXA Soluciones. Devuelve nombre, precio con IVA en ARS, colores disponibles, usos recomendados y link directo.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "products.search",
+      "description": "Busca pisos modulares NEXA por uso (gimnasio, pileta, exterior, showroom, lavadero, etc.) o tipo (rejilla, ciego, trama, moneda). Devuelve productos que coincidan.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Término de búsqueda: un uso (gimnasio, pileta, exterior) o tipo de piso (rejilla, ciego)"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "quote.request",
+      "description": "Envía una solicitud de cotización a NEXA Soluciones. Requiere nombre y producto. Opcionalmente email, teléfono, metros cuadrados y mensaje. Un asesor se comunicará con el cliente.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "nombre": {
+            "type": "string",
+            "description": "Nombre del cliente"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email de contacto (opcional)"
+          },
+          "telefono": {
+            "type": "string",
+            "description": "Teléfono o WhatsApp (opcional)"
+          },
+          "producto": {
+            "type": "string",
+            "description": "Producto de interés (ej: Piso Rejilla, Piso Ciego Trama)"
+          },
+          "metros": {
+            "type": "number",
+            "description": "Metros cuadrados necesarios (opcional)"
+          },
+          "mensaje": {
+            "type": "string",
+            "description": "Mensaje adicional (opcional)"
+          }
+        },
+        "required": [
+          "nombre",
+          "producto"
+        ]
+      }
+    },
+    {
+      "name": "shipping.quote",
+      "description": "Cotiza el costo de envío a un código postal argentino. Envío gratis a AMBA (CP 1000-1899) en pedidos de 100m² o más. Devuelve opciones de Correo Argentino y Via Cargo con precio y plazo.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "codigo_postal": {
+            "type": "string",
+            "description": "Código postal de destino (4 dígitos, ej: 1425)"
+          },
+          "bultos": {
+            "type": "number",
+            "description": "Cantidad de bultos/cajas (default 1)"
+          }
+        },
+        "required": [
+          "codigo_postal"
+        ]
+      }
+    }
+  ],
+  "host": "nexasoluciones.com.ar",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,55 @@
+{
+  "sponsio": 1,
+  "url": "https://sap-ai-skills.com/",
+  "capturedAt": "2026-09-10T11:10:21.033Z",
+  "tools": [
+    {
+      "name": "get_skill_details",
+      "description": "Look up one SAP skill from this site's catalog by its slug — returns the description, install command, version, GitHub link, feature counts, and the detail-page URL. Use the search_skills tool on the home or /skills/ page to find slugs by keyword or category.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "slug": {
+            "description": "Skill slug from the catalog, e.g. \"sap-abap\" or \"sap-fiori-tools\".",
+            "type": "string"
+          }
+        },
+        "required": [
+          "slug"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "list_bundles",
+      "description": "List the pre-assembled SAP skill bundles on this site — curated skill sets for common consultant use cases. Returns each bundle's title, what it is for, the included skills, and the one-line install command that installs every skill in the bundle. Takes no parameters.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "search_skills",
+      "description": "Search the SAP skills catalog shown on this page. Updates the visible search box and category filter so the user sees the results, syncs the URL, and returns the matching skills with install commands and detail-page links. Omit both parameters (or pass empty values) to clear the filters and list every skill.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "category": {
+            "description": "Category to filter by, as id or display name — e.g. \"abap\", \"ABAP\", or \"UI Development\". Use \"all\" or omit to keep all categories.",
+            "type": "string"
+          },
+          "query": {
+            "description": "Free-text search matched against skill names, descriptions, and keywords. Omit or pass an empty string to clear the search.",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    }
+  ],
+  "host": "sap-ai-skills.com",
+  "source": "webmcp.com/api/directory.json"
+}

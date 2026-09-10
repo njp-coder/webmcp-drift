@@ -1,0 +1,191 @@
+{
+  "sponsio": 1,
+  "url": "https://food.copo.st/",
+  "capturedAt": "2026-09-10T11:10:21.033Z",
+  "tools": [
+    {
+      "name": "browse_profile",
+      "description": "Opens a user profile by username in the app profile view. Accepts usernames with or without a leading @ and returns a compact profile summary.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "username"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "username": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Username to open in the profile view. A leading @ or a /@username profile URL is accepted."
+          },
+          "includeProfileResponse": {
+            "type": "boolean",
+            "description": "Whether to include the raw api/client/GetProfileInfo response in the tool result. Defaults to false to keep the result compact."
+          }
+        }
+      }
+    },
+    {
+      "name": "create_post",
+      "description": "Opens the Create post composer so the user can record a new video, upload an existing video, or upload an image/photo to publish as a post.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "save_current_post_to_bookmarks",
+      "description": "Saves the currently active post directly to the signed-in user's Bookmarks collection. This is idempotent: if the current post is already in Bookmarks, it returns success without removing it.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "expectedPostId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "description": "Optional safety guard. If provided, the current post must have this id before it is saved to Bookmarks."
+          }
+        }
+      }
+    },
+    {
+      "name": "search_posts",
+      "description": "Searches user-published video and image posts by free text. Current version does not run live search; it opens a curated static collection in scrollable mode.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Free-text search query for posts published by users, including video and image posts. Current version opens a curated static collection instead of running live search."
+          }
+        }
+      }
+    },
+    {
+      "name": "send_message",
+      "description": "Sends a direct message to a user profile by username, then opens the resulting message thread in the app. This requires sign-in.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "username",
+          "text"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "username": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Username of the profile to send a direct message to. A leading @ or a /@username profile URL is accepted."
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Direct-message text to send."
+          },
+          "includeServerResponse": {
+            "type": "boolean",
+            "description": "Whether to include the raw api/dm/threads/broadcast send response in the tool result. Defaults to true."
+          }
+        }
+      }
+    },
+    {
+      "name": "show_direct_messages",
+      "description": "Opens the Threads / direct messages view and returns the api/dm/threads response plus a compact summary so the AI agent can answer questions like whether there are unread DMs or messages today.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "includeServerResponse": {
+            "type": "boolean",
+            "description": "Whether to include the raw api/dm/threads server response in the tool result. Defaults to true so the AI agent can answer questions about threads."
+          }
+        }
+      }
+    },
+    {
+      "name": "show_nearby_on_map",
+      "description": "Opens the app map and searches a rectangular geographic area for either posts or users, one type at a time. Provide west/south/east/north bounds so the map fits to that area and renders matching nearby items.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "itemType",
+          "bounds"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "itemType": {
+            "type": "string",
+            "enum": [
+              "post",
+              "user"
+            ],
+            "description": "Object type to show on the map. Use one type at a time: post or user."
+          },
+          "bounds": {
+            "type": "object",
+            "required": [
+              "west",
+              "south",
+              "east",
+              "north"
+            ],
+            "additionalProperties": false,
+            "description": "Rectangular search area in geographic coordinates using west,south,east,north bounds.",
+            "properties": {
+              "west": {
+                "type": "number",
+                "minimum": -180,
+                "maximum": 180,
+                "description": "Western longitude of the search rectangle."
+              },
+              "south": {
+                "type": "number",
+                "minimum": -90,
+                "maximum": 90,
+                "description": "Southern latitude of the search rectangle."
+              },
+              "east": {
+                "type": "number",
+                "minimum": -180,
+                "maximum": 180,
+                "description": "Eastern longitude of the search rectangle."
+              },
+              "north": {
+                "type": "number",
+                "minimum": -90,
+                "maximum": 90,
+                "description": "Northern latitude of the search rectangle."
+              }
+            }
+          },
+          "label": {
+            "type": "string",
+            "description": "Optional human-readable place label, for example Central Park, New York."
+          }
+        }
+      }
+    }
+  ],
+  "host": "food.copo.st",
+  "source": "webmcp.com/api/directory.json"
+}

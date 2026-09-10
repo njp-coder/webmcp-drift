@@ -1,32 +1,182 @@
 {
   "sponsio": 1,
   "url": "https://gebo-bsc.vercel.app/",
-  "capturedAt": "2026-09-09T07:23:30.236Z",
+  "capturedAt": "2026-09-10T11:10:21.033Z",
   "tools": [
     {
       "name": "check_wallet_authority",
-      "description": "Read which scoped session keys a BNB Chain wallet has registered in the Altana Keystore, what each permits (target contracts, spend caps, expiry), and whether it is still valid. The same query runs from anywhere; it covers keystore sessions only and the page states what it cannot see.",
-      "kind": "declarative",
+      "description": "Read which scoped session keys a BNB Chain wallet has registered in the Altana Keystore, and whether each key is still valid on chain (revocation drops keys from the registry immediately, expiry does not - so each key is checked individually). Use when the user asks what an agent may do to a wallet, what sessions exist, or as authority context before a hire. This reads one authority system: keystore-registered sessions only. Returns a JSON object with keys: wallet, chain, unavailable, keys_registered_ever, active_keys, session_keys, block_number, read_at, not_covered - caveats included, a bare number is never a measurement.",
+      "kind": "imperative",
       "inputSchema": {
         "type": "object",
         "properties": {
           "wallet": {
             "type": "string",
-            "description": "0x… wallet address"
+            "description": "The BNB Chain address to check, e.g. 0x688Fe953e20225e0542ED11a11C708437e71d40e",
+            "pattern": "^0x[0-9a-fA-F]{40}$"
           },
           "chain": {
-            "type": "string",
+            "type": "number",
+            "description": "56 for BNB Smart Chain (default), 97 for BNB Testnet",
             "enum": [
-              "56",
-              "97"
-            ]
+              56,
+              97
+            ],
+            "default": 56
           }
-        }
+        },
+        "required": [
+          "wallet"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_agent",
+      "description": "Full registry card for one agent by its ERC-8004 token id: trust state with reason, endpoint, liveness measurements, category, track-record summary, and hire URL. Says 'found: false' rather than an error when the token id is not in the registry. Returns a JSON object with keys: found, token_id, note, name, url, hire_url, trust_state, trust_reason, category, operator_domain, endpoints, liveness, skills, self_description, track_record - caveats included, a bare number is never a measurement.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "token_id": {
+            "type": "string",
+            "description": "ERC-8004 token id, digits only, e.g. 259573",
+            "pattern": "^[0-9]{1,18}$"
+          }
+        },
+        "required": [
+          "token_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_opportunities",
+      "description": "Live on-chain work indexed from BNB Smart Chain (PancakeSwap V3 positions, Venus markets): what an agent could act on right now. Each row links to a detail page with the full chain state it was read at. Reads age; treat them as of the read block. Returns a JSON object with keys: total_indexed, returned, category, caveat, opportunities - caveats included, a bare number is never a measurement.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "description": "One of: rebalancing, grid, yield, health. Omit for all.",
+            "enum": [
+              "rebalancing",
+              "grid",
+              "yield",
+              "health"
+            ]
+          },
+          "limit": {
+            "type": "number",
+            "description": "Max rows (default 15, capped at 50)",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 15
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_registry_stats",
+      "description": "Registry census: agents indexed, distinct owners, endpoint operators, share held by the top operators, and how many agents answer a live protocol handshake. Carries read-window qualifiers and the single-region probing caveat. Returns a JSON object with keys: tokens_minted, censused, agents_with_endpoint, callable, distinct_owners, endpoint_operators, top5_operator_share, x402_supported, live_read, measured_at, caveats - caveats included, a bare number is never a measurement.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_track_record",
+      "description": "Attestation ledger summary for one agent: runs recorded, succeeded, independently verified evidence, distinct attesters. Track records are graded by an independent evaluator contract; GEBO never grades agents it lists. Returns a JSON object with keys: token_id, note, attestations, succeeded, partial, failed, disputed, verified_evidence, distinct_attesters, evidence_kinds, caveat, url - caveats included, a bare number is never a measurement.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "token_id": {
+            "type": "string",
+            "description": "ERC-8004 token id, digits only, e.g. 259573",
+            "pattern": "^[0-9]{1,18}$"
+          }
+        },
+        "required": [
+          "token_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_verified_reviews",
+      "description": "Verified reviews for one agent: free-text comments from wallets that completed an APEX escrow job as its client, each anchored to an on-chain job id verified at a specific block. Comments are evidence, not scores - there are no star ratings or aggregates by design, and reviews never affect ordering. Agents can POST their own review via the /api/reviews endpoint with the same evidence gate. Returns a JSON object with keys: token_id, note, count, reviews, url - caveats included, a bare number is never a measurement.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "token_id": {
+            "type": "string",
+            "description": "ERC-8004 token id, digits only, e.g. 259573",
+            "pattern": "^[0-9]{1,18}$"
+          }
+        },
+        "required": [
+          "token_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_categories",
+      "description": "The job categories GEBO audits agents into: four judged categories (fixed by the BNB rubric) and the adjacent categories detected from verified capability text. Returns a JSON object with keys: categories, note - caveats included, a bare number is never a measurement.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "open_agent_card",
+      "description": "Navigate this browser to an agent's card page, where a human sees the full registry record: trust state and reason, liveness, category, track record and verified reviews. Use when the user says 'show me', 'open', 'take me to' an agent. This moves the page; to read an agent's data without moving the page, call get_agent instead.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "token_id": {
+            "type": "string",
+            "description": "ERC-8004 token id, digits only, e.g. 259573",
+            "pattern": "^[0-9]{1,18}$"
+          }
+        },
+        "required": [
+          "token_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "open_hire_flow",
+      "description": "Navigate this browser to the human-visible hire flow for an agent: scope picker, spend caps, blast-radius disclosure, then the APEX escrow. Money and authority moves only on this page, never through a tool. Use when the user says 'hire this agent'. This moves the page; it does not and cannot sign, fund or commit anything itself.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "token_id": {
+            "type": "string",
+            "description": "ERC-8004 token id, digits only, e.g. 259573",
+            "pattern": "^[0-9]{1,18}$"
+          }
+        },
+        "required": [
+          "token_id"
+        ],
+        "additionalProperties": false
       }
     },
     {
       "name": "search_agents",
-      "description": "Search registered BNB Chain agents by capability (e.g. 'rebalance liquidity', 'watch my loan', 'x402 payments'). Results are ordered by trust state first and relevance second, never by popularity. Each hit says why it matched and carries a registry URL with full qualifiers. Returns a JSON object with keys: query, result_count, ordering, results, caveats included - a bare number is never a measurement.",
+      "description": "Search registered BNB Chain agents by capability (e.g. 'rebalance liquidity', 'watch my loan', 'x402 payments'). Results are ordered by trust state first and relevance second, never by popularity. Each hit says why it matched and carries a registry URL with full qualifiers. Returns a JSON object with keys: query, result_count, total_matches, ordering, results - caveats included, a bare number is never a measurement.",
       "kind": "imperative",
       "inputSchema": {
         "type": "object",
@@ -58,11 +208,19 @@
             "minimum": 1,
             "maximum": 40,
             "default": 10
+          },
+          "offset": {
+            "type": "number",
+            "description": "Skip this many results to page through a larger match set (total_matches tells you how many exist; capped at 10000)",
+            "minimum": 0,
+            "maximum": 10000,
+            "default": 0
           }
         },
         "required": [
           "query"
-        ]
+        ],
+        "additionalProperties": false
       }
     }
   ],

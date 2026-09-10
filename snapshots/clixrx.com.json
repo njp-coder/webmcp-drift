@@ -1,0 +1,202 @@
+{
+  "sponsio": 1,
+  "url": "https://clixrx.com/",
+  "capturedAt": "2026-09-10T11:10:21.033Z",
+  "tools": [
+    {
+      "name": "confirm_prescription",
+      "description": "Read back the current returned prescription and prices for customer review. This never confirms or creates a coupon.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "find_prescription_discount_prices",
+      "description": "For an explicit prescription discount-price request. Uses only customer-supplied medication, ZIP and exact quantity. Returns prices with the reusable session card; show its codes inline without extra confirmation.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "drug_name": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 100
+          },
+          "zip_code": {
+            "type": "string",
+            "pattern": "^\\d{5}$"
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 360
+          },
+          "strength": {
+            "type": "string"
+          },
+          "dosage_form": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "drug_name"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_prescription_status",
+      "description": "Read current prescription or completed coupon status for this page session. Never starts pricing or coupon creation.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "open_prescription_lookup",
+      "description": "Navigation only: opens the existing ClixRx Advisor for a prescription discount-price lookup. This does not search, price, select a pharmacy, or create a coupon. After navigation, rediscover the Advisor page tools.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "refine_results",
+      "description": "Apply the customer's requested factual sort or filter to returned offers. Never select a pharmacy or create a coupon.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "revision": {
+            "type": "string"
+          },
+          "action": {
+            "enum": [
+              "sort_by_price",
+              "sort_by_distance",
+              "filter_open_now",
+              "filter_drive_thru",
+              "clear_filters"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "revision",
+          "action"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "refresh_stale_pricing",
+      "description": "Refresh current prescription prices and return the reusable session card. This may perform an idempotent card write.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "revision": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "revision"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "revise_prescription",
+      "description": "Replace the search with explicitly revised prescription details. Returns prices with the reusable session card; card issuance is an idempotent write.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "drug_name": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 100
+          },
+          "zip_code": {
+            "type": "string",
+            "pattern": "^\\d{5}$"
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 360
+          },
+          "strength": {
+            "type": "string"
+          },
+          "dosage_form": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "drug_name"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "select_candidate",
+      "description": "Choose the exact returned medication option explicitly selected by the customer, then compare its prices and return the reusable session card. Never guess.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "revision": {
+            "type": "string"
+          },
+          "candidate_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "revision",
+          "candidate_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "select_pharmacy",
+      "description": "Selects an exact displayed pharmacy price for comparison. The reusable card is already returned with priced offers, so this selection does not issue another card. Legacy unresolved coupon recovery remains protected.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "revision": {
+            "type": "string"
+          },
+          "offer_id": {
+            "type": "string"
+          },
+          "customer_selected": {
+            "type": "boolean",
+            "const": true
+          }
+        },
+        "required": [
+          "revision",
+          "offer_id",
+          "customer_selected"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "clixrx.com",
+  "source": "webmcp.com/api/directory.json"
+}

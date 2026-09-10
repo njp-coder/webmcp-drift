@@ -1,0 +1,168 @@
+{
+  "sponsio": 1,
+  "url": "https://www.darrenhuang.com/",
+  "capturedAt": "2026-09-10T11:10:21.033Z",
+  "tools": [
+    {
+      "name": "digital_engine_read_content",
+      "description": "讀取數位引擎的公開內容。",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "article",
+              "note"
+            ],
+            "default": "article"
+          },
+          "slug": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          }
+        },
+        "required": [
+          "slug"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "digital_engine_search_content",
+      "description": "搜尋數位引擎公開的繁體中文文章與筆記。",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "default": 5
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "inspect_image_c2pa",
+      "description": "Fetch a single image (by CSS selector or URL) and return its fully decoded C2PA manifest store: every manifest's claim, assertions (e.g. c2pa.actions edit history, schema.org authorship), and the COSE signature details (algorithm and signing-certificate identity). Provide exactly one of `selector` or `url`. Note: the signature is decoded but NOT cryptographically verified.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "selector": {
+            "type": "string",
+            "maxLength": 8192,
+            "description": "CSS selector for an <img> element on the page."
+          },
+          "url": {
+            "type": "string",
+            "maxLength": 8192,
+            "description": "Image URL (absolute, or relative to the current page) to fetch and inspect."
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "read_content",
+      "description": "Read one public Traditional Chinese or English article or Facebook note with its canonical URL and Markdown content.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "article",
+              "note"
+            ],
+            "default": "article"
+          },
+          "locale": {
+            "type": "string",
+            "enum": [
+              "zh-hant",
+              "en"
+            ],
+            "default": "zh-hant"
+          },
+          "slug": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          }
+        },
+        "required": [
+          "slug"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "scan_images_c2pa",
+      "description": "Scan every <img> on the current page for C2PA Content Credentials (content provenance metadata) and return a per-image summary: whether a manifest is present, the claim generator (the tool that produced or edited the image), the title, and the signer name. Use this to find which images on a page carry provenance data. Note: provenance is decoded but NOT cryptographically verified.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 25,
+            "description": "Maximum number of images to fetch and scan (default 25, max 100)."
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "search_content",
+      "description": "Search public Traditional Chinese or English articles and Facebook notes on Digital Engine.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "default": 5
+          },
+          "locale": {
+            "type": "string",
+            "enum": [
+              "zh-hant",
+              "en"
+            ],
+            "default": "zh-hant"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "darrenhuang.com",
+  "source": "webmcp.com/api/directory.json"
+}

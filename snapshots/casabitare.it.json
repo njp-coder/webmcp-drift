@@ -1,0 +1,238 @@
+{
+  "sponsio": 1,
+  "url": "https://casabitare.it/",
+  "capturedAt": "2026-09-10T11:10:21.033Z",
+  "tools": [
+    {
+      "name": "get_agency",
+      "description": "Use to retrieve only the public profile and contact details of a specific CasaBitare real-estate agency already identified by its agency id.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "agency_id": {
+            "oneOf": [
+              {
+                "type": "integer",
+                "minimum": 1
+              },
+              {
+                "type": "string",
+                "pattern": "^A00[1-9][0-9]*$"
+              }
+            ],
+            "description": "Agency identifier, such as A00213; a numeric WordPress author id is also accepted."
+          }
+        },
+        "required": [
+          "agency_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_property",
+      "description": "Use to retrieve the complete canonical public record for one property already identified by search_properties. Do not use for discovery or lists.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "property_id": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Numeric CasaBitare property id returned by search_properties."
+          }
+        },
+        "required": [
+          "property_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_locations",
+      "description": "Use to find valid CasaBitare geographic places, resolve partial or ambiguous names case-insensitively, and obtain stable identifiers before searching properties.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 100,
+            "description": "Exact or partial Italian place name, for example tori."
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "region",
+              "province",
+              "city",
+              "district"
+            ],
+            "description": "Optional geographic level; district covers localities and neighbourhoods."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "default": 10
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_properties",
+      "description": "Use to find and compare public CasaBitare properties, apply real-estate filters, and obtain a compact paginated result list. Resolve uncertain or partial place names with search_locations first; use get_property only after selecting a property id.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "transaction": {
+            "type": "string",
+            "enum": [
+              "sale",
+              "rent",
+              "auction"
+            ],
+            "description": "sale, monthly/other rent, or judicial auction."
+          },
+          "city": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "description": "Exact CasaBitare municipality name; resolve partial names first."
+          },
+          "province": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "description": "Exact province name."
+          },
+          "district": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "description": "Exact neighbourhood or locality name."
+          },
+          "property_type": {
+            "type": "string",
+            "enum": [
+              "apartment",
+              "house",
+              "villa",
+              "room",
+              "office",
+              "commercial",
+              "warehouse",
+              "garage",
+              "land",
+              "building",
+              "other"
+            ],
+            "description": "Canonical broad property class."
+          },
+          "features": {
+            "type": "array",
+            "uniqueItems": true,
+            "maxItems": 11,
+            "items": {
+              "type": "string",
+              "enum": [
+                "terrace",
+                "elevator",
+                "garden",
+                "balcony",
+                "garage",
+                "cellar",
+                "pool",
+                "air_conditioning",
+                "furnished",
+                "accessible",
+                "virtual_tour"
+              ]
+            },
+            "description": "Every requested feature must be present."
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "date_desc",
+              "date_asc",
+              "price_asc",
+              "price_desc",
+              "area_asc",
+              "area_desc",
+              "rooms_asc",
+              "rooms_desc"
+            ],
+            "default": "date_desc"
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 20,
+            "description": "Results per page, capped by server configuration."
+          },
+          "min_price": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Amount in EUR."
+          },
+          "max_price": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Amount in EUR."
+          },
+          "min_area": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Surface in square metres."
+          },
+          "max_area": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Surface in square metres."
+          },
+          "min_rooms": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "max_rooms": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "min_bedrooms": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "max_bedrooms": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "min_bathrooms": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "max_bathrooms": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "casabitare.it",
+  "source": "webmcp.com/api/directory.json"
+}
