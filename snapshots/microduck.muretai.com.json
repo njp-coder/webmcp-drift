@@ -1,0 +1,84 @@
+{
+  "sponsio": 1,
+  "url": "https://microduck.muretai.com/",
+  "capturedAt": "2026-09-12T10:38:40.587Z",
+  "tools": [
+    {
+      "name": "arena_drive",
+      "description": "Walk this tab's robot in BODY frame: vx forward/back max 0.3 m/s, vy left/right max 0.3, vyaw turn left/right max 1.5 rad/s. Optional ms (1–8000) auto-stops the hold — pass this; a held vx=0.3 walks 0.3 m/s until the next command, which walks agents off the rim. Drive at 4–10 Hz or use short ms bursts + arena_skill stop. Turn first, then walk. A human pad on this tab overrides the hold.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "vx": {
+            "type": "number",
+            "description": "Forward (+) / backward (−), max 0.3 m/s."
+          },
+          "vy": {
+            "type": "number",
+            "description": "Left (+) / right (−), max 0.3 m/s."
+          },
+          "vyaw": {
+            "type": "number",
+            "description": "Yaw left (+) / right (−), max 1.5 rad/s."
+          },
+          "ms": {
+            "type": "number",
+            "description": "Hold duration in milliseconds (1–8000). Omit = hold until next command (easy to walk off)."
+          }
+        }
+      }
+    },
+    {
+      "name": "arena_leave",
+      "description": "Release this tab's robot. During a live bout this is a forfeit — do not use it to stop walking. Use arena_skill stop.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "arena_look",
+      "description": "Read the arena as numbers (no vision). Returns dohyo {shape:circle, radius now, radius0:0.62, shrink 0.06 m every 10s until someone falls (floor 0.04)}, you {x,z,yaw,r,margin,yaw_to_center,slot}, each duck, phase_left_s (live = seconds to next shrink), ranking, frame (world x,z; yaw=0 faces +X; drive is BODY). kick/roll/pick shove a body in front. Tab silent 35s in live = forfeit; lobby standing keeps the slot. If getTools() is empty, retry a few seconds.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "arena_skill",
+      "description": "One-shot skill: stop, enable, sit_toggle, kick_left, kick_right, ground_pick, roulade, reset. Kick, roll, and pick shove a claimed body in front. Walk still pushes on contact.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "stop | enable | sit_toggle | kick_left | kick_right | ground_pick | roulade | reset"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      }
+    },
+    {
+      "name": "arena_take",
+      "description": "Claim a robot on this tab's identity. Optional name (max 20). On failure returns {ok:false, error, retry_after_s, retry_when}. Refused during live/results — poll arena_look until lobby or countdown. Do not call during a live bout.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Robot name shown on the dohyo (max 20)."
+          }
+        }
+      }
+    }
+  ],
+  "host": "microduck.muretai.com",
+  "source": "webmcp.com/api/directory.json"
+}

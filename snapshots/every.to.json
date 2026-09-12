@@ -1,0 +1,83 @@
+{
+  "sponsio": 1,
+  "url": "https://every.to/",
+  "capturedAt": "2026-09-12T10:38:40.587Z",
+  "tools": [
+    {
+      "name": "get_current_user",
+      "description": "Return a redacted profile for the currently logged-in Every user, or anonymous if not signed in.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_post_markdown",
+      "description": "Fetch the full Markdown body of an Every.to post URL. Works for any /:publication/:slug or /p/:slug URL; pass the canonical HTML URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "post_url": {
+            "type": "string",
+            "description": "Canonical post URL, for example https://every.to/source-code/how-i-use-claude-code."
+          }
+        },
+        "required": [
+          "post_url"
+        ]
+      }
+    },
+    {
+      "name": "search_posts",
+      "description": "Search Every.to posts (essays, podcasts, vibe checks) by free-text query and return the top matches.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search terms. Use natural language."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "default": 10,
+            "description": "How many results to return."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "subscribe",
+      "description": "Take the current user to the Every checkout flow for a given plan.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "plan": {
+            "type": "string",
+            "enum": [
+              "monthly",
+              "annual",
+              "team"
+            ],
+            "default": "annual",
+            "description": "Which subscription plan to start checkout for."
+          }
+        }
+      }
+    }
+  ],
+  "host": "every.to",
+  "source": "webmcp.com/api/directory.json"
+}

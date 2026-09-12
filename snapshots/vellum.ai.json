@@ -1,0 +1,60 @@
+{
+  "sponsio": 1,
+  "url": "https://www.vellum.ai/",
+  "capturedAt": "2026-09-12T10:38:40.587Z",
+  "tools": [
+    {
+      "name": "navigate_vellum_site",
+      "description": "Navigate this browser tab to Vellum's documentation, downloads, pricing, or signup page. This does not create an account, purchase anything, or start a download.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "destination": {
+            "type": "string",
+            "description": "The public Vellum page to open in this browser tab.",
+            "enum": [
+              "docs",
+              "downloads",
+              "pricing",
+              "signup"
+            ]
+          }
+        },
+        "required": [
+          "destination"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_vellum_docs",
+      "description": "Search Vellum's public product documentation. Returns matching page titles, headings, URLs, and excerpts without changing browser state.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "The product or documentation topic to search for.",
+            "minLength": 2,
+            "maxLength": 160
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum number of matching documentation sections to return.",
+            "minimum": 1,
+            "maximum": 10,
+            "default": 5
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "vellum.ai",
+  "source": "webmcp.com/api/directory.json"
+}

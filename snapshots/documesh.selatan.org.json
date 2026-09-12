@@ -1,0 +1,296 @@
+{
+  "sponsio": 1,
+  "url": "https://documesh.selatan.org/",
+  "capturedAt": "2026-09-12T10:38:40.587Z",
+  "tools": [
+    {
+      "name": "check_service_health",
+      "description": "Probe a provider's public status page (cloudflare, github, npm, sentry). Answers 'is it down, or is it me?'",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "provider": {
+            "type": "string",
+            "enum": [
+              "cloudflare",
+              "github",
+              "npm",
+              "sentry"
+            ]
+          }
+        },
+        "required": [
+          "provider"
+        ]
+      }
+    },
+    {
+      "name": "compare_configs",
+      "description": "Compare documented configuration keys between two sources (e.g. netlify vs vercel) — matched keys with citations, gaps listed.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "source_a": {
+            "type": "string",
+            "description": "First source id"
+          },
+          "source_b": {
+            "type": "string",
+            "description": "Second source id"
+          },
+          "query_a": {
+            "type": "string"
+          },
+          "query_b": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "source_a",
+          "source_b"
+        ]
+      }
+    },
+    {
+      "name": "contribution_stats",
+      "description": "Mesh contribution counters: submissions, issue reports, sources indexed.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "explain_error",
+      "description": "Given a log excerpt or error message, find the closest matching documentation sections across mesh sources. Returns version-cited sections plus actionable fix facts (config_keys, code_snippets, cli_commands) and a disclaimer — not a diagnosis. Chain with execution tools (sandbox, GitHub MCP) to apply the suggested fix.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "log_excerpt": {
+            "type": "string",
+            "description": "The error message or log lines"
+          },
+          "vendor": {
+            "type": "string",
+            "enum": [
+              "cloudflare",
+              "netlify",
+              "vercel",
+              "kubernetes",
+              "bun",
+              "elysia",
+              "turso",
+              "upstash",
+              "sentry",
+              "stripe",
+              "hono",
+              "nuxt",
+              "solid",
+              "opentelemetry",
+              "argocd",
+              "helm",
+              "flux",
+              "cilium",
+              "react",
+              "pytorch",
+              "tensorflow",
+              "langchain",
+              "playwright",
+              "clickhouse",
+              "ollama",
+              "electron",
+              "hugo",
+              "docusaurus",
+              "pytest",
+              "nodejs",
+              "godot-docs",
+              "neovim",
+              "terragrunt",
+              "moby",
+              "elasticsearch",
+              "svelte-core",
+              "vue-core-docs",
+              "gitea"
+            ],
+            "description": "Optional vendor filter"
+          }
+        },
+        "required": [
+          "log_excerpt"
+        ]
+      }
+    },
+    {
+      "name": "list_vendors",
+      "description": "List the documentation sources in the mesh with their license and attribution requirements.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "report_issue",
+      "description": "Report a documentation problem (outdated/incorrect/misattributed). Queued as a proposal for review.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "source_id": {
+            "type": "string"
+          },
+          "chunk_id": {
+            "type": "string"
+          },
+          "issue_type": {
+            "type": "string",
+            "enum": [
+              "outdated",
+              "incorrect",
+              "misattributed",
+              "license-mismatch",
+              "broken-link"
+            ]
+          },
+          "detail": {
+            "type": "string"
+          },
+          "suggested_fix": {
+            "type": "string"
+          },
+          "reporter": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "source_id",
+          "chunk_id",
+          "issue_type",
+          "detail"
+        ]
+      }
+    },
+    {
+      "name": "search_docs_across",
+      "description": "Search federated developer documentation (Cloudflare, Netlify, Vercel, Kubernetes, Bun, Stripe, Sentry and more). Returns ranked excerpts with version, license, and canonical source URL. Results include `actionable` facts — config_keys, code_snippets, cli_commands — designed to chain with other tools (e.g. fetch the user's config via a GitHub MCP tool and compare against docs config_keys, or run cli_commands in a sandbox).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search query, e.g. 'edge functions environment variables'"
+          },
+          "vendors": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "cloudflare",
+                "netlify",
+                "vercel",
+                "kubernetes",
+                "bun",
+                "elysia",
+                "turso",
+                "upstash",
+                "sentry",
+                "stripe",
+                "hono",
+                "nuxt",
+                "solid",
+                "opentelemetry",
+                "argocd",
+                "helm",
+                "flux",
+                "cilium",
+                "react",
+                "pytorch",
+                "tensorflow",
+                "langchain",
+                "playwright",
+                "clickhouse",
+                "ollama",
+                "electron",
+                "hugo",
+                "docusaurus",
+                "pytest",
+                "nodejs",
+                "godot-docs",
+                "neovim",
+                "terragrunt",
+                "moby",
+                "elasticsearch",
+                "svelte-core",
+                "vue-core-docs",
+                "gitea"
+              ]
+            },
+            "description": "Optional source filter (accepts the legacy 'vendors' name; each value is a documentation source id)"
+          },
+          "limit": {
+            "type": "number",
+            "description": "Max results (default 5)"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "submit_source",
+      "description": "Submit a documentation source for ingestion review (async job).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "docs_origin": {
+            "type": "string"
+          },
+          "license": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "license"
+        ]
+      }
+    },
+    {
+      "name": "verify_config",
+      "description": "Diff the user's config file against the keys a source documents. Returns missing_keys (cited to docs) and unknown_keys (possible typos).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "source": {
+            "type": "string",
+            "description": "Source id (e.g. 'cloudflare')"
+          },
+          "config_text": {
+            "type": "string",
+            "description": "The config file contents"
+          },
+          "config_query": {
+            "type": "string",
+            "description": "Optional docs query"
+          }
+        },
+        "required": [
+          "source",
+          "config_text"
+        ]
+      }
+    }
+  ],
+  "host": "documesh.selatan.org",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,188 @@
+{
+  "sponsio": 1,
+  "url": "https://angular.courses/",
+  "capturedAt": "2026-09-12T10:38:40.587Z",
+  "tools": [
+    {
+      "name": "caniuse_current_view",
+      "description": "The Can I Use page's current UI state: active tab, search text, package/status filters, and how many results are currently showing in each tab. Read this before caniuse_set_view to avoid redundant changes.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "caniuse_get_feature",
+      "description": "Get the full picture for one Angular feature: description, notes, version-by-version status history and links, plus everything needed to migrate off it. Cross-references the replacement feature (if deprecated/removed), the matching ng-update/ng-generate schematic, the matching Angular ESLint caniuse rule, and any matching manually-tracked migration - mixing four separate catalogs so an agent doesn't have to cross-reference tabs by hand.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Feature name or id, e.g. \"Standalone API\" or \"standalone-api\". Partial matches are allowed; if ambiguous, candidate names are returned instead of a guess."
+          }
+        },
+        "required": [
+          "name"
+        ]
+      }
+    },
+    {
+      "name": "caniuse_get_mcp_tools",
+      "description": "List the tools and resources exposed by Angular's own development MCP server (the server Angular CLI / IDEs use, e.g. get_best_practices, search_documentation, onpush-zoneless-migration), with their status per Angular version. Not to be confused with this page's own WebMCP tools, which are about the page itself.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "number",
+            "description": "Only compute status as of this Angular version (uses the closest earlier version entry)."
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "tool",
+              "resource"
+            ]
+          },
+          "query": {
+            "type": "string",
+            "description": "Case-insensitive substring to match against the name or description."
+          }
+        }
+      }
+    },
+    {
+      "name": "caniuse_get_upgrade_plan",
+      "description": "Build an upgrade briefing for moving an Angular app from one major version to another. Mixes five sources: Can I Use feature status changes (newly introduced/promoted/deprecated features), the ng-update migrations catalog (mandatory vs optional schematics), the Angular ESLint caniuse rules introduced in that range, the official Node/TypeScript/RxJS compatibility matrix for the target version, and the official release announcement (and video, when available) for each version crossed. Prefer this over separately calling caniuse_search_features, an eslint lookup and a migrations lookup when the user asks something like \"what do I need to do to go from v18 to v22\".",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "fromVersion": {
+            "type": "number",
+            "description": "Current Angular major version, e.g. 17."
+          },
+          "toVersion": {
+            "type": "number",
+            "description": "Target Angular major version, e.g. 22."
+          }
+        },
+        "required": [
+          "fromVersion",
+          "toVersion"
+        ]
+      }
+    },
+    {
+      "name": "caniuse_list_eslint_rules",
+      "description": "List the Angular ESLint caniuse rules tracked on this page, optionally limited to those available by a given Angular version. Each rule links a lint rule to the Angular feature/version it enforces or helps migrate.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "number",
+            "description": "Only include rules introduced at or before this Angular version."
+          },
+          "query": {
+            "type": "string",
+            "description": "Case-insensitive substring to match against the name or description."
+          }
+        }
+      }
+    },
+    {
+      "name": "caniuse_open_feature",
+      "description": "Open the detail panel for one Can I Use feature in the browser: switches to the Features tab, filters the list to it, and opens its detail sheet. Use after caniuse_search_features or caniuse_get_feature to visually surface a result for the person watching.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Feature name or id."
+          }
+        },
+        "required": [
+          "name"
+        ]
+      }
+    },
+    {
+      "name": "caniuse_search_features",
+      "description": "Search Angular's Can I Use feature-compatibility catalog (APIs, CLI capabilities, and other Angular features). Returns each match's name, package, description and status per Angular major version. Use this to find the exact feature name/id before calling caniuse_get_feature.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Case-insensitive substring to match against the feature name."
+          },
+          "package": {
+            "type": "string",
+            "description": "Exact npm package name to filter by, e.g. \"@angular/core\"."
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "experimental",
+              "preview",
+              "stable",
+              "deprecated",
+              "removed"
+            ],
+            "description": "Only return features whose latest known status equals this value."
+          },
+          "limit": {
+            "type": "number",
+            "description": "Max results to return (default 20, max 100)."
+          }
+        }
+      }
+    },
+    {
+      "name": "caniuse_set_view",
+      "description": "Drive this Can I Use page's own UI: switch tab (features, diff, migrations, update, mcp, eslint), set the global search box, and/or set the package/status filters on the Features tab. Use this so the person watching the browser sees the results you found, instead of only reporting them in chat. Omit a field to leave it unchanged.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tab": {
+            "type": "string",
+            "enum": [
+              "features",
+              "diff",
+              "migrations",
+              "update",
+              "mcp",
+              "eslint"
+            ]
+          },
+          "search": {
+            "type": "string"
+          },
+          "package": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "",
+              "experimental",
+              "preview",
+              "stable",
+              "deprecated",
+              "removed"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "host": "angular.courses",
+  "source": "webmcp.com/api/directory.json"
+}

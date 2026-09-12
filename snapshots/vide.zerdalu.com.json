@@ -1,0 +1,541 @@
+{
+  "sponsio": 1,
+  "url": "https://vide.zerdalu.com/",
+  "capturedAt": "2026-09-12T10:38:40.587Z",
+  "tools": [
+    {
+      "name": "add_timeline_cue",
+      "description": "Creates a new manual timeline marker at a specified timestamp with an optional descriptive label.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "time": {
+            "type": "number",
+            "description": "Timestamp in seconds for the marker"
+          },
+          "label": {
+            "type": "string",
+            "description": "Descriptive title for the marker"
+          }
+        },
+        "required": [
+          "time"
+        ]
+      }
+    },
+    {
+      "name": "analyze_timeline",
+      "description": "Analyzes the temporal hierarchy and layer layout of a Vide DSL script, returning timing extents, simultaneous layer densities, and potential timeline warnings.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "Vide DSL script code to analyze (defaults to active editor script)"
+          }
+        }
+      }
+    },
+    {
+      "name": "capture_frame_screenshot",
+      "description": "Renders a single video frame at a given timestamp on an in-memory canvas and returns a base64 PNG image for visual inspection by multimodal AI models.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "time": {
+            "type": "number",
+            "description": "Timestamp in seconds to capture (default: 0)"
+          },
+          "width": {
+            "type": "number",
+            "description": "Optional custom width resolution"
+          },
+          "height": {
+            "type": "number",
+            "description": "Optional custom height resolution"
+          },
+          "code": {
+            "type": "string",
+            "description": "Optional custom Vide DSL script code (defaults to active script)"
+          }
+        }
+      }
+    },
+    {
+      "name": "control_playback",
+      "description": "Controls the video timeline playback (play, pause, toggle, seek to timestamp, step frames, and set loop mode).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "play",
+              "pause",
+              "toggle",
+              "seek",
+              "step",
+              "setLoop"
+            ],
+            "description": "Playback command"
+          },
+          "time": {
+            "type": "number",
+            "description": "Timestamp in seconds for seek"
+          },
+          "frames": {
+            "type": "number",
+            "description": "Frame count for step (positive or negative)"
+          },
+          "loop": {
+            "type": "boolean",
+            "description": "Loop toggle value"
+          }
+        },
+        "required": [
+          "action"
+        ]
+      }
+    },
+    {
+      "name": "create_script",
+      "description": "Creates and opens a new Vide DSL script file in the editor.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Filename (e.g. \"animation.vide\")"
+          },
+          "content": {
+            "type": "string",
+            "description": "Initial source code"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      }
+    },
+    {
+      "name": "delete_project_file",
+      "description": "Deletes a specified file from the project directory.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Path of the file to remove"
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    },
+    {
+      "name": "export_video",
+      "description": "Renders the specified or active Vide DSL script into an MP4 video using browser-accelerated WebCodecs / Mediabunny. Automatically opens the Studio export modal showing live progress, saves the output to the exports/ directory, and returns the output metadata and file size.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "Optional custom Vide DSL code (defaults to active script)"
+          },
+          "codec": {
+            "type": "string",
+            "enum": [
+              "avc",
+              "av1",
+              "vp9"
+            ],
+            "description": "Video codec (default: \"avc\")"
+          },
+          "fileName": {
+            "type": "string",
+            "description": "Target MP4 filename"
+          },
+          "width": {
+            "type": "number",
+            "description": "Optional custom video width"
+          },
+          "height": {
+            "type": "number",
+            "description": "Optional custom video height"
+          },
+          "fps": {
+            "type": "number",
+            "description": "Optional frame rate override"
+          }
+        }
+      }
+    },
+    {
+      "name": "get_active_script",
+      "description": "Returns the current Vide DSL script defining the active video timeline.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_asset_metadata",
+      "description": "Returns metadata, user notes, tags, tempo (BPM), spoken transcript, and visual descriptions for a given asset path.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Relative asset path (e.g. \"/sfx/train.mp3\" or \"./intro.mp4\")"
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    },
+    {
+      "name": "get_dsl_reference",
+      "description": "Returns the full reference of built-in DSL primitives (text, math, circle, rect, line, path, arc, group, parallel, sequence, animate, fade, output).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_scene_settings",
+      "description": "Returns the current video dimensions, frame rate, duration, and background color.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_video_script",
+      "description": "Alias for get_active_script. Returns the current Vide DSL script.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "inspect_layers_at_time",
+      "description": "Returns a detailed list of all visual and audio elements active at a specific timestamp in the timeline.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "time": {
+            "type": "number",
+            "description": "Timestamp in seconds to query"
+          },
+          "code": {
+            "type": "string",
+            "description": "Optional Vide DSL script code"
+          }
+        },
+        "required": [
+          "time"
+        ]
+      }
+    },
+    {
+      "name": "list_open_scripts",
+      "description": "Lists all open script files in the editor tabs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_project_files",
+      "description": "Lists all media files, assets, images, videos, scripts, and attached user notes / tags in the active local project folder.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_timeline_cues",
+      "description": "Lists all defined timeline cue points, scene markers, and IDE breakpoints with their timestamps and labels.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "read_project_file",
+      "description": "Reads text or DSL source code of a specified relative file path from the project directory.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Relative path (e.g. \"./scene.vide\" or \"intro.js\")"
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    },
+    {
+      "name": "save_active_script",
+      "description": "Saves current modifications of the active script to disk and storage.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "search_assets",
+      "description": "Searches project media assets using semantic keyword matching against filenames, user notes, tags, visual descriptions, and spoken transcripts.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search keyword or concept (e.g. \"train\", \"cyber\", \"neon\", \"upbeat\")"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "all",
+              "video",
+              "audio",
+              "image",
+              "script"
+            ],
+            "description": "Optional asset type filter"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "search_vide_docs",
+      "description": "Search the local knowledge base for Vide DSL syntax, primitives, math formulas, easing curves, and composition rules.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "What you are trying to build or animate"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "search_vide_documentation",
+      "description": "Alias for search_vide_docs. Search the local vector database for Vide DSL syntax and features.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "What you are trying to do"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "seek_to_cue",
+      "description": "Positions playback and playhead at a specific cue point, breakpoint, or line number timestamp.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "cue_id": {
+            "type": "string",
+            "description": "ID of the cue to jump to"
+          },
+          "label": {
+            "type": "string",
+            "description": "Label of the cue point to find"
+          },
+          "line": {
+            "type": "number",
+            "description": "Line number in code editor to jump to its timestamp"
+          },
+          "time": {
+            "type": "number",
+            "description": "Direct timestamp in seconds"
+          }
+        }
+      }
+    },
+    {
+      "name": "set_active_script_code",
+      "description": "Updates the active Vide DSL script in the editor and triggers preview compilation.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "new_code": {
+            "type": "string",
+            "description": "The complete Vide DSL script code"
+          },
+          "run": {
+            "type": "boolean",
+            "description": "Whether to compile and trigger playback immediately"
+          },
+          "reasoning": {
+            "type": "string",
+            "description": "Agent explanation to show on the studio banner"
+          }
+        },
+        "required": [
+          "new_code"
+        ]
+      }
+    },
+    {
+      "name": "set_asset_notes",
+      "description": "Attaches semantic notes, tags, visual description, audio tempo (BPM), or transcripts to a media asset, allowing the agent and user to index and search content accurately.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Asset path (e.g. \"/assets/sfx_train.mp3\")"
+          },
+          "notes": {
+            "type": "string",
+            "description": "User or AI description of the asset (e.g. \"A heavy freight train passing by\")"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Search tags (e.g. [\"train\", \"sfx\", \"transit\"])"
+          },
+          "visualDescription": {
+            "type": "string",
+            "description": "Visual depiction for video or image assets"
+          },
+          "bpm": {
+            "type": "number",
+            "description": "Music tempo in beats per minute"
+          },
+          "transcript": {
+            "type": "string",
+            "description": "Spoken dialogue or vocal transcript"
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    },
+    {
+      "name": "switch_active_script",
+      "description": "Switches the editor view to a specific open script by its tab ID.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "script_id": {
+            "type": "string",
+            "description": "ID of the script tab"
+          }
+        },
+        "required": [
+          "script_id"
+        ]
+      }
+    },
+    {
+      "name": "update_video_script",
+      "description": "Alias for set_active_script_code. Updates the Vide DSL script.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "new_script": {
+            "type": "string",
+            "description": "The new Vide DSL script code"
+          },
+          "reasoning": {
+            "type": "string",
+            "description": "Explanation of changes made"
+          }
+        },
+        "required": [
+          "new_script"
+        ]
+      }
+    },
+    {
+      "name": "validate_script",
+      "description": "Parses and validates a Vide DSL script in a dry-run sandbox, returning duration, resolution, or exact syntax errors without modifying the active workspace.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "Vide DSL script to validate"
+          }
+        },
+        "required": [
+          "code"
+        ]
+      }
+    },
+    {
+      "name": "write_project_file",
+      "description": "Creates or updates a script or text file directly inside the local project folder.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Relative file path (e.g. \"outro.vide\")"
+          },
+          "content": {
+            "type": "string",
+            "description": "Source code or text content"
+          }
+        },
+        "required": [
+          "path",
+          "content"
+        ]
+      }
+    }
+  ],
+  "host": "vide.zerdalu.com",
+  "source": "webmcp.com/api/directory.json"
+}

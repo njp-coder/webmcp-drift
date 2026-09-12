@@ -1,0 +1,1703 @@
+{
+  "sponsio": 1,
+  "url": "https://seqcraft.onrender.com/",
+  "capturedAt": "2026-09-12T10:38:40.587Z",
+  "tools": [
+    {
+      "name": "seqcraft_analyze_primer",
+      "description": "Compute melting temperature, GC content, molecular weight, and exact IUPAC-compatible binding loci on the template construct.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "string",
+            "description": "Template document ID. If omitted, uses active document."
+          },
+          "sequence": {
+            "type": "string",
+            "description": "5'->3' primer sequence."
+          },
+          "primerId": {
+            "type": "string",
+            "description": "Existing primer ID to analyze."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "seqcraft_analyze_restriction_sites",
+      "description": "Search for recognition and cut sites of standard restriction enzymes (Type II and Type IIS, e.g. EcoRI, BamHI, BsaI, BsmBI, NotI, HindIII) on the target molecule. Returns 1-based coordinates [start1, end1], forwardCut1, reverseCut1, and overhang types.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "string",
+            "description": "Document identifier. If omitted, uses active document."
+          },
+          "enzymeNames": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Enzyme names to search for (e.g. [\"BsaI\", \"EcoRI\", \"BamHI\"])."
+          }
+        },
+        "required": [
+          "enzymeNames"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "seqcraft_clear_selection",
+      "description": "Clear the active range selection and unselect any highlighted features or primers in the SeqCraft workspace.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "seqcraft_compare_documents",
+      "description": "Perform pairwise biological sequence comparison and alignment between two documents in the workspace. Returns identity percentage, nucleotide differences (substitutions, insertions, deletions), and feature discrepancies.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sourceDocumentId": {
+            "type": "string",
+            "description": "First (reference) document ID."
+          },
+          "targetDocumentId": {
+            "type": "string",
+            "description": "Second (comparison) document ID."
+          }
+        },
+        "required": [
+          "sourceDocumentId",
+          "targetDocumentId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "seqcraft_copy_region_between_documents",
+      "description": "Extract a nucleotide region [sourceStart1, sourceEnd1] from a source construct and stage its insertion into a target construct at targetPosition1. Stages a revision-locked transaction on the target construct.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sourceDocumentId": {
+            "type": "string",
+            "description": "Source document identifier."
+          },
+          "sourceStart1": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "1-based inclusive start position on source document."
+          },
+          "sourceEnd1": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "1-based inclusive end position on source document."
+          },
+          "targetDocumentId": {
+            "type": "string",
+            "description": "Target document identifier."
+          },
+          "targetPosition1": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "1-based insertion point on target document."
+          },
+          "orientation": {
+            "type": "string",
+            "enum": [
+              "forward",
+              "reverse_complement"
+            ],
+            "description": "Orientation of the copied fragment (default: forward)."
+          }
+        },
+        "required": [
+          "sourceDocumentId",
+          "sourceStart1",
+          "sourceEnd1",
+          "targetDocumentId",
+          "targetPosition1"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "seqcraft_create_document",
+      "description": "Create a new sequence document in the SeqCraft workspace from a nucleotide string. Validates sequence alphabet (DNA/RNA IUPAC).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the new construct."
+          },
+          "sequence": {
+            "type": "string",
+            "description": "Nucleotide sequence (5′→3′). Supports IUPAC degenerate bases."
+          },
+          "alphabet": {
+            "type": "string",
+            "enum": [
+              "DNA",
+              "RNA"
+            ],
+            "description": "Sequence alphabet (default: DNA)."
+          },
+          "topology": {
+            "type": "string",
+            "enum": [
+              "linear",
+              "circular"
+            ],
+            "description": "Molecule topology (default: circular)."
+          }
+        },
+        "required": [
+          "name",
+          "sequence"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "seqcraft_create_document_from_region",
+      "description": "Extract a nucleotide sub-region [start1, end1] from a construct and create a new independent construct in the workspace.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sourceDocumentId": {
+            "type": "string",
+            "description": "Source document identifier. If omitted, uses active document."
+          },
+          "start1": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "1-based inclusive start coordinate."
+          },
+          "end1": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "1-based inclusive end coordinate."
+          },
+          "name": {
+            "type": "string",
+            "description": "Name for the new construct."
+          },
+          "orientation": {
+            "type": "string",
+            "enum": [
+              "forward",
+              "reverse_complement"
+            ],
+            "description": "Orientation (default: forward)."
+          },
+          "topology": {
+            "type": "string",
+            "enum": [
+              "linear",
+              "circular"
+            ],
+            "description": "Topology of the new document (default: linear)."
+          }
+        },
+        "required": [
+          "start1",
+          "end1",
+          "name"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "seqcraft_delete_document",
+      "description": "Remove a document from the SeqCraft workspace. To prevent accidental deletion during exploration, you must explicitly set confirmDelete: true.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "string",
+            "description": "Identifier of the document to remove."
+          },
+          "confirmDelete": {
+            "type": "boolean",
+            "description": "Must be explicitly set to true to confirm deletion."
+          }
+        },
+        "required": [
+          "documentId",
+          "confirmDelete"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "seqcraft_detect_known_features",
+      "description": "Scan the active or specified sequence against SeqCraft built-in curated biological feature library (promoters, origins, antibiotic resistance markers, reporters, tags). Returns identified matches with positions and confidence.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "string",
+            "description": "Document identifier. If omitted, uses active document."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "seqcraft_domesticate_sequence",
+      "description": "Scan a sequence for internal Type IIS or standard restriction sites and return revision-bound synonymous mutation candidates to eliminate internal cut sites without altering protein translation. Follow up with seqcraft_stage_domestication_candidate to stage a proposal for human review.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "string",
+            "description": "Target document ID. If omitted, uses active document."
+          },
+          "enzymeId": {
+            "type": "string",
+            "description": "Restriction enzyme name to eliminate (e.g. \"BsaI\", \"BsmBI\", \"EcoRI\")."
+          }
+        },
+        "required": [
+          "enzymeId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "seqcraft_duplicate_document",
+      "description": "Create an independent, isolated working copy of an existing document. Useful for safe experimentation, staging edits without altering the original construct, and testing modifications.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "string",
+            "description": "Document to duplicate. If omitted, duplicates the active document."
+          },
+          "newName": {
+            "type": "string",
+            "description": "Optional name for the new copy. Defaults to \"<Original Name> (Copy)\"."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "seqcraft_edit_sequence",
+      "description": "Stage an insertion, deletion, or replacement on a DNA/RNA molecule using 1-based closed coordinates. Evaluates biological consequences (CDS frames, amino acid translations, restriction sites) and stages a revision-locked transaction for human review. Does NOT modify the molecule until the human clicks Apply. Follow up with seqcraft_get_transaction_status.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "string",
+            "description": "Target document ID. If omitted, uses active document."
+          },
+          "operation": {
+            "type": "object",
+            "description": "Structured sequence edit operation (insert, delete, or replace).",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "insert",
+                  "delete",
+                  "replace"
+                ],
+                "description": "Edit operation type."
+              },
+              "position1": {
+                "type": "integer",
+                "minimum": 1,
+                "description": "1-based insertion point (for insert operation)."
+              },
+              "start1": {
+                "type": "integer",
+                "minimum": 1,
+                "description": "1-based start coordinate (for delete or replace operation)."
+              },
+              "end1": {
+                "type": "integer",
+                "minimum": 1,
+                "description": "1-based end coordinate (for delete or replace operation)."
+              },
+              "sequence": {
+                "type": "string",
+                "description": "Inserted or replacement sequence string."
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "range1": {
+            "type": "object",
+            "description": "Alternative legacy shorthand for replacement [start1, end1].",
+            "properties": {
+              "start1": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "end1": {
+                "type": "integer",
+                "minimum": 1
+              }
+            },
+            "required": [
+              "start1",
+              "end1"
+            ],
+            "additionalProperties": false
+          },
+          "sequence": {
+            "type": "string",
+            "description": "Alternative legacy shorthand for replacement sequence."
+          },
+          "rationale": {
+            "type": "string",
+            "description": "Biological rationale for the edit."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "seqcraft_execute_actions",
+      "description": "Execute a batch of SeqCraft tool actions in sequential order. Rejects recursion. If any action stages a sequence mutation (status: awaiting_approval) or errors in stop_on_error mode, execution halts immediately without executing subsequent actions.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "actions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "tool": {
+                  "type": "string",
+                  "description": "Name of the tool to invoke."
+                },
+                "arguments": {
+                  "type": "object",
+                  "description": "Arguments object for the tool."
+                }
+              },
+              "required": [
+                "tool"
+              ],
+              "additionalProperties": false
+            },
+            "description": "Ordered list of tool calls to execute."
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "sequential",
+              "stop_on_error"
+            ],
+            "description": "Execution mode (default: stop_on_error)."
+          }
+        },
+        "required": [
+          "actions"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "seqcraft_export_document",
+      "description": "Export the active or specified construct to standard bioinformatic formats: GenBank flat file (including all features and annotations), FASTA, or SeqCraft JSON format. Returns generated text, filename, revision, and sequence hash.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "string",
+            "description": "Document identifier. If omitted, exports the active document."
+          },
+          "format": {
+            "type": "string",
+            "enum": [
+              "genbank",
+              "fasta",
+              "seqcraft"
+            ],
+            "description": "Export format (default: genbank)."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "seqcraft_export_sequence",
+      "description": "Export the active or specified construct to standard bioinformatic formats: GenBank flat file (including all features and annotations), FASTA, or SeqCraft JSON format. Returns generated text, filename, revision, and sequence hash.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "string",
+            "description": "Document identifier. If omitted, exports the active document."
+          },
+          "format": {
+            "type": "string",
+            "enum": [
+              "genbank",
+              "fasta",
+              "seqcraft"
+            ],
+            "description": "Export format (default: genbank)."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "seqcraft_find_crispr_targets",
+      "description": "Scan sequence for CRISPR-Cas guide RNA target sites and protospacers across multiple Cas effectors (SpCas9, SaCas9, Cas12a/Cpf1, Cas12e/CasX). Computes on-target quality scores, GC balance, Pol III termination penalties, and MMEJ frameshift predictions.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "string",
+            "description": "Document identifier. If omitted, uses active document."
+          },
+          "nuclease": {
+            "type": "string",
+            "enum": [
+              "SpCas9",
+              "SaCas9",
+              "Cas12a",
+              "Cas12e"
+            ],
+            "description": "CRISPR Cas nuclease system (default: SpCas9). SpCas9 (3' NGG), SaCas9 (3' NNGRRT), Cas12a (5' TTTV), Cas12e (5' TTCN)."
+          },
+          "minQualityScore": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100,
+            "description": "Minimum quality score threshold (0-100, default: 0)."
+          },
+          "maxResults": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "description": "Maximum number of target sites returned (default: 20)."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "seqcraft_find_orfs",
+      "description": "Search for open reading frames across all six reading frames using NCBI genetic code table 1 and a configurable minimum codon count.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "string",
+            "description": "Document identifier. If omitted, uses active document."
+          },
+          "minCodons": {
+            "type": "integer",
+            "minimum": 10,
+            "description": "Minimum ORF length in codons (default: 30 codons = 90 bp)."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "seqcraft_focus_region",
+      "description": "Navigate, scroll, and center the editor view around a specific nucleotide region using 1-based closed coordinates [start1, end1]. Optionally selects the region or switches representation.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "string",
+            "description": "Document identifier. If omitted, uses active document."
+          },
+          "start1": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "1-based inclusive start coordinate."
+          },
+          "end1": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "1-based inclusive end coordinate."
+          },
+          "preferredView": {
+            "type": "string",
+            "enum": [
+              "map",
+              "sequence"
+            ],
+            "description": "Optional preferred editor view (e.g. sequence or map)."
+          }
+        },
+        "required": [
+          "start1",
+          "end1"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "seqcraft_generate_opentrons_protocol",
+      "description": "Compile a production-ready Python protocol for automated liquid handling on Opentrons OT-2 or Flex robots. Supports PCR master mix distribution and restriction digestion setups.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "pcr",
+              "digest"
+            ],
+            "description": "Protocol type to generate (pcr or digest)."
+          },
+          "robotModel": {
+            "type": "string",
+            "enum": [
+              "OT-2",
+              "Flex"
+            ],
+            "description": "Target Opentrons robot model (default: OT-2)."
+          },
+          "numReactions": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 96,
+            "description": "Number of reactions to prepare (1-96)."
+          },
+          "reactionVolumeUl": {
+            "type": "number",
+            "minimum": 5,
+            "maximum": 100,
+            "description": "Total reaction volume in microliters (default: 50)."
+          },
+          "documentId": {
+            "type": "string",
+            "description": "Target document ID. If omitted, uses active document."
+          },
+          "forwardPrimer": {
+            "type": "string",
+            "description": "Forward primer name (for PCR mode)."
+          },
+          "reversePrimer": {
+            "type": "string",
+            "description": "Reverse primer name (for PCR mode)."
+          },
+          "annealingTempC": {
+            "type": "number",
+            "description": "PCR annealing temperature in Celsius."
+          },
+          "ampliconLengthBp": {
+            "type": "integer",
+            "description": "Expected PCR amplicon length in base pairs."
+          },
+          "enzymeNames": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Restriction enzymes for digestion (for digest mode)."
+          },
+          "incubationTempC": {
+            "type": "number",
+            "description": "Incubation temperature in Celsius for digest (default: 37)."
+          },
+          "incubationTimeMin": {
+            "type": "integer",
+            "description": "Incubation duration in minutes (default: 60)."
+          }
+        },
+        "required": [
+          "mode"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "seqcraft_get_active_document",
+      "description": "Retrieve summary details, topological properties, annotations count, primers count, and revision metadata for the active or specified document.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "string",
+            "description": "Document identifier. If omitted, returns active document."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "seqcraft_get_capabilities",
+      "description": "Discover SeqCraft scientific workflows, coordinate conventions (1-based closed [start1, end1]), privacy boundaries, approval rules, and suggested agent task sequences. Use this when planning a multi-step interaction or deciding which SeqCraft tools to call.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "seqcraft_get_document_revision",
+      "description": "Query the current revision number and canonical SHA-256 sequence hash of a document. Essential for revision-locking proposals, avoiding race conditions, and verifying mutation commits.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "string",
+            "description": "Document identifier. If omitted, checks the active document."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "seqcraft_get_history",
+      "description": "Retrieve the change history log and undo/redo availability for the active or specified construct.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "string",
+            "description": "Document identifier. If omitted, uses active document."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "seqcraft_get_pending_transaction",
+      "description": "Check the lifecycle state (awaiting_approval, applied, rejected, or stale) and provenance of a staged sequence transaction. Call this after staging an edit with seqcraft_edit_sequence or candidate staging tools to check if the human approved the change.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "transactionId": {
+            "type": "string",
+            "description": "Identifier of the staged transaction to inspect. If omitted, inspects the current pending transaction."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "seqcraft_get_selected_context",
+      "description": "Read the currently selected nucleotide sequence slice and overlapping biological features in 1-based closed coordinates. Use this to inspect what the human user or current selection is highlighting without retrieving the entire molecule.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "string",
+            "description": "Document identifier. If omitted, uses the currently selected or active construct."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "seqcraft_get_transaction_status",
+      "description": "Check the lifecycle state (awaiting_approval, applied, rejected, or stale) and provenance of a staged sequence transaction. Call this after staging an edit with seqcraft_edit_sequence or candidate staging tools to check if the human approved the change.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "transactionId": {
+            "type": "string",
+            "description": "Identifier of the staged transaction to inspect. If omitted, inspects the current pending transaction."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "seqcraft_get_workspace_context",
+      "description": "Read the current SeqCraft workspace state, including the active molecule, current selection, selected feature, pending transaction state, active view, and registered tool count. Preferred bootstrap tool for any task involving SeqCraft.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "includeDocumentList": {
+            "type": "boolean",
+            "description": "Whether to include a list of all open document names, IDs, lengths, and topologies in the workspace."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "seqcraft_import_from_database",
+      "description": "Fetch and import an authoritative biological sequence from a public repository (NCBI Nucleotide / GenBank, RefSeq, ENA, Addgene) by accession ID into the SeqCraft workspace. Use this tool whenever the user references a known public accession (e.g. J01749.1, NC_001416.1, OQ870305.1) or asks SeqCraft to obtain a biological sequence from a public repository. Preserves sequence topology, GenBank annotations, and origin metadata.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "provider": {
+            "type": "string",
+            "description": "Target database provider: 'ncbi' (default), 'ena', or 'addgene'.",
+            "default": "ncbi"
+          },
+          "accession": {
+            "type": "string",
+            "description": "Authoritative accession or version ID (e.g. 'J01749.1', 'NC_001416.1', 'OQ870305.1', '12260')."
+          },
+          "format": {
+            "type": "string",
+            "enum": [
+              "genbank",
+              "fasta"
+            ],
+            "description": "Format preference: 'genbank' (default, preserves annotations and features) or 'fasta'.",
+            "default": "genbank"
+          },
+          "openAfterImport": {
+            "type": "boolean",
+            "description": "Whether to activate and open the imported document in the workspace immediately. Defaults to true.",
+            "default": true
+          }
+        },
+        "required": [
+          "accession"
+        ]
+      }
+    },
+    {
+      "name": "seqcraft_import_sequence_text",
+      "description": "Import DNA/RNA sequence data into SeqCraft from FASTA, GenBank flat file, or raw sequence text. Creates and opens the construct(s) in the workspace.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "Sequence file content (FASTA, GenBank flat file, or raw sequence text)."
+          },
+          "name": {
+            "type": "string",
+            "description": "Optional override name for raw sequence inputs."
+          }
+        },
+        "required": [
+          "content"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "seqcraft_list_documents",
+      "description": "List all sequence constructs/documents currently loaded in the SeqCraft workspace with their IDs, names, topologies, lengths in base pairs, and revision numbers.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "seqcraft_list_features",
+      "description": "List all annotated biological features (CDS, promoters, genes, origins, resistance markers, tags) on the target construct with their coordinates [start1, end1], strand (+/-), type, and qualifiers.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "string",
+            "description": "Document identifier. If omitted, lists features for active document."
+          },
+          "type": {
+            "type": "string",
+            "description": "Optional filter by feature type (e.g. CDS, promoter, gene, origin)."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "seqcraft_list_primers",
+      "description": "List all custom oligonucleotides and primers configured for the target molecule, including their sequences, lengths, and binding positions.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "string",
+            "description": "Document identifier. If omitted, uses active document."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "seqcraft_mutate_feature",
+      "description": "Create, update, delete, or batch-create biological annotations on the active or specified construct using 1-based closed coordinates [start1, end1]. Immediately updates document annotations and records revision provenance.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "string",
+            "description": "Target document ID. If omitted, uses active document."
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "create",
+              "update",
+              "delete",
+              "batch_create"
+            ],
+            "description": "Annotation mutation action to perform."
+          },
+          "feature": {
+            "type": "object",
+            "description": "Single feature input for create or update action.",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Feature ID (required for update)."
+              },
+              "name": {
+                "type": "string",
+                "description": "Annotation name / label."
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "CDS",
+                  "gene",
+                  "exon",
+                  "intron",
+                  "signal_peptide",
+                  "transit_peptide",
+                  "cleavage_site",
+                  "promoter",
+                  "terminator",
+                  "polyA_signal",
+                  "5'UTR",
+                  "3'UTR",
+                  "RBS",
+                  "regulatory",
+                  "enhancer",
+                  "operator",
+                  "ncRNA",
+                  "lncRNA",
+                  "tRNA",
+                  "rRNA",
+                  "snRNA",
+                  "snoRNA",
+                  "origin",
+                  "repeat_region",
+                  "LTR",
+                  "transposon",
+                  "engineered_region",
+                  "misc_structure",
+                  "protein_bind",
+                  "primer_bind",
+                  "misc_binding",
+                  "misc_difference",
+                  "resistance marker",
+                  "tag",
+                  "reporter",
+                  "crispr_target",
+                  "recombination_site",
+                  "att_site",
+                  "loxP_site",
+                  "frt_site",
+                  "source",
+                  "misc_feature"
+                ],
+                "description": "Biological feature type."
+              },
+              "start1": {
+                "type": "integer",
+                "minimum": 1,
+                "description": "1-based inclusive start coordinate."
+              },
+              "end1": {
+                "type": "integer",
+                "minimum": 1,
+                "description": "1-based inclusive end coordinate."
+              },
+              "strand": {
+                "type": "string",
+                "enum": [
+                  "+",
+                  "-"
+                ],
+                "description": "Strand orientation (+ for forward 5'->3', - for reverse complement)."
+              },
+              "qualifiers": {
+                "type": "object",
+                "description": "Additional GenBank qualifiers (e.g. note, gene, product)."
+              }
+            },
+            "additionalProperties": false
+          },
+          "features": {
+            "type": "array",
+            "description": "Array of feature inputs for batch_create action.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "CDS",
+                    "gene",
+                    "exon",
+                    "intron",
+                    "signal_peptide",
+                    "transit_peptide",
+                    "cleavage_site",
+                    "promoter",
+                    "terminator",
+                    "polyA_signal",
+                    "5'UTR",
+                    "3'UTR",
+                    "RBS",
+                    "regulatory",
+                    "enhancer",
+                    "operator",
+                    "ncRNA",
+                    "lncRNA",
+                    "tRNA",
+                    "rRNA",
+                    "snRNA",
+                    "snoRNA",
+                    "origin",
+                    "repeat_region",
+                    "LTR",
+                    "transposon",
+                    "engineered_region",
+                    "misc_structure",
+                    "protein_bind",
+                    "primer_bind",
+                    "misc_binding",
+                    "misc_difference",
+                    "resistance marker",
+                    "tag",
+                    "reporter",
+                    "crispr_target",
+                    "recombination_site",
+                    "att_site",
+                    "loxP_site",
+                    "frt_site",
+                    "source",
+                    "misc_feature"
+                  ]
+                },
+                "start1": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "end1": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "strand": {
+                  "type": "string",
+                  "enum": [
+                    "+",
+                    "-"
+                  ]
+                },
+                "qualifiers": {
+                  "type": "object"
+                }
+              },
+              "required": [
+                "type",
+                "start1",
+                "end1"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "featureId": {
+            "type": "string",
+            "description": "Feature ID to delete (for delete action)."
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "seqcraft_mutate_primer",
+      "description": "Create, auto-bind, update, or delete primers on the construct. Action \"add_from_sequence\" automatically validates the primer, finds binding loci on the template molecule, and attaches the primer to the document.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "string",
+            "description": "Target document ID. If omitted, uses active document."
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "create",
+              "add_from_sequence",
+              "update",
+              "delete"
+            ],
+            "description": "Primer mutation action."
+          },
+          "name": {
+            "type": "string",
+            "description": "Primer name/label (for create or add_from_sequence)."
+          },
+          "sequence": {
+            "type": "string",
+            "description": "5'->3' primer nucleotide sequence (for create or add_from_sequence)."
+          },
+          "description": {
+            "type": "string",
+            "description": "Optional primer notes."
+          },
+          "primerId": {
+            "type": "string",
+            "description": "Existing primer ID (for update or delete)."
+          },
+          "patch": {
+            "type": "object",
+            "description": "Update fields for update action.",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "sequence": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "seqcraft_plan_domestication",
+      "description": "Scan a sequence for internal Type IIS or standard restriction sites and return revision-bound synonymous mutation candidates to eliminate internal cut sites without altering protein translation. Follow up with seqcraft_stage_domestication_candidate to stage a proposal for human review.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "string",
+            "description": "Target document ID. If omitted, uses active document."
+          },
+          "enzymeId": {
+            "type": "string",
+            "description": "Restriction enzyme name to eliminate (e.g. \"BsaI\", \"BsmBI\", \"EcoRI\")."
+          }
+        },
+        "required": [
+          "enzymeId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "seqcraft_prepare_restriction_clone",
+      "description": "Simulate restriction cloning between an insert construct and a destination vector using compatible restriction enzyme sticky ends.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "insertDocumentId": {
+            "type": "string",
+            "description": "Insert document ID."
+          },
+          "insertEnzyme1": {
+            "type": "string",
+            "description": "5' restriction enzyme on insert."
+          },
+          "insertEnzyme2": {
+            "type": "string",
+            "description": "3' restriction enzyme on insert."
+          },
+          "vectorDocumentId": {
+            "type": "string",
+            "description": "Destination vector document ID."
+          },
+          "vectorEnzyme1": {
+            "type": "string",
+            "description": "5' restriction enzyme on vector."
+          },
+          "vectorEnzyme2": {
+            "type": "string",
+            "description": "3' restriction enzyme on vector."
+          }
+        },
+        "required": [
+          "insertDocumentId",
+          "insertEnzyme1",
+          "insertEnzyme2",
+          "vectorDocumentId",
+          "vectorEnzyme1",
+          "vectorEnzyme2"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "seqcraft_propose_annotation",
+      "description": "Automatically detect and apply a known annotation match from the built-in database to the molecule.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "string",
+            "description": "Document identifier. If omitted, uses active document."
+          },
+          "matchIndex": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "0-based index of the detected feature match to apply."
+          }
+        },
+        "required": [
+          "matchIndex"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "seqcraft_redo",
+      "description": "Redo the previously undone sequence edit on the active or specified construct in SeqCraft history.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "string",
+            "description": "Document identifier. If omitted, uses active document."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "seqcraft_restore_revision",
+      "description": "Stage restoration of a document to a historical snapshot in the undo stack. Stages a revision-locked transaction.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "string",
+            "description": "Target document ID."
+          },
+          "historySnapshotIndex": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "0-based index in the document undo stack to restore."
+          }
+        },
+        "required": [
+          "documentId",
+          "historySnapshotIndex"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "seqcraft_reverse_complement_region",
+      "description": "Stage an in-place reverse complement of a sequence region [start1, end1] on the target molecule. Creates a revision-locked transaction for human review.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "string",
+            "description": "Target document ID. If omitted, uses active document."
+          },
+          "start1": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "1-based inclusive start position."
+          },
+          "end1": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "1-based inclusive end position."
+          }
+        },
+        "required": [
+          "start1",
+          "end1"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "seqcraft_rotate_origin",
+      "description": "Stage setting a new circular origin (position 1) on a circular plasmid. Re-indexes nucleotide coordinates and feature locations. Requires a circular topology and human review.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "string",
+            "description": "Document identifier. If omitted, uses active document."
+          },
+          "newOrigin1": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "1-based nucleotide position to become the new origin (position 1)."
+          },
+          "rationale": {
+            "type": "string",
+            "description": "Biological rationale for the edit."
+          }
+        },
+        "required": [
+          "newOrigin1"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "seqcraft_screen_biosecurity",
+      "description": "Run automated biosecurity reference pre-screening against diagnostic signature motifs of regulated Select Agents and Controlled Biological Toxins (Filoviruses, Poxviruses, Henipaviruses, Anthrax, Tularemia, Plague, BoNT, Ricin). Informational diagnostic screening only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "string",
+            "description": "Document identifier. If omitted, uses active document."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "seqcraft_search_sequence_database",
+      "description": "Search public biological sequence databases (NCBI Nucleotide / GenBank, RefSeq, ENA / EMBL-EBI, Addgene) for accession IDs, plasmid constructs, genes, or genomes matching a query. Returns compact candidate records with accession, title, organism, length in bp, and molecule type.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "provider": {
+            "type": "string",
+            "description": "Target database provider: 'ncbi' (GenBank/RefSeq), 'ena' (EMBL-EBI), or 'addgene'. Defaults to 'ncbi'.",
+            "default": "ncbi"
+          },
+          "query": {
+            "type": "string",
+            "description": "Search term, organism, plasmid name, gene symbol, or keyword (e.g. 'pBR322', 'eGFP', 'lambda phage', 'cas9')."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum number of candidate records to return (1-20). Defaults to 5.",
+            "default": 5
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "seqcraft_select_feature",
+      "description": "Select an existing biological feature/annotation on the active or specified document by its unique feature ID. Highlights the feature in the viewer and opens its properties in the inspector.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "featureId": {
+            "type": "string",
+            "description": "The unique feature identifier."
+          },
+          "documentId": {
+            "type": "string",
+            "description": "Document ID. If omitted, uses active document."
+          }
+        },
+        "required": [
+          "featureId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "seqcraft_select_range",
+      "description": "Select a continuous range of nucleotides on the active or specified molecule using 1-based closed coordinates [start1, end1]. Updates the visible editor selection for human and agent context sharing.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "string",
+            "description": "Target document ID. If omitted, uses the active document."
+          },
+          "start1": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "1-based inclusive start coordinate."
+          },
+          "end1": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "1-based inclusive end coordinate."
+          }
+        },
+        "required": [
+          "start1",
+          "end1"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "seqcraft_select_sequence_range",
+      "description": "Select a continuous range of nucleotides on the active or specified molecule using 1-based closed coordinates [start1, end1]. Updates the visible editor selection for human and agent context sharing.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "string",
+            "description": "Target document ID. If omitted, uses the active document."
+          },
+          "start1": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "1-based inclusive start coordinate."
+          },
+          "end1": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "1-based inclusive end coordinate."
+          }
+        },
+        "required": [
+          "start1",
+          "end1"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "seqcraft_set_active_document",
+      "description": "Switch the active document tab in the SeqCraft workspace. Use this when you want to view, inspect, or edit a different open construct.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "string",
+            "description": "ID of the open document to activate."
+          }
+        },
+        "required": [
+          "documentId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "seqcraft_set_active_view",
+      "description": "Switch the primary workspace visualization view tab. Available views: map (plasmid/linear map), sequence (base-level nucleotide editor), features (annotation table), primers (primer design panel), enzymes (restriction digests), history (revision log), compare (sequence comparison/diff).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "view": {
+            "type": "string",
+            "enum": [
+              "map",
+              "sequence",
+              "features",
+              "primers",
+              "enzymes",
+              "history",
+              "compare"
+            ],
+            "description": "The target workspace representation view."
+          }
+        },
+        "required": [
+          "view"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "seqcraft_show_feature",
+      "description": "Highlight and focus a specific feature on the canvas / editor view and reveal its properties in the inspector panel.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "string",
+            "description": "Document identifier. If omitted, uses active document."
+          },
+          "featureId": {
+            "type": "string",
+            "description": "Unique identifier of the feature to display."
+          }
+        },
+        "required": [
+          "featureId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "seqcraft_show_restriction_site",
+      "description": "Highlight a restriction enzyme cut site on the map and editor view.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "string",
+            "description": "Document identifier. If omitted, uses active document."
+          },
+          "siteId": {
+            "type": "string",
+            "description": "Restriction site identifier."
+          },
+          "enzymeName": {
+            "type": "string",
+            "description": "Enzyme name (e.g. EcoRI)."
+          },
+          "occurrence": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "1-based occurrence index for the enzyme (default: 1)."
+          },
+          "view": {
+            "type": "string",
+            "enum": [
+              "map",
+              "sequence"
+            ],
+            "description": "Target editor view mode."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "seqcraft_simulate_digest",
+      "description": "Simulate single or multi-enzyme restriction digestion on a circular plasmid or linear DNA. Returns predicted fragment sizes, fragment sequences, and terminal overhang types.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "string",
+            "description": "Document identifier. If omitted, uses active document."
+          },
+          "enzymeNames": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Enzyme names for single or double digest."
+          }
+        },
+        "required": [
+          "enzymeNames"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "seqcraft_simulate_golden_gate",
+      "description": "Simulate Golden Gate multi-fragment assembly using Type IIS restriction enzymes (e.g. BsaI, BsmBI, AarI). Validates compatible overhang pairs, checks junction fidelity, and returns the assembled construct.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "documentIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of document IDs participating in the assembly in order."
+          },
+          "enzymeName": {
+            "type": "string",
+            "enum": [
+              "BsaI",
+              "BsmBI",
+              "BbsI",
+              "AarI",
+              "SapI",
+              "PaqCI",
+              "Esp3I"
+            ],
+            "description": "Type IIS enzyme driving the assembly (default: BsaI)."
+          }
+        },
+        "required": [
+          "documentIds"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "seqcraft_simulate_pcr",
+      "description": "Simulate exact-match in silico PCR on a linear or circular template. Returns predicted amplicon coordinates, lengths, GC content, and primer-pair melting temperatures.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "string",
+            "description": "Template document ID. If omitted, uses active document."
+          },
+          "forwardPrimer": {
+            "type": "string",
+            "description": "Forward primer sequence or name."
+          },
+          "reversePrimer": {
+            "type": "string",
+            "description": "Reverse primer sequence or name."
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "seqcraft_stage_domestication_candidate",
+      "description": "Stage an exact synonymous mutation candidate returned by seqcraft_domesticate_sequence. Checks revision locking to ensure the molecule was not modified since analysis, then creates a revision-locked transaction for human review.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "candidateId": {
+            "type": "string",
+            "description": "The candidateId returned by seqcraft_domesticate_sequence."
+          },
+          "documentId": {
+            "type": "string",
+            "description": "Optional target document ID."
+          }
+        },
+        "required": [
+          "candidateId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "seqcraft_stage_sequence_transaction",
+      "description": "Stage an exact synonymous mutation candidate returned by seqcraft_domesticate_sequence. Checks revision locking to ensure the molecule was not modified since analysis, then creates a revision-locked transaction for human review.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "candidateId": {
+            "type": "string",
+            "description": "The candidateId returned by seqcraft_domesticate_sequence."
+          },
+          "documentId": {
+            "type": "string",
+            "description": "Optional target document ID."
+          }
+        },
+        "required": [
+          "candidateId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "seqcraft_undo",
+      "description": "Undo the most recent sequence edit on the active or specified construct in SeqCraft history.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "string",
+            "description": "Document identifier. If omitted, uses active document."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "seqcraft_update_document_metadata",
+      "description": "Update metadata for a document, such as renaming it or changing its topology (linear <-> circular).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "string",
+            "description": "Document identifier. If omitted, updates the active document."
+          },
+          "name": {
+            "type": "string",
+            "description": "New document name."
+          },
+          "topology": {
+            "type": "string",
+            "enum": [
+              "linear",
+              "circular"
+            ],
+            "description": "New molecule topology."
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "seqcraft.onrender.com",
+  "source": "webmcp.com/api/directory.json"
+}

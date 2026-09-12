@@ -1,0 +1,646 @@
+{
+  "sponsio": 1,
+  "url": "https://waymark-sable.vercel.app/",
+  "capturedAt": "2026-09-12T10:38:40.587Z",
+  "tools": [
+    {
+      "name": "add_step",
+      "description": "Add a learning step (article, video, exercise, project, or quiz) to a path. Provide `why` — a one-sentence rationale shown to the user on the step card. URLs are validated server-side; dead links are rejected.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path_id": {
+            "type": "string"
+          },
+          "position": {
+            "type": "number",
+            "description": "Insert index; omit to append"
+          },
+          "title": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "article",
+              "video",
+              "exercise",
+              "project",
+              "quiz"
+            ]
+          },
+          "url": {
+            "type": "string",
+            "description": "Resource link. For videos prefer YouTube URLs — they embed in the page and the user's watch progress is tracked for you."
+          },
+          "why": {
+            "type": "string",
+            "description": "Why this step, in one sentence"
+          },
+          "phase": {
+            "type": "string",
+            "description": "Curriculum phase this step belongs to (e.g. 'Fundamentals', 'Capstone'). Steps are grouped under phase headings in the UI."
+          },
+          "est_minutes": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "path_id",
+          "title",
+          "kind",
+          "why",
+          "est_minutes"
+        ]
+      }
+    },
+    {
+      "name": "await_proposal_decision",
+      "description": "Wait (block) until the user accepts or declines a proposal in the page — call this right after propose_revision instead of polling. Accepted ops are already applied when this returns. Returns pending if the timeout passes first.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "proposal_id": {
+            "type": "string"
+          },
+          "timeout_seconds": {
+            "type": "number",
+            "description": "How long to wait before giving up (5–300, default 60)"
+          }
+        },
+        "required": [
+          "proposal_id"
+        ]
+      }
+    },
+    {
+      "name": "await_quiz_results",
+      "description": "Wait (block) until the user submits a quiz in the page, then return their results — call this right after create_quiz instead of polling. Returns pending if the timeout passes first; you can call it again.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "quiz_id": {
+            "type": "string"
+          },
+          "timeout_seconds": {
+            "type": "number",
+            "description": "How long to wait before giving up (5–300, default 60)"
+          }
+        },
+        "required": [
+          "quiz_id"
+        ]
+      }
+    },
+    {
+      "name": "create_flashcards",
+      "description": "Attach a flashcard deck to a step for the USER to review in the page — front is the prompt, back is the answer. Good after the user finishes a concept-heavy step. Check retention later with get_review_stats.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path_id": {
+            "type": "string"
+          },
+          "step_id": {
+            "type": "string"
+          },
+          "cards": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 20,
+            "items": {
+              "type": "object",
+              "properties": {
+                "front": {
+                  "type": "string"
+                },
+                "back": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "front",
+                "back"
+              ]
+            }
+          }
+        },
+        "required": [
+          "path_id",
+          "step_id",
+          "cards"
+        ]
+      }
+    },
+    {
+      "name": "create_path",
+      "description": "Create a new learning path for the user. Call this first when the user asks to learn a topic. Returns the path_id used by all other tools.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "topic": {
+            "type": "string",
+            "description": "What the user wants to learn"
+          },
+          "goal": {
+            "type": "string",
+            "description": "The user's concrete end goal"
+          },
+          "learner_background": {
+            "type": "string",
+            "description": "What the user already knows"
+          },
+          "hours_per_week": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "topic",
+          "goal",
+          "learner_background",
+          "hours_per_week"
+        ]
+      }
+    },
+    {
+      "name": "create_quiz",
+      "description": "Create a multiple-choice quiz attached to a step. The USER answers it in the page UI — do not answer it yourself. Set reveal: 'on_step_done' to author quizzes ahead of time — the page shows the quiz automatically when the user finishes the step. Give each question a `remedial` follow-up step; if the user misses that question, the page automatically proposes it (user approves) even with no agent present. When you're in the loop live, call await_quiz_results after creating.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path_id": {
+            "type": "string"
+          },
+          "step_id": {
+            "type": "string",
+            "description": "The step this quiz checks understanding of"
+          },
+          "reveal": {
+            "type": "string",
+            "enum": [
+              "immediately",
+              "on_step_done"
+            ],
+            "description": "on_step_done hides the quiz until the user marks the step done (default: immediately)"
+          },
+          "questions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "prompt": {
+                  "type": "string"
+                },
+                "choices": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 2,
+                  "maxItems": 5
+                },
+                "correct_index": {
+                  "type": "number"
+                },
+                "remedial": {
+                  "type": "object",
+                  "description": "Follow-up step auto-proposed to the user if they miss this question",
+                  "properties": {
+                    "title": {
+                      "type": "string"
+                    },
+                    "kind": {
+                      "type": "string",
+                      "enum": [
+                        "article",
+                        "video",
+                        "exercise",
+                        "project",
+                        "quiz"
+                      ]
+                    },
+                    "url": {
+                      "type": "string"
+                    },
+                    "why": {
+                      "type": "string"
+                    },
+                    "phase": {
+                      "type": "string"
+                    },
+                    "est_minutes": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "title",
+                    "kind",
+                    "why",
+                    "est_minutes"
+                  ]
+                }
+              },
+              "required": [
+                "prompt",
+                "choices",
+                "correct_index"
+              ]
+            }
+          }
+        },
+        "required": [
+          "path_id",
+          "step_id",
+          "questions"
+        ]
+      }
+    },
+    {
+      "name": "get_path",
+      "description": "Read the full current state of a learning path, including step order, statuses, locks, and user notes.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "path_id"
+        ]
+      }
+    },
+    {
+      "name": "get_progress",
+      "description": "Read a progress summary for a path: per-step statuses, notes, completion counts, remaining time, and days since last activity. watched_percent is measured from the embedded video player (reliable). engaged_minutes is time spent away after opening an external resource — a rough attention signal, not verified consumption. Call this on a return visit before suggesting what to do next.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "path_id"
+        ]
+      }
+    },
+    {
+      "name": "get_proposal_status",
+      "description": "Check whether the user accepted or declined a proposal. Accepted ops are already applied — read the path with get_path afterwards. A declined proposal should be respected, not retried.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "proposal_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "proposal_id"
+        ]
+      }
+    },
+    {
+      "name": "get_quiz_results",
+      "description": "Read the user's answers to a quiz. Returns pending status until the user submits in the page. Use missed questions to adapt the path.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "quiz_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "quiz_id"
+        ]
+      }
+    },
+    {
+      "name": "get_review_stats",
+      "description": "Read the user's flashcard results for a deck: per-card seen/got-it counts and last result. Cards repeatedly marked 'again' signal concepts to reinforce with remedial steps or a quiz.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "deck_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "deck_id"
+        ]
+      }
+    },
+    {
+      "name": "highlight_step",
+      "description": "Point the user at one step on the page: it scrolls into view with your short message attached. Use when telling the user where to pick up or what to look at — the message should say why.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path_id": {
+            "type": "string"
+          },
+          "step_id": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string",
+            "description": "One sentence shown in a bubble on the step"
+          }
+        },
+        "required": [
+          "path_id",
+          "step_id",
+          "message"
+        ]
+      }
+    },
+    {
+      "name": "list_paths",
+      "description": "List all of the user's learning paths. Call this on a return visit to re-orient yourself.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "mark_step",
+      "description": "Update a step's progress status on the user's behalf, optionally attaching a note about their experience.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path_id": {
+            "type": "string"
+          },
+          "step_id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "todo",
+              "in_progress",
+              "done",
+              "skipped"
+            ]
+          },
+          "note": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "path_id",
+          "step_id",
+          "status"
+        ]
+      }
+    },
+    {
+      "name": "plan_weeks",
+      "description": "Assign steps to calendar weeks (1-based) so the path fits the user's stated hours per week — each step shows its week badge in the UI. Provide an assignment for every step you want scheduled; steps omitted keep their current week.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path_id": {
+            "type": "string"
+          },
+          "assignments": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "properties": {
+                "step_id": {
+                  "type": "string"
+                },
+                "week": {
+                  "type": "number",
+                  "minimum": 1
+                }
+              },
+              "required": [
+                "step_id",
+                "week"
+              ]
+            }
+          }
+        },
+        "required": [
+          "path_id",
+          "assignments"
+        ]
+      }
+    },
+    {
+      "name": "propose_revision",
+      "description": "Propose a set of path changes for the USER to accept or decline in the page UI — use this instead of direct edits when a change is significant (inserting remedial steps after a failed quiz, restructuring a phase) or touches user-locked steps. The user's accept is their consent, so proposals MAY include locked steps. Poll get_proposal_status afterwards.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path_id": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string",
+            "description": "Why you're proposing this, in one or two sentences. Shown to the user."
+          },
+          "ops": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "properties": {
+                "op": {
+                  "type": "string",
+                  "enum": [
+                    "add_step",
+                    "remove_step",
+                    "update_step",
+                    "reorder_steps"
+                  ]
+                },
+                "position": {
+                  "type": "number",
+                  "description": "add_step: insert index; omit to append"
+                },
+                "step_id": {
+                  "type": "string",
+                  "description": "remove_step / update_step"
+                },
+                "ordered_step_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "reorder_steps: complete new order"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "article",
+                    "video",
+                    "exercise",
+                    "project",
+                    "quiz"
+                  ]
+                },
+                "url": {
+                  "type": "string"
+                },
+                "why": {
+                  "type": "string"
+                },
+                "phase": {
+                  "type": "string"
+                },
+                "est_minutes": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "op"
+              ]
+            }
+          }
+        },
+        "required": [
+          "path_id",
+          "reason",
+          "ops"
+        ]
+      }
+    },
+    {
+      "name": "record_note",
+      "description": "Attach a note to a step on the user's behalf — their reaction to a resource, a confusion, a takeaway. Notes are shown on the step card and inform future adaptation.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path_id": {
+            "type": "string"
+          },
+          "step_id": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "path_id",
+          "step_id",
+          "note"
+        ]
+      }
+    },
+    {
+      "name": "remove_step",
+      "description": "Remove a step from a path. Fails if the user has locked the step — locked steps are under the user's control and must not be removed.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path_id": {
+            "type": "string"
+          },
+          "step_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "path_id",
+          "step_id"
+        ]
+      }
+    },
+    {
+      "name": "reorder_steps",
+      "description": "Reorder a path's steps. Provide the complete list of step ids in the new order. User-locked steps must stay at their current positions.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path_id": {
+            "type": "string"
+          },
+          "ordered_step_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "path_id",
+          "ordered_step_ids"
+        ]
+      }
+    },
+    {
+      "name": "update_step",
+      "description": "Edit a step's title, resource URL, rationale, kind, or time estimate. Fails on user-locked steps.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path_id": {
+            "type": "string"
+          },
+          "step_id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "article",
+              "video",
+              "exercise",
+              "project",
+              "quiz"
+            ]
+          },
+          "url": {
+            "type": "string"
+          },
+          "why": {
+            "type": "string"
+          },
+          "phase": {
+            "type": "string"
+          },
+          "est_minutes": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "path_id",
+          "step_id"
+        ]
+      }
+    }
+  ],
+  "host": "waymark-sable.vercel.app",
+  "source": "webmcp.com/api/directory.json"
+}

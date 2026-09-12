@@ -1,0 +1,615 @@
+{
+  "sponsio": 1,
+  "url": "https://2d-webmcp.netlify.app/",
+  "capturedAt": "2026-09-12T10:38:40.587Z",
+  "tools": [
+    {
+      "name": "create_workflow",
+      "description": "Call this directly for a new-workflow request; it creates the complete workflow atomically and safely refuses to overwrite a non-empty canvas, so do not discover first solely to check emptiness. Give each node a short request-local key; the app generates durable node and connection IDs, positions, and target ports. Connections use {from:\"source-key\",to:\"target-key\"}; omit on for a single-output node or an action's success output, and set on for condition branches or other outputs. A completed receipt is authoritative; do not discover or inspect solely to verify it. If the canvas is not empty, use discover_workflow and edit_workflow instead.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "nodes": {
+            "minItems": 1,
+            "maxItems": 100,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "key": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 64
+                },
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "node",
+                    "action",
+                    "condition",
+                    "start",
+                    "end",
+                    "input",
+                    "output",
+                    "subprocess",
+                    "parallel-gateway",
+                    "data-store"
+                  ]
+                },
+                "label": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 120
+                },
+                "properties": {
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 40
+                  },
+                  "additionalProperties": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "maxLength": 120
+                      },
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "boolean"
+                      }
+                    ]
+                  },
+                  "maxProperties": 4
+                }
+              },
+              "required": [
+                "key",
+                "type",
+                "label"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "connections": {
+            "maxItems": 100,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "from": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 64
+                },
+                "on": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 40
+                },
+                "to": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 64
+                },
+                "label": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 120
+                }
+              },
+              "required": [
+                "from",
+                "to"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "nodes",
+          "connections"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "discover_workflow",
+      "description": "List current workflow item IDs and labels with the revision required by edit_workflow. Follow itemPage.nextCursor for more items. For a new-workflow request, call create_workflow directly because it safely refuses to overwrite a non-empty canvas.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "cursor": {
+            "description": "Zero-based item cursor; omit on the first discovery call.",
+            "$ref": "#/$defs/__schema0"
+          },
+          "limit": {
+            "description": "Number of compact item references to return, from 1 to 8.",
+            "$ref": "#/$defs/__schema1"
+          }
+        },
+        "additionalProperties": false,
+        "$defs": {
+          "__schema0": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "__schema1": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 8
+          }
+        }
+      }
+    },
+    {
+      "name": "edit_workflow",
+      "description": "Atomically apply up to 100 commands to an existing workflow; prefer create_workflow for a new workflow. Use these exact shapes: {type:\"createNode\",node:{id:\"node-id\",type:\"action\",label:\"Label\"}}; {type:\"updateNode\",id:\"node-id\",patch:{label:\"New label\"}}; {type:\"deleteNode\",id:\"node-id\"}; {type:\"connect\",edge:{id:\"edge-id\",source:{nodeId:\"source-id\",port:\"success\"},target:{nodeId:\"target-id\",port:\"input\"}}}; {type:\"disconnect\",edgeId:\"edge-id\"}. For an existing workflow, use discover_workflow's exact revision as baseRevision; omit it only for a backward-compatible empty-canvas create. Node positions are automatic. Reroute with disconnect and connect commands in the same batch. Valid ports are node: inputs [input], outputs [next]; action: inputs [input], outputs [success, failure]; condition: inputs [input], outputs [yes, no]; start: inputs [], outputs [next]; end: inputs [input], outputs []; input: inputs [], outputs [data]; output: inputs [data], outputs []; subprocess: inputs [input], outputs [next]; parallel-gateway: inputs [input], outputs [next]; data-store: inputs [write], outputs [read]. A completed receipt is authoritative proof that the atomic edit was validated and committed; do not call discover_workflow or inspect_workflow_items solely to verify it. The app announces the receipt. On conflict, rediscover before retrying.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "baseRevision": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "commands": {
+            "minItems": 1,
+            "maxItems": 100,
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "createNode"
+                    },
+                    "node": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 64
+                        },
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "node",
+                            "action",
+                            "condition",
+                            "start",
+                            "end",
+                            "input",
+                            "output",
+                            "subprocess",
+                            "parallel-gateway",
+                            "data-store"
+                          ]
+                        },
+                        "label": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 120
+                        },
+                        "properties": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 40
+                          },
+                          "additionalProperties": {
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "maxLength": 120
+                              },
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "boolean"
+                              }
+                            ]
+                          },
+                          "maxProperties": 4
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "type",
+                        "label"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "node"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "updateNode"
+                    },
+                    "id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 64
+                    },
+                    "patch": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "node",
+                            "action",
+                            "condition",
+                            "start",
+                            "end",
+                            "input",
+                            "output",
+                            "subprocess",
+                            "parallel-gateway",
+                            "data-store"
+                          ]
+                        },
+                        "label": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 120
+                        },
+                        "properties": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 40
+                          },
+                          "additionalProperties": {
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "maxLength": 120
+                              },
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "boolean"
+                              }
+                            ]
+                          },
+                          "maxProperties": 4
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "id",
+                    "patch"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "deleteNode"
+                    },
+                    "id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 64
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "id"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "connect"
+                    },
+                    "edge": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 64
+                        },
+                        "source": {
+                          "type": "object",
+                          "properties": {
+                            "nodeId": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 64
+                            },
+                            "port": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 40
+                            }
+                          },
+                          "required": [
+                            "nodeId",
+                            "port"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "target": {
+                          "type": "object",
+                          "properties": {
+                            "nodeId": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 64
+                            },
+                            "port": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 40
+                            }
+                          },
+                          "required": [
+                            "nodeId",
+                            "port"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "label": {
+                          "type": "string",
+                          "maxLength": 120
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "source",
+                        "target"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "edge"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "disconnect"
+                    },
+                    "edgeId": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 64
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "edgeId"
+                  ],
+                  "additionalProperties": false
+                }
+              ]
+            }
+          }
+        },
+        "required": [
+          "commands"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "inspect_workflow_items",
+      "description": "Read properties or relationships for discovered workflow items, or paginated changes for a change-receipt operation ID. This tool does not alter the visible selection.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "objects": {
+            "minItems": 1,
+            "maxItems": 5,
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/__schema0"
+            },
+            "description": "Up to 5 current item references copied from discover_workflow."
+          },
+          "detail": {
+            "description": "Detail to return; summary is the compact default.",
+            "$ref": "#/$defs/__schema1"
+          },
+          "cursor": {
+            "description": "Relationship or change cursor.",
+            "$ref": "#/$defs/__schema2"
+          },
+          "limit": {
+            "description": "Relationships or changes to return, from 1 to 5.",
+            "$ref": "#/$defs/__schema3"
+          }
+        },
+        "required": [
+          "objects"
+        ],
+        "additionalProperties": false,
+        "$defs": {
+          "__schema0": {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "workflow-node",
+                  "workflow-edge",
+                  "change-receipt"
+                ],
+                "description": "Object category."
+              },
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 64,
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+                "description": "Stable application ID copied from discovery output or supplied for a new object."
+              }
+            },
+            "required": [
+              "kind",
+              "id"
+            ],
+            "additionalProperties": false
+          },
+          "__schema1": {
+            "type": "string",
+            "enum": [
+              "summary",
+              "properties",
+              "relationships",
+              "changes"
+            ]
+          },
+          "__schema2": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "__schema3": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5
+          }
+        }
+      }
+    },
+    {
+      "name": "show_target",
+      "description": "Bring a workflow node, edge, change receipt, or named page element into view. Nodes and receipts receive keyboard focus; page-element focus is queued for the next browser interaction.",
+      "kind": "imperative",
+      "inputSchema": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "workflow-node",
+                  "workflow-edge"
+                ]
+              },
+              "id": {
+                "$ref": "#/$defs/__schema0"
+              }
+            },
+            "required": [
+              "kind",
+              "id"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string",
+                "const": "change-receipt"
+              },
+              "id": {
+                "$ref": "#/$defs/__schema0"
+              }
+            },
+            "required": [
+              "kind",
+              "id"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string",
+                "const": "page-element"
+              },
+              "id": {
+                "type": "string",
+                "enum": [
+                  "canvas.zoom-in",
+                  "canvas.zoom-out",
+                  "canvas.fit-view"
+                ]
+              }
+            },
+            "required": [
+              "kind",
+              "id"
+            ],
+            "additionalProperties": false
+          }
+        ],
+        "$defs": {
+          "__schema0": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+            "description": "Stable application ID copied from discovery output or supplied for a new object."
+          }
+        }
+      }
+    },
+    {
+      "name": "undo_workflow_edit",
+      "description": "Undo the operationId from a successful edit result when it is still the latest graph revision, then return a reversal result.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "operationId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+            "description": "Edit result operation ID returned by edit_workflow."
+          }
+        },
+        "required": [
+          "operationId"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "2d-webmcp.netlify.app",
+  "source": "webmcp.com/api/directory.json"
+}

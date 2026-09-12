@@ -1,0 +1,115 @@
+{
+  "sponsio": 1,
+  "url": "https://fondof.netlify.app/",
+  "capturedAt": "2026-09-12T10:38:40.587Z",
+  "tools": [
+    {
+      "name": "compose_skill",
+      "description": "Turn a stated need or one or more source URLs into a single repo-specific skill. Call this once per skill and pass every source URL in the urls array; the backend merges up to 4 sources. Either a need or one or more URLs must be present before calling. Optionally pass a target repo, top_shards, and private. Returns the generated markdown, skill hash, shareable URL, and source_urls for attribution. If a quota error is returned, stop and ask the user to sign in or share a skill.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "description": "Provide exactly one of need or urls/url. repo, top_shards, and private are optional. If the user provides multiple links, pass them all in urls. If the user only said something vague like 'create a skill', ask them for a need or urls before calling. Set private to false only when the user explicitly wants a public share and is signed in.",
+        "properties": {
+          "need": {
+            "type": "string",
+            "description": "A free-text description of a technique or problem to solve. Use this when the user describes a topic, not when they paste URLs. Examples: 'retry budgets for async TypeScript fetch' or 'how to cache Deno KV queries'.",
+            "examples": [
+              "retry budgets for async TypeScript fetch",
+              "structured logging for worker services"
+            ]
+          },
+          "url": {
+            "type": "string",
+            "description": "A single public article, blog post, documentation page, or YouTube URL. Prefer the urls array if the user provided multiple links.",
+            "examples": [
+              "https://nextjs.org/blog/next-16-3",
+              "https://www.youtube.com/watch?v=7wuYBfE131U"
+            ]
+          },
+          "urls": {
+            "type": "array",
+            "description": "One or more public article, blog post, documentation page, or YouTube URLs to combine into a single skill. Use this when the user gives multiple sources. Max 4 URLs.",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 4,
+            "examples": [
+              [
+                "https://www.youtube.com/watch?v=b9tB9Q1XOM0",
+                "https://paulgraham.com/brandage.html"
+              ]
+            ]
+          },
+          "repo": {
+            "type": "string",
+            "description": "Target repository in owner/name form or as a GitHub URL.",
+            "examples": [
+              "udirobert/fondof"
+            ]
+          },
+          "top_shards": {
+            "type": "number",
+            "description": "Number of extracted ideas to include in the skill (1-6, default 2 for single source, 3 for multi-source).",
+            "minimum": 1,
+            "maximum": 6,
+            "examples": [
+              2,
+              3
+            ]
+          },
+          "private": {
+            "type": "boolean",
+            "description": "When false, the skill is shared publicly and can unlock unlimited forges for signed-in users. Default is true for signed-in users (a private draft) and false for anonymous users (so the link is viewable). Only set false if a signed-in user explicitly asks to share."
+          }
+        }
+      }
+    },
+    {
+      "name": "get_skill",
+      "description": "Fetch a public fondof skill by its hash. Only call this tool once the user has provided a skill hash or fondof skill URL (e.g., https://fondof.netlify.app/s/{hash}). Returns the title, markdown body, target repo, source URLs, and evidence summary.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "skill_hash": {
+            "type": "string",
+            "description": "The skill hash, taken from a fondof skill URL like /s/{hash} or pasted by the user.",
+            "examples": [
+              "55739f72d6ba6b15d82d6fcf6eac688d43f0c2852edfbe1265440eb1010eea6a"
+            ]
+          }
+        },
+        "required": [
+          "skill_hash"
+        ]
+      }
+    },
+    {
+      "name": "search_skills",
+      "description": "Search the public fondof skill pool for existing skills that match a topic or query. Only call this tool once the user has provided a query. Returns a list of skills with title, URL, and snippet.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "The topic, technique, or search query. Can be a short phrase or keyword like a technology, pattern, or problem.",
+            "examples": [
+              "React performance",
+              "retry budgets for webhooks"
+            ]
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "fondof.netlify.app",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,82 @@
+{
+  "sponsio": 1,
+  "url": "https://satsuma.ai/",
+  "capturedAt": "2026-09-12T10:38:40.587Z",
+  "tools": [
+    {
+      "name": "get_company_info",
+      "description": "Return public facts about Satsuma AI: what the product does, supported AI channels, compliance, and primary URLs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_blog_posts",
+      "description": "List published Satsuma blog posts covering MCP, MCP Apps, WebMCP, ChatGPT Apps, and Claude Connectors.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_pages",
+      "description": "List the primary pages on satsuma.ai with a short summary of each.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "submit_contact_form",
+      "description": "Submit the Satsuma 'Get a demo' contact form. Requires the caller's full name, work email (personal domains like gmail, yahoo, outlook are rejected), phone number, and approximate company size. Creates a lead in Satsuma's CRM. Confirm with the user before calling.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "description": "Full name of the person submitting."
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 255,
+            "description": "Work email address. Personal email providers are rejected."
+          },
+          "phone": {
+            "type": "string",
+            "minLength": 4,
+            "maxLength": 40,
+            "description": "Phone number including country code if outside the US."
+          },
+          "companySize": {
+            "type": "string",
+            "description": "Approximate company size.",
+            "enum": [
+              "1-10",
+              "11-50",
+              "51-200",
+              "201-1000",
+              "1000+"
+            ]
+          }
+        },
+        "required": [
+          "name",
+          "email",
+          "phone",
+          "companySize"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "satsuma.ai",
+  "source": "webmcp.com/api/directory.json"
+}

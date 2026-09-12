@@ -1,0 +1,945 @@
+{
+  "sponsio": 1,
+  "url": "https://urban-planning-copilot.heisenbug.in/",
+  "capturedAt": "2026-09-12T10:38:40.587Z",
+  "tools": [
+    {
+      "name": "add_to_shortlist",
+      "description": "Pin a ranked candidate to the scenario shortlist for decision review.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "string",
+            "description": "Planning project id. Optional when a workspace tab is open — defaults to the active project."
+          },
+          "scenarioId": {
+            "type": "string",
+            "description": "Scenario id. Optional when a workspace tab is open — defaults to the active scenario."
+          },
+          "candidateId": {
+            "type": "string",
+            "description": "Ranked candidate id from list_candidates or inspect_candidate"
+          },
+          "reason": {
+            "type": "string",
+            "description": "Why this site was pinned"
+          },
+          "note": {
+            "type": "string",
+            "description": "Optional one-line planner note"
+          }
+        },
+        "required": [
+          "candidateId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "approve_proposal",
+      "description": "Apply a staged proposal after human confirmation. Without confirmed:true returns pending_planner with proposalId.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "string",
+            "description": "Planning project id. Optional when a workspace tab is open — defaults to the active project."
+          },
+          "proposalId": {
+            "type": "string",
+            "description": "Staged proposal id from stage_proposal awaiting planner approval"
+          },
+          "confirmed": {
+            "type": "boolean",
+            "description": "Set true after the planner clicks Approve proposal in the UI"
+          }
+        },
+        "required": [
+          "proposalId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "approve_scenario",
+      "description": "Use when the user says 'record decision' or 'approve scenario'; returns pending_planner until planner clicks Approve. Without confirmed:true the decision is not saved until the planner confirms in the workspace banner.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "string",
+            "description": "Planning project id. Optional when a workspace tab is open — defaults to the active project."
+          },
+          "scenarioId": {
+            "type": "string",
+            "description": "Scenario id. Optional when a workspace tab is open — defaults to the active scenario."
+          },
+          "reason": {
+            "type": "string",
+            "description": "Optional decision rationale"
+          },
+          "confirmed": {
+            "type": "boolean",
+            "description": "Set true after the planner confirms in the workspace UI"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "compare_scenarios",
+      "description": "Compare scenarios using consistent calculated metrics (capacity, transit, scores). Requires two scenario IDs from list_scenarios with hasResults: true.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "string",
+            "description": "Planning project id. Optional when a workspace tab is open — defaults to the active project."
+          },
+          "scenarioIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "At least two scenario ids"
+          }
+        },
+        "required": [
+          "scenarioIds"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "create_scenario_branch",
+      "description": "Duplicate a scenario so edits do not mutate the parent. Call set_active_scenario to work on the new branch.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "string",
+            "description": "Planning project id. Optional when a workspace tab is open — defaults to the active project."
+          },
+          "name": {
+            "type": "string",
+            "description": "Display name for the new scenario branch (e.g. \"Transit 900m variant\")."
+          },
+          "fromScenarioId": {
+            "type": "string",
+            "description": "Source scenario to duplicate; defaults to active scenario"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "exclude_features",
+      "description": "Exclude selected map parcels by feature id (same as map parcel Exclude toolbar); marks results stale.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "string",
+            "description": "Planning project id. Optional when a workspace tab is open — defaults to the active project."
+          },
+          "scenarioId": {
+            "type": "string",
+            "description": "Scenario id. Optional when a workspace tab is open — defaults to the active scenario."
+          },
+          "featureIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Parcel feature ids from map selection"
+          },
+          "label": {
+            "type": "string",
+            "description": "Constraint label shown in activity"
+          }
+        },
+        "required": [
+          "featureIds"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "exclude_from_selection",
+      "description": "Exclude parcel features from analysis (alias for exclude_features).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "string",
+            "description": "Planning project id. Optional when a workspace tab is open — defaults to the active project."
+          },
+          "scenarioId": {
+            "type": "string",
+            "description": "Scenario id. Optional when a workspace tab is open — defaults to the active scenario."
+          },
+          "featureIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Parcel feature ids from map selection"
+          },
+          "label": {
+            "type": "string",
+            "description": "Constraint label shown in activity"
+          }
+        },
+        "required": [
+          "featureIds"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "exclude_map_area",
+      "description": "Add a human/agent geographic exclusion polygon; marks results stale.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "string",
+            "description": "Planning project id. Optional when a workspace tab is open — defaults to the active project."
+          },
+          "scenarioId": {
+            "type": "string",
+            "description": "Scenario id. Optional when a workspace tab is open — defaults to the active scenario."
+          },
+          "label": {
+            "type": "string",
+            "description": "Human-readable label for the exclusion polygon shown in constraints"
+          },
+          "coordinates": {
+            "type": "array",
+            "description": "Polygon ring as [lng,lat] pairs (min 3)",
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              }
+            }
+          }
+        },
+        "required": [
+          "label",
+          "coordinates"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "generate_report",
+      "description": "Generate a planning report for one or more scenarios. Without confirmed:true returns pending_planner for on-screen review.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "string",
+            "description": "Planning project id. Optional when a workspace tab is open — defaults to the active project."
+          },
+          "scenarioIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Scenario ids to include; defaults to active scenario"
+          },
+          "title": {
+            "type": "string",
+            "description": "Optional report title; defaults to a scenario-based name"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_analysis_plan",
+      "description": "Return the structured analysis plan steps before or after running analysis.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "string",
+            "description": "Planning project id. Optional when a workspace tab is open — defaults to the active project."
+          },
+          "scenarioId": {
+            "type": "string",
+            "description": "Scenario id. Optional when a workspace tab is open — defaults to the active scenario."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_planning_constraints",
+      "description": "One-shot read of planning constraints for the active scenario: objective, enabled constraints, dataset limitations, flood/transit thresholds, stale flag, and housing target vs eligible capacity.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "string",
+            "description": "Planning project id. Optional when a workspace tab is open — defaults to the active project."
+          },
+          "scenarioId": {
+            "type": "string",
+            "description": "Scenario id. Optional when a workspace tab is open — defaults to the active scenario."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_workspace",
+      "description": "Read the active project and currently active scenario only: objective, constraints, decision status, resume note, and analysis summary. Call list_scenarios for all branches.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "string",
+            "description": "Planning project id. Optional when a workspace tab is open — defaults to the active project."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "inspect_candidate",
+      "description": "Inspect one candidate: metrics, score breakdown, datasets, assumptions, limitations.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "string",
+            "description": "Planning project id. Optional when a workspace tab is open — defaults to the active project."
+          },
+          "candidateId": {
+            "type": "string",
+            "description": "Ranked candidate id from list_candidates or inspect_candidate"
+          },
+          "scenarioId": {
+            "type": "string",
+            "description": "Scenario id. Optional when a workspace tab is open — defaults to the active scenario."
+          }
+        },
+        "required": [
+          "candidateId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_candidates",
+      "description": "List ranked analysis candidates (top N by default) with total count and score spread — does not return the full candidate set. For housing capacity and detailed metrics per site, call inspect_candidate.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "string",
+            "description": "Planning project id. Optional when a workspace tab is open — defaults to the active project."
+          },
+          "scenarioId": {
+            "type": "string",
+            "description": "Scenario id. Optional when a workspace tab is open — defaults to the active scenario."
+          },
+          "limit": {
+            "type": "number",
+            "description": "Max candidates to return (default 10, max 100)"
+          },
+          "offset": {
+            "type": "number",
+            "description": "Skip this many ranked candidates before returning the page (default 0)"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_datasets",
+      "description": "List datasets with version, freshness, coverage, and limitations.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_decisions",
+      "description": "Recent planner decisions and scenario preferences (approvals, rejections, candidate rejections, prefer_scenario). Use for audit — get_workspace only shows decisionStatus on the active scenario.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "string",
+            "description": "Planning project id. Optional when a workspace tab is open — defaults to the active project."
+          },
+          "scenarioId": {
+            "type": "string",
+            "description": "Optional — filter to one scenario; omit for all branches"
+          },
+          "limit": {
+            "type": "number",
+            "description": "Max decisions to return (default 20, max 100)"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_projects",
+      "description": "List saved planning projects (id, name, geography). Use open_project to navigate by id or name.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_scenarios",
+      "description": "List all scenario branches for a project: id, name, active flag, whether results exist, stale flag, and decision status.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "string",
+            "description": "Planning project id. Optional when a workspace tab is open — defaults to the active project."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_shortlist",
+      "description": "List planner-pinned candidates on the scenario shortlist with pin reasons and notes.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "string",
+            "description": "Planning project id. Optional when a workspace tab is open — defaults to the active project."
+          },
+          "scenarioId": {
+            "type": "string",
+            "description": "Scenario id. Optional when a workspace tab is open — defaults to the active scenario."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "load_project",
+      "description": "Read-only snapshot of a project workspace (alias for get_workspace). Does not navigate — use open_project or visit workspaceUrl.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "string",
+            "description": "Planning project id"
+          }
+        },
+        "required": [
+          "projectId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "open_project",
+      "description": "Open an existing planning project in the browser (navigates to its workspace URL). Pass projectId or name (case-insensitive; unique partial match allowed).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "string",
+            "description": "Planning project id from list_projects"
+          },
+          "name": {
+            "type": "string",
+            "description": "Project display name when projectId is unknown"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "open_workspace_tab",
+      "description": "Switch the workspace UI to a tab. Requires the project workspace to be open in the browser.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "string",
+            "description": "Planning project id. Optional when a workspace tab is open — defaults to the active project."
+          },
+          "tab": {
+            "type": "string",
+            "description": "Tab to open: workspace (map), results, evidence, compare, decision, activity, or report",
+            "enum": [
+              "workspace",
+              "results",
+              "evidence",
+              "compare",
+              "decision",
+              "activity",
+              "report"
+            ]
+          }
+        },
+        "required": [
+          "tab"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "prefer_scenario",
+      "description": "Select the planner's preferred scenario. Without confirmed:true returns pending_planner for on-screen review.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "string",
+            "description": "Planning project id. Optional when a workspace tab is open — defaults to the active project."
+          },
+          "scenarioId": {
+            "type": "string",
+            "description": "Scenario id. Optional when a workspace tab is open — defaults to the active scenario."
+          },
+          "reason": {
+            "type": "string",
+            "description": "Optional planner rationale for preferring this scenario"
+          },
+          "confirmed": {
+            "type": "boolean",
+            "description": "Set true after the planner confirms in the workspace UI"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "reject_candidate",
+      "description": "Record a planner rejection of a candidate. Without confirmed:true returns pending_planner for on-screen review.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "string",
+            "description": "Planning project id. Optional when a workspace tab is open — defaults to the active project."
+          },
+          "scenarioId": {
+            "type": "string",
+            "description": "Scenario id. Optional when a workspace tab is open — defaults to the active scenario."
+          },
+          "candidateId": {
+            "type": "string",
+            "description": "Ranked candidate id from list_candidates or inspect_candidate"
+          },
+          "reason": {
+            "type": "string",
+            "description": "Optional planner rationale recorded with the rejection"
+          },
+          "confirmed": {
+            "type": "boolean",
+            "description": "Set true after the planner confirms in the workspace UI"
+          }
+        },
+        "required": [
+          "candidateId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "remove_from_shortlist",
+      "description": "Remove a candidate from the scenario shortlist.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "string",
+            "description": "Planning project id. Optional when a workspace tab is open — defaults to the active project."
+          },
+          "scenarioId": {
+            "type": "string",
+            "description": "Scenario id. Optional when a workspace tab is open — defaults to the active scenario."
+          },
+          "candidateId": {
+            "type": "string",
+            "description": "Ranked candidate id from list_candidates or inspect_candidate"
+          }
+        },
+        "required": [
+          "candidateId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "remove_map_area",
+      "description": "Remove a geographic exclusion/inclusion polygon by id; marks results stale.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "string",
+            "description": "Planning project id. Optional when a workspace tab is open — defaults to the active project."
+          },
+          "scenarioId": {
+            "type": "string",
+            "description": "Scenario id. Optional when a workspace tab is open — defaults to the active scenario."
+          },
+          "selectionId": {
+            "type": "string",
+            "description": "Geographic selection id returned by exclude_map_area"
+          }
+        },
+        "required": [
+          "selectionId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "run_analysis",
+      "description": "Run spatial analysis for a scenario. Returns running — poll list_candidates or get_workspace; do not re-run on stale Client Demo if results exist.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "string",
+            "description": "Planning project id. Optional when a workspace tab is open — defaults to the active project."
+          },
+          "scenarioId": {
+            "type": "string",
+            "description": "Scenario id. Optional when a workspace tab is open — defaults to the active scenario."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "select_candidate",
+      "description": "Select a candidate; syncs map highlight and detail panels.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "string",
+            "description": "Planning project id. Optional when a workspace tab is open — defaults to the active project."
+          },
+          "scenarioId": {
+            "type": "string",
+            "description": "Scenario id. Optional when a workspace tab is open — defaults to the active scenario."
+          },
+          "candidateId": {
+            "type": "string",
+            "description": "Ranked candidate id from list_candidates or inspect_candidate"
+          }
+        },
+        "required": [
+          "candidateId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_active_scenario",
+      "description": "Switch the workspace to a scenario branch (same as the header scenario picker). Use before run_analysis or list_candidates on a non-active branch.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "string",
+            "description": "Planning project id. Optional when a workspace tab is open — defaults to the active project."
+          },
+          "scenarioId": {
+            "type": "string",
+            "description": "Scenario id. Optional when a workspace tab is open — defaults to the active scenario."
+          }
+        },
+        "required": [
+          "scenarioId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_map_view",
+      "description": "Pan/zoom the workspace map viewport to a lng/lat center (optional zoom 1–20). Live map follows immediately.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "string",
+            "description": "Planning project id. Optional when a workspace tab is open — defaults to the active project."
+          },
+          "center": {
+            "type": "array",
+            "description": "[lng, lat] — exactly two numbers",
+            "items": {
+              "type": "number"
+            }
+          },
+          "zoom": {
+            "type": "number",
+            "description": "Optional zoom level (1–20)"
+          }
+        },
+        "required": [
+          "center"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_planning_objective",
+      "description": "Update the active objective from natural language; regenerates the analysis plan.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "string",
+            "description": "Planning project id. Optional when a workspace tab is open — defaults to the active project."
+          },
+          "objectiveText": {
+            "type": "string",
+            "description": "Natural-language planning objective replacing the active scenario objective"
+          },
+          "confirmConstraintChange": {
+            "type": "boolean",
+            "description": "Set true after planner review when the new objective would drop enabled flood/transit constraints"
+          }
+        },
+        "required": [
+          "objectiveText"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_priority_weights",
+      "description": "Set ranking weights (e.g. transit, capacity, flood_resilience). Values are normalized.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "string",
+            "description": "Planning project id. Optional when a workspace tab is open — defaults to the active project."
+          },
+          "scenarioId": {
+            "type": "string",
+            "description": "Scenario id. Optional when a workspace tab is open — defaults to the active scenario."
+          },
+          "weights": {
+            "type": "object",
+            "description": "Map of criterion key → weight",
+            "additionalProperties": {
+              "type": "number"
+            }
+          }
+        },
+        "required": [
+          "weights"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_transit_threshold",
+      "description": "Set transit proximity threshold in meters (marks results stale).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "string",
+            "description": "Planning project id. Optional when a workspace tab is open — defaults to the active project."
+          },
+          "scenarioId": {
+            "type": "string",
+            "description": "Scenario id. Optional when a workspace tab is open — defaults to the active scenario."
+          },
+          "meters": {
+            "type": "number",
+            "description": "Distance threshold in meters",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "meters"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "stage_proposal",
+      "description": "Stage a visible ghost proposal for human review. Does not apply until approved. Revision-bound.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "string",
+            "description": "Planning project id. Optional when a workspace tab is open — defaults to the active project."
+          },
+          "scenarioId": {
+            "type": "string",
+            "description": "Scenario id. Optional when a workspace tab is open — defaults to the active scenario."
+          },
+          "title": {
+            "type": "string",
+            "description": "Short proposal title shown in the workspace review banner"
+          },
+          "description": {
+            "type": "string",
+            "description": "Planner-facing summary of what the proposal would change"
+          },
+          "action": {
+            "type": "string",
+            "description": "Domain action: update_weights, update_constraints, set_transit_threshold, approve_scenario"
+          },
+          "payload": {
+            "type": "object",
+            "description": "Action-specific parameters"
+          }
+        },
+        "required": [
+          "title",
+          "description",
+          "action",
+          "payload"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "start_planning_project",
+      "description": "Create a planning project, navigate the browser to its workspace URL, and return projectId plus workspaceUrl. Geography data is Mission/SoMa, San Francisco.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Project name"
+          },
+          "objectiveText": {
+            "type": "string",
+            "description": "Natural-language planning question"
+          },
+          "geographyLabel": {
+            "type": "string",
+            "description": "Optional geography label"
+          }
+        },
+        "required": [
+          "name",
+          "objectiveText"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "update_map_area",
+      "description": "Update label or geometry of an existing geographic selection polygon.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "string",
+            "description": "Planning project id. Optional when a workspace tab is open — defaults to the active project."
+          },
+          "scenarioId": {
+            "type": "string",
+            "description": "Scenario id. Optional when a workspace tab is open — defaults to the active scenario."
+          },
+          "selectionId": {
+            "type": "string",
+            "description": "Geographic selection id to update"
+          },
+          "label": {
+            "type": "string",
+            "description": "Updated label for the geographic selection"
+          },
+          "coordinates": {
+            "type": "array",
+            "description": "Polygon ring as [lng,lat] pairs (min 3)",
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              }
+            }
+          }
+        },
+        "required": [
+          "selectionId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "verify_operation",
+      "description": "Verify an approved human-gated operation by SHA-256 receipt. Returns verification status.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "string",
+            "description": "Planning project id. Optional when a workspace tab is open — defaults to the active project."
+          },
+          "proposalId": {
+            "type": "string",
+            "description": "Optional; defaults to latest approved"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "urban-planning-copilot.heisenbug.in",
+  "source": "webmcp.com/api/directory.json"
+}

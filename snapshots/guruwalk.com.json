@@ -1,0 +1,93 @@
+{
+  "sponsio": 1,
+  "url": "https://www.guruwalk.com/",
+  "capturedAt": "2026-09-12T10:38:40.587Z",
+  "tools": [
+    {
+      "name": "get_current_page",
+      "description": "Returns the URL, title and locale of the page the user is currently viewing. The user can navigate on their own between messages — call this whenever you are unsure which page, city or listing the user is looking at right now, BEFORE assuming it from the conversation.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_destination_options",
+      "description": "Look up the available filter options for a destination: vertical categories (e.g. Tablaos Flamencos, Food Tours, Day Trips) and free-tour tags (e.g. Nocturno, Imprescindible). Use this BEFORE search_activities when the user mentions any specific category, attraction, landmark, or activity type — match the user's intent to one of the returned ids and pass it as verticalId or tagId to search_activities. Examples that should trigger this lookup: \"tablao flamenco\", \"food tour\", \"London Eye\", \"Eiffel Tower\", \"Sagrada Familia\", \"wine tasting\", \"Vatican Museums\".",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "destination": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Free-text destination name from the user, e.g. \"Sevilla\", \"Roma\", \"Paris\"."
+          }
+        },
+        "required": [
+          "destination"
+        ]
+      }
+    },
+    {
+      "name": "search_activities",
+      "description": "Search for free tours and paid activities on GuruWalk. Finds free walking tours and experiences by destination, date range, and number of attendees. When the user mentions a city name (e.g. \"Valencia\", \"Roma\"), pass it as the `destination` parameter. Dates, attendee counts, and activityType are all optional — do not ask the user for them, proceed with whatever the user provided. If the user mentions any specific category, attraction, landmark, or activity type (e.g., \"tablao flamenco\", \"food tour\", \"London Eye tickets\", \"Eiffel Tower visit\", \"wine tasting\"), call list_destination_options FIRST to get valid verticalId/tagId values for the destination, then pass them here. This tool navigates the user's browser to the results page — a single call completes the search; never retry with different parameters unless the user explicitly asks.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "destination": {
+            "type": "string",
+            "minLength": 1,
+            "description": "REQUIRED. The destination city name mentioned by the user. Pass the user's literal text (e.g., 'Valencia', 'New York', 'Roma') without modification."
+          },
+          "beginsAt": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+            "description": "Start date of the search range in YYYY-MM-DD format"
+          },
+          "endsAt": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+            "description": "End date of the search range in YYYY-MM-DD format"
+          },
+          "howManyAdults": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Number of adults attending"
+          },
+          "howManyChildren": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Number of children attending"
+          },
+          "activityType": {
+            "type": "string",
+            "enum": [
+              "free-tour",
+              "paid",
+              "all"
+            ],
+            "description": "Type of activities to search for. 'free-tour' = free walking tours (the default option, what most users want). 'paid' = paid activities like food tours, museum tickets, day trips. 'all' = both free tours and paid activities together."
+          },
+          "verticalId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Optional vertical ID to filter by. Use this to filter by a specific category (e.g., Tablaos Flamencos = \"171\" in Sevilla). Get valid IDs from list_destination_options first."
+          },
+          "tagId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Optional free-tour tag ID. Get valid IDs from list_destination_options first. Providing a tagId implies free tours: activityType will be treated as 'free-tour'."
+          }
+        },
+        "required": [
+          "destination"
+        ]
+      }
+    }
+  ],
+  "host": "guruwalk.com",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,250 @@
+{
+  "sponsio": 1,
+  "url": "https://app.goodleads.club/",
+  "capturedAt": "2026-09-12T10:38:40.587Z",
+  "tools": [
+    {
+      "name": "goodleads_browse_catalog",
+      "description": "The ready-made shelf: business type × state lists, each with product_id, name, state, lead_count, price_cents, period and stripe_price_id. `period`: `monthly` = a standing order billed each period; absent = a one-time purchase. Priced by the same graded per-record rule every quote uses; only sellable records (a named person) are ever billed. Preview free with goodleads_sample_leads; buy as-is with goodleads_create_checkout, or shape your own with goodleads_quote_list + goodleads_checkout_list.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "goodleads_checkout_list",
+      "description": "Turn a quoted list into a payment link a person completes — the buyer gets the file within a minute of paying. Pass the list you shaped (list_id, or states + filters) with a lane (all | best | contact) and an optional cap. Creating the link costs nothing and charges nobody — payment only happens if a human opens the returned checkout_url and completes it on Stripe's hosted page; the selected records are frozen when the link is minted, so what is billed is what is delivered — billed on sellable records (a named person) only, never on matching. Quote first with goodleads_quote_list and pass its price_rule_version (and, when the summary was exact, expected_total_cents): if prices or counts moved in between, the server answers 409 with the fresh quote instead of charging a different amount. After payment we go find a phone and email on every record bought without one: the buyer authorizes a ceiling (`ceiling_cents` — today's total plus the forecast upgrades), is charged `charged_now_cents` for what exists now, and later only what we find, at that grade's price and never above the ceiling. Nothing is charged until a person completes checkout; the file arrives about a minute after they pay; if we find a phone or email on the records after that, the updated file replaces it on the order's receipt page within a few hours and the receipt shows what was found and billed. A hard bounce, a disconnected phone or the wrong person is replaced within 30 days; what you buy is yours to re-download any time. Hand the URL to your human; do not represent the purchase as complete until they confirm payment.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "list_id": {
+            "type": "string",
+            "description": "A saved list id. Pass this or states + filters, not both."
+          },
+          "states": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "State codes for an inline shape; omit for every live state."
+          },
+          "filters": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "Filters follow the one GoodLeads filter contract (77 fields; GET /api/v1/schema/attributes?include=grammar): a leaf is {\"field\", \"op\", \"value\"}; the top-level list is an implicit \"and\"; {\"op\": \"and\"|\"or\", \"filters\": [...]} nests one or more children and {\"op\": \"not\", \"filters\": [one child]} negates. Operators by field type — text: eq, neq, in, not_in, contains, does_not_contain, exists, missing; number: eq, neq, gt, gte, lt, lte, between, in, not_in, exists, missing; date: eq, neq, gt, gte, lt, lte, between, in, not_in, exists, missing; boolean: eq, neq; geo: within. Sort with [{field, dir}] over any of the 71 sortable fields. Keyless callers may not filter on contact_name, email_primary, phone_primary. Live states: CO, CT, FL, NY, TX, VA. Records appear here the morning after the state posts them — speed is measured from publication, never from filing."
+          },
+          "lane": {
+            "type": "string",
+            "description": "all | best | contact (default best)."
+          },
+          "cap": {
+            "type": "object",
+            "description": "{type: \"count\"|\"budget\", value} — records for count, cents for budget."
+          },
+          "delivery": {
+            "type": "string",
+            "description": "file (default — a CSV/Excel/JSON workbook, yours to re-download any time), crm, or connector."
+          },
+          "customer_email": {
+            "type": "string",
+            "description": "Prefills the Stripe Checkout form."
+          },
+          "crm_connection_id": {
+            "type": "string",
+            "description": "Required when delivery=crm."
+          },
+          "connector_crm_name": {
+            "type": "string",
+            "description": "Required when delivery=connector: the CRM to build for."
+          },
+          "price_rule_version": {
+            "type": "integer",
+            "description": "From goodleads_quote_list — a moved price rule then answers 409 with a fresh quote."
+          },
+          "expected_total_cents": {
+            "type": "integer",
+            "description": "The quoted total shown to the buyer (only when the quote was exact) — a moved count then answers 409."
+          }
+        }
+      }
+    },
+    {
+      "name": "goodleads_create_checkout",
+      "description": "Mints a Stripe Checkout link for one shelf product (product_id from goodleads_browse_catalog). Say the card's period first: `period`: `monthly` = a standing order billed each period; absent = a one-time purchase. Creating the link charges nobody — only a completed Stripe checkout does. For a list you shaped yourself, use goodleads_checkout_list instead. Hand the URL to your human; do not represent the purchase as complete until they confirm payment.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "string",
+            "description": "The product_id of a shelf product, from goodleads_browse_catalog."
+          }
+        },
+        "required": [
+          "product_id"
+        ]
+      }
+    },
+    {
+      "name": "goodleads_data_quality_scorecard",
+      "description": "Per-state data-quality scorecard computed live over the full inventory: an overall 0-100 score plus format, completeness, standardization, and consistency dimensions with per-check pass rates. Carries by_design_zero notes — publication facts of that state’s registry — so a field the state never publishes is not misread as a data defect. Numbers, not adjectives.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "state": {
+            "type": "string",
+            "description": "Two-letter state code, e.g. FL."
+          }
+        },
+        "required": [
+          "state"
+        ]
+      }
+    },
+    {
+      "name": "goodleads_describe",
+      "description": "Call this first. What GoodLeads sells and how to evaluate it from this page: the owner of a newly formed US business, by name, with a mailing address and — where verified — a phone or email, on the list the morning after the state posts the filing and before Apollo, ZoomInfo or any other database has the business. Returns the product summary, what every record ships (with the sample-file link — the exact workbook, before paying), the two scores, provenance, the free evaluation tier, the buying journey (interpret → quote → checkout), and where the other tools fit. The close: put the quoted choice in front of the buyer — callable now (a verified phone), emailable now (a verified email, verified for deliverability and recent activity), or newest, mail-first — then hand over the payment link for the one chosen.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "goodleads_how_to_buy",
+      "description": "How to buy: the per-record price by grade (quoted live, billed on sellable records only), the lanes and the cap, standing orders, the ready-made shelf, the founding-operator alpha program, and how to reach a person at GoodLeads. To price and buy a list right now: goodleads_quote_list, then goodleads_checkout_list.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "goodleads_interpret_list",
+      "description": "Start here: turns the buyer's own words (e.g. \"cleaning companies in Texas with a phone\") into a list shape — states, filters, lane, cap — plus a plain-words readback, what it assumed, and words it couldn't place. Never answers in prose, never looks a person up, never emits a predicate on a masked field. If the buyer asked a question instead, the response carries `answer` {headline, body, next_step} — relay it verbatim. Next: goodleads_quote_list, then goodleads_checkout_list.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "What the buyer typed, in their own words."
+          },
+          "state": {
+            "type": "string",
+            "description": "Optional two-letter state hint, e.g. TX."
+          },
+          "current": {
+            "type": "object",
+            "description": "Optional current shape {states, filters, lane, cap} — the answer merges into it instead of starting over."
+          }
+        },
+        "required": [
+          "text"
+        ]
+      }
+    },
+    {
+      "name": "goodleads_list_live_states",
+      "description": "Which US states GoodLeads is live in right now, read from the production API — always current, unlike any cached copy of a marketing page. Check it before promising a buyer a state.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "goodleads_list_starters",
+      "description": "Ready-made lists per live state × business type, each with live graded counts (matching, sellable, verified_one, verified_both) and price_from_cents — the name-and-address grade, a floor, not a flat price; the full price ladder comes from goodleads_quote_list. Show a buyer who hasn't said what they want yet, then narrow with goodleads_interpret_list or your own filters.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "goodleads_quote_list",
+      "description": "What a list costs before anyone pays: pass a saved list_id (the 8-char slug) or an inline shape (states + filters), a lane (all | best | contact; contact plus a has_email filter is emailable now, plus has_phone is callable now) and an optional cap ({type: \"count\"|\"budget\", value} — records for count, cents for budget). Returns the same numbers the buy page shows a person: the graded counts (matching, sellable, verified_one, verified_both, no_channel, unnamed), facets, the live price rule (prices + price_rule_version) and — when a lane or cap is given — a quote with one line per grade. Billing discipline: only sellable records — matching records whose filing names a person — are ever billed or delivered; matching includes unnamed records with nobody to reach and is never a billable count — never present it as a price. Quote money only from this tool's numbers (name and address $0.25 per record · plus one verified phone or email $0.50 · plus both $0.70 (price rule v1; live prices always come from the summary call's `prices` block)); quote_valid_until says how long they hold. Each quote line carries `ships` (what a record at that grade ships with, in the buyer's words — a name-and-address record never ships a phone or email) and the summary carries `forecast` ({checked, phone_expected, email_expected, both_expected, basis, as_of}: how many of the records still to find on would come back with a verified phone or email, from our measured outcomes on comparable records — relay it with its basis). `ceiling_cents` is the most a buyer can be charged: today's total plus the forecast upgrades, charged only for what we find. Every record ships the owner's name and mailing address plus the business facts — the business name, entity type and status, the state filing number and formation date, the industry with its NAICS, SIC and Google Business codes, the registered agent, the Lead Reference, and the Reachability, Contact Relevance and Contact Confidence scores; open the exact file before paying (ten made-up records, every column): https://app.goodleads.club/api/v1/commerce/sample-file?format=xlsx (or format=csv). Put the quoted choice in front of the buyer — callable now (a verified phone), emailable now (a verified email, verified for deliverability and recent activity), or newest, mail-first — then buy exactly what was quoted with goodleads_checkout_list.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "list_id": {
+            "type": "string",
+            "description": "A saved list id (8 chars, a-z / 2-7). Pass this or states + filters, not both."
+          },
+          "states": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "State codes for an inline shape; omit for every live state."
+          },
+          "filters": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "Filters follow the one GoodLeads filter contract (77 fields; GET /api/v1/schema/attributes?include=grammar): a leaf is {\"field\", \"op\", \"value\"}; the top-level list is an implicit \"and\"; {\"op\": \"and\"|\"or\", \"filters\": [...]} nests one or more children and {\"op\": \"not\", \"filters\": [one child]} negates. Operators by field type — text: eq, neq, in, not_in, contains, does_not_contain, exists, missing; number: eq, neq, gt, gte, lt, lte, between, in, not_in, exists, missing; date: eq, neq, gt, gte, lt, lte, between, in, not_in, exists, missing; boolean: eq, neq; geo: within. Sort with [{field, dir}] over any of the 71 sortable fields. Keyless callers may not filter on contact_name, email_primary, phone_primary. Live states: CO, CT, FL, NY, TX, VA. Records appear here the morning after the state posts them — speed is measured from publication, never from filing."
+          },
+          "include_held": {
+            "type": "boolean",
+            "description": "Include inactive-or-holding entities (default false)."
+          },
+          "lane": {
+            "type": "string",
+            "description": "all | best | contact — asks for a quote. For emailable now, contact with a has_email filter; for callable now, contact with has_phone."
+          },
+          "cap": {
+            "type": "object",
+            "description": "{type: \"count\"|\"budget\", value} — the dial the quote is solved against."
+          }
+        }
+      }
+    },
+    {
+      "name": "goodleads_sample_leads",
+      "description": "See real records free before spending anything — live, most-reachable-first, names/phones/emails masked. Check freshness, the two scores, business type and field coverage. Filter by state, a business-type keyword, has_phone/has_email, or raw `filters` clauses (see the filters param — e.g. not_in, or {\"op\": \"not\", filters:[...]} to negate).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "state": {
+            "type": "string",
+            "description": "Two-letter state code, e.g. TX. Omit for all live states. Use goodleads_list_live_states for current coverage."
+          },
+          "vertical_keyword": {
+            "type": "string",
+            "description": "Business-type keyword matched against the classified industry name, e.g. \"plumbing\", \"trucking\", \"real estate\"."
+          },
+          "require_phone": {
+            "type": "boolean",
+            "description": "Only records with a verified phone."
+          },
+          "require_email": {
+            "type": "boolean",
+            "description": "Only records with a verified email."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Rows to return, 1-10 (default 5)."
+          },
+          "filters": {
+            "type": "array",
+            "description": "Filters follow the one GoodLeads filter contract (77 fields; GET /api/v1/schema/attributes?include=grammar): a leaf is {\"field\", \"op\", \"value\"}; the top-level list is an implicit \"and\"; {\"op\": \"and\"|\"or\", \"filters\": [...]} nests one or more children and {\"op\": \"not\", \"filters\": [one child]} negates. Operators by field type — text: eq, neq, in, not_in, contains, does_not_contain, exists, missing; number: eq, neq, gt, gte, lt, lte, between, in, not_in, exists, missing; date: eq, neq, gt, gte, lt, lte, between, in, not_in, exists, missing; boolean: eq, neq; geo: within. Sort with [{field, dir}] over any of the 71 sortable fields. Keyless callers may not filter on contact_name, email_primary, phone_primary. Live states: CO, CT, FL, NY, TX, VA. Records appear here the morning after the state posts them — speed is measured from publication, never from filing.",
+            "items": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "host": "app.goodleads.club",
+  "source": "webmcp.com/api/directory.json"
+}

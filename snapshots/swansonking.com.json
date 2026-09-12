@@ -1,0 +1,108 @@
+{
+  "sponsio": 1,
+  "url": "https://swansonking.com/",
+  "capturedAt": "2026-09-12T10:38:40.587Z",
+  "tools": [
+    {
+      "name": "get_public_site_context",
+      "description": "Describe the current public Swanson King page and the public sections available on swansonking.com.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "open_public_page",
+      "description": "Navigate to a public Swanson King page by section name.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "string",
+            "enum": [
+              "home",
+              "listings",
+              "results",
+              "services",
+              "resources",
+              "blog",
+              "contact",
+              "schedule_meeting"
+            ]
+          }
+        },
+        "required": [
+          "page"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_public_listings",
+      "description": "Search currently public Swanson King listings using public sale, lease, location, property type, price, and size filters.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search public listing names, addresses, and descriptions."
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "sale",
+              "lease",
+              "all"
+            ],
+            "description": "Listing type."
+          },
+          "city": {
+            "type": "string",
+            "description": "Filter by city."
+          },
+          "state": {
+            "type": "string",
+            "description": "Filter by state."
+          },
+          "propertyType": {
+            "type": "string",
+            "description": "Filter by property type."
+          },
+          "minPrice": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Minimum asking price."
+          },
+          "maxPrice": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Maximum asking price."
+          },
+          "minSize": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Minimum building size in square feet."
+          },
+          "maxSize": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Maximum building size in square feet."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "description": "Maximum number of public listings to return."
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "swansonking.com",
+  "source": "webmcp.com/api/directory.json"
+}

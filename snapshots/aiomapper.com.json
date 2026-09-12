@@ -1,0 +1,121 @@
+{
+  "sponsio": 1,
+  "url": "https://www.aiomapper.com/",
+  "capturedAt": "2026-09-12T10:38:40.587Z",
+  "tools": [
+    {
+      "name": "get_blog_post",
+      "description": "Returns one published AIO Mapper article by its exact slug, including metadata and bounded Markdown content. It cannot fetch arbitrary URLs or private pages.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "A slug returned by list_blog_posts."
+          },
+          "max_chars": {
+            "type": "integer",
+            "minimum": 1000,
+            "maximum": 12000,
+            "default": 8000
+          }
+        },
+        "required": [
+          "slug"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_faq",
+      "description": "Finds published AIO Mapper FAQ answers about audits, AI readiness, live AI visibility, Research, Tracking, Brand perception, plans, credits, and account controls.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "question": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 300,
+            "description": "The product question to match against AIO Mapper's published FAQs."
+          }
+        },
+        "required": [
+          "question"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_pricing_plans",
+      "description": "Returns current AIO Mapper Free, Pro, and one-time credit-pack prices, allowances, refresh behavior, and feature boundaries in Canadian dollars.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_scoring_methodology",
+      "description": "Returns the current SEO Score and AI Readiness Score methodology, applicable components, interpretation rules, and the distinction from live AI visibility tracking.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_blog_posts",
+      "description": "Lists published AIO Mapper guides with titles, descriptions, dates, tags, authors, and canonical URLs. An optional topic filters titles, descriptions, and tags.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "topic": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "default": 10
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "prepare_audit",
+      "description": "Validates and prefills a public page URL in AIO Mapper's audit screen. This only navigates and prepares the form: it never runs an audit, consumes a credit, or bypasses user confirmation.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "minLength": 4,
+            "maxLength": 2048,
+            "description": "The public http or https webpage URL to prefill."
+          },
+          "navigate": {
+            "type": "boolean",
+            "default": true,
+            "description": "Whether to open the prefilled audit screen. Defaults to true."
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "aiomapper.com",
+  "source": "webmcp.com/api/directory.json"
+}

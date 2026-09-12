@@ -1,0 +1,883 @@
+{
+  "sponsio": 1,
+  "url": "https://stockpilot-indol-chi.vercel.app/",
+  "capturedAt": "2026-09-12T10:38:40.587Z",
+  "tools": [
+    {
+      "name": "add_to_watchlist",
+      "description": "Add a stock symbol to the user's watchlist.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string",
+            "description": "Ticker symbol to add"
+          }
+        },
+        "required": [
+          "symbol"
+        ]
+      }
+    },
+    {
+      "name": "analyze_portfolio",
+      "description": "Return portfolio performance statistics: total value, P&L, return %, and holding breakdown.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "analyze_sec_filings",
+      "description": "Fetch recent SEC filings for a symbol, pick the most material filing (largest report or latest), fetch the XML/HTML report, and return the normalized content for LLM analysis.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string",
+            "description": "Ticker symbol like AAPL"
+          },
+          "days": {
+            "type": "number",
+            "description": "Lookback window in days (default 30)"
+          },
+          "limit": {
+            "type": "number",
+            "description": "Number of recent filings to consider (default 10)"
+          },
+          "highlight": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Key phrases or full sentences FROM the filing to highlight in yellow for the user — e.g. the specific risk statements, revenue drivers, guidance, or figures relevant to their question. Copy the exact text so it can be matched. If omitted, the report opens with no highlights."
+          }
+        },
+        "required": [
+          "symbol"
+        ]
+      }
+    },
+    {
+      "name": "auto_invest",
+      "description": "Automatically invest a budget across top stocks by strategy. Strategy options: momentum (top gainers), diversified (spread across sectors), conservative (low beta), aggressive (high beta/growth).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "budget": {
+            "type": "number",
+            "description": "Total amount to invest in USD"
+          },
+          "strategy": {
+            "type": "string",
+            "description": "momentum | diversified | conservative | aggressive"
+          },
+          "stock_count": {
+            "type": "number",
+            "description": "Number of stocks to spread across (default 5)"
+          }
+        },
+        "required": [
+          "budget",
+          "strategy"
+        ]
+      }
+    },
+    {
+      "name": "backtest_strategy",
+      "description": "Simulate a simple trading strategy on a stock. Strategies: sma_crossover (20/50 day MA), rsi_mean_revert (buy oversold, sell overbought), buy_hold.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string",
+            "description": "Ticker symbol"
+          },
+          "strategy": {
+            "type": "string",
+            "description": "sma_crossover | rsi_mean_revert | buy_hold"
+          },
+          "initial_capital": {
+            "type": "number",
+            "description": "Starting capital (default $10,000)"
+          }
+        },
+        "required": [
+          "symbol",
+          "strategy"
+        ]
+      }
+    },
+    {
+      "name": "buy_stock",
+      "description": "Simulate buying a stock with virtual funds from the portfolio balance.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string",
+            "description": "Ticker symbol to buy"
+          },
+          "quantity": {
+            "type": "number",
+            "description": "Number of shares to buy"
+          }
+        },
+        "required": [
+          "symbol",
+          "quantity"
+        ]
+      }
+    },
+    {
+      "name": "calculate_position_size",
+      "description": "Calculate the optimal position size given account size, risk percentage, and stop-loss level.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string",
+            "description": "Ticker symbol"
+          },
+          "risk_percent": {
+            "type": "number",
+            "description": "Percentage of account to risk (e.g. 1 for 1%)"
+          },
+          "stop_loss_price": {
+            "type": "number",
+            "description": "Stop-loss price level"
+          }
+        },
+        "required": [
+          "symbol",
+          "risk_percent",
+          "stop_loss_price"
+        ]
+      }
+    },
+    {
+      "name": "compare_chart_canvas",
+      "description": "All-in-one comparison chart and technical canvas controller. Configures chart style ('candles', 'bars', 'line', 'area', 'compare', 'split'), active stock symbols, focused stock, timeframe range ('1M', '3M', '6M', '1Y', '5Y'), indicators (SMA, EMA, Bollinger Bands, Volume, RSI, MACD), and canvas drawings (lines, rectangles, text, measure, chart patterns). Can also execute comprehensive multi-company AI analysis with reported financials, recommendation trends, and auto-drawn pattern detection.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chartStyle": {
+            "type": "string",
+            "enum": [
+              "candles",
+              "bars",
+              "line",
+              "area",
+              "compare",
+              "split"
+            ],
+            "description": "Chart display style: 'compare' & 'split' display multi-stocks simultaneously. 'candles', 'bars', 'line', 'area' display the focused single-stock with indicators and canvas overlays."
+          },
+          "symbols": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of company symbols to benchmark (e.g. ['AAPL', 'MSFT', 'TSLA'])."
+          },
+          "focusSymbol": {
+            "type": "string",
+            "description": "Stock symbol to focus on for single-stock styles, indicators, and canvas annotations (e.g. 'AAPL')."
+          },
+          "range": {
+            "type": "string",
+            "enum": [
+              "1M",
+              "3M",
+              "6M",
+              "1Y",
+              "5Y"
+            ],
+            "description": "Historical timeframe period: '1M', '3M', '6M', '1Y', or '5Y'."
+          },
+          "normalized": {
+            "type": "boolean",
+            "description": "In 'compare' mode: true = indexed return (base 100), false = actual dollar price."
+          },
+          "indicators": {
+            "type": "object",
+            "properties": {
+              "sma": {
+                "type": "boolean",
+                "description": "SMA (20) moving average"
+              },
+              "ema": {
+                "type": "boolean",
+                "description": "EMA (50) exponential moving average"
+              },
+              "bollinger": {
+                "type": "boolean",
+                "description": "Bollinger Bands overlay"
+              },
+              "volume": {
+                "type": "boolean",
+                "description": "Volume histogram"
+              },
+              "rsi": {
+                "type": "boolean",
+                "description": "RSI (14) momentum oscillator"
+              },
+              "macd": {
+                "type": "boolean",
+                "description": "MACD trend/momentum indicator"
+              }
+            },
+            "description": "Technical indicators to enable/disable (applies to focused single-stock style)."
+          },
+          "drawings": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "tool": {
+                  "type": "string",
+                  "enum": [
+                    "trendline",
+                    "ray",
+                    "horizontal",
+                    "channel",
+                    "rectangle",
+                    "text",
+                    "measure",
+                    "abcd",
+                    "xabcd",
+                    "cypher",
+                    "headshoulders",
+                    "triangle",
+                    "threedrives"
+                  ],
+                  "description": "Drawing shape: line (trendline, ray, horizontal, channel), rectangle, text label, measure target, or chart pattern."
+                },
+                "points": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "time": {
+                        "type": "string",
+                        "description": "Date in YYYY-MM-DD format"
+                      },
+                      "price": {
+                        "type": "number",
+                        "description": "Price coordinate in USD"
+                      }
+                    },
+                    "required": [
+                      "time",
+                      "price"
+                    ]
+                  },
+                  "description": "Array of coordinate points { time, price } for this drawing."
+                },
+                "color": {
+                  "type": "string",
+                  "description": "Hex color code (e.g. '#38bdf8')"
+                },
+                "text": {
+                  "type": "string",
+                  "description": "Text label or annotation callout"
+                }
+              },
+              "required": [
+                "tool",
+                "points"
+              ]
+            },
+            "description": "Array of drawing annotations to plot onto the chart overlay canvas."
+          },
+          "clearDrawings": {
+            "type": "boolean",
+            "description": "If true, clears existing drawings before applying new ones."
+          },
+          "runAiAnalysis": {
+            "type": "boolean",
+            "description": "If true, runs complete AI multi-company comparative analysis (growth matrix, news catalysts, recommendation trends, reported financials, and pattern detection)."
+          },
+          "autoDrawPatterns": {
+            "type": "boolean",
+            "description": "If true, automatically detects technical patterns on the focused stock and plots them on the canvas."
+          }
+        }
+      }
+    },
+    {
+      "name": "compare_stocks",
+      "description": "Compare multiple stocks side by side — price, change, and relative performance summary.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbols": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Symbols to compare (2–5)"
+          }
+        },
+        "required": [
+          "symbols"
+        ]
+      }
+    },
+    {
+      "name": "detect_chart_pattern",
+      "description": "Detect technical chart patterns on a stock. Supported patterns: head_and_shoulders, inverse_head_and_shoulders, abcd, xabcd, cypher, triangle_ascending, triangle_descending, triangle_symmetrical, three_drives, double_top, double_bottom.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string",
+            "description": "Ticker symbol to analyze"
+          },
+          "pattern": {
+            "type": "string",
+            "description": "Pattern to detect (e.g. head_and_shoulders, xabcd, cypher)"
+          }
+        },
+        "required": [
+          "pattern"
+        ]
+      }
+    },
+    {
+      "name": "draw_on_compare_chart",
+      "description": "Draw technical pattern annotations (trendlines, ABCD, head & shoulders, triangles, rectangles, text labels, horizontal lines, etc.) directly onto the comparison chart canvas.\n\nIMPORTANT — call get_chart_data_range first to get exact valid dates and prices for  the symbol. Never invent dates or prices; use only values from that response.\n\nSupported tool values: trendline, horizontal, ray, channel, rectangle, abcd, xabcd, cypher, headshoulders, triangle, threedrives, measure, text.\n\nPoints use { date: \"YYYY-MM-DD\", price: <number> }. Dates are snapped to the nearest real trading day. Prices are clamped to that bar's high/low range. The chart scrolls to show all annotated bars.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string",
+            "description": "Ticker to display in the chart (e.g. AAPL)"
+          },
+          "drawings": {
+            "type": "array",
+            "description": "One or more drawing objects to render on the chart",
+            "items": {
+              "type": "object",
+              "properties": {
+                "tool": {
+                  "type": "string",
+                  "description": "Drawing type: trendline | horizontal | ray | channel | rectangle | abcd | xabcd | cypher | headshoulders | triangle | threedrives | measure | text"
+                },
+                "color": {
+                  "type": "string",
+                  "description": "CSS hex color, e.g. #fbbf24."
+                },
+                "text": {
+                  "type": "string",
+                  "description": "Label text (only for tool === 'text')."
+                },
+                "points": {
+                  "type": "array",
+                  "description": "Anchor points. Get exact dates and prices from get_chart_data_range first. Required point counts: trendline/ray/rectangle/measure=2, horizontal=1, channel=3, abcd/triangle=4, xabcd/cypher/headshoulders/threedrives=5, text=1.",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "date": {
+                        "type": "string",
+                        "description": "YYYY-MM-DD trading date from get_chart_data_range"
+                      },
+                      "price": {
+                        "type": "number",
+                        "description": "Dollar price — must be within the high/low of that date's candle"
+                      }
+                    },
+                    "required": [
+                      "date",
+                      "price"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "tool",
+                "points"
+              ]
+            }
+          },
+          "clearExisting": {
+            "type": "boolean",
+            "description": "Remove existing canvas drawings first (default true)."
+          },
+          "chartStyle": {
+            "type": "string",
+            "description": "candles | bars | line | area (default candles)."
+          }
+        },
+        "required": [
+          "symbol",
+          "drawings"
+        ]
+      }
+    },
+    {
+      "name": "get_chart_data_range",
+      "description": "Return the exact OHLCV data boundaries for a stock symbol so you can place drawing points accurately on the compare chart.\n\nALWAYS call this before draw_on_compare_chart. It tells you:\n- firstDate / lastDate  → the hard date bounds of the dataset (all dates outside these don't exist)\n- priceMin / priceMax   → the price range over the visible window\n- latestCandle          → the most recent bar (use this as your \"now\" anchor)\n- recentCandles         → the last 20 bars with exact date + OHLC (use these prices for anchor points)\n- visibleWindowStart    → the start of the default 1Y visible window\n\nNever invent dates or prices. Always use exact dates and OHLCV values from this response.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string",
+            "description": "Ticker symbol, e.g. AAPL"
+          },
+          "windowDays": {
+            "type": "number",
+            "description": "How many calendar days back to sample (default 365 = 1Y visible window)"
+          }
+        },
+        "required": [
+          "symbol"
+        ]
+      }
+    },
+    {
+      "name": "get_earnings_calendar",
+      "description": "Return upcoming earnings dates (next ~120 days) for the tracked stock universe, from Finnhub's earnings calendar.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_financials_reported",
+      "description": "Get SEC financials as reported for a company from Finnhub, including income statement (ic), balance sheet (bs), and cash flow (cf).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string",
+            "description": "Ticker symbol (e.g. AAPL)"
+          },
+          "freq": {
+            "type": "string",
+            "enum": [
+              "annual",
+              "quarterly"
+            ],
+            "description": "Frequency of filings (default quarterly)"
+          }
+        },
+        "required": [
+          "symbol"
+        ]
+      }
+    },
+    {
+      "name": "get_market_news_summary",
+      "description": "Fetch a digest of the latest general market news across all categories.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "description": "News category: general | forex | crypto | merger"
+          }
+        }
+      }
+    },
+    {
+      "name": "get_portfolio",
+      "description": "Return the full virtual portfolio state including balance, holdings, and transaction history.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_portfolio_risk",
+      "description": "Analyze portfolio risk: concentration, diversification score, estimated beta, and sector exposure.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_price_alerts",
+      "description": "Return all active price alerts with their current status checked against live prices.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_sector_performance",
+      "description": "Return a breakdown of average performance by market sector from the tracked universe. Navigates to the Markets page and scrolls to the Sector Performance section.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_stock_details",
+      "description": "Retrieve a full stock quote, company profile, and metadata for a given ticker symbol.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string",
+            "description": "Ticker symbol like AAPL or MSFT"
+          }
+        },
+        "required": [
+          "symbol"
+        ]
+      }
+    },
+    {
+      "name": "get_stock_news",
+      "description": "Fetch the latest news articles for a specific stock symbol.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string",
+            "description": "Ticker symbol like AAPL"
+          },
+          "days": {
+            "type": "number",
+            "description": "Number of past days to fetch news for (default 7)"
+          }
+        },
+        "required": [
+          "symbol"
+        ]
+      }
+    },
+    {
+      "name": "get_stock_recommendation_trends",
+      "description": "Get latest analyst recommendation trends for one or more companies from Finnhub (strongBuy, buy, hold, sell, strongSell, period).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbols": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of stock ticker symbols (e.g. ['AAPL', 'TSLA'])"
+          }
+        },
+        "required": [
+          "symbols"
+        ]
+      }
+    },
+    {
+      "name": "get_support_resistance",
+      "description": "Calculate key support and resistance price levels for a stock based on current price.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string",
+            "description": "Ticker symbol"
+          }
+        },
+        "required": [
+          "symbol"
+        ]
+      }
+    },
+    {
+      "name": "get_top_performers",
+      "description": "Return the top N best-performing stocks from the universe over the session.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "number",
+            "description": "Number of top performers to return (default 5)"
+          },
+          "direction": {
+            "type": "string",
+            "description": "gainers | losers (default: gainers)"
+          }
+        }
+      }
+    },
+    {
+      "name": "get_trend_direction",
+      "description": "Determine the current trend direction for a stock: Uptrend, Downtrend, or Sideways consolidation.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string",
+            "description": "Ticker symbol"
+          }
+        },
+        "required": [
+          "symbol"
+        ]
+      }
+    },
+    {
+      "name": "get_watchlist",
+      "description": "Return the user's current watchlist (favorited stocks) with live quotes.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "navigate_to",
+      "description": "Navigate the user's browser to a page in the StockPilot app. Pages: /, /markets, /portfolio, /watchlist, /orders, /news, /ipos, /compare, /analysis, /stock/SYMBOL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "The page path to navigate to, e.g. /portfolio or /stock/AAPL"
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    },
+    {
+      "name": "open_company_analysis",
+      "description": "Open the full single-company analysis page (financials, valuation, analyst trends, earnings surprises, news) for a ticker and return a short summary.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string",
+            "description": "Ticker like AAPL"
+          }
+        },
+        "required": [
+          "symbol"
+        ]
+      }
+    },
+    {
+      "name": "open_compare",
+      "description": "Open the stock comparison page, optionally with pre-selected symbols to compare.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbols": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Symbols to pre-select in compare (optional)"
+          }
+        }
+      }
+    },
+    {
+      "name": "optimize_portfolio",
+      "description": "Suggest an optimal stock allocation for a given budget to maximize simulated return with risk management.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "budget": {
+            "type": "number",
+            "description": "Total budget to allocate in USD"
+          },
+          "risk_level": {
+            "type": "string",
+            "description": "low | medium | high (default medium)"
+          }
+        },
+        "required": [
+          "budget"
+        ]
+      }
+    },
+    {
+      "name": "rank_stocks",
+      "description": "Rank the curated stock universe by a supported metric (performance, volume, price). Navigates to the Markets page and highlights the sorted directory.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "metric": {
+            "type": "string",
+            "description": "Metric: performance | volume | price"
+          },
+          "limit": {
+            "type": "number",
+            "description": "How many stocks to return (default 10)"
+          }
+        },
+        "required": [
+          "metric"
+        ]
+      }
+    },
+    {
+      "name": "remove_from_watchlist",
+      "description": "Remove a stock symbol from the user's watchlist.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string",
+            "description": "Ticker symbol to remove"
+          }
+        },
+        "required": [
+          "symbol"
+        ]
+      }
+    },
+    {
+      "name": "screen_stocks",
+      "description": "Screen stocks from the universe by price range, percent change, beta, or sector. Navigates to the Markets page, applies the filters in the directory, and scrolls to it.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "minPrice": {
+            "type": "number",
+            "description": "Minimum stock price"
+          },
+          "maxPrice": {
+            "type": "number",
+            "description": "Maximum stock price"
+          },
+          "minPercentChange": {
+            "type": "number",
+            "description": "Minimum daily % change"
+          },
+          "maxPercentChange": {
+            "type": "number",
+            "description": "Maximum daily % change"
+          },
+          "minBeta": {
+            "type": "number",
+            "description": "Minimum beta value"
+          },
+          "maxBeta": {
+            "type": "number",
+            "description": "Maximum beta value"
+          },
+          "sector": {
+            "type": "string",
+            "description": "Sector filter e.g. Technology, Healthcare, Energy"
+          },
+          "limit": {
+            "type": "number",
+            "description": "Max results to return (default 10)"
+          }
+        }
+      }
+    },
+    {
+      "name": "search_stock",
+      "description": "Search the stock universe for companies or symbols.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search text for symbol or company name"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "sell_stock",
+      "description": "Simulate selling a stock from the virtual portfolio.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string",
+            "description": "Ticker symbol to sell"
+          },
+          "quantity": {
+            "type": "number",
+            "description": "Number of shares to sell"
+          }
+        },
+        "required": [
+          "symbol",
+          "quantity"
+        ]
+      }
+    },
+    {
+      "name": "set_price_alert",
+      "description": "Set a virtual price alert for a stock symbol. You will be notified when the AI next checks the price.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string",
+            "description": "Ticker symbol"
+          },
+          "target_price": {
+            "type": "number",
+            "description": "Target price to alert at"
+          },
+          "condition": {
+            "type": "string",
+            "description": "above | below"
+          }
+        },
+        "required": [
+          "symbol",
+          "target_price",
+          "condition"
+        ]
+      }
+    },
+    {
+      "name": "suggest_diversification",
+      "description": "Given current holdings, suggest new stocks to add for better sector diversification.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    }
+  ],
+  "host": "stockpilot-indol-chi.vercel.app",
+  "source": "webmcp.com/api/directory.json"
+}

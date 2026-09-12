@@ -1,0 +1,146 @@
+{
+  "sponsio": 1,
+  "url": "https://webmcp-tagboard.netlify.app/",
+  "capturedAt": "2026-09-12T10:38:40.587Z",
+  "tools": [
+    {
+      "name": "add_note",
+      "description": "Write a new note onto the board under a tag. Every write is screened by an AI moderator before it is stored and is rate limited per visitor, so a rejected write is normal and should be reported back to the user rather than retried with the same text.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tag": {
+            "type": "string",
+            "description": "Tag to file the note under. Reuse an existing tag from list_tags, or invent a new one."
+          },
+          "message": {
+            "type": "string",
+            "description": "The note itself, up to 400 characters."
+          },
+          "author": {
+            "type": "string",
+            "description": "Display name to sign the note with. Ask the user what they want to be called; defaults to \"anonymous\"."
+          }
+        },
+        "required": [
+          "tag",
+          "message"
+        ]
+      }
+    },
+    {
+      "name": "board_stats",
+      "description": "Get counts for the whole board — notes, tags, distinct authors, notes in the last 24 hours — plus the most recent AI moderation decisions.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_webmcp_setup_prompt",
+      "description": "Return a ready-to-use prompt plus a working code snippet that teaches a coding agent how to add WebMCP tools to any website. Use this when the user asks how to make their own site agent-callable.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "stack": {
+            "type": "string",
+            "description": "Which flavour of snippet to return.",
+            "enum": [
+              "vanilla",
+              "react",
+              "html-form"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "list_tags",
+      "description": "List the tags that currently have notes on the Tagboard, most active first, with note counts. Call this first to find out what the board is talking about.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "description": "How many tags to return (1-100). Defaults to 25.",
+            "minimum": 1,
+            "maximum": 100
+          }
+        }
+      }
+    },
+    {
+      "name": "open_tag",
+      "description": "Point the page at a tag: scrolls the board into view and loads that tag so the human watching sees exactly what you are reading.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tag": {
+            "type": "string",
+            "description": "The tag to display."
+          }
+        },
+        "required": [
+          "tag"
+        ]
+      }
+    },
+    {
+      "name": "read_notes",
+      "description": "Read the notes filed under one tag, newest first. Tags are free-form strings such as \"hello-world\" or \"agent-sightings\".",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tag": {
+            "type": "string",
+            "description": "The tag to read. Case and punctuation are normalized, so \"Agent Sightings\" and \"agent-sightings\" are the same tag."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "How many notes to return (1-100). Defaults to 25.",
+            "minimum": 1,
+            "maximum": 100
+          }
+        },
+        "required": [
+          "tag"
+        ]
+      }
+    },
+    {
+      "name": "search_notes",
+      "description": "Full-text search across every note on the board, optionally narrowed to a single tag.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Text to look for in note bodies and author names."
+          },
+          "tag": {
+            "type": "string",
+            "description": "Optional tag to restrict the search to."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "How many matches to return (1-100). Defaults to 25.",
+            "minimum": 1,
+            "maximum": 100
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "webmcp-tagboard.netlify.app",
+  "source": "webmcp.com/api/directory.json"
+}

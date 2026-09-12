@@ -1,0 +1,139 @@
+{
+  "sponsio": 1,
+  "url": "https://www.knowngate.com/check?mode=agent&step=1",
+  "capturedAt": "2026-09-12T10:38:40.587Z",
+  "tools": [
+    {
+      "name": "check_item",
+      "description": "Rule one food subject against the confirmed household premise.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "subject"
+        ],
+        "properties": {
+          "subject": {
+            "type": "object",
+            "required": [
+              "kind",
+              "value"
+            ],
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "upc",
+                  "product_query",
+                  "menu_item",
+                  "ingredients"
+                ]
+              },
+              "value": {
+                "type": "string",
+                "description": "The product, UPC, menu item, or ingredients."
+              },
+              "venue": {
+                "type": "string",
+                "description": "Required for menu items."
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "check_place",
+      "description": "Rule a venue against the confirmed household premise.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "venue"
+        ],
+        "properties": {
+          "venue": {
+            "type": "string",
+            "description": "Venue or chain name."
+          },
+          "location": {
+            "type": "string",
+            "description": "Optional location."
+          }
+        }
+      }
+    },
+    {
+      "name": "freeze_check",
+      "description": "Request visible human confirmation to freeze the current evidence ledger.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_board",
+      "description": "Read the confirmed premise and visible evidence ledger.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "propose_premise",
+      "description": "Propose a household premise for visible human confirmation.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "restrictions"
+        ],
+        "properties": {
+          "restrictions": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": [
+                "key"
+              ],
+              "properties": {
+                "key": {
+                  "type": "string",
+                  "enum": [
+                    "milk",
+                    "egg",
+                    "fish",
+                    "shellfish",
+                    "tree_nut",
+                    "peanut",
+                    "wheat",
+                    "soy",
+                    "sesame",
+                    "other"
+                  ]
+                },
+                "note": {
+                  "type": "string",
+                  "description": "Required when key is other."
+                }
+              }
+            }
+          },
+          "diners": {
+            "type": "string",
+            "description": "Optional household diners."
+          },
+          "location": {
+            "type": "string",
+            "description": "Optional location."
+          }
+        }
+      }
+    }
+  ],
+  "host": "knowngate.com",
+  "source": "webmcp.com/api/directory.json"
+}

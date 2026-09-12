@@ -1,0 +1,200 @@
+{
+  "sponsio": 1,
+  "url": "https://licitia.com.mx/",
+  "capturedAt": "2026-09-12T10:38:40.587Z",
+  "tools": [
+    {
+      "name": "abrirResultado",
+      "description": "Abre en esta pestaña una ficha o búsqueda pública de LicitIA para que la persona vea el resultado. Usa la URL HTML de LicitIA devuelta por una consulta; las URLs oficiales son referencias externas, no destinos de esta herramienta.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "URL HTML de LicitIA o ruta pública como /proveedor/ejemplo o /buscar?q=medicamentos."
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "buscarProcedimientos",
+      "description": "Busca procedimientos federales por texto, dependencia (siglas), año, etapa, estado, estatus, tipo o clave CUCOP. Devuelve páginas por fecha de publicación con cursor; no admite número de página. Consulta la ficha para verificar adjudicaciones.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 200
+          },
+          "siglas": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "anio": {
+            "type": "integer",
+            "minimum": 1900,
+            "maximum": 2200
+          },
+          "estatus": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "cucop": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 20
+          },
+          "section": {
+            "type": "string",
+            "enum": [
+              "vigente",
+              "seguimiento",
+              "concluido"
+            ]
+          },
+          "state_id": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 32
+          },
+          "tipo": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "limite": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50
+          },
+          "cursor": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          }
+        },
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "buscarProveedores",
+      "description": "Busca proveedores publicados por nombre parcial. Devuelve slugs para consultar su perfil o adjudicaciones. El límite es una muestra de búsqueda; no representa el total del universo.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 200
+          },
+          "limite": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50
+          }
+        },
+        "required": [
+          "q"
+        ],
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "estadisticasContratacion",
+      "description": "Consulta los agregados públicos federales generales o de un año/estado (clave numérica). Cuenta procedimientos; los montos adjudicados sólo suman MXN sin importes atípicos. Las fuentes estatales no se mezclan con estos datos.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "dimension": {
+            "type": "string",
+            "enum": [
+              "general",
+              "anio",
+              "estado"
+            ]
+          },
+          "clave": {
+            "type": "string",
+            "pattern": "^\\d{1,4}$"
+          }
+        },
+        "required": [
+          "dimension"
+        ],
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "listarAdjudicacionesProveedor",
+      "description": "Lista adjudicaciones publicadas de un proveedor por slug, con importes originales, moneda y enlace oficial. Sólo procedimientos ADJUDICADO o ADJUDICADO PARCIAL; pagina contratos con cursor, no fechas de fallo programadas.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "pattern": "^[a-z0-9][a-z0-9-]*$"
+          },
+          "anio": {
+            "type": "integer",
+            "minimum": 1900,
+            "maximum": 2200
+          },
+          "limite": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50
+          },
+          "cursor": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          }
+        },
+        "required": [
+          "slug"
+        ],
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "obtenerProcedimiento",
+      "description": "Devuelve la ficha pública de un procedimiento federal por su número: comprador, adjudicaciones publicadas, importes, partidas y anexos. Incluye los enlaces de LicitIA y ComprasMX para verificarlo.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "numero": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          }
+        },
+        "required": [
+          "numero"
+        ],
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "licitia.com.mx",
+  "source": "webmcp.com/api/directory.json"
+}

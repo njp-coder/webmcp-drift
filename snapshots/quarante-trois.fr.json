@@ -1,0 +1,96 @@
+{
+  "sponsio": 1,
+  "url": "https://quarante-trois.fr/",
+  "capturedAt": "2026-09-12T10:38:40.587Z",
+  "tools": [
+    {
+      "name": "ask_site",
+      "description": "Search this site's own published content — service pages, the 2026 financial-aid guide, the FAQ, and the 'Conseils & Actualités' articles — and return the matching passages with their URLs. Use this for any visitor question about Lionel BROT SASU: what work they do, MaPrimeRénov'/CEE/éco-PTZ rules and eligibility, indicative prices and lead times, RGE certification, the Paris / Île-de-France coverage area, opening hours or contact details. Content is in French. Returns up to 5 matches, each with title, URL and a text extract — compose the answer from those extracts, not from memory.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "The visitor question or keywords, in French where possible.",
+            "minLength": 2
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum number of matches to return.",
+            "minimum": 1,
+            "maximum": 10,
+            "default": 5
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_services",
+      "description": "List the renovation services this company offers — isolation thermique (ITE, ITI, combles), pompe à chaleur, VMC simple et double flux, menuiseries double vitrage, and rénovation énergétique de copropriété — each with a short summary and the URL of its detail page. Use this when a visitor asks what the company does, or before recommending a service or preparing a quote request. Reads the live list from the site, so it stays correct if the services change.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "prepare_quote_request",
+      "description": "Prepare a free quote request ('demande de devis') for this renovation company. Collects the visitor's contact details and a description of the work, validates them, navigates to the Contact/Devis page and displays a visible recap card showing exactly what will be sent. This does NOT send anything — it returns a short-lived confirmation token, and `submit_quote_request` becomes available to actually send it once the visitor has seen the recap. Use this as soon as a visitor asks for a quote, an estimate, a site visit or a call back.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prenom": {
+            "type": "string",
+            "description": "Visitor's first name."
+          },
+          "nom": {
+            "type": "string",
+            "description": "Visitor's last name."
+          },
+          "email": {
+            "type": "string",
+            "description": "Contact email address."
+          },
+          "telephone": {
+            "type": "string",
+            "description": "Contact phone number, French format."
+          },
+          "adresse_travaux": {
+            "type": "string",
+            "description": "Street address of the site where the work will be carried out."
+          },
+          "code_postal": {
+            "type": "string",
+            "description": "Five-digit French postal code of the work site."
+          },
+          "ville": {
+            "type": "string",
+            "description": "Town or city of the work site."
+          },
+          "descriptif": {
+            "type": "string",
+            "description": "What the visitor wants done: type of service, surface area, current condition, timing."
+          }
+        },
+        "required": [
+          "prenom",
+          "nom",
+          "email",
+          "telephone",
+          "adresse_travaux",
+          "descriptif"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "quarante-trois.fr",
+  "source": "webmcp.com/api/directory.json"
+}

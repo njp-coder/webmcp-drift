@@ -1,0 +1,197 @@
+{
+  "sponsio": 1,
+  "url": "https://isaacsolomon.dev/",
+  "capturedAt": "2026-09-12T10:38:40.587Z",
+  "tools": [
+    {
+      "name": "describe_article",
+      "description": "What one piece of writing actually covers — its section headings in order, opening paragraph, length and reading time — without pulling the full text. Use this to decide whether an article is worth reading in full. Accepts a slug from list_writing (e.g. 'saut' or 'saut/three-hats') or the title.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "article": {
+            "type": "string",
+            "description": "Article slug or title, e.g. 'godrej' or 'saut/three-hats'."
+          }
+        },
+        "required": [
+          "article"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_article",
+      "description": "The complete text of one case study or essay, as markdown-style prose with its headings. Use when you need to quote it or answer detail questions; prefer describe_article first if you only need to know what it covers.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "article": {
+            "type": "string",
+            "description": "Article slug or title, e.g. 'mivi' or 'saut/worksheet-builder'."
+          }
+        },
+        "required": [
+          "article"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_contact",
+      "description": "How to get in touch with Isaac — email, social links and current availability for work.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_profile",
+      "description": "Who Isaac Solomon is: role, availability, location, background, the services he takes on and the clients he's built for. Start here when asked a general question about him.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_project",
+      "description": "Full detail for one project, including its live URL and case study link. Accepts the project title or its slug (from list_projects).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "project": {
+            "type": "string",
+            "description": "Project title or slug, e.g. \"Mivi\" or \"saut\"."
+          }
+        },
+        "required": [
+          "project"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "inspect_image_c2pa",
+      "description": "Fetch a single image (by CSS selector or URL) and return its fully decoded C2PA manifest store: every manifest's claim, assertions (e.g. c2pa.actions edit history, schema.org authorship), and the COSE signature details (algorithm and signing-certificate identity). Provide exactly one of `selector` or `url`. Note: the signature is decoded but NOT cryptographically verified.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "selector": {
+            "type": "string",
+            "maxLength": 8192,
+            "description": "CSS selector for an <img> element on the page."
+          },
+          "url": {
+            "type": "string",
+            "maxLength": 8192,
+            "description": "Image URL (absolute, or relative to the current page) to fetch and inspect."
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "list_photos",
+      "description": "Isaac's photography — each frame with its title, location, description and image URL. Optionally filter by a free-text query matched against title, location and description.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Filter by place, location or description, e.g. 'Kedarkantha' or 'stars'."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 30,
+            "description": "Max results (default 30)."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_projects",
+      "description": "List portfolio projects with year, category, tags and a summary. Optionally filter by a free-text query matched against title, category and tags.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Filter by title, category or tag, e.g. \"e-commerce\"."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_writing",
+      "description": "List the case studies and essays, with reading time and year. Optionally filter by a free-text query.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Filter by title, description or tag."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "scan_images_c2pa",
+      "description": "Scan every <img> on the current page for C2PA Content Credentials (content provenance metadata) and return a per-image summary: whether a manifest is present, the claim generator (the tool that produced or edited the image), the title, and the signer name. Use this to find which images on a page carry provenance data. Note: provenance is decoded but NOT cryptographically verified.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 25,
+            "description": "Maximum number of images to fetch and scan (default 25, max 100)."
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "search_site",
+      "description": "Free-text search across projects, writing, services and work history. Use when you do not know which category an answer lives in.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "What to look for, e.g. \"SvelteKit\" or \"RTL\"."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 25,
+            "description": "Max results (default 10)."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "isaacsolomon.dev",
+  "source": "webmcp.com/api/directory.json"
+}

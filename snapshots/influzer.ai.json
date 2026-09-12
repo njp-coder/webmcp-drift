@@ -1,0 +1,328 @@
+{
+  "sponsio": 1,
+  "url": "https://www.influzer.ai/",
+  "capturedAt": "2026-09-12T10:38:40.587Z",
+  "tools": [
+    {
+      "name": "get_influzer_overview",
+      "description": "Return a short overview of Influzer.ai: what it offers (MCP directory, WebMCP directory, insights) and key URLs agents should use.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_mcp_server",
+      "description": "Fetch one classic MCP server by slug from Influzer's directory: transport, indexed tools, install command, docs URL, and setup summary.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Server slug from search_mcp_servers (e.g. playwright, postgres, firecrawl)."
+          },
+          "include_tools": {
+            "type": "boolean",
+            "description": "Include tool name/description list. Defaults to true."
+          }
+        },
+        "required": [
+          "slug"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_webmcp_directory_stats",
+      "description": "Return live counts for the Influzer WebMCP Directory: sites, tools, live vs demo, categories, and last refresh time.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_webmcp_listing_scan",
+      "description": "Poll status of a WebMCP listing scan started by start_webmcp_listing_scan. Returns progress, detected tools, scorecard, and directory URL when published.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "scan_id": {
+            "type": "string",
+            "description": "Scan id returned by start_webmcp_listing_scan."
+          }
+        },
+        "required": [
+          "scan_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_webmcp_site",
+      "description": "Fetch one WebMCP-enabled website by host (e.g. persona-chat.dev), including description, tool list, and schemas when available.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "host": {
+            "type": "string",
+            "description": "Hostname without protocol (www. is optional)."
+          },
+          "include_schemas": {
+            "type": "boolean",
+            "description": "When true, include full input schemas for each tool. Defaults to false for a shorter payload."
+          }
+        },
+        "required": [
+          "host"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_latest_insights",
+      "description": "List the latest Influzer.ai insights / articles (titles, URLs, summaries) for agent briefings.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12,
+            "description": "Number of articles (1–12). Defaults to 5."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "navigate_influzer",
+      "description": "Navigate this browser tab to a first-party Influzer.ai path (e.g. /webmcp, /mcp, /webmcp/demo, /insights). Use after the user confirms they want to move.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Site path starting with /. Only same-origin Influzer paths are allowed."
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "open_webmcp_site",
+      "description": "Navigate this browser tab to a WebMCP-enabled website's homepage so the user and agent can use that site's own document.modelContext tools together. Call only after the user confirms which host to open.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "host": {
+            "type": "string",
+            "description": "Hostname from search_webmcp_sites or recommend_agent_stack (no protocol)."
+          },
+          "path": {
+            "type": "string",
+            "description": "Optional path on that host (must start with /). Defaults to /."
+          }
+        },
+        "required": [
+          "host"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "recommend_agent_stack",
+      "description": "Given an app or workflow goal, search BOTH Influzer directories at once: WebMCP websites (in-browser page tools) and classic MCP servers (backend integrations). Returns a combined shortlist with tool previews and suggested next steps for building in ChatGPT or Cursor.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "goal": {
+            "type": "string",
+            "description": "What you are building, e.g. 'e-commerce app with cart and Postgres' or 'coding agent with GitHub and docs lookup'."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 8,
+            "description": "Max matches per surface (WebMCP sites, WebMCP tools, MCP servers). Defaults to 5."
+          },
+          "include_tool_details": {
+            "type": "boolean",
+            "description": "When true, include top tool names for each WebMCP site. Defaults to false."
+          }
+        },
+        "required": [
+          "goal"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_mcp_servers",
+      "description": "Search Influzer's MCP server directory (backend MCP integrations, not WebMCP). Returns matching servers with categories and tool names.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string",
+            "description": "Free-text query matching server name, slug, description, or category."
+          },
+          "scope": {
+            "type": "string",
+            "enum": [
+              "top",
+              "all"
+            ],
+            "description": "Search Top 100 (default) or the full catalog."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 25,
+            "description": "Max results (1–25). Defaults to 10."
+          }
+        },
+        "required": [
+          "q"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_webmcp_sites",
+      "description": "Search websites in the Influzer WebMCP Directory by keyword, category, site type, or verification status. Returns matching hosts with tool counts.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string",
+            "description": "Free-text query matching host, name, description, or category."
+          },
+          "category": {
+            "type": "string",
+            "description": "Category slug or name (e.g. developer-tools)."
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "live",
+              "demo",
+              "all"
+            ],
+            "description": "Filter by site type. Defaults to all."
+          },
+          "verified": {
+            "type": "string",
+            "enum": [
+              "verified",
+              "unverified",
+              "any"
+            ],
+            "description": "Filter by verification status. Defaults to any."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 25,
+            "description": "Max results to return (1–25). Defaults to 10."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_webmcp_tools",
+      "description": "Search WebMCP tools across all catalogued websites by tool name, description, or kind (answer / act / transact).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string",
+            "description": "Free-text query matching tool name or description."
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "answer",
+              "act",
+              "transact",
+              "any"
+            ],
+            "description": "Filter by tool kind. Defaults to any."
+          },
+          "host": {
+            "type": "string",
+            "description": "Optional host to limit tools to one site."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 40,
+            "description": "Max results (1–40). Defaults to 15."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "start_webmcp_listing_scan",
+      "description": "Start an Influzer scan to detect WebMCP tools on a public website and queue it for directory listing. Requires the user's email, site URL, and explicit consent (user_confirmed: true). Returns a scan_id to poll with get_webmcp_listing_scan. Listing is scan-gated — sites with detected tools may be published after review.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "Public website URL to scan (https://example.com or example.com)."
+          },
+          "email": {
+            "type": "string",
+            "description": "Submitter email for the scan report and listing follow-up."
+          },
+          "user_confirmed": {
+            "type": "boolean",
+            "description": "Must be true — confirms the user explicitly asked to submit this URL and share their email."
+          },
+          "relationship": {
+            "type": "string",
+            "enum": [
+              "owner",
+              "developer",
+              "user",
+              "researcher"
+            ],
+            "description": "Submitter relationship to the site. Defaults to owner."
+          },
+          "newsletter": {
+            "type": "boolean",
+            "description": "Subscribe email to Influzer newsletter for directory updates. Defaults to true."
+          }
+        },
+        "required": [
+          "url",
+          "email",
+          "user_confirmed"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "influzer.ai",
+  "source": "webmcp.com/api/directory.json"
+}

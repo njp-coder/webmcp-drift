@@ -1,0 +1,77 @@
+{
+  "sponsio": 1,
+  "url": "https://gptcode.dev/",
+  "capturedAt": "2026-09-12T10:38:40.587Z",
+  "tools": [
+    {
+      "name": "get_gptcode_overview",
+      "description": "Return the official GPTCode project thesis and links to its documentation, skills, essays, source code, and creator.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "read_gptcode_page",
+      "description": "Read the main text of a page returned by search_gptcode_content. Only indexed, same-origin GPTCode pages are accepted.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 240,
+            "description": "The canonical path or link returned by search_gptcode_content."
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_gptcode_content",
+      "description": "Search the public GPTCode website across documentation pages, blog essays, and engineering skills. Returns matching titles, summaries, sections, and canonical links.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 120,
+            "description": "Words or phrase to find in GPTCode content."
+          },
+          "section": {
+            "type": "string",
+            "enum": [
+              "all",
+              "documentation",
+              "blog",
+              "skills"
+            ],
+            "default": "all",
+            "description": "Optional content section to search."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "default": 5,
+            "description": "Maximum number of matches to return."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "gptcode.dev",
+  "source": "webmcp.com/api/directory.json"
+}

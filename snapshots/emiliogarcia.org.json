@@ -1,0 +1,553 @@
+{
+  "sponsio": 1,
+  "url": "https://www.emiliogarcia.org/",
+  "capturedAt": "2026-09-12T10:38:40.587Z",
+  "tools": [
+    {
+      "name": "get_apply_info",
+      "description": "Get the public Early Access Program application information for Emilio Garcia, combining the application form copy with the authoritative Applications and Access FAQ. Explains applicant profiles, requested public form fields, the selection/access process, and what happens after submission. Never exposes application records, approval status, private links, notes, or applicant data.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "lang": {
+            "type": "string",
+            "enum": [
+              "en",
+              "es",
+              "fr"
+            ],
+            "description": "Language for public site content. Defaults to English."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_artist_bio",
+      "description": "Get Emilio Garcia’s public artist biography in English, Spanish, or French from the same language content used by the website.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "lang": {
+            "type": "string",
+            "enum": [
+              "en",
+              "es",
+              "fr"
+            ],
+            "description": "Language for public site content. Defaults to English."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_artist_timeline",
+      "description": "Get Emilio Garcia’s public career timeline. It can filter by year, year range, or event type, and entries linked with data-news-id are enriched with the current public article title and URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "lang": {
+            "type": "string",
+            "enum": [
+              "en",
+              "es",
+              "fr"
+            ],
+            "description": "Language for public site content. Defaults to English."
+          },
+          "year": {
+            "type": "integer",
+            "minimum": 1900,
+            "maximum": 2100
+          },
+          "from_year": {
+            "type": "integer",
+            "minimum": 1900,
+            "maximum": 2100
+          },
+          "to_year": {
+            "type": "integer",
+            "minimum": 1900,
+            "maximum": 2100
+          },
+          "event_type": {
+            "type": "string",
+            "enum": [
+              "artwork_debut",
+              "exhibition",
+              "museum",
+              "education",
+              "award",
+              "art_toy",
+              "collaboration",
+              "other"
+            ]
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 300
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_artwork",
+      "description": "Get the public canonical record for one Emilio Garcia artwork by slug, including context, public editions, images, related editorial articles, and canonical URL. Does not expose internal notes, sales, customers, private links, or order data.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Canonical artwork slug, for example \"sponge-brain-wall-3\"."
+          },
+          "lang": {
+            "type": "string",
+            "enum": [
+              "en",
+              "es",
+              "fr"
+            ],
+            "description": "Language for public site content. Defaults to English."
+          }
+        },
+        "required": [
+          "slug"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_artwork_editions",
+      "description": "Get the published editions for one public Emilio Garcia artwork, including release date, medium, dimensions, edition size, finish, origin, and catalog availability status. Availability does not imply that an edition can be purchased online.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Canonical artwork slug."
+          },
+          "lang": {
+            "type": "string",
+            "enum": [
+              "en",
+              "es",
+              "fr"
+            ],
+            "description": "Language for public site content. Defaults to English."
+          }
+        },
+        "required": [
+          "slug"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_artwork_family",
+      "description": "List public canonical artworks belonging to an exact Emilio Garcia artwork family or series, for example \"Jumping Brain\", \"Sponge Brain\", or \"Forbidden Brain\".",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "family": {
+            "type": "string",
+            "description": "Exact public artwork family/series name."
+          },
+          "lang": {
+            "type": "string",
+            "enum": [
+              "en",
+              "es",
+              "fr"
+            ],
+            "description": "Language for public site content. Defaults to English."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 30,
+            "description": "Maximum number of results to return."
+          }
+        },
+        "required": [
+          "family"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_artwork_history",
+      "description": "Build the public chronological history of one Emilio Garcia artwork or artwork family using canonical artwork_sources and artwork_milestones. Prefer a canonical artwork slug; family can be used to aggregate a whole series. Returns only public canonical relations and public noticias.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Optional canonical artwork slug, preferred for one exact artwork."
+          },
+          "family": {
+            "type": "string",
+            "description": "Optional exact artwork family/series, used when a whole series history is wanted."
+          },
+          "lang": {
+            "type": "string",
+            "enum": [
+              "en",
+              "es",
+              "fr"
+            ],
+            "description": "Language for public site content. Defaults to English."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 200
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_contact_info",
+      "description": "Get the approved public ways to contact or follow Emilio Garcia. Returns only the public contact form, public social-media profile(s), website and Early Access application route. Never exposes private email addresses, phone numbers or the studio address.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "lang": {
+            "type": "string",
+            "enum": [
+              "en",
+              "es",
+              "fr"
+            ],
+            "description": "Language for public site content. Defaults to English."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_current_releases",
+      "description": "List Emilio Garcia’s most recent public canonical artwork releases, ordered by release year and month. This is editorial/catalog information, not a shop or purchasing tool.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "lang": {
+            "type": "string",
+            "enum": [
+              "en",
+              "es",
+              "fr"
+            ],
+            "description": "Language for public site content. Defaults to English."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 30,
+            "description": "Maximum number of results to return."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_exhibitions",
+      "description": "Get Emilio Garcia’s curated public exhibition/event history from the artist timeline, including exhibitions, art fairs, museums, and Art Toy events. Can filter by year/range and optionally by text such as an artwork, gallery, fair, city, or venue.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "lang": {
+            "type": "string",
+            "enum": [
+              "en",
+              "es",
+              "fr"
+            ],
+            "description": "Language for public site content. Defaults to English."
+          },
+          "year": {
+            "type": "integer",
+            "minimum": 1900,
+            "maximum": 2100
+          },
+          "from_year": {
+            "type": "integer",
+            "minimum": 1900,
+            "maximum": 2100
+          },
+          "to_year": {
+            "type": "integer",
+            "minimum": 1900,
+            "maximum": 2100
+          },
+          "query": {
+            "type": "string",
+            "description": "Optional text filter such as \"Sponge Brain\", \"JPS Gallery\", \"Tokyo\", or \"Art Central\"."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 200
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_faq_section",
+      "description": "Get one complete public FAQ section from Emilio Garcia’s website. Useful when an agent needs the authoritative set of questions and answers for a specific topic.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "section": {
+            "type": "string",
+            "enum": [
+              "general_information",
+              "applications_access",
+              "product_details",
+              "repair-restoration",
+              "sustainability",
+              "uso-imagenes",
+              "orders_purchases",
+              "shipping_delivery",
+              "returns_exchanges",
+              "contact_support"
+            ]
+          },
+          "lang": {
+            "type": "string",
+            "enum": [
+              "en",
+              "es",
+              "fr"
+            ],
+            "description": "Language for public site content. Defaults to English."
+          }
+        },
+        "required": [
+          "section"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_news_article",
+      "description": "Read one public Emilio Garcia editorial article by the slug returned by search_news. Returns localized title/body, date, images, tags, public URL, and canonically related public artworks.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Public editorial slug returned by search_news, for example \"ONCE-UPON-A-BRAIN\"."
+          },
+          "lang": {
+            "type": "string",
+            "enum": [
+              "en",
+              "es",
+              "fr"
+            ],
+            "description": "Language for public site content. Defaults to English."
+          }
+        },
+        "required": [
+          "slug"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_artworks",
+      "description": "Search Emilio Garcia’s public canonical artwork catalog by title, series/family, type, or editorial context. Returns only published artworks with a published edition and public editorial documentation.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Free-text search such as \"Sponge Brain\", \"wall sculpture\", or \"Brainade\"."
+          },
+          "family": {
+            "type": "string",
+            "description": "Optional exact artwork family/series, for example \"Sponge Brain\"."
+          },
+          "type": {
+            "type": "string",
+            "description": "Optional exact artwork type, for example \"Sculpture\", \"Art Toy\", or \"Installation\"."
+          },
+          "lang": {
+            "type": "string",
+            "enum": [
+              "en",
+              "es",
+              "fr"
+            ],
+            "description": "Language for public site content. Defaults to English."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 30,
+            "description": "Maximum number of results to return."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_faqs",
+      "description": "Search Emilio Garcia’s public FAQs for practical information about early access, buying, shipping, payments, artwork production and authenticity, conservation/restoration, sustainability, image use, returns, and contact/support.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Natural-language help question, for example \"how do I get early access?\", \"do you ship to Japan?\", or \"can a broken sculpture be restored?\"."
+          },
+          "section": {
+            "type": "string",
+            "enum": [
+              "general_information",
+              "applications_access",
+              "product_details",
+              "repair-restoration",
+              "sustainability",
+              "uso-imagenes",
+              "orders_purchases",
+              "shipping_delivery",
+              "returns_exchanges",
+              "contact_support"
+            ],
+            "description": "Optional exact FAQ section to search."
+          },
+          "lang": {
+            "type": "string",
+            "enum": [
+              "en",
+              "es",
+              "fr"
+            ],
+            "description": "Language for public site content. Defaults to English."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_news",
+      "description": "Search Emilio Garcia’s public editorial archive for articles, releases, exhibitions, art fairs, artworks, collaborations, and historical events. Searches public article titles, body text, tags, type, and section, with optional year range.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Natural-language editorial search, for example \"Sponge Brain 2019\", \"Art Central Hong Kong\", or \"Once Upon a Brain\"."
+          },
+          "lang": {
+            "type": "string",
+            "enum": [
+              "en",
+              "es",
+              "fr"
+            ],
+            "description": "Language for public site content. Defaults to English."
+          },
+          "from_year": {
+            "type": "integer",
+            "minimum": 1900,
+            "maximum": 2100
+          },
+          "to_year": {
+            "type": "integer",
+            "minimum": 1900,
+            "maximum": 2100
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 30,
+            "description": "Maximum number of results to return."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "submit_contact_form",
+      "description": "Send a real message through Emilio Garcia’s public contact workflow on behalf of the user. Use for restoration, gallery/exhibition, image-use/publication, commission or general enquiries. Only call after the user has explicitly asked to send the message and the exact message content is ready. The user’s own name and reply email are required. Emilio Garcia’s private contact details are never exposed.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the person sending the enquiry."
+          },
+          "email": {
+            "type": "string",
+            "description": "Reply email belonging to the person sending the enquiry."
+          },
+          "subject": {
+            "type": "string",
+            "description": "Optional concise subject."
+          },
+          "message": {
+            "type": "string",
+            "description": "Final message the user has asked to send."
+          },
+          "lang": {
+            "type": "string",
+            "enum": [
+              "en",
+              "es",
+              "fr"
+            ],
+            "description": "Language for public site content. Defaults to English."
+          },
+          "confirmed": {
+            "type": "boolean",
+            "const": true,
+            "description": "Must be true only after the user has explicitly asked to send this exact message."
+          }
+        },
+        "required": [
+          "name",
+          "email",
+          "message",
+          "confirmed"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "emiliogarcia.org",
+  "source": "webmcp.com/api/directory.json"
+}

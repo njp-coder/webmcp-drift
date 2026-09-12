@@ -1,0 +1,244 @@
+{
+  "sponsio": 1,
+  "url": "https://entur.no/",
+  "capturedAt": "2026-09-12T10:38:40.587Z",
+  "tools": [
+    {
+      "name": "available_apis",
+      "description": "Vis en oversikt over Enturs åpne APIer for kollektivtransport i Norge. Bruk dette verktøyet når brukeren spør om APIer, datatilgang, eller utviklerressurser.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "build_buy_trip_link",
+      "description": "Bygg en kjøpslenke for en spesifikk reise på entur.no. Krever eksakte serviceJourney-IDer og stoppested-IDer fra samme Journey Planner-svar (POST https://api.entur.io/journey-planner/v3/graphql). VIKTIG: Bruk fromPlace.quay.stopPlace.id og toPlace.quay.stopPlace.id fra Journey Planner-svaret – IKKE IDer fra geocode-verktøyet (de har andre IDer for samme stoppested). Disse verktøyene her kan ikke hente serviceJourney-IDer. Bruk kun dette verktøyet hvis brukeren oppgir IDer, eller hvis du har tilgang til Journey Planner API via andre verktøy. Maks 10 etapper, og tripPatternId utløper etter ca. 2 timer.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "legs": {
+            "type": "string",
+            "description": "Semikolon-separerte etapper. Hver etappe: serviceJourneyId,fraStopPlace,tilStopPlace,dato. Eksempel: \"VYG:ServiceJourney:146-HLD_509067-R,NSR:StopPlace:127,NSR:StopPlace:337,2026-03-02\""
+          },
+          "travellers": {
+            "type": "string",
+            "description": "Kommaseparerte reisendekategorier med valgfri alder. Kategorier: adult, child, student, senior, military. Alder påkrevd for child og student. Eksempel: \"adult,child:8,student:22\""
+          }
+        },
+        "required": [
+          "legs"
+        ]
+      }
+    },
+    {
+      "name": "build_direct_purchase_link",
+      "description": "Bygg en direktelenke til billettkjøp på entur.no for en bestemt operatør og strekning. Kun utvalgte operatører støttes (f.eks. Innlandstrafikk) – andre viser en «under arbeid»-side. Krever authority-ID og sone-/stoppested-IDer som brukeren MÅ oppgi selv – disse kan IKKE slås opp via geocode-verktøyet.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "authority": {
+            "type": "string",
+            "description": "Operatør-ID på formatet {OPERATOR}:Authority:{ID}. Slå opp via Journey Planner GraphQL ({authorities{id name}}) eller be brukeren oppgi den. Ikke gjett – formatet varierer mellom operatører."
+          },
+          "from": {
+            "type": "string",
+            "description": "Avgang som sone-ID ({OPERATOR}:FareZone:{NUMBER}) eller stoppested-ID (NSR:StopPlace:{NUMBER}). Sone-IDer er operatørspesifikke og må oppgis av brukeren."
+          },
+          "to": {
+            "type": "string",
+            "description": "Destinasjon som sone-ID ({OPERATOR}:FareZone:{NUMBER}) eller stoppested-ID (NSR:StopPlace:{NUMBER}). Sone-IDer er operatørspesifikke og må oppgis av brukeren."
+          }
+        },
+        "required": [
+          "authority",
+          "from",
+          "to"
+        ]
+      }
+    },
+    {
+      "name": "build_travel_link",
+      "description": "Bygg en forhåndsutfylt reiselenke til entur.no basert på koordinater. Bruk geocode-verktøyet for å slå opp koordinater fra stedsnavn. Denne lenken krever ikke stoppested-IDer – kun koordinater og navn.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "startLabel": {
+            "type": "string",
+            "description": "Navn på avreisested (f.eks. \"Oslo S\")"
+          },
+          "startLat": {
+            "type": "string",
+            "description": "Breddegrad for avreisested – hent fra geocode-verktøyet (f.eks. \"59.911096\")"
+          },
+          "startLon": {
+            "type": "string",
+            "description": "Lengdegrad for avreisested – hent fra geocode-verktøyet (f.eks. \"10.750923\")"
+          },
+          "stopLabel": {
+            "type": "string",
+            "description": "Navn på destinasjon (f.eks. \"Bergen stasjon\")"
+          },
+          "stopLat": {
+            "type": "string",
+            "description": "Breddegrad for destinasjon – hent fra geocode-verktøyet (f.eks. \"60.390174\")"
+          },
+          "stopLon": {
+            "type": "string",
+            "description": "Lengdegrad for destinasjon – hent fra geocode-verktøyet (f.eks. \"5.333849\")"
+          },
+          "transportModes": {
+            "type": "string",
+            "description": "Kommaseparert liste over transportmidler: rail, metro, tram, bus, coach, water, car_ferry, flytog, flybuss, air. Standard: alle."
+          },
+          "date": {
+            "type": "string",
+            "description": "Avgangstidspunkt som Unix-tidsstempel i millisekunder (UTC epoch). Tolk brukerens klokkeslett som norsk lokaltid (Europe/Oslo) før konvertering. Utelat for nåværende tidspunkt."
+          },
+          "timepickerMode": {
+            "type": "string",
+            "enum": [
+              "departAfter",
+              "arriveBefore"
+            ],
+            "description": "Avgang etter (departAfter) eller ankomst innen (arriveBefore). Standard: departAfter."
+          }
+        },
+        "required": [
+          "startLat",
+          "startLon",
+          "stopLat",
+          "stopLon"
+        ]
+      }
+    },
+    {
+      "name": "geocode",
+      "description": "Søk etter stoppesteder, adresser og steder i Norge via Enturs Geocoder API. Returnerer ID, navn og koordinater. For search_trips: bruk treff med ID som starter med \"NSR:StopPlace:\" eller \"NSR:GroupOfStopPlaces:\" (bynavn). For adresser (nakne numeriske IDer), bruk koordinatene med build_travel_link i stedet.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Søketekst for sted, stoppested eller adresse (f.eks. \"Oslo S\", \"Bergen stasjon\", \"Storgata 1\")"
+          },
+          "lat": {
+            "type": "string",
+            "description": "Breddegrad for å prioritere resultater nær en posisjon (focus point)"
+          },
+          "lon": {
+            "type": "string",
+            "description": "Lengdegrad for å prioritere resultater nær en posisjon (focus point)"
+          },
+          "limit": {
+            "type": "string",
+            "description": "Maks antall resultater. Standard: 5."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "search_trips",
+      "description": "Naviger til reiseresultater på entur.no. Bruk geocode-verktøyet først for å slå opp ID-er og koordinater for avreisested og destinasjon.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "startId": {
+            "type": "string",
+            "description": "ID for avreisested fra geocode-verktøyet. Godtar \"NSR:StopPlace:{NUMBER}\" og \"NSR:GroupOfStopPlaces:{NUMBER}\" (bynavn, f.eks. \"NSR:GroupOfStopPlaces:1\" for Oslo)."
+          },
+          "startLabel": {
+            "type": "string",
+            "description": "Navn på avreisested (f.eks. \"Oslo S\")"
+          },
+          "startLat": {
+            "type": "string",
+            "description": "Breddegrad for avreisested fra geocode-verktøyet"
+          },
+          "startLon": {
+            "type": "string",
+            "description": "Lengdegrad for avreisested fra geocode-verktøyet"
+          },
+          "stopId": {
+            "type": "string",
+            "description": "ID for destinasjon fra geocode-verktøyet. Godtar \"NSR:StopPlace:{NUMBER}\" og \"NSR:GroupOfStopPlaces:{NUMBER}\" (bynavn, f.eks. \"NSR:GroupOfStopPlaces:10\" for Trondheim)."
+          },
+          "stopLabel": {
+            "type": "string",
+            "description": "Navn på destinasjon (f.eks. \"Bergen stasjon\")"
+          },
+          "stopLat": {
+            "type": "string",
+            "description": "Breddegrad for destinasjon fra geocode-verktøyet"
+          },
+          "stopLon": {
+            "type": "string",
+            "description": "Lengdegrad for destinasjon fra geocode-verktøyet"
+          },
+          "date": {
+            "type": "string",
+            "description": "Avgangstidspunkt som Unix-tidsstempel i millisekunder (UTC epoch). Tolk brukerens klokkeslett som norsk lokaltid (Europe/Oslo) før konvertering. Utelat for nåværende tidspunkt."
+          },
+          "timepickerMode": {
+            "type": "string",
+            "enum": [
+              "departAfter",
+              "arriveBefore"
+            ],
+            "description": "Avgang etter (departAfter) eller ankomst innen (arriveBefore). Standard: departAfter."
+          },
+          "transportModes": {
+            "type": "string",
+            "description": "Kommaseparert liste over transportmidler: rail, tram, bus, coach, water, car_ferry, metro, flytog, flybuss, air. Standard: alle."
+          },
+          "walkSpeed": {
+            "type": "string",
+            "description": "Ganghastighet i m/s. Standard: 1.3."
+          },
+          "minimumTransferTime": {
+            "type": "string",
+            "description": "Minimum byttetid i sekunder. Standard: 120."
+          }
+        },
+        "required": [
+          "startId",
+          "startLabel",
+          "startLat",
+          "startLon",
+          "stopId",
+          "stopLabel",
+          "stopLat",
+          "stopLon"
+        ]
+      }
+    },
+    {
+      "name": "stop_place_departures",
+      "description": "Vis avgangstavlen for et stoppested på entur.no. Bruk geocode-verktøyet for å slå opp NSR:StopPlace-ID fra stedsnavn. Fungerer også som deep link til Entur-appen på mobil.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "NSR StopPlace-ID fra geocode-verktøyet (f.eks. \"NSR:StopPlace:59872\" for Oslo S). Må starte med \"NSR:StopPlace:\"."
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    }
+  ],
+  "host": "entur.no",
+  "source": "webmcp.com/api/directory.json"
+}

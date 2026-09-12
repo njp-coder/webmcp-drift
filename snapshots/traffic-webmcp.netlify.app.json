@@ -1,0 +1,505 @@
+{
+  "sponsio": 1,
+  "url": "https://traffic-webmcp.netlify.app/",
+  "capturedAt": "2026-09-12T10:38:40.587Z",
+  "tools": [
+    {
+      "name": "apply_config",
+      "description": "Commit a signal timing to the junction the operator is watching. This is the only tool that changes what is on screen.\n\nApplying a timing RESTARTS the live run: changing timing mid-cycle would leave the controller in an inconsistent phase and contaminate the measured figures with the previous timing. Expect roughly four minutes of simulated time before live metrics settle.\n\nRefuses, with the specific rule and rationale, if the timing violates a constraint from describe_model, or if it would change a parameter the operator has locked. A refusal is a fact about what may be deployed, not a scoring signal — a refused timing may well be the fastest one.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "ns_green_s": {
+                "type": "number",
+                "minimum": 7,
+                "maximum": 90,
+                "description": "North–south through green, seconds."
+              },
+              "ew_green_s": {
+                "type": "number",
+                "minimum": 7,
+                "maximum": 90,
+                "description": "East–west through green, seconds."
+              },
+              "yellow_s": {
+                "type": "number",
+                "minimum": 4,
+                "maximum": 6,
+                "description": "Yellow after every green, seconds. Safety-derived floor of 4 s — see the min_yellow constraint."
+              },
+              "all_red_s": {
+                "type": "number",
+                "minimum": 2,
+                "maximum": 4,
+                "description": "All-red clearance, seconds. Safety-derived floor of 2 s — see the min_all_red constraint."
+              },
+              "left_protected": {
+                "type": "boolean",
+                "description": "Give NS left turns an exclusive phase."
+              },
+              "ns_left_green_s": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 30,
+                "description": "Protected left phase duration. Must be 0 when left_protected is false."
+              }
+            },
+            "required": [
+              "ns_green_s",
+              "ew_green_s",
+              "yellow_s",
+              "all_red_s",
+              "left_protected",
+              "ns_left_green_s"
+            ],
+            "additionalProperties": false
+          },
+          "rationale": {
+            "type": "string",
+            "maxLength": 400,
+            "description": "One or two sentences on why this timing, shown to the operator alongside the change."
+          }
+        },
+        "required": [
+          "config"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "describe_model",
+      "description": "Return the full specification of this intersection: tunable parameters with units and ranges, metric definitions, the hard constraints that govern what may be deployed, and the available demand scenarios. Call this first — it is sufficient to understand the problem without any prior traffic-engineering knowledge.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "pin_result",
+      "description": "Add a timing to the operator's comparison tray with a short rationale. Use this to surface the two or three candidates worth a human decision — for example the fastest admissible timing alongside one that trades a little mean wait for a much shorter worst case.\n\nPinning does not commit anything. The operator applies a pinned timing themselves, or asks you to. Pin the trade-offs, not every candidate you evaluated — the search trace already shows those.\n\nRefuses to pin an inadmissible timing. The tray is a shortlist the operator can apply with one click, so anything in it must be legal to deploy. Use unpin_result to remove a pin.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "ns_green_s": {
+                "type": "number",
+                "minimum": 7,
+                "maximum": 90,
+                "description": "North–south through green, seconds."
+              },
+              "ew_green_s": {
+                "type": "number",
+                "minimum": 7,
+                "maximum": 90,
+                "description": "East–west through green, seconds."
+              },
+              "yellow_s": {
+                "type": "number",
+                "minimum": 4,
+                "maximum": 6,
+                "description": "Yellow after every green, seconds. Safety-derived floor of 4 s — see the min_yellow constraint."
+              },
+              "all_red_s": {
+                "type": "number",
+                "minimum": 2,
+                "maximum": 4,
+                "description": "All-red clearance, seconds. Safety-derived floor of 2 s — see the min_all_red constraint."
+              },
+              "left_protected": {
+                "type": "boolean",
+                "description": "Give NS left turns an exclusive phase."
+              },
+              "ns_left_green_s": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 30,
+                "description": "Protected left phase duration. Must be 0 when left_protected is false."
+              }
+            },
+            "required": [
+              "ns_green_s",
+              "ew_green_s",
+              "yellow_s",
+              "all_red_s",
+              "left_protected",
+              "ns_left_green_s"
+            ],
+            "additionalProperties": false
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 240,
+            "description": "Why this one is worth the operator's attention, and what it gives up. One or two sentences."
+          },
+          "scenario_id": {
+            "type": "string",
+            "description": "Scenario the metrics were measured under. Defaults to active."
+          }
+        },
+        "required": [
+          "config",
+          "note"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "play_sequence",
+      "description": "Hand the operator a scrubbable, narrated walkthrough of your reasoning. Each step puts a timing — or a pair of timings — on the cycle diagram with a one-line caption. The operator can pause, scrub and replay it.\n\nTwo kinds of step:\n  - focus=\"structure\" (default) draws the cycle diagram: where the phases sit, what a protected phase costs in cycle time.\n  - focus=\"metrics\" compares OUTCOMES side by side: mean wait, 95th percentile, left-turn wait, max queue, throughput. Requires compare_config.\n\nUse a metrics step whenever the argument is about tail delay, queues or throughput rather than phase layout. Two plans can be structurally near-identical and still differ by twenty seconds of 95th-percentile wait. The cycle diagram cannot show that; a metrics step can.\n\nREACH FOR THIS when the answer is structural and a diagram carries it better than a sentence:\n  · the fastest timing is not the one you recommend\n  · a phase was added or removed, and you want to show what it cost\n  · the cycle length moved substantially, or the split rebalanced\n  · the right answer differs between two scenarios\n  · you are explaining a refusal, and the legal timing looks different\n\nWhen two plans are structurally near-identical but differ in outcome, do not skip the replay: use focus=\"metrics\" instead. Fall back to prose only when neither structure nor outcomes differ meaningfully.\n\nA comparison step draws both timings to the same seconds-per-pixel scale, so a difference in cycle length is visible rather than asserted. Captions should say what changed and what it cost — the diagram already shows the shape, so do not narrate the shape.\n\nThis does NOT change the committed timing. It is an explanation, not a deployment. Metrics for every referenced timing are re-measured here so the captions cannot drift from what is on screen.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 80,
+            "description": "Short heading for the replay."
+          },
+          "steps": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 8,
+            "items": {
+              "type": "object",
+              "properties": {
+                "config": {
+                  "type": "object",
+                  "properties": {
+                    "ns_green_s": {
+                      "type": "number",
+                      "minimum": 7,
+                      "maximum": 90,
+                      "description": "North–south through green, seconds."
+                    },
+                    "ew_green_s": {
+                      "type": "number",
+                      "minimum": 7,
+                      "maximum": 90,
+                      "description": "East–west through green, seconds."
+                    },
+                    "yellow_s": {
+                      "type": "number",
+                      "minimum": 4,
+                      "maximum": 6,
+                      "description": "Yellow after every green, seconds. Safety-derived floor of 4 s — see the min_yellow constraint."
+                    },
+                    "all_red_s": {
+                      "type": "number",
+                      "minimum": 2,
+                      "maximum": 4,
+                      "description": "All-red clearance, seconds. Safety-derived floor of 2 s — see the min_all_red constraint."
+                    },
+                    "left_protected": {
+                      "type": "boolean",
+                      "description": "Give NS left turns an exclusive phase."
+                    },
+                    "ns_left_green_s": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 30,
+                      "description": "Protected left phase duration. Must be 0 when left_protected is false."
+                    }
+                  },
+                  "required": [
+                    "ns_green_s",
+                    "ew_green_s",
+                    "yellow_s",
+                    "all_red_s",
+                    "left_protected",
+                    "ns_left_green_s"
+                  ],
+                  "additionalProperties": false
+                },
+                "compare_config": {
+                  "type": "object",
+                  "properties": {
+                    "ns_green_s": {
+                      "type": "number",
+                      "minimum": 7,
+                      "maximum": 90,
+                      "description": "North–south through green, seconds."
+                    },
+                    "ew_green_s": {
+                      "type": "number",
+                      "minimum": 7,
+                      "maximum": 90,
+                      "description": "East–west through green, seconds."
+                    },
+                    "yellow_s": {
+                      "type": "number",
+                      "minimum": 4,
+                      "maximum": 6,
+                      "description": "Yellow after every green, seconds. Safety-derived floor of 4 s — see the min_yellow constraint."
+                    },
+                    "all_red_s": {
+                      "type": "number",
+                      "minimum": 2,
+                      "maximum": 4,
+                      "description": "All-red clearance, seconds. Safety-derived floor of 2 s — see the min_all_red constraint."
+                    },
+                    "left_protected": {
+                      "type": "boolean",
+                      "description": "Give NS left turns an exclusive phase."
+                    },
+                    "ns_left_green_s": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 30,
+                      "description": "Protected left phase duration. Must be 0 when left_protected is false."
+                    }
+                  },
+                  "required": [
+                    "ns_green_s",
+                    "ew_green_s",
+                    "yellow_s",
+                    "all_red_s",
+                    "left_protected",
+                    "ns_left_green_s"
+                  ],
+                  "additionalProperties": false,
+                  "description": "Optional second timing, drawn beneath the first at the same time scale for direct comparison."
+                },
+                "caption": {
+                  "type": "string",
+                  "maxLength": 160,
+                  "description": "One line on what this step shows. Say what changed and what it cost — the diagram already shows the shape."
+                },
+                "focus": {
+                  "type": "string",
+                  "enum": [
+                    "structure",
+                    "metrics"
+                  ],
+                  "description": "structure (default) draws the cycle diagram. metrics compares outcomes side by side and requires compare_config."
+                },
+                "hold_ms": {
+                  "type": "integer",
+                  "minimum": 1200,
+                  "maximum": 8000,
+                  "description": "How long to dwell before advancing. Defaults to 3500."
+                }
+              },
+              "required": [
+                "config",
+                "caption"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "scenario_id": {
+            "type": "string",
+            "description": "Scenario the metrics refer to. Defaults to active."
+          }
+        },
+        "required": [
+          "title",
+          "steps"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "read_state",
+      "description": "Return what is currently on screen: the committed signal timing, the active demand scenario, metrics measured so far on the live run, the controller's current phase, per-arm queues, and which parameters the operator has locked. Locked parameters cannot be changed by apply_config — read this before proposing a timing.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "run_batch",
+      "description": "Evaluate up to 50 candidate signal timings headlessly and return the resulting metrics for each. Runs off the main thread; the live junction keeps running while this executes.\n\nDeterministic: identical (config, seed) pairs always produce identical metrics. Single-seed figures carry roughly ±2 s of noise on mean_wait_s, so average across at least 3 seeds before concluding that one timing beats another by a small margin.\n\nThis tool reports physics, not policy: it evaluates timings that are illegal to deploy and tells you honestly how they perform. Each row carries an `admissible` flag and, when false, the constraints it violates — so you can see the fast illegal options without spending a search on them. Enforcement still belongs to apply_config.\n\nIf `admissible_count` comes back much lower than the batch size, the region you are searching is mostly out of bounds. Read `constraints` in describe_model before continuing.\n\nResults are sorted by mean_wait_s ascending. The top 3 carry the full per-arm breakdown; the rest carry the summary metrics needed to rank them. Pass detail=\"full\" if you need per-arm figures for every row.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "configs": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 50,
+            "items": {
+              "type": "object",
+              "properties": {
+                "ns_green_s": {
+                  "type": "number",
+                  "minimum": 7,
+                  "maximum": 90,
+                  "description": "North–south through green, seconds."
+                },
+                "ew_green_s": {
+                  "type": "number",
+                  "minimum": 7,
+                  "maximum": 90,
+                  "description": "East–west through green, seconds."
+                },
+                "yellow_s": {
+                  "type": "number",
+                  "minimum": 4,
+                  "maximum": 6,
+                  "description": "Yellow after every green, seconds. Safety-derived floor of 4 s — see the min_yellow constraint."
+                },
+                "all_red_s": {
+                  "type": "number",
+                  "minimum": 2,
+                  "maximum": 4,
+                  "description": "All-red clearance, seconds. Safety-derived floor of 2 s — see the min_all_red constraint."
+                },
+                "left_protected": {
+                  "type": "boolean",
+                  "description": "Give NS left turns an exclusive phase."
+                },
+                "ns_left_green_s": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 30,
+                  "description": "Protected left phase duration. Must be 0 when left_protected is false."
+                }
+              },
+              "required": [
+                "ns_green_s",
+                "ew_green_s",
+                "yellow_s",
+                "all_red_s",
+                "left_protected",
+                "ns_left_green_s"
+              ],
+              "additionalProperties": false
+            },
+            "description": "Candidate timings to evaluate."
+          },
+          "seeds": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "maxItems": 5,
+            "description": "Random seeds to average over. Defaults to [1,2,3]."
+          },
+          "sim_minutes": {
+            "type": "number",
+            "minimum": 5,
+            "maximum": 60,
+            "description": "Simulated minutes per run after a 5-minute warm-up. Defaults to 20. Shorter runs are faster but noisier."
+          },
+          "scenario_id": {
+            "type": "string",
+            "description": "Demand scenario to evaluate against. Defaults to the active one. Evaluating against a scenario does not switch the live view."
+          },
+          "detail": {
+            "type": "string",
+            "enum": [
+              "summary",
+              "full"
+            ],
+            "description": "summary (default) gives full per-arm figures for the top 3 rows and summary metrics for the rest. full gives per-arm figures for every row, which for 50 configs is a large payload."
+          }
+        },
+        "required": [
+          "configs"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_scenario",
+      "description": "Switch the demand profile the junction is running under, and what the operator sees. Like apply_config, this RESTARTS the live run.\n\nThe best timing differs substantially between scenarios, and so does which left-turn phasing is admissible — a timing that is legal under one demand profile may be prohibited under another. To evaluate against a scenario without switching the operator's view, pass scenario_id to run_batch instead.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "scenario_id": {
+            "type": "string",
+            "enum": [
+              "morning_rush",
+              "evening_return",
+              "school_run",
+              "event_egress"
+            ],
+            "description": "Scenario to make active."
+          }
+        },
+        "required": [
+          "scenario_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "unpin_result",
+      "description": "Remove a timing from the operator's comparison tray, or clear the tray entirely.\n\nUse this when a pin turns out to be wrong — superseded by a better candidate, or measured under assumptions that have since changed. Without it you would have to ask the operator to clean up after you.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "ns_green_s": {
+                "type": "number",
+                "minimum": 7,
+                "maximum": 90,
+                "description": "North–south through green, seconds."
+              },
+              "ew_green_s": {
+                "type": "number",
+                "minimum": 7,
+                "maximum": 90,
+                "description": "East–west through green, seconds."
+              },
+              "yellow_s": {
+                "type": "number",
+                "minimum": 4,
+                "maximum": 6,
+                "description": "Yellow after every green, seconds. Safety-derived floor of 4 s — see the min_yellow constraint."
+              },
+              "all_red_s": {
+                "type": "number",
+                "minimum": 2,
+                "maximum": 4,
+                "description": "All-red clearance, seconds. Safety-derived floor of 2 s — see the min_all_red constraint."
+              },
+              "left_protected": {
+                "type": "boolean",
+                "description": "Give NS left turns an exclusive phase."
+              },
+              "ns_left_green_s": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 30,
+                "description": "Protected left phase duration. Must be 0 when left_protected is false."
+              }
+            },
+            "required": [
+              "ns_green_s",
+              "ew_green_s",
+              "yellow_s",
+              "all_red_s",
+              "left_protected",
+              "ns_left_green_s"
+            ],
+            "additionalProperties": false,
+            "description": "The pinned timing to remove. Omit to clear the tray."
+          },
+          "clear_all": {
+            "type": "boolean",
+            "description": "Remove every pin. Ignored when config is supplied."
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "traffic-webmcp.netlify.app",
+  "source": "webmcp.com/api/directory.json"
+}
