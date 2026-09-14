@@ -1,0 +1,1403 @@
+{
+  "sponsio": 1,
+  "url": "https://sheetcanvas.com/",
+  "capturedAt": "2026-09-14T12:35:13.904Z",
+  "tools": [
+    {
+      "name": "applyFilter",
+      "description": "Replace filters on a sheet. Pass an empty array to clear filters.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sheetId": {
+            "type": "string"
+          },
+          "filters": {
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "columnId": {
+                      "type": "string",
+                      "pattern": "^[A-Z]+$"
+                    },
+                    "type": {
+                      "type": "string",
+                      "const": "text"
+                    },
+                    "operator": {
+                      "type": "string",
+                      "enum": [
+                        "contains",
+                        "equals",
+                        "startsWith",
+                        "endsWith"
+                      ]
+                    },
+                    "value": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "columnId",
+                    "type",
+                    "operator",
+                    "value"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "columnId": {
+                          "type": "string",
+                          "pattern": "^[A-Z]+$"
+                        },
+                        "type": {
+                          "type": "string",
+                          "const": "number"
+                        },
+                        "operator": {
+                          "type": "string",
+                          "enum": [
+                            "gt",
+                            "lt",
+                            "eq",
+                            "neq"
+                          ]
+                        },
+                        "value": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "columnId",
+                        "type",
+                        "operator",
+                        "value"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "columnId": {
+                          "type": "string",
+                          "pattern": "^[A-Z]+$"
+                        },
+                        "type": {
+                          "type": "string",
+                          "const": "number"
+                        },
+                        "operator": {
+                          "type": "string",
+                          "const": "range"
+                        },
+                        "value": {
+                          "minItems": 2,
+                          "maxItems": 2,
+                          "type": "array",
+                          "items": {
+                            "type": "number"
+                          }
+                        }
+                      },
+                      "required": [
+                        "columnId",
+                        "type",
+                        "operator",
+                        "value"
+                      ],
+                      "additionalProperties": false
+                    }
+                  ]
+                },
+                {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "columnId": {
+                          "type": "string",
+                          "pattern": "^[A-Z]+$"
+                        },
+                        "type": {
+                          "type": "string",
+                          "const": "date"
+                        },
+                        "operator": {
+                          "type": "string",
+                          "enum": [
+                            "before",
+                            "after",
+                            "on"
+                          ]
+                        },
+                        "value": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "columnId",
+                        "type",
+                        "operator",
+                        "value"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "columnId": {
+                          "type": "string",
+                          "pattern": "^[A-Z]+$"
+                        },
+                        "type": {
+                          "type": "string",
+                          "const": "date"
+                        },
+                        "operator": {
+                          "type": "string",
+                          "const": "range"
+                        },
+                        "value": {
+                          "minItems": 2,
+                          "maxItems": 2,
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "required": [
+                        "columnId",
+                        "type",
+                        "operator",
+                        "value"
+                      ],
+                      "additionalProperties": false
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        "required": [
+          "sheetId",
+          "filters"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "applyFormat",
+      "description": "Applies presentation formatting (units, decimals, dates, in-cell visuals) to an A1 range without changing values; works on normal and derived sheets. Pass exactly one of format or preset, not both. preset is a shortcut (integer, decimal, compactNumber, currency, compactCurrency, percent, date, datetime, duration, text, customD3); customD3 needs d3Format. Use visual:\"bar\" for a primary metric; use heatmapColor:\"diverging\" for values around zero, heatmapFlip:true when lower is better.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sheetId": {
+            "type": "string"
+          },
+          "range": {
+            "type": "string",
+            "pattern": "^[A-Z]+\\d+(:[A-Z]+\\d+)?$"
+          },
+          "format": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "number"
+                  },
+                  "decimals": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10
+                  },
+                  "d3Format": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 40
+                  },
+                  "visual": {
+                    "type": "string",
+                    "enum": [
+                      "bar",
+                      "bar-row",
+                      "heatmap",
+                      "heatmap-row",
+                      "sparkline"
+                    ]
+                  },
+                  "heatmapColor": {
+                    "type": "string",
+                    "enum": [
+                      "red",
+                      "green",
+                      "yellow",
+                      "diverging"
+                    ]
+                  },
+                  "heatmapFlip": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "type"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "currency"
+                  },
+                  "symbol": {
+                    "type": "string",
+                    "maxLength": 4
+                  },
+                  "decimals": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10
+                  },
+                  "d3Format": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 40
+                  },
+                  "visual": {
+                    "type": "string",
+                    "enum": [
+                      "bar",
+                      "bar-row",
+                      "heatmap",
+                      "heatmap-row",
+                      "sparkline"
+                    ]
+                  },
+                  "heatmapColor": {
+                    "type": "string",
+                    "enum": [
+                      "red",
+                      "green",
+                      "yellow",
+                      "diverging"
+                    ]
+                  },
+                  "heatmapFlip": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "type"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "percent"
+                  },
+                  "decimals": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10
+                  },
+                  "d3Format": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 40
+                  },
+                  "visual": {
+                    "type": "string",
+                    "enum": [
+                      "bar",
+                      "bar-row",
+                      "heatmap",
+                      "heatmap-row",
+                      "sparkline"
+                    ]
+                  },
+                  "heatmapColor": {
+                    "type": "string",
+                    "enum": [
+                      "red",
+                      "green",
+                      "yellow",
+                      "diverging"
+                    ]
+                  },
+                  "heatmapFlip": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "type"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "date"
+                  },
+                  "dateFormat": {
+                    "type": "string",
+                    "maxLength": 40
+                  },
+                  "visual": {
+                    "type": "string",
+                    "enum": [
+                      "bar",
+                      "bar-row",
+                      "heatmap",
+                      "heatmap-row",
+                      "sparkline"
+                    ]
+                  },
+                  "heatmapColor": {
+                    "type": "string",
+                    "enum": [
+                      "red",
+                      "green",
+                      "yellow",
+                      "diverging"
+                    ]
+                  },
+                  "heatmapFlip": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "type"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "text"
+                  },
+                  "visual": {
+                    "type": "string",
+                    "enum": [
+                      "bar",
+                      "bar-row",
+                      "heatmap",
+                      "heatmap-row",
+                      "sparkline"
+                    ]
+                  },
+                  "heatmapColor": {
+                    "type": "string",
+                    "enum": [
+                      "red",
+                      "green",
+                      "yellow",
+                      "diverging"
+                    ]
+                  },
+                  "heatmapFlip": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "type"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          },
+          "preset": {
+            "type": "object",
+            "properties": {
+              "preset": {
+                "type": "string",
+                "enum": [
+                  "integer",
+                  "decimal",
+                  "compactNumber",
+                  "currency",
+                  "compactCurrency",
+                  "percent",
+                  "date",
+                  "datetime",
+                  "duration",
+                  "text",
+                  "customD3"
+                ]
+              },
+              "decimals": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 10
+              },
+              "symbol": {
+                "type": "string",
+                "maxLength": 4
+              },
+              "d3Format": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 40
+              },
+              "dateFormat": {
+                "type": "string",
+                "maxLength": 40
+              },
+              "visual": {
+                "type": "string",
+                "enum": [
+                  "bar",
+                  "bar-row",
+                  "heatmap",
+                  "heatmap-row",
+                  "sparkline"
+                ]
+              },
+              "heatmapColor": {
+                "type": "string",
+                "enum": [
+                  "red",
+                  "green",
+                  "yellow",
+                  "diverging"
+                ]
+              },
+              "heatmapFlip": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "preset"
+            ],
+            "additionalProperties": false
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          }
+        },
+        "required": [
+          "sheetId",
+          "range"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "applySort",
+      "description": "Set or clear the sort on a sheet. Pass null to clear.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sheetId": {
+            "type": "string"
+          },
+          "sort": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "columnId": {
+                    "type": "string",
+                    "pattern": "^[A-Z]+$"
+                  },
+                  "direction": {
+                    "type": "string",
+                    "enum": [
+                      "asc",
+                      "desc"
+                    ]
+                  }
+                },
+                "required": [
+                  "columnId",
+                  "direction"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "sheetId",
+          "sort"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "createChart",
+      "description": "Creates a chart from a source sheet; response includes formDecisions. mode:\"group\" aggregates row-level data via groupCol/valueCol/operation. mode:\"metrics\" charts aggregated columns: labelColumn is X-axis, dataColumns are Y series. Time-series charts need timeRange and timeGranularity. Duplicate X labels in metrics mode mean data is too granular — use mode:\"group\" or createPivot first. For \"does X drive Y\" use type:\"scatter\" (one point per entity), not dual-axis lines.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sheetId": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "line",
+              "bar",
+              "pie",
+              "area",
+              "scatter",
+              "treemap"
+            ]
+          },
+          "mode": {
+            "description": "Use group for chart-only aggregation over row-level data; metrics charts already-aggregated columns directly.",
+            "type": "string",
+            "enum": [
+              "metrics",
+              "group"
+            ]
+          },
+          "labelColumn": {
+            "type": "string",
+            "pattern": "^[A-Z]+$"
+          },
+          "dataColumns": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Z]+$"
+            }
+          },
+          "groupCol": {
+            "description": "For mode:\"group\", the X-axis grouping column. Usually the same as labelColumn for compatibility.",
+            "type": "string",
+            "pattern": "^[A-Z]+$"
+          },
+          "seriesGroupCol": {
+            "description": "For mode:\"group\", optional column that splits the aggregate into series.",
+            "type": "string",
+            "pattern": "^[A-Z]+$"
+          },
+          "valueCol": {
+            "description": "For mode:\"group\", the numeric value column to aggregate. Usually the first dataColumns entry for compatibility.",
+            "type": "string",
+            "pattern": "^[A-Z]+$"
+          },
+          "operation": {
+            "description": "For mode:\"group\", how to aggregate valueCol values in the chart.",
+            "type": "string",
+            "enum": [
+              "SUM",
+              "COUNT",
+              "AVG",
+              "MIN",
+              "MAX"
+            ]
+          },
+          "seriesTypes": {
+            "description": "Per-series chart type override keyed by dataColumns letter, e.g. {\"B\":\"bar\",\"C\":\"line\"}. Metrics mode only. Omit to auto-select.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string",
+              "pattern": "^[A-Z]+$"
+            },
+            "additionalProperties": {
+              "type": "string",
+              "enum": [
+                "line",
+                "bar",
+                "pie",
+                "area",
+                "scatter",
+                "treemap"
+              ]
+            }
+          },
+          "rightAxisColumns": {
+            "description": "dataColumns letters plotted on a second Y-axis, e.g. a rate paired with volumes. Metrics mode only. Omit to auto-gate the dual axis.",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Z]+$"
+            }
+          },
+          "title": {
+            "type": "string"
+          },
+          "timeRange": {
+            "description": "Required for time-series charts. Examples: \"2026-05-01 to 2026-06-11\", \"last 30 days\", or \"full available range\".",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "timeGranularity": {
+            "description": "Required for time-series charts when the label column is date-like.",
+            "type": "string",
+            "enum": [
+              "day",
+              "week",
+              "month",
+              "quarter",
+              "year"
+            ]
+          },
+          "aggregation": {
+            "description": "The analysis aggregation represented by this chart, such as SUM or COUNT. Use operation for chart-only group mode.",
+            "type": "string",
+            "enum": [
+              "SUM",
+              "COUNT",
+              "AVG",
+              "MIN",
+              "MAX"
+            ]
+          },
+          "sourceGrain": {
+            "description": "Declare whether the source sheet already matches the chart grain, or raw_rows when mode:\"group\" will aggregate directly.",
+            "type": "string",
+            "enum": [
+              "raw_rows",
+              "already_aggregated",
+              "pivot_summary",
+              "unknown"
+            ]
+          },
+          "allowDuplicateLabels": {
+            "description": "Only set true when the user explicitly wants multiple plotted rows with the same label in metrics mode. Otherwise use group mode or create a",
+            "type": "boolean"
+          },
+          "analysisNotes": {
+            "description": "Briefly state the chart grain/assumption when using an explicit default or override.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 300
+          }
+        },
+        "required": [
+          "sheetId",
+          "type",
+          "labelColumn",
+          "dataColumns"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "createNote",
+      "description": "Creates a live report note: Markdown that can embed data-bound components staying live as sheets change. Embed up to three self-closing tags — <CellValue sheet=\"ID\" cell=\"B4\" format=\"currency\"/>, <CanvasChart id=\"ID\" height=\"240\"/>, <Sparkline sheet=\"ID\" range=\"B2:B12\"/>; any other tag renders as inert text. sheet/id values MUST be real ids from earlier results (createQuerySheet, createPivot, createChart) or listSheets/describeSheet — a wrong id shows \"not found\".",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Markdown body; may embed <CellValue>, <CanvasChart>, <Sparkline> tags (see tool description for their exact attributes)."
+          },
+          "title": {
+            "description": "Optional short title, added as an H1 heading if the content does not already start with a heading.",
+            "type": "string",
+            "maxLength": 120
+          },
+          "color": {
+            "description": "Note background color. Defaults to yellow.",
+            "type": "string",
+            "enum": [
+              "yellow",
+              "blue",
+              "green",
+              "pink",
+              "purple",
+              "gray"
+            ]
+          }
+        },
+        "required": [
+          "content"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "createPivot",
+      "description": "Creates a pivot-table sheet derived from a source sheet; recomputes when the source changes. Use for chartable aggregation or a reusable summary from row-level data — build the pivot, then createChart on it (for one-off exploration with no persistent output, use querySheet instead). rowLabelCol groups rows; colLabelCol (optional) splits into columns for a 2-D pivot; values is one or more metric cards with operation, optional label, COUNT semantics, and AND-only SUMIF/COUNTIF conditions.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sheetId": {
+            "type": "string"
+          },
+          "rowLabelCol": {
+            "type": "string",
+            "pattern": "^[A-Z]+$"
+          },
+          "colLabelCol": {
+            "type": "string",
+            "pattern": "^[A-Z]+$"
+          },
+          "values": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "column": {
+                  "type": "string",
+                  "pattern": "^[A-Z]+$"
+                },
+                "operation": {
+                  "type": "string",
+                  "enum": [
+                    "SUM",
+                    "COUNT",
+                    "AVG",
+                    "MIN",
+                    "MAX"
+                  ]
+                },
+                "label": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                },
+                "conditions": {
+                  "type": "array",
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "columnId": {
+                            "type": "string",
+                            "pattern": "^[A-Z]+$"
+                          },
+                          "type": {
+                            "type": "string",
+                            "const": "text"
+                          },
+                          "operator": {
+                            "type": "string",
+                            "enum": [
+                              "contains",
+                              "equals",
+                              "startsWith",
+                              "endsWith"
+                            ]
+                          },
+                          "value": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "columnId",
+                          "type",
+                          "operator",
+                          "value"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "oneOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "columnId": {
+                                "type": "string",
+                                "pattern": "^[A-Z]+$"
+                              },
+                              "type": {
+                                "type": "string",
+                                "const": "number"
+                              },
+                              "operator": {
+                                "type": "string",
+                                "enum": [
+                                  "gt",
+                                  "lt",
+                                  "eq",
+                                  "neq"
+                                ]
+                              },
+                              "value": {
+                                "type": "number"
+                              }
+                            },
+                            "required": [
+                              "columnId",
+                              "type",
+                              "operator",
+                              "value"
+                            ],
+                            "additionalProperties": false
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "columnId": {
+                                "type": "string",
+                                "pattern": "^[A-Z]+$"
+                              },
+                              "type": {
+                                "type": "string",
+                                "const": "number"
+                              },
+                              "operator": {
+                                "type": "string",
+                                "const": "range"
+                              },
+                              "value": {
+                                "minItems": 2,
+                                "maxItems": 2,
+                                "type": "array",
+                                "items": {
+                                  "type": "number"
+                                }
+                              }
+                            },
+                            "required": [
+                              "columnId",
+                              "type",
+                              "operator",
+                              "value"
+                            ],
+                            "additionalProperties": false
+                          }
+                        ]
+                      },
+                      {
+                        "oneOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "columnId": {
+                                "type": "string",
+                                "pattern": "^[A-Z]+$"
+                              },
+                              "type": {
+                                "type": "string",
+                                "const": "date"
+                              },
+                              "operator": {
+                                "type": "string",
+                                "enum": [
+                                  "before",
+                                  "after",
+                                  "on"
+                                ]
+                              },
+                              "value": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "columnId",
+                              "type",
+                              "operator",
+                              "value"
+                            ],
+                            "additionalProperties": false
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "columnId": {
+                                "type": "string",
+                                "pattern": "^[A-Z]+$"
+                              },
+                              "type": {
+                                "type": "string",
+                                "const": "date"
+                              },
+                              "operator": {
+                                "type": "string",
+                                "const": "range"
+                              },
+                              "value": {
+                                "minItems": 2,
+                                "maxItems": 2,
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              }
+                            },
+                            "required": [
+                              "columnId",
+                              "type",
+                              "operator",
+                              "value"
+                            ],
+                            "additionalProperties": false
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                "countRows": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "operation"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "showRowTotals": {
+            "type": "boolean"
+          },
+          "showColTotals": {
+            "type": "boolean"
+          },
+          "title": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "sheetId",
+          "rowLabelCol",
+          "values"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "createSheet",
+      "description": "Creates a new standalone sheet for manual, scratch, or agent-computed data (an assembled table, fill-in template, or derived summary). data is optional: rows of raw cell strings, row 1 is the header; a cell may be a literal or \"=FORMULA(...)\". Omit data for a blank grid. Has NO data source and does not auto-refresh — for connector data (ClickHouse, Google Analytics, Google Sheets) use createQuerySheet instead to keep lineage/refreshability. Returns sheetId and dimensions.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "data": {
+            "description": "Rows of raw cell strings; row 1 is the header. Each cell is a literal or \"=FORMULA(...)\". Omit for a blank sheet.",
+            "maxItems": 5000,
+            "type": "array",
+            "items": {
+              "maxItems": 256,
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "createSparkline",
+      "description": "Creates a compact KPI table: one row per metric/group with a mini trend line over dateCol, a current value, and a Change cell colored by direction-of-good (green=better, red=worse). Good default for \"overview\" requests. mode:\"metrics\" charts each dataCols entry as a row (dataCols required). mode:\"group\" pivots groupCol into rows, aggregating valueCol with operation (all required). compareMode sets the delta column (default vs_avg). In-cell sparkline: use applyFormat visual:\"sparkline\".",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sheetId": {
+            "type": "string"
+          },
+          "dateCol": {
+            "type": "string",
+            "pattern": "^[A-Z]+$"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "metrics",
+              "group"
+            ]
+          },
+          "compareMode": {
+            "type": "string",
+            "enum": [
+              "vs_prev",
+              "vs_avg",
+              "vs_first"
+            ]
+          },
+          "dataCols": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Z]+$"
+            }
+          },
+          "groupCol": {
+            "type": "string",
+            "pattern": "^[A-Z]+$"
+          },
+          "valueCol": {
+            "type": "string",
+            "pattern": "^[A-Z]+$"
+          },
+          "operation": {
+            "type": "string",
+            "enum": [
+              "SUM",
+              "COUNT",
+              "AVG",
+              "MIN",
+              "MAX"
+            ]
+          },
+          "summaryColumns": {
+            "description": "Optional extra columns appended after the Change column: \"avg\" (mean), \"minmax\" (min and max), \"share\" (share-of-total as an in-cell bar). The Change",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "avg",
+                "minmax",
+                "share"
+              ]
+            }
+          },
+          "goodDirections": {
+            "description": "Per-metric direction of good, keyed by label. \"up\"=higher better (revenue); \"down\"=lower better (cost, churn). Inferred if omitted.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {
+              "type": "string",
+              "enum": [
+                "up",
+                "down",
+                "unknown"
+              ]
+            }
+          },
+          "title": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "sheetId",
+          "dateCol",
+          "mode"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "deleteNote",
+      "description": "Permanently delete a report note from the canvas by id. This is destructive and cannot be undone by the agent (the user can still undo in-app). Only delete a note you created or the user explicitly asked to remove. Errors if the noteId does not exist.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "noteId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Id of the note to delete."
+          }
+        },
+        "required": [
+          "noteId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "describeConnection",
+      "description": "Describes one data connection and returns the schemaToken needed by queryConnection/createQuerySheet/updateQuerySheet, plus a queryShape (payloadSchema, requiredFields, examples) for building queryPayload — read it before any connector query. ClickHouse without table returns tables[] only; with table returns columns[] and schemaToken. Google Analytics needs propertyId, returns a dimensions[]/metrics[] catalog. Google Sheets returns URL/ID and range requirements.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "connectionId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "table": {
+            "type": "string",
+            "minLength": 1
+          },
+          "propertyId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "search": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50
+          },
+          "includeDescriptions": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "connectionId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "describeSheet",
+      "description": "Use this to inspect one sheet before querying or mutating it. Returns the schema and a small sample: compact columnIdSpan (for example A:BB), column ids/letters, header cells, data ranges, column headers, inferred types, row count, row-numbering convention, current filters and sort, and up to 5 sample rows with row numbers. If the user named specific column letters such as AU or BB, pass them in columnIds so they are echoed in requestedColumns even on wide sheets.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sheetId": {
+            "type": "string"
+          },
+          "columnIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Z]+$"
+            }
+          }
+        },
+        "required": [
+          "sheetId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "getRange",
+      "description": "Read the raw and computed values of a specific A1 range on a sheet.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sheetId": {
+            "type": "string"
+          },
+          "range": {
+            "type": "string",
+            "pattern": "^[A-Z]+\\d+(:[A-Z]+\\d+)?$"
+          }
+        },
+        "required": [
+          "sheetId",
+          "range"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "getSelection",
+      "description": "Use this first for requests like \"this data\", \"selected chart\", \"current sheet\", or \"what I selected\", before deciding which sheet/chart to inspect or mutate. Returns what the user currently has selected: the active sheet cell/range selection plus selectedCanvas.items for whole selected sheets, charts, and notes.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "listConnectionProperties",
+      "description": "Use this after choosing a GA connection and before describeConnection — it lists selectable properties/resources for one data connection. Google Analytics returns a bounded properties[] page with propertyId, displayName, accountDisplayName, nextPageToken, truncated.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "connectionId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "pageToken": {
+            "type": "string",
+            "minLength": 1
+          },
+          "pageSize": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50
+          }
+        },
+        "required": [
+          "connectionId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "listConnections",
+      "description": "Use this first before querying external data — it lists all configured data connections (ClickHouse, Google Analytics, Google Sheets). Returns connectionId, type, name, duplicate-name hints, best-effort health, GA property hints, sheets using each connection, plus selectedCanvas context.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "listNotes",
+      "description": "Use this to discover note ids before reading or updating a note — it lists all report notes currently on the canvas. Returns each note's noteId, a derived title (first heading/line), a short text preview, color, and format. Returns an empty list if there are no notes.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "listSheets",
+      "description": "Use this first to discover what is on the canvas: lists all sheets with id, title, dimensions, compact columnIdSpan (for example A:BB), row-numbering convention, and column headers. Column ids like A, AU, or BB are spreadsheet column letters and may be used directly in tool inputs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "querySheet",
+      "description": "Runs a read-only SQL SELECT against one sheet for exploration, validation, filtering, or previewing aggregates before writing anything. Results are temporary, not chartable — to chart an aggregate, build a summary with createPivot first, then createChart on it. The sheet is table \"t\"; column names come from schema.sqlName (sanitized, e.g. hostname) — inspect schema first. For a trend, pull ~8+ periods; for a comparison, also pull the seasonality-correct baseline. Only SELECT is allowed.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sheetId": {
+            "type": "string"
+          },
+          "sql": {
+            "type": "string",
+            "minLength": 6
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000
+          }
+        },
+        "required": [
+          "sheetId",
+          "sql"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "readNote",
+      "description": "Use this before updateNote so you edit against the real current text rather than guessing — it reads one report note by id. Returns its full raw Markdown source (content, exactly as stored — including any <CellValue>/<CanvasChart>/<Sparkline> tags), plus color and format. Errors if the noteId does not exist (get ids from listNotes or a prior createNote).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "noteId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Id of the note to read, as returned by createNote or listNotes."
+          }
+        },
+        "required": [
+          "noteId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "setCells",
+      "description": "Write cells on a sheet. Pass A1-keyed map of { raw } values. Use \"=FORMULA(...)\" for formulas. Will overwrite existing cells.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sheetId": {
+            "type": "string"
+          },
+          "cells": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string",
+              "pattern": "^[A-Z]+\\d+$"
+            },
+            "additionalProperties": {
+              "type": "object",
+              "properties": {
+                "raw": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "raw"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "sheetId",
+          "cells"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "updateNote",
+      "description": "Updates an existing report note in place — revise wording, add/remove a section, or swap a chart. Requires noteId plus at least one of content or color. content REPLACES the entire Markdown body; there is no append/patch mode — read the note first with readNote, edit the full text, then send it back. Supports the same three live tags as createNote (<CellValue>, <CanvasChart>, <Sparkline>); unknown ids render inert. Errors if noteId does not exist.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "noteId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Id of the note to update."
+          },
+          "content": {
+            "description": "New full Markdown body. Replaces the existing content entirely.",
+            "type": "string",
+            "minLength": 1
+          },
+          "color": {
+            "description": "New note background color.",
+            "type": "string",
+            "enum": [
+              "yellow",
+              "blue",
+              "green",
+              "pink",
+              "purple",
+              "gray"
+            ]
+          }
+        },
+        "required": [
+          "noteId"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "sheetcanvas.com",
+  "source": "webmcp.com/api/directory.json"
+}

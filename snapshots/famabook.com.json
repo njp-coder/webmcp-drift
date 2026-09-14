@@ -1,0 +1,857 @@
+{
+  "sponsio": 1,
+  "url": "https://famabook.com/",
+  "capturedAt": "2026-09-14T12:35:13.904Z",
+  "tools": [
+    {
+      "name": "create_accounting_account",
+      "description": "Khai báo tài khoản kế toán mới hoặc tài khoản chi tiết cấp 2/cấp 3 theo chế độ kế toán Thông tư 99/2025/TT-BTC.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "accountCode": {
+            "type": "string",
+            "description": "Số hiệu tài khoản kế toán (ví dụ: \"11211\", \"1561\", \"1311\")"
+          },
+          "accountName": {
+            "type": "string",
+            "description": "Tên tài khoản kế toán (ví dụ: \"Tiền gửi VND - Vietcombank\")"
+          },
+          "parentAccountCode": {
+            "type": "string",
+            "description": "Số hiệu tài khoản mẹ (ví dụ: \"1121\", \"156\")"
+          },
+          "nature": {
+            "type": "string",
+            "description": "Tính chất tài khoản: \"debit\" (Dư Nợ), \"credit\" (Dư Có), \"dual\" (Lưỡng tính)",
+            "default": "debit"
+          },
+          "description": {
+            "type": "string",
+            "description": "Mô tả nội dung tài khoản"
+          }
+        },
+        "required": [
+          "accountCode",
+          "accountName"
+        ]
+      }
+    },
+    {
+      "name": "create_ar_invoice",
+      "description": "Tạo mới một hóa đơn bán hàng ghi nhận doanh thu và theo dõi công nợ phải thu của khách hàng.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "invoiceNumber": {
+            "type": "string",
+            "description": "Số hóa đơn bán hàng (ví dụ: \"HD-001\")"
+          },
+          "invoiceDate": {
+            "type": "string",
+            "description": "Ngày phát hành hóa đơn (YYYY-MM-DD)"
+          },
+          "customerName": {
+            "type": "string",
+            "description": "Tên đối tác / khách hàng mua hàng"
+          },
+          "totalAmount": {
+            "type": "number",
+            "description": "Tổng tiền thanh toán trên hóa đơn"
+          },
+          "description": {
+            "type": "string",
+            "description": "Nội dung kinh tế của hóa đơn"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "create_bank_deposit",
+      "description": "Lập chứng từ nộp tiền mặt hoặc nộp tiền gửi vào tài khoản ngân hàng của doanh nghiệp (TK 112).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "accountingDocumentNumber": {
+            "type": "string",
+            "description": "Số chứng từ nộp tiền (ví dụ: \"NT-2026/001\")"
+          },
+          "accountingDocumentDate": {
+            "type": "string",
+            "description": "Ngày nộp tiền (YYYY-MM-DD)"
+          },
+          "bankAccountName": {
+            "type": "string",
+            "description": "Tên hoặc số tài khoản ngân hàng thụ hưởng (ví dụ: \"Vietcombank CN HN\")"
+          },
+          "reason": {
+            "type": "string",
+            "description": "Lý do nộp tiền"
+          },
+          "amount": {
+            "type": "number",
+            "description": "Số tiền nộp (VND)"
+          }
+        },
+        "required": [
+          "amount"
+        ]
+      }
+    },
+    {
+      "name": "create_bank_internal_transfer",
+      "description": "Lập chứng từ điều chuyển tiền giữa các tài khoản ngân hàng nội bộ của doanh nghiệp.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "accountingDocumentNumber": {
+            "type": "string",
+            "description": "Số chứng từ điều chuyển (ví dụ: \"NB-2026/001\")"
+          },
+          "accountingDocumentDate": {
+            "type": "string",
+            "description": "Ngày chuyển tiền (YYYY-MM-DD)"
+          },
+          "sourceAccount": {
+            "type": "string",
+            "description": "Tài khoản ngân hàng nguồn (chuyển đi)"
+          },
+          "targetAccount": {
+            "type": "string",
+            "description": "Tài khoản ngân hàng đích (nhận về)"
+          },
+          "amount": {
+            "type": "number",
+            "description": "Số tiền điều chuyển"
+          },
+          "reason": {
+            "type": "string",
+            "description": "Lý do điều chuyển"
+          }
+        },
+        "required": [
+          "amount"
+        ]
+      }
+    },
+    {
+      "name": "create_bank_withdraw",
+      "description": "Lập chứng từ rút tiền ngân hàng hoặc Ủy nhiệm chi chuyển tiền thanh toán cho nhà cung cấp/đối tác (TK 112).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "accountingDocumentNumber": {
+            "type": "string",
+            "description": "Số UNC / chứng từ rút tiền (ví dụ: \"UNC-2026/001\")"
+          },
+          "accountingDocumentDate": {
+            "type": "string",
+            "description": "Ngày lập chứng từ (YYYY-MM-DD)"
+          },
+          "receiverName": {
+            "type": "string",
+            "description": "Tên đơn vị hoặc cá nhân thụ hưởng"
+          },
+          "reason": {
+            "type": "string",
+            "description": "Nội dung thanh toán / chuyển tiền"
+          },
+          "amount": {
+            "type": "number",
+            "description": "Số tiền chuyển / rút (VND)"
+          }
+        },
+        "required": [
+          "amount"
+        ]
+      }
+    },
+    {
+      "name": "create_document_01_bh",
+      "description": "Lập chứng từ bán hàng kiêm phiếu xuất kho theo mẫu 01-BH chuẩn chế độ kế toán TT 99.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "accountingDocumentNumber": {
+            "type": "string",
+            "description": "Số chứng từ 01-BH (ví dụ: \"BH-2026/001\")"
+          },
+          "accountingDocumentDate": {
+            "type": "string",
+            "description": "Ngày chứng từ (YYYY-MM-DD)"
+          },
+          "ghiChu": {
+            "type": "string",
+            "description": "Diễn giải nội dung bán hàng / xuất kho"
+          },
+          "amount": {
+            "type": "number",
+            "description": "Tổng số tiền thanh toán kỳ này"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "create_document_01_tt",
+      "description": "Lập phiếu thu tiền mặt theo Mẫu 01-TT (người nộp tiền, lý do thu, số tiền, tài khoản Nợ 111/Có liên quan).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "accountingDocumentNumber": {
+            "type": "string",
+            "description": "Số phiếu thu (ví dụ: \"PT-2026/001\")"
+          },
+          "accountingDocumentDate": {
+            "type": "string",
+            "description": "Ngày thu tiền (YYYY-MM-DD)"
+          },
+          "payerName": {
+            "type": "string",
+            "description": "Họ tên người nộp tiền hoặc tên đối tác nộp"
+          },
+          "reason": {
+            "type": "string",
+            "description": "Lý do thu tiền (thu nợ khách hàng, thu hoàn ứng, thu bán lẻ...)"
+          },
+          "amount": {
+            "type": "number",
+            "description": "Số tiền thu (VND)"
+          }
+        },
+        "required": [
+          "amount"
+        ]
+      }
+    },
+    {
+      "name": "create_document_01_vt",
+      "description": "Lập phiếu nhập kho vật tư, hàng hóa theo Mẫu 01-VT chuẩn chế độ kế toán TT 99.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "accountingDocumentNumber": {
+            "type": "string",
+            "description": "Số phiếu nhập kho (ví dụ: \"PNK-2026/001\")"
+          },
+          "accountingDocumentDate": {
+            "type": "string",
+            "description": "Ngày nhập kho (YYYY-MM-DD)"
+          },
+          "delivererName": {
+            "type": "string",
+            "description": "Họ tên người giao hàng / nhà cung cấp"
+          },
+          "warehouseName": {
+            "type": "string",
+            "description": "Nhập tại kho nào (ví dụ: \"Kho Tổng Hà Nội\")"
+          },
+          "description": {
+            "type": "string",
+            "description": "Lý do nhập kho"
+          },
+          "totalAmount": {
+            "type": "number",
+            "description": "Tổng giá trị hàng nhập kho"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "create_document_02_tt",
+      "description": "Lập phiếu chi tiền mặt theo Mẫu 02-TT (người nhận tiền, lý do chi, số tiền, tài khoản Nợ/Có 111).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "accountingDocumentNumber": {
+            "type": "string",
+            "description": "Số phiếu chi (ví dụ: \"PC-2026/001\")"
+          },
+          "accountingDocumentDate": {
+            "type": "string",
+            "description": "Ngày chi tiền (YYYY-MM-DD)"
+          },
+          "receiverName": {
+            "type": "string",
+            "description": "Họ tên người nhận tiền hoặc đơn vị thụ hưởng"
+          },
+          "reason": {
+            "type": "string",
+            "description": "Lý do chi (chi tạm ứng, trả nợ NCC, chi phí quản lý...)"
+          },
+          "amount": {
+            "type": "number",
+            "description": "Số tiền chi (VND)"
+          }
+        },
+        "required": [
+          "amount"
+        ]
+      }
+    },
+    {
+      "name": "create_document_02_vt",
+      "description": "Lập phiếu xuất kho vật tư, hàng hóa phục vụ sản xuất, kinh doanh hoặc bán hàng theo Mẫu 02-VT.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "accountingDocumentNumber": {
+            "type": "string",
+            "description": "Số phiếu xuất kho (ví dụ: \"PXK-2026/001\")"
+          },
+          "accountingDocumentDate": {
+            "type": "string",
+            "description": "Ngày xuất kho (YYYY-MM-DD)"
+          },
+          "receiverName": {
+            "type": "string",
+            "description": "Người nhận hàng / bộ phận nhận"
+          },
+          "reason": {
+            "type": "string",
+            "description": "Lý do xuất kho (xuất dùng, xuất bán...)"
+          },
+          "totalAmount": {
+            "type": "number",
+            "description": "Tổng giá trị hàng xuất kho"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "create_goods",
+      "description": "Khai báo một mặt hàng hoặc vật tư mới vào danh mục sản phẩm (mã hàng, tên hàng, đơn vị tính, giá bán).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "goodsCode": {
+            "type": "string",
+            "description": "Mã hàng hóa / vật tư (ví dụ: \"SP-001\", \"DELL-U2422H\")"
+          },
+          "goodsName": {
+            "type": "string",
+            "description": "Tên hàng hóa / sản phẩm (ví dụ: \"Màn hình Dell Ultrasharp 24 inch\")"
+          },
+          "uomName": {
+            "type": "string",
+            "description": "Đơn vị tính (chiếc, cái, bộ, hộp, kg...)",
+            "default": "chiếc"
+          },
+          "salePrice": {
+            "type": "number",
+            "description": "Đơn giá bán niêm yết"
+          },
+          "description": {
+            "type": "string",
+            "description": "Mô tả chi tiết sản phẩm"
+          }
+        },
+        "required": [
+          "goodsCode",
+          "goodsName"
+        ]
+      }
+    },
+    {
+      "name": "create_partner",
+      "description": "Thêm một đối tác mới vào hệ thống (tên công ty/cá nhân, mã số thuế, địa chỉ, số điện thoại, email, vai trò là khách hàng hoặc nhà cung cấp).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "partyCode": {
+            "type": "string",
+            "description": "Mã đối tác (ví dụ: \"KH_SIGMA\", \"NCC_FPT\"). Nếu bỏ trống, hệ thống tự sinh mã."
+          },
+          "partyName": {
+            "type": "string",
+            "description": "Tên đầy đủ của khách hàng hoặc nhà cung cấp"
+          },
+          "taxCode": {
+            "type": "string",
+            "description": "Mã số thuế doanh nghiệp (ví dụ: \"0101234567\")"
+          },
+          "address": {
+            "type": "string",
+            "description": "Địa chỉ trụ sở hoặc giao dịch"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Số điện thoại liên hệ"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email liên hệ"
+          },
+          "isCustomer": {
+            "type": "boolean",
+            "description": "Có phải là khách hàng mua hàng không (mặc định: true)",
+            "default": true
+          },
+          "isVendor": {
+            "type": "boolean",
+            "description": "Có phải là nhà cung cấp bán hàng không (mặc định: false)",
+            "default": false
+          }
+        },
+        "required": [
+          "partyName"
+        ]
+      }
+    },
+    {
+      "name": "create_purchase_contract",
+      "description": "Lập hợp đồng kinh tế mua vật tư, hàng hóa hoặc dịch vụ với nhà cung cấp.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "contractCode": {
+            "type": "string",
+            "description": "Số hợp đồng mua hàng (ví dụ: \"HDM-2026/01\")"
+          },
+          "contractName": {
+            "type": "string",
+            "description": "Tên hoặc tiêu đề hợp đồng mua hàng"
+          },
+          "vendorName": {
+            "type": "string",
+            "description": "Tên nhà cung cấp / đối tác ký hợp đồng"
+          },
+          "signDate": {
+            "type": "string",
+            "description": "Ngày ký kết hợp đồng (YYYY-MM-DD)"
+          },
+          "contractAmount": {
+            "type": "number",
+            "description": "Giá trị hợp đồng mua hàng"
+          }
+        },
+        "required": [
+          "contractName"
+        ]
+      }
+    },
+    {
+      "name": "create_purchase_invoice",
+      "description": "Tạo hóa đơn mua hàng hóa, vật tư, dịch vụ đầu vào để ghi nhận chi phí và công nợ phải trả NCC.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "accountingDocumentNumber": {
+            "type": "string",
+            "description": "Số hóa đơn mua hàng hoặc số chứng từ (ví dụ: \"HDMH-001\")"
+          },
+          "accountingDocumentDate": {
+            "type": "string",
+            "description": "Ngày hóa đơn (YYYY-MM-DD)"
+          },
+          "vendorName": {
+            "type": "string",
+            "description": "Tên nhà cung cấp"
+          },
+          "description": {
+            "type": "string",
+            "description": "Nội dung chi phí mua hàng"
+          },
+          "totalAmount": {
+            "type": "number",
+            "description": "Tổng tiền thanh toán trên hóa đơn"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "create_purchase_order",
+      "description": "Lập mới đơn đặt mua hàng gửi nhà cung cấp (mã đơn hàng, ngày lập, tên nhà cung cấp/đối tác, danh mục hàng hóa, số lượng, đơn giá). Tự động lưu vào hệ thống kế toán và điều hướng tới phân hệ mua hàng.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "accountingDocumentNumber": {
+            "type": "string",
+            "description": "Số đơn đặt mua hàng (ví dụ: \"PO-2026/001\"). Nếu bỏ trống, hệ thống tự động sinh số."
+          },
+          "accountingDocumentDate": {
+            "type": "string",
+            "description": "Ngày lập đơn mua hàng (định dạng YYYY-MM-DD)"
+          },
+          "vendorName": {
+            "type": "string",
+            "description": "Tên nhà cung cấp hoặc đối tác bán hàng"
+          },
+          "description": {
+            "type": "string",
+            "description": "Diễn giải / ghi chú đơn đặt mua hàng"
+          },
+          "items": {
+            "type": "array",
+            "description": "Danh sách các mặt hàng, vật tư đặt mua",
+            "items": {
+              "type": "object",
+              "properties": {
+                "goodsName": {
+                  "type": "string",
+                  "description": "Tên hoặc mã hàng hóa, dịch vụ"
+                },
+                "quantity": {
+                  "type": "number",
+                  "description": "Số lượng mua"
+                },
+                "unitPrice": {
+                  "type": "number",
+                  "description": "Đơn giá mua dự kiến (trước thuế)"
+                },
+                "uom": {
+                  "type": "string",
+                  "description": "Đơn vị tính (chiếc, cái, bộ, kg, hộp...)",
+                  "default": "cái"
+                }
+              },
+              "required": [
+                "goodsName",
+                "quantity"
+              ]
+            }
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "create_sales_contract",
+      "description": "Tạo mới một hợp đồng kinh tế bán hàng với khách hàng (tiêu đề, đối tác, nhân viên phụ trách, danh mục sản phẩm, đơn giá, số lượng, thuế suất). Tự động lưu vào hệ thống kế toán và chuyển trang.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "contractSubject": {
+            "type": "string",
+            "description": "Tiêu đề hoặc trích yếu hợp đồng (ví dụ: \"Hợp đồng kinh tế BKIT - SIGMANANO\")"
+          },
+          "accountObjectName": {
+            "type": "string",
+            "description": "Tên đối tác / khách hàng ký kết hợp đồng (ví dụ: \"SIGMANANO\", \"Công ty TNHH ABC\")"
+          },
+          "contractCode": {
+            "type": "string",
+            "description": "Số hợp đồng kinh tế (ví dụ: \"HĐ-2026/01\"). Nếu bỏ trống, hệ thống tự sinh số."
+          },
+          "employeeName": {
+            "type": "string",
+            "description": "Nhân viên phụ trách hợp đồng (ví dụ: \"Nguyễn Phương Dung\")"
+          },
+          "signDate": {
+            "type": "string",
+            "description": "Ngày ký kết hợp đồng (định dạng YYYY-MM-DD, mặc định là hôm nay)"
+          },
+          "items": {
+            "type": "array",
+            "description": "Danh sách các mặt hàng hoặc dịch vụ trong hợp đồng",
+            "items": {
+              "type": "object",
+              "properties": {
+                "goodsName": {
+                  "type": "string",
+                  "description": "Tên hoặc mã hàng hóa / dịch vụ"
+                },
+                "quantity": {
+                  "type": "number",
+                  "description": "Số lượng hàng hóa"
+                },
+                "unitPrice": {
+                  "type": "number",
+                  "description": "Đơn giá bán trước thuế"
+                },
+                "uom": {
+                  "type": "string",
+                  "description": "Đơn vị tính (key, bản quyền, chiếc, bộ...)",
+                  "default": "key"
+                },
+                "vatTaxRate": {
+                  "type": "string",
+                  "description": "Thuế suất GTGT: \"KCT\" (không chịu thuế), \"0\", \"5\", \"8\", \"10\"",
+                  "default": "KCT"
+                }
+              },
+              "required": [
+                "goodsName",
+                "quantity",
+                "unitPrice"
+              ]
+            }
+          }
+        },
+        "required": [
+          "contractSubject"
+        ]
+      }
+    },
+    {
+      "name": "create_sales_order",
+      "description": "Tạo đơn đặt hàng từ khách hàng (Sales Order) để theo dõi luồng giao hàng và xuất hóa đơn.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "accountingDocumentNumber": {
+            "type": "string",
+            "description": "Số đơn đặt hàng bán (ví dụ: \"SO-2026/001\")"
+          },
+          "accountingDocumentDate": {
+            "type": "string",
+            "description": "Ngày đặt hàng (YYYY-MM-DD)"
+          },
+          "notes": {
+            "type": "string",
+            "description": "Ghi chú đơn đặt hàng"
+          },
+          "items": {
+            "type": "array",
+            "description": "Danh sách sản phẩm khách đặt mua",
+            "items": {
+              "type": "object",
+              "properties": {
+                "goodsName": {
+                  "type": "string",
+                  "description": "Tên hàng hóa"
+                },
+                "quantity": {
+                  "type": "number",
+                  "description": "Số lượng"
+                },
+                "unitPrice": {
+                  "type": "number",
+                  "description": "Đơn giá bán"
+                },
+                "uom": {
+                  "type": "string",
+                  "description": "ĐVT",
+                  "default": "chiếc"
+                }
+              },
+              "required": [
+                "goodsName",
+                "quantity",
+                "unitPrice"
+              ]
+            }
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "create_sales_quotation",
+      "description": "Tạo mới một báo giá gửi khách hàng kèm chi tiết sản phẩm, đơn vị tính, đơn giá và chiết khấu/thuế.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "accountingDocumentNumber": {
+            "type": "string",
+            "description": "Số báo giá (ví dụ: \"BG-2026/001\"). Nếu bỏ trống, hệ thống tự sinh số."
+          },
+          "accountingDocumentDate": {
+            "type": "string",
+            "description": "Ngày báo giá (YYYY-MM-DD)"
+          },
+          "notes": {
+            "type": "string",
+            "description": "Diễn giải / ghi chú nội dung báo giá gửi đối tác"
+          },
+          "items": {
+            "type": "array",
+            "description": "Danh mục sản phẩm hoặc dịch vụ trong báo giá",
+            "items": {
+              "type": "object",
+              "properties": {
+                "goodsName": {
+                  "type": "string",
+                  "description": "Tên hàng hóa/dịch vụ"
+                },
+                "quantity": {
+                  "type": "number",
+                  "description": "Số lượng"
+                },
+                "unitPrice": {
+                  "type": "number",
+                  "description": "Đơn giá báo giá"
+                },
+                "uom": {
+                  "type": "string",
+                  "description": "Đơn vị tính",
+                  "default": "cái"
+                }
+              },
+              "required": [
+                "goodsName",
+                "quantity",
+                "unitPrice"
+              ]
+            }
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "create_warehouse",
+      "description": "Khai báo một kho hàng mới vào hệ thống (mã kho, tên kho, địa chỉ, tài khoản kho ngầm định). Nếu mã kho không được cung cấp, hệ thống tự động sinh mã phù hợp.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "warehouseCode": {
+            "type": "string",
+            "description": "Mã kho hàng (tùy chọn, ví dụ: \"KHO_HN\", \"KHO_TONG\", \"KHO_156\", \"33\")"
+          },
+          "warehouseName": {
+            "type": "string",
+            "description": "Tên kho hàng (ví dụ: \"Kho Tổng Hà Nội\", \"Minh Dũng, Hà Nội\", \"Dell Hà Nội\")"
+          },
+          "warehouseAddress": {
+            "type": "string",
+            "description": "Địa chỉ kho hàng (tùy chọn)"
+          },
+          "warehouseAccountingAccount": {
+            "type": "string",
+            "description": "Tài khoản kho kế toán ngầm định (ví dụ: \"156\", \"152\", \"155\")",
+            "default": "156"
+          },
+          "description": {
+            "type": "string",
+            "description": "Ghi chú mô tả kho hàng (tùy chọn)"
+          }
+        },
+        "required": [
+          "warehouseName"
+        ]
+      }
+    },
+    {
+      "name": "delete_warehouse",
+      "description": "Xóa một kho hàng khỏi hệ thống theo mã kho hoặc ID (ví dụ: mã \"33\", \"KHO_01\", hoặc UUID).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "warehouseCode": {
+            "type": "string",
+            "description": "Mã kho hàng cần xóa (ví dụ: \"33\", \"KHO_HN\") hoặc ID kho hàng"
+          },
+          "id": {
+            "type": "string",
+            "description": "ID bản ghi kho hàng (tùy chọn)"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "export_financial_statement",
+      "description": "Chuyển tới màn hình và trích xuất Báo cáo tài chính: B01-DN (Tình hình tài chính), B02-DN (Kết quả kinh doanh), B03-DN (Lưu chuyển tiền tệ), B09-DN (Thuyết minh BCTC).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "reportType": {
+            "type": "string",
+            "description": "Mẫu biểu: \"B01-DN\", \"B02-DN\", \"B03-DN\", \"B09-DN\"",
+            "default": "B01-DN"
+          },
+          "fiscalYear": {
+            "type": "string",
+            "description": "Năm tài chính (ví dụ: \"2026\", \"2025\")"
+          }
+        },
+        "required": [
+          "reportType"
+        ]
+      }
+    },
+    {
+      "name": "export_sales_contract_docx",
+      "description": "Tải và xuất file Word (.docx) của hợp đồng bán hàng theo ID hợp đồng.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "contractId": {
+            "type": "string",
+            "description": "ID của hợp đồng bán hàng"
+          },
+          "contractCode": {
+            "type": "string",
+            "description": "Mã hợp đồng (để đặt tên tệp tải về)"
+          }
+        },
+        "required": [
+          "contractId"
+        ]
+      }
+    },
+    {
+      "name": "fill_active_form_fields",
+      "description": "Tự động điền các trường dữ liệu (input, textarea) vào biểu mẫu đang mở trên màn hình kế toán theo cặp {fieldName: value}.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "fields": {
+            "type": "object",
+            "description": "Cặp key-value tương ứng với id, name hoặc placeholder của ô nhập liệu"
+          }
+        },
+        "required": [
+          "fields"
+        ]
+      }
+    },
+    {
+      "name": "get_active_screen_context",
+      "description": "Lấy thông tin chi tiết về màn hình làm việc mà kế toán viên đang xem (đường dẫn URL, tiêu đề phân hệ, ID chứng từ nếu đang mở xem/sửa).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "navigate_to_page",
+      "description": "Chuyển đổi màn hình làm việc trong ứng dụng kế toán BKIT. Sử dụng khi người dùng muốn mở một phân hệ, màn hình hoặc danh mục cụ thể (Ví dụ: đơn vị tính, kho hàng, hóa đơn, khách hàng, tài khoản).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Đường dẫn URL cần chuyển tới trong ứng dụng. Ví dụ:\n- Đơn vị tính: \"/dashboard/unit-of-measure\"\n- Quy đổi đơn vị tính: \"/dashboard/uom-convert\"\n- Danh mục kho: \"/dashboard/warehouse\"\n- Hàng hóa, sản phẩm: \"/dashboard/goods\"\n- Khách hàng, nhà cung cấp, đối tác: \"/dashboard/party\"\n- Tài khoản kế toán: \"/dashboard/accounting-account\"\n- Hóa đơn bán hàng: \"/dashboard/arinvoices\"\n- Hóa đơn mua hàng: \"/dashboard/purchase-invoice\"\n- Hợp đồng bán hàng: \"/dashboard/sales-contract\"\n- Hợp đồng mua hàng: \"/dashboard/purchase-contract\"\n- Báo giá bán hàng: \"/dashboard/phan-he-ban-hang-bao-gia\"\n- Đơn đặt mua hàng: \"/dashboard/purchase-order\"\n- Phiếu thu tiền mặt: \"/dashboard/document01-tt\"\n- Phiếu chi tiền mặt: \"/dashboard/document02-tt\"\n- Nhập kho: \"/dashboard/document01-vt\"\n- Xuất kho: \"/dashboard/document02-vt\"\n- Báo cáo tài chính: \"/dashboard/xuat-bao-cao-tai-chinh\"\n- Kê khai thuế HTKK: \"/dashboard/htkk-integration\"\n- Dashboard tổng quan: \"/dashboard\""
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    }
+  ],
+  "host": "famabook.com",
+  "source": "webmcp.com/api/directory.json"
+}

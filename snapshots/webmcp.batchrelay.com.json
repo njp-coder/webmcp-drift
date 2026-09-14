@@ -1,0 +1,733 @@
+{
+  "sponsio": 1,
+  "url": "https://webmcp.batchrelay.com/",
+  "capturedAt": "2026-09-14T12:35:13.904Z",
+  "tools": [
+    {
+      "name": "add_to_cart",
+      "description": "Add a prepared visible draft to the demo cart, or show its proposal card when the shopper has not previewed it. Proposals stack and await the SHOPPER's decision; the agent must not resolve its own proposal. Accept draftId or draft_id from a previous result and return the cart or proposal status.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "draftId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Prepared draft ID returned by configure_print or ask_storefront."
+          },
+          "draft_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Alias for draftId, matching returned response fields."
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 99,
+            "default": 1,
+            "description": "Number of identical copies to add or propose."
+          }
+        },
+        "anyOf": [
+          {
+            "required": [
+              "draftId"
+            ]
+          },
+          {
+            "required": [
+              "draft_id"
+            ]
+          }
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "ask_storefront",
+      "description": "Inspect the visible storefront or check one template and product for compatibility. Does not change the workbench.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "question": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The shopper question about the visible tray, draft, catalog, template, or cart."
+          },
+          "templateId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "templateQuery": {
+            "type": "string",
+            "minLength": 1
+          },
+          "productId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "productQuery": {
+            "type": "string",
+            "minLength": 1
+          },
+          "orientation": {
+            "type": "string",
+            "enum": [
+              "portrait",
+              "landscape"
+            ]
+          },
+          "maxTemplateResults": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20
+          }
+        },
+        "required": [
+          "question"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "configure_print",
+      "description": "Create or revise one print draft from visible tray photos. Assign published slots, apply per-slot text (set_text) or framing, and return the resulting draft, crop, and missing requirements. Use photo ordinals or returned photo IDs; face framing is applied only when focusOn is faces.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "draftId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The existing draft ID returned by a prior storefront call."
+          },
+          "draft_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Alias for draftId, matching returned response fields."
+          },
+          "trayRevision": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Current visible tray revision from the latest storefront result; prevents applying photos after the tray changed."
+          },
+          "photoRefs": {
+            "type": "array",
+            "description": "Tray photo ordinals (for example 3) or returned photo IDs. Use these to create or update a direct print.",
+            "items": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "minLength": 1
+                },
+                {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              ]
+            }
+          },
+          "productId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Canonical published product ID returned by find_prints or ask_storefront."
+          },
+          "productQuery": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Shopper wording for the product when no canonical product ID is available."
+          },
+          "templateId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Canonical published template ID."
+          },
+          "templateQuery": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Template name or shopper wording; use instead of templateId."
+          },
+          "outputId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "orientation": {
+            "type": "string",
+            "enum": [
+              "portrait",
+              "landscape"
+            ]
+          },
+          "slotPatches": {
+            "type": "array",
+            "description": "Slot changes. Name a published slot key or its returned label, then choose an operation.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "slotKey": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "label": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "operation": {
+                  "type": "string",
+                  "enum": [
+                    "assign",
+                    "unassign",
+                    "set_text",
+                    "set_crop"
+                  ]
+                },
+                "photoRef": {
+                  "description": "Tray photo ordinal or returned photo ID to assign to an image slot.",
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    {
+                      "type": "integer",
+                      "minimum": 1
+                    }
+                  ]
+                },
+                "text": {
+                  "type": "string"
+                },
+                "zoom": {
+                  "type": "number",
+                  "minimum": 1,
+                  "maximum": 4,
+                  "description": "Crop scale. 1 keeps the default frame; higher values zoom in."
+                },
+                "focusX": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 100
+                },
+                "focusY": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 100
+                },
+                "offsetX": {
+                  "type": "number",
+                  "minimum": -100,
+                  "maximum": 100
+                },
+                "offsetY": {
+                  "type": "number",
+                  "minimum": -100,
+                  "maximum": 100
+                },
+                "focusOn": {
+                  "type": "string",
+                  "enum": [
+                    "faces",
+                    "center"
+                  ],
+                  "description": "Crop intent. Use faces only when the shopper asks for face framing; center keeps default centered framing."
+                },
+                "focus_on": {
+                  "type": "string",
+                  "enum": [
+                    "faces",
+                    "center"
+                  ],
+                  "description": "Alias for focusOn."
+                },
+                "subjectWidthPercent": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "maximum": 100
+                },
+                "subject_width_percent": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "maximum": 100
+                }
+              },
+              "required": [
+                "operation"
+              ],
+              "oneOf": [
+                {
+                  "required": [
+                    "slotKey"
+                  ]
+                },
+                {
+                  "required": [
+                    "label"
+                  ]
+                }
+              ],
+              "additionalProperties": false
+            }
+          },
+          "directCrop": {
+            "type": "object",
+            "description": "Framing for a direct print. Omit it to keep the default 1.0x centered frame.",
+            "properties": {
+              "zoom": {
+                "type": "number",
+                "minimum": 1,
+                "maximum": 4,
+                "description": "Crop scale. 1 keeps the default frame; higher values zoom in."
+              },
+              "focusX": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "focusY": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "offsetX": {
+                "type": "number",
+                "minimum": -100,
+                "maximum": 100
+              },
+              "offsetY": {
+                "type": "number",
+                "minimum": -100,
+                "maximum": 100
+              },
+              "focusOn": {
+                "type": "string",
+                "enum": [
+                  "faces",
+                  "center"
+                ],
+                "description": "Crop intent. Use faces only when the shopper asks for face framing; center keeps default centered framing."
+              },
+              "focus_on": {
+                "type": "string",
+                "enum": [
+                  "faces",
+                  "center"
+                ],
+                "description": "Alias for focusOn."
+              },
+              "subjectWidthPercent": {
+                "type": "number",
+                "exclusiveMinimum": 0,
+                "maximum": 100
+              },
+              "subject_width_percent": {
+                "type": "number",
+                "exclusiveMinimum": 0,
+                "maximum": 100
+              }
+            },
+            "minProperties": 1,
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "trayRevision"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "find_prints",
+      "description": "Find published print products by name, size, or type. Returns catalog facts and template requirements without changing what the shopper is looking at.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "description": "A shopper phrase such as 8x10, memory mate, or wallet."
+          },
+          "productType": {
+            "type": "string",
+            "minLength": 1,
+            "description": "An optional published product type to narrow the catalog."
+          },
+          "maxResults": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "manage_cart",
+      "description": "Inspect or update the visible demo cart. Change a line quantity, remove a line, or clear the cart; use target most_recent when the shopper refers to the latest cart line.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "view",
+              "update_quantity",
+              "remove",
+              "clear"
+            ],
+            "description": "Cart operation to perform."
+          },
+          "itemId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Exact cart line ID returned by a prior cart result."
+          },
+          "target": {
+            "type": "string",
+            "enum": [
+              "most_recent"
+            ],
+            "description": "Use most_recent for the latest cart line instead of inspecting the cart first."
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 99,
+            "description": "New line quantity for action update_quantity."
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "propose_prints",
+      "description": "Stage one draft and proposal card for each tray photo against one product. Use tray ordinals or returned photo IDs; omitted framing keeps the default 1.0x centered crop. Returns one result per photo and leaves each proposal awaiting the shopper's decision.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "trayRevision": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Current visible tray revision from the latest storefront result; prevents staging against an outdated tray."
+          },
+          "productId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Canonical published product ID to use for every staged print."
+          },
+          "productQuery": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Shopper wording for the product when no canonical product ID is available."
+          },
+          "photoRefs": {
+            "type": "array",
+            "minItems": 1,
+            "description": "Tray photo ordinals or returned photo IDs. One proposal is staged for each reference.",
+            "items": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "minLength": 1
+                },
+                {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              ]
+            }
+          },
+          "photo_refs": {
+            "type": "array",
+            "minItems": 1,
+            "description": "Alias for photoRefs, matching returned response fields.",
+            "items": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "minLength": 1
+                },
+                {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              ]
+            }
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 99,
+            "default": 1,
+            "description": "Number of identical copies requested for every staged print."
+          },
+          "orientation": {
+            "type": "string",
+            "enum": [
+              "portrait",
+              "landscape"
+            ]
+          },
+          "templateId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "templateQuery": {
+            "type": "string",
+            "minLength": 1
+          },
+          "outputId": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "trayRevision"
+        ],
+        "anyOf": [
+          {
+            "required": [
+              "photoRefs"
+            ]
+          },
+          {
+            "required": [
+              "photo_refs"
+            ]
+          }
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "redo_last_change",
+      "description": "Reapply one or more workbench changes previously restored by undo_last_change. Use steps to redo up to five consecutive undos and return the exact restored state.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "steps": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5,
+            "default": 1,
+            "description": "Number of consecutive undone changes to reapply, from 1 through 5."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "resolve_cart_proposal",
+      "description": "Apply the shopper's stated decision to pending proposal cards. Only the shopper can accept or reject a proposal; asking to add a print is NOT confirmation of one. Accept or reject one card or a stack, accept ready cards, or update one card's quantity before its decision. Quote the shopper in shopperConfirmation for acceptance or rejection.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "proposalId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Pending proposal ID returned by add_to_cart or propose_prints."
+          },
+          "proposal_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Alias for proposalId, matching returned response fields."
+          },
+          "decision": {
+            "type": "string",
+            "enum": [
+              "accept",
+              "reject",
+              "accept_all",
+              "reject_all",
+              "accept_ready",
+              "update_quantity"
+            ],
+            "description": "The shopper decision to apply to one proposal or the proposal stack."
+          },
+          "shopperConfirmation": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The shopper's actual words accepting or declining a proposal."
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 99,
+            "description": "New quantity for decision update_quantity only."
+          }
+        },
+        "required": [
+          "decision"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "revise_prints",
+      "description": "Apply one approved crop to several existing drafts. Target their default image slot or identify an individual or team slot, then return the per-draft framing result.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "draftIds": {
+            "type": "array",
+            "minItems": 1,
+            "description": "Draft IDs to reframe, returned by previous storefront calls.",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "draft_ids": {
+            "type": "array",
+            "minItems": 1,
+            "description": "Alias for draftIds, matching returned response fields.",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "crop": {
+            "type": "object",
+            "description": "Framing to copy. Use focusOn faces only for an explicit face-framing request.",
+            "properties": {
+              "zoom": {
+                "type": "number",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "focusX": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "focusY": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "offsetX": {
+                "type": "number",
+                "minimum": -100,
+                "maximum": 100
+              },
+              "offsetY": {
+                "type": "number",
+                "minimum": -100,
+                "maximum": 100
+              },
+              "focusOn": {
+                "type": "string",
+                "enum": [
+                  "faces",
+                  "center"
+                ],
+                "description": "Crop intent. faces explicitly asks for face framing; center uses centered framing."
+              },
+              "focus_on": {
+                "type": "string",
+                "enum": [
+                  "faces",
+                  "center"
+                ],
+                "description": "Alias for focusOn."
+              },
+              "subjectWidthPercent": {
+                "type": "number",
+                "exclusiveMinimum": 0,
+                "maximum": 100
+              },
+              "subject_width_percent": {
+                "type": "number",
+                "exclusiveMinimum": 0,
+                "maximum": 100
+              }
+            },
+            "minProperties": 1,
+            "additionalProperties": false
+          },
+          "slotSelector": {
+            "type": "object",
+            "properties": {
+              "role": {
+                "type": "string",
+                "enum": [
+                  "individual",
+                  "team"
+                ]
+              },
+              "slotKey": {
+                "type": "string",
+                "minLength": 1
+              },
+              "label": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "minProperties": 1,
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "crop"
+        ],
+        "anyOf": [
+          {
+            "required": [
+              "draftIds"
+            ]
+          },
+          {
+            "required": [
+              "draft_ids"
+            ]
+          }
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search-print-formats",
+      "description": "Search the live print formats shown in the catalog chooser by size or name. Filters only the formats already visible on this page; it does not add anything to the cart.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "8 by 10, memory mate…"
+          }
+        }
+      }
+    },
+    {
+      "name": "undo_last_change",
+      "description": "Restore the workbench to before its latest change, including drafts, framing, proposals, and cart lines. Use steps to undo up to five changes and return the restored change description.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "steps": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5,
+            "default": 1,
+            "description": "Number of recent workbench changes to undo, from 1 through 5."
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "webmcp.batchrelay.com",
+  "source": "webmcp.com/api/directory.json"
+}

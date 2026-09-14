@@ -1,0 +1,162 @@
+{
+  "sponsio": 1,
+  "url": "https://maikel-szymanski.de/",
+  "capturedAt": "2026-09-14T12:35:13.904Z",
+  "tools": [
+    {
+      "name": "estimate_price",
+      "description": "Rechnet eine Preisspanne mit dem Preisrechner dieser Seite aus und zeigt das Ergebnis sichtbar an, damit der Besucher es prüfen und als Anfrage weiterschicken kann. Nicht beantwortete Fragen bleiben mit 0 € stehen und werden zurückgemeldet. Kein Angebot, keine Anfrage.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projektart": {
+            "type": "string",
+            "description": "Pflicht. Eine der Projektarten aus get_price_options."
+          },
+          "antworten": {
+            "type": "object",
+            "description": "Antworten je Frage: Schlüssel ist frage_key aus get_price_options, Wert ein Antwort-Label oder eine Liste davon."
+          }
+        },
+        "required": [
+          "projektart"
+        ]
+      }
+    },
+    {
+      "name": "get_page_outline",
+      "description": "Gibt die Überschriftenstruktur der gerade geöffneten Seite zurück: Ebene, Titel und eine Abschnitts-ID. Mit dieser ID lädt get_section den zugehörigen Text nach, ohne die ganze Seite lesen zu müssen. Lange Seiten kommen in mehreren Portionen, siehe naechster_offset.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "offset": {
+            "type": "integer",
+            "description": "Wie viele Überschriften übersprungen werden. Für das Weiterblättern."
+          }
+        }
+      }
+    },
+    {
+      "name": "get_price_options",
+      "description": "Zeigt die Fragen des Preisrechners und die möglichen Antworten. Ohne Angabe kommen die vier Projektarten mit ihrer Grundspanne; mit einer Projektart kommen die weiteren Fragen genau dieses Pfades. Vorstufe zu estimate_price.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projektart": {
+            "type": "string",
+            "description": "Eine der Projektarten, zum Beispiel „Neue Website\" oder „SEO & KI-Sichtbarkeit\"."
+          }
+        }
+      }
+    },
+    {
+      "name": "get_section",
+      "description": "Gibt den Text eines einzelnen Abschnitts der gerade geöffneten Seite zurück, inklusive aufgeklappter Antworten in Frage-Antwort-Blöcken. Die Abschnitts-ID stammt aus get_page_outline.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Abschnitts-ID aus get_page_outline."
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "get_site_overview",
+      "description": "Kompakter Überblick über diese Website: wer dahintersteht, welche Leistungen es zu welchen Preisspannen gibt, welche Region bedient wird und wie man Kontakt aufnimmt. Guter erster Aufruf, bevor gesucht oder gefiltert wird.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_articles",
+      "description": "Listet die Ratgeber-Artikel dieser Website, zuletzt aktualisierte zuerst, mit Kurzbeschreibung, Datum und URL. Für „welche Artikel gibt es\", „worüber schreibt er\". Inhaltliche Suche über search_site.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "description": "Anzahl Artikel, 1 bis 25. Standard 10."
+          },
+          "offset": {
+            "type": "integer",
+            "description": "Wie viele Artikel übersprungen werden. Für das Weiterblättern."
+          }
+        }
+      }
+    },
+    {
+      "name": "list_references",
+      "description": "Listet umgesetzte Kundenprojekte mit Kunde, Branche, Art der Leistung, Jahr und Projektseite. Filterbar nach Branche, Leistung und Jahr. Antwortet auf „hat er schon mal für eine Kanzlei gearbeitet\", „was hat er 2026 gemacht\".",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "branche": {
+            "type": "string",
+            "description": "Branche des Kunden, zum Beispiel Rechtsanwalt, Handwerk, Bildung."
+          },
+          "leistung": {
+            "type": "string",
+            "description": "Art der Leistung, zum Beispiel Website, Redesign, Webanwendung."
+          },
+          "jahr": {
+            "type": "string",
+            "description": "Jahr der Umsetzung, vierstellig."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Anzahl Projekte, 1 bis 25. Standard 10."
+          },
+          "offset": {
+            "type": "integer",
+            "description": "Wie viele Projekte übersprungen werden. Für das Weiterblättern."
+          }
+        }
+      }
+    },
+    {
+      "name": "list_services",
+      "description": "Listet alle angebotenen Leistungen mit Preisspanne in Euro und Kurzbeschreibung. Antwortet auf „was bietet er an\" und „was kostet Leistung X ungefähr\".",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "search_site",
+      "description": "Durchsucht den Volltext aller Seiten dieser Website nach Stichwörtern und liefert Treffer mit Textausschnitt, Seitentyp und URL. Für inhaltliche Fragen wie „was steht hier über DSGVO\", „schreibt er etwas über Ladezeit\", „Preise für Handwerker\".",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Ein oder mehrere Suchbegriffe, deutsch."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Anzahl Treffer, 1 bis 8. Standard 5."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "maikel-szymanski.de",
+  "source": "webmcp.com/api/directory.json"
+}
