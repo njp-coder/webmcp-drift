@@ -1,0 +1,249 @@
+{
+  "sponsio": 1,
+  "url": "https://heat-pumps.co/",
+  "capturedAt": "2026-09-15T11:37:21.810Z",
+  "tools": [
+    {
+      "name": "compare_heat_pumps",
+      "description": "Compare 2 or 3 AHRI-certified heat pumps side by side (SEER2, HSPF2, COP, heating capacity, eligibility).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "ahri"
+        ],
+        "properties": {
+          "ahri": {
+            "type": "array",
+            "description": "AHRI certificate numbers to compare",
+            "minItems": 2,
+            "maxItems": 3,
+            "items": {
+              "type": "string",
+              "maxLength": 40
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "get_heat_pumps_agent_discovery",
+      "description": "Return the public A2A, MCP, OpenAPI, and agent instruction URLs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    },
+    {
+      "name": "search_heat_pumps_catalog",
+      "description": "Search the catalog by type (air-source, mini-split, ducted, geothermal), specs (SEER2, HSPF2, COP at 5°F, heating capacity, tonnage, cold_climate, grant_eligible), brand, AHRI, or keyword. Keyword is optional.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "q": {
+            "type": "string",
+            "maxLength": 80,
+            "description": "Optional brand, model, or free-text search. Omit to filter only by type or specs."
+          },
+          "ahri": {
+            "type": "string",
+            "maxLength": 40,
+            "description": "AHRI certified reference number"
+          },
+          "brand": {
+            "type": "string",
+            "maxLength": 80
+          },
+          "type": {
+            "type": "string",
+            "description": "Heat-pump form factor: air-source, mini-split, ducted, or geothermal. Also accepts Air Source, Mini-Split, air_source, mini_split, ductless.",
+            "enum": [
+              "air-source",
+              "mini-split",
+              "ducted",
+              "geothermal"
+            ]
+          },
+          "min_seer2": {
+            "type": "number",
+            "description": "Minimum SEER2 efficiency",
+            "minimum": 0,
+            "maximum": 50
+          },
+          "max_seer2": {
+            "type": "number",
+            "description": "Maximum SEER2 efficiency",
+            "minimum": 0,
+            "maximum": 50
+          },
+          "min_hspf2": {
+            "type": "number",
+            "description": "Minimum HSPF2 efficiency",
+            "minimum": 0,
+            "maximum": 30
+          },
+          "max_hspf2": {
+            "type": "number",
+            "description": "Maximum HSPF2 efficiency",
+            "minimum": 0,
+            "maximum": 30
+          },
+          "min_cop_5": {
+            "type": "number",
+            "description": "Minimum coefficient of performance at 5°F",
+            "minimum": 0,
+            "maximum": 10
+          },
+          "max_cop_5": {
+            "type": "number",
+            "description": "Maximum coefficient of performance at 5°F",
+            "minimum": 0,
+            "maximum": 10
+          },
+          "min_heating_capacity_5_btu": {
+            "type": "number",
+            "description": "Minimum heating capacity at 5°F in BTU/h",
+            "minimum": 0,
+            "maximum": 1000000
+          },
+          "max_heating_capacity_5_btu": {
+            "type": "number",
+            "description": "Maximum heating capacity at 5°F in BTU/h",
+            "minimum": 0,
+            "maximum": 1000000
+          },
+          "min_heating_capacity_47_btu": {
+            "type": "number",
+            "description": "Minimum heating capacity at 47°F in BTU/h",
+            "minimum": 0,
+            "maximum": 1000000
+          },
+          "max_heating_capacity_47_btu": {
+            "type": "number",
+            "description": "Maximum heating capacity at 47°F in BTU/h",
+            "minimum": 0,
+            "maximum": 1000000
+          },
+          "min_nominal_tonnage": {
+            "type": "number",
+            "description": "Minimum nominal system tonnage",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "max_nominal_tonnage": {
+            "type": "number",
+            "description": "Maximum nominal system tonnage",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "cold_climate": {
+            "type": "boolean",
+            "description": "Require or exclude cold-climate performance (COP at 5°F >= 1.75 and HSPF2 >= 9)"
+          },
+          "grant_eligible": {
+            "type": "boolean",
+            "description": "Require or exclude products eligible for at least one catalogued Canadian grant program"
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "brand",
+              "seer2-desc",
+              "hspf2-desc",
+              "cop-5-desc",
+              "heating-capacity-5-desc",
+              "tonnage-asc"
+            ]
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 10
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 5000,
+            "default": 0
+          }
+        }
+      }
+    },
+    {
+      "name": "submit_heat_pumps_quote",
+      "description": "Submit an installer quote request only after explicit user consent.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "consent",
+          "name",
+          "email",
+          "address",
+          "city",
+          "state",
+          "zip",
+          "service_type",
+          "urgency"
+        ],
+        "properties": {
+          "consent": {
+            "type": "boolean",
+            "const": true
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          },
+          "zip": {
+            "type": "string"
+          },
+          "service_type": {
+            "type": "string",
+            "enum": [
+              "air_source",
+              "mini_split",
+              "ducted",
+              "geothermal",
+              "commercial",
+              "repair"
+            ]
+          },
+          "home_size": {
+            "type": "string"
+          },
+          "urgency": {
+            "type": "string"
+          },
+          "details": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  ],
+  "host": "heat-pumps.co",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,125 @@
+{
+  "sponsio": 1,
+  "url": "https://hvachelp.co/",
+  "capturedAt": "2026-09-15T11:37:21.810Z",
+  "tools": [
+    {
+      "name": "get_agent_discovery",
+      "description": "Return URLs for agent discovery artifacts.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "open_quote_form",
+      "description": "Open the human quote wizard with optional prefill.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "zip": {
+            "type": "string"
+          },
+          "service": {
+            "type": "string",
+            "enum": [
+              "ac-repair",
+              "furnace",
+              "heat-pump",
+              "emergency",
+              "maintenance",
+              "ductwork",
+              "install",
+              "other"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "submit_hvac_quote",
+      "description": "Submit a free HVAC quote request after explicit user consent. Requires country, postal/ZIP, service, urgency, name, email.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "consent": {
+            "type": "boolean",
+            "const": true,
+            "description": "True only after explicit user agreement."
+          },
+          "country": {
+            "type": "string",
+            "enum": [
+              "us",
+              "ca"
+            ]
+          },
+          "zip": {
+            "type": "string",
+            "description": "US ZIP or Canadian postal code"
+          },
+          "service": {
+            "type": "string",
+            "enum": [
+              "ac-repair",
+              "furnace",
+              "heat-pump",
+              "emergency",
+              "maintenance",
+              "ductwork",
+              "install",
+              "other"
+            ]
+          },
+          "urgency": {
+            "type": "string",
+            "enum": [
+              "emergency",
+              "week",
+              "month",
+              "flexible"
+            ]
+          },
+          "property_type": {
+            "type": "string",
+            "enum": [
+              "residential",
+              "commercial",
+              "multifamily",
+              "rental"
+            ]
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "agent_source": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "consent",
+          "country",
+          "zip",
+          "service",
+          "urgency",
+          "name",
+          "email"
+        ]
+      }
+    }
+  ],
+  "host": "hvachelp.co",
+  "source": "webmcp.com/api/directory.json"
+}

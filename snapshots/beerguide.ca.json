@@ -1,0 +1,176 @@
+{
+  "sponsio": 1,
+  "url": "https://beerguide.ca/",
+  "capturedAt": "2026-09-15T11:37:21.810Z",
+  "tools": [
+    {
+      "name": "find_beer_nearby",
+      "description": "Breweries near a lat/lng or Canadian postal code, with distance, open-now/open-at status, and on-tap beers filterable by style.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "lat": {
+            "type": "number"
+          },
+          "lng": {
+            "type": "number"
+          },
+          "postal": {
+            "type": "string",
+            "description": "Canadian postal code, e.g. M5V 2T6"
+          },
+          "radiusKm": {
+            "type": "number",
+            "default": 25,
+            "maximum": 200
+          },
+          "openNow": {
+            "type": "boolean",
+            "default": false
+          },
+          "openAt": {
+            "description": "ISO datetime or {weekday, time} slot, e.g. {weekday: 'Saturday', time: '20:00'}"
+          },
+          "styles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Only breweries with these styles on tap, e.g. ['hazy ipa', 'stout']"
+          },
+          "limit": {
+            "type": "number",
+            "default": 10,
+            "maximum": 30
+          }
+        }
+      }
+    },
+    {
+      "name": "get_brewery",
+      "description": "Get a brewery by slug or id, with address, geo, hours, and freshness timestamps.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Brewery slug, e.g. bellwoods-brewery"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      }
+    },
+    {
+      "name": "get_tap_list",
+      "description": "Beers currently on tap at a brewery.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "breweryId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "breweryId"
+        ]
+      }
+    },
+    {
+      "name": "recommend_beers",
+      "description": "Top-rated Canadian beers, optionally filtered by styles.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "styles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "limit": {
+            "type": "number",
+            "default": 6,
+            "maximum": 12
+          }
+        }
+      }
+    },
+    {
+      "name": "search_beers",
+      "description": "Search Canadian beers by name, brewery, or style.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Beer name, brewery, or style"
+          },
+          "style": {
+            "type": "string",
+            "description": "Filter to an exact beer style"
+          },
+          "limit": {
+            "type": "number",
+            "default": 20,
+            "maximum": 50
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "search_breweries",
+      "description": "Search Canadian breweries by name, city, or province.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Name, city, or province to search for"
+          },
+          "limit": {
+            "type": "number",
+            "default": 20,
+            "maximum": 50
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "search_events",
+      "description": "Published Canadian brewery events, optionally filtered by brewery.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "breweryId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "limit": {
+            "type": "number",
+            "default": 20,
+            "maximum": 50
+          }
+        }
+      }
+    }
+  ],
+  "host": "beerguide.ca",
+  "source": "webmcp.com/api/directory.json"
+}

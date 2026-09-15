@@ -1,0 +1,207 @@
+{
+  "sponsio": 1,
+  "url": "https://septichelp.ca/",
+  "capturedAt": "2026-09-15T11:37:21.810Z",
+  "tools": [
+    {
+      "name": "find_contractors",
+      "description": "Open the contractor directory with optional filters for Canadian province (slug, e.g. ab, on), city name, or service keyword.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "province_slug": {
+            "type": "string",
+            "enum": [
+              "on",
+              "bc",
+              "ab",
+              "qc",
+              "mb",
+              "sk",
+              "ns",
+              "nb",
+              "nl",
+              "pe"
+            ],
+            "description": "Province hub slug (e.g. ab, bc, on)"
+          },
+          "city": {
+            "type": "string",
+            "description": "City name filter"
+          },
+          "service": {
+            "type": "string",
+            "description": "Service keyword, e.g. pumping"
+          },
+          "q": {
+            "type": "string",
+            "description": "Free-text search on the near-me page"
+          }
+        }
+      }
+    },
+    {
+      "name": "get_agent_discovery",
+      "description": "Return machine-readable discovery endpoints (agent skills index, MCP server card, API catalog, OpenAPI, quote manifest).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_provinces",
+      "description": "Return Canadian provinces and territories covered by SepticHelp.ca with hub slugs and example city slugs for navigation.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "navigate_to_page",
+      "description": "Navigate to a canonical SepticHelp.ca path such as /quote, /near-me, /blog, /knowledge-base, or a province hub like /ab/red-deer.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "path"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Path beginning with / (same-origin only)"
+          }
+        }
+      }
+    },
+    {
+      "name": "open_quote_form",
+      "description": "Open the human-friendly multi-step quote form at /quote when the user prefers the website UI or WebMCP submission is not appropriate.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "vendor_slug": {
+            "type": "string",
+            "description": "Optional vendor slug from /vendor/{slug}"
+          }
+        }
+      }
+    },
+    {
+      "name": "submit_septic_quote",
+      "description": "Submit a free septic service quote request after the user has explicitly agreed to share contact and property details with SepticHelp.ca for contractor matching.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "consent",
+          "issue_type",
+          "name",
+          "email",
+          "phone",
+          "address",
+          "city",
+          "province"
+        ],
+        "properties": {
+          "consent": {
+            "type": "boolean",
+            "const": true,
+            "description": "True only after the user explicitly agrees to share their details."
+          },
+          "issue_type": {
+            "type": "string",
+            "enum": [
+              "pumpout",
+              "backup",
+              "alarm",
+              "wetarea",
+              "inspection",
+              "replace",
+              "repair",
+              "portable",
+              "other"
+            ]
+          },
+          "system_type": {
+            "type": "string",
+            "enum": [
+              "gravity",
+              "pump",
+              "advanced",
+              "unknown"
+            ]
+          },
+          "tank_access": {
+            "type": "string",
+            "enum": [
+              "easy",
+              "buried",
+              "deck",
+              "unknown"
+            ]
+          },
+          "urgency": {
+            "type": "string",
+            "enum": [
+              "emergency",
+              "soon",
+              "week",
+              "flexible"
+            ]
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "province": {
+            "type": "string",
+            "description": "Canadian province or territory name"
+          },
+          "postal_code": {
+            "type": "string"
+          },
+          "last_pumped": {
+            "type": "string"
+          },
+          "occupants": {
+            "type": "string"
+          },
+          "constraints": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "details": {
+            "type": "string"
+          },
+          "vendor_slug": {
+            "type": "string"
+          },
+          "agent_source": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "septichelp.ca",
+  "source": "webmcp.com/api/directory.json"
+}

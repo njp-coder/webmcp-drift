@@ -1,0 +1,101 @@
+{
+  "sponsio": 1,
+  "url": "https://www.cookieyes.com/",
+  "capturedAt": "2026-09-15T11:37:21.810Z",
+  "tools": [
+    {
+      "name": "cy_check_consent_mode",
+      "description": "Check whether a website implements Google Consent Mode v2 correctly, using CookieYes' free checker. Returns a verdict such as correct, default_missing, update_missing, was_late, no_consent_data or no_data, with an explanation of what it means and how to fix it. Only the website URL is required; the verdict comes straight back to you. `email` is optional and only sends the user a copy of the full report — ask whether they want one, but never block the check on it and never invent an address. Use this for questions about Consent Mode, gtag consent defaults, or Google Ads/Analytics consent signals.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "url"
+        ],
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "Website to check, e.g. \"https://www.example.com\"."
+          },
+          "email": {
+            "type": "string",
+            "description": "Optional. The user's own email address, to send them a copy of the full report. Omit it unless they asked for a copy; never guess an address."
+          }
+        }
+      }
+    },
+    {
+      "name": "cy_list_pages",
+      "description": "List the main CookieYes pages as titles, URLs and one-line descriptions, grouped by section. Call this first when the user asks about a topic and you are unsure which page covers it, then read the best match with cy_read_page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "cy_list_pricing_plans",
+      "description": "List the CookieYes subscription plans with their monthly and yearly prices, what each includes, and a direct signup link per plan and billing cycle. Prices are available in USD, EUR and GBP — pass `currency` to choose, otherwise USD is returned. Give the user the signup_url matching the plan and billing cycle they want. Use this for any question about cost, plan limits or what a tier includes. Enterprise is quoted individually and is not listed here.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "currency": {
+            "type": "string",
+            "description": "One of \"usd\", \"eur\" or \"gbp\". Defaults to \"usd\"."
+          }
+        }
+      }
+    },
+    {
+      "name": "cy_list_products",
+      "description": "List everything CookieYes offers, as titles, URLs and one-line descriptions, split into two groups: products (paid — the consent platform, its WordPress, Shopify and Wix integrations, the accessibility widget, the advanced cookie scanner, and the cookie and privacy policy generators) and free_tools (free, no signup — cookie scanner, Google Consent Mode checker, CPRA compliance checker). Use this when someone asks what CookieYes offers, whether it works with a particular platform, or whether something is free. The cookie scan and the Consent Mode check can be run directly here with cy_scan_cookies and cy_check_consent_mode — prefer those over sending the user to the page. For what a plan costs, use cy_list_pricing_plans.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "cy_read_page",
+      "description": "Read a CookieYes page as clean markdown — roughly 10x fewer tokens than its HTML. Prefer this over fetching or scraping the page when you need to understand or quote it. Pass an absolute cookieyes.com URL, or a page_key such as \"pricing\", \"features\" or \"cookie_checker\".",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "Absolute cookieyes.com URL to read."
+          },
+          "page_key": {
+            "type": "string",
+            "description": "One of: home, pricing, features, about, contact, cookie_scanner, cookie_checker, consent_mode_checker, mcp, documentation, knowledge_base, blog."
+          }
+        }
+      }
+    },
+    {
+      "name": "cy_scan_cookies",
+      "description": "Scan a website with CookieYes' free cookie scanner and get the cookies it sets, grouped by category (Necessary, Analytics, Advertisement, Functional, Performance, Other). Only the website URL is required; the result comes straight back to you, so call it as soon as you have a URL. `email` is optional and only sends the user a copy of the full report — ask whether they want one, but never block the scan on it and never invent an address. Use this when someone asks what cookies a site uses or whether a site needs a consent banner.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "url"
+        ],
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "Website to scan, e.g. \"https://www.example.com\"."
+          },
+          "email": {
+            "type": "string",
+            "description": "Optional. The user's own email address, to send them a copy of the full report. Omit it unless they asked for a copy; never guess an address."
+          }
+        }
+      }
+    }
+  ],
+  "host": "cookieyes.com",
+  "source": "webmcp.com/api/directory.json"
+}

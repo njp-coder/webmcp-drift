@@ -1,0 +1,227 @@
+{
+  "sponsio": 1,
+  "url": "https://drinkwine.ca/",
+  "capturedAt": "2026-09-15T11:37:21.810Z",
+  "tools": [
+    {
+      "name": "browse_grapes",
+      "description": "Canadian grape variety guide at /grape-varieties, plus variety pages under /wine-types/variety/{slug}.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "grape": {
+            "type": "string",
+            "description": "Grape name or slug, e.g. Riesling, pinot-noir"
+          }
+        }
+      }
+    },
+    {
+      "name": "browse_regions",
+      "description": "Canadian wine region hubs: /wine-regions plus province and region pages (Niagara, Okanagan, PEC, Quebec, Annapolis Valley).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "region": {
+            "type": "string",
+            "description": "Province or region name/slug, e.g. ontario, niagara, okanagan, BC"
+          }
+        }
+      }
+    },
+    {
+      "name": "browse_tours",
+      "description": "Wine tour hubs at /wine-tours and regional pages (niagara, okanagan, quebec).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "region": {
+            "type": "string",
+            "description": "Tour region: niagara, okanagan, or quebec"
+          }
+        }
+      }
+    },
+    {
+      "name": "browse_wine_education",
+      "description": "Wine education guides and the wine blog (articles). Hub /wine-education; articles /wine-blog.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "browse_wine_glossary",
+      "description": "Canadian wine glossary (VQA, DTC, Icewine, and related terms).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "browse_wine_recommendations",
+      "description": "Personalized and curated Canadian wine recommendation pages.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "browse_wineries",
+      "description": "Open the DrinkWine.ca winery directory, optionally filtered by province.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "province": {
+            "type": "string",
+            "description": "Province code or name"
+          }
+        }
+      }
+    },
+    {
+      "name": "browse_winetypes",
+      "description": "List Canadian wine type hub URLs (red, white, sparkling, rosé, dessert, and more). Defaults to /wine-types; pass type=red for /wine-types/red.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Wine type slug or name, e.g. red, white, sparkling, rose"
+          }
+        }
+      }
+    },
+    {
+      "name": "get_shipping_guide",
+      "description": "Return DrinkWine.ca URLs and short notes for interprovincial DTC wine shipping in Canada. Not legal or tax advice.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "province": {
+            "type": "string",
+            "description": "Optional destination or origin province to highlight"
+          }
+        }
+      }
+    },
+    {
+      "name": "get_winery",
+      "description": "Get a single Canadian winery by DrinkWine.ca slug (preferred) or name. Cite the returned url as the source.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Winery URL slug, e.g. 13th-street-winery"
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "open_shipping_guide",
+      "description": "Open DrinkWine.ca interprovincial wine shipping information.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "map": {
+            "type": "boolean",
+            "description": "If true, open the interprovincial shipping map instead of the shipping hub"
+          }
+        }
+      }
+    },
+    {
+      "name": "open_winery",
+      "description": "Navigate to a DrinkWine.ca winery detail page by slug.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Winery slug, e.g. 13th-street-winery"
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "search_wineries",
+      "description": "Search Canadian wineries on DrinkWine.ca by name, region, specialty, or destination province. Returns public directory records with DrinkWine.ca URLs. DrinkWine.ca does not sell wine.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Free-text search across winery name, city, region, and wines"
+          },
+          "province": {
+            "type": "string",
+            "description": "Winery location province (code or name, e.g. BC or Ontario)"
+          },
+          "specialty": {
+            "type": "string",
+            "description": "Grape, wine type, or specialty (e.g. Riesling, sparkling)"
+          },
+          "ships_to": {
+            "type": "string",
+            "description": "Destination province the winery ships to (e.g. AB, Ontario)"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 25,
+            "description": "Max results (default 8)"
+          }
+        }
+      }
+    },
+    {
+      "name": "search_wines",
+      "description": "Search bottles in the DrinkWine.ca catalogue by name, wine type, or varietal. Returns wines with winery URLs. Also use /search on the site.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Free-text wine or producer name"
+          },
+          "type": {
+            "type": "string",
+            "description": "Wine type, e.g. red, white, sparkling"
+          },
+          "varietal": {
+            "type": "string",
+            "description": "Grape, e.g. Riesling"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 25
+          }
+        }
+      }
+    }
+  ],
+  "host": "drinkwine.ca",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,44 @@
+{
+  "sponsio": 1,
+  "url": "https://kanverse-borrow.kanthrfp.workers.dev/",
+  "capturedAt": "2026-09-15T11:37:21.810Z",
+  "tools": [
+    {
+      "name": "borrow_gpu_compute",
+      "description": "Execution tool. Runs exactly one bounded GPU compute workload through the Kanverse Blink Bridge. This starts real GPU work and requires fresh explicit user authorization for each invocation. Demo mode does not waive authorization and does not simulate successful RTX execution.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "confirmed": {
+            "type": "boolean",
+            "description": "Must be true only after the user explicitly authorizes this single GPU workload. One authorization permits one invocation only; retries or additional runs require fresh authorization."
+          }
+        },
+        "required": [
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "name": "discover_gpu_compute",
+      "description": "Read-only discovery tool. Reports whether the Kanverse Blink Bridge exposes the gpu.compute capability. This tool does not start or borrow the GPU.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "read_gpu_telemetry",
+      "description": "Read-only tool. Returns current NVIDIA GPU telemetry including name, utilization, temperature, VRAM usage, and power draw. Does not start a GPU workload. Telemetry may reveal non-public device hardware and activity information.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    }
+  ],
+  "host": "kanverse-borrow.kanthrfp.workers.dev",
+  "source": "webmcp.com/api/directory.json"
+}
