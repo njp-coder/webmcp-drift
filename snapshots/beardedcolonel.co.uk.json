@@ -1,18 +1,71 @@
 {
   "sponsio": 1,
   "url": "https://beardedcolonel.co.uk/",
-  "capturedAt": "2026-09-15T11:37:21.810Z",
+  "capturedAt": "2026-09-16T11:24:08.764Z",
   "tools": [
     {
+      "name": "add_to_cart",
+      "description": "Put a product in the basket at Bearded Colonel. Changes the basket; it does not take payment or place an order, and anything added can be removed again. Subscription products need the delivery frequency in `option` - call get_product_details first to see what they are, and if it is missing this returns the choices instead of guessing. Returns { text, added, needs_option, options[], name, quantity, items, total, cart_url }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product": {
+            "type": "string",
+            "description": "The product name, or part of it. Ignored when `id` is given."
+          },
+          "id": {
+            "type": "integer",
+            "description": "The product ID from an earlier answer. Exact, and never ambiguous - prefer it over a name when you have one."
+          },
+          "option": {
+            "type": "string",
+            "description": "For a subscription product, the delivery frequency, for example \"Every 2 months\"."
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "default": 1,
+            "description": "How many to add."
+          }
+        },
+        "required": [
+          "product"
+        ]
+      }
+    },
+    {
+      "name": "apply_coupon",
+      "description": "Apply a discount code to the basket at Bearded Colonel. A code that is invalid, expired or not valid for what is in the basket fails harmlessly and says why. Changes the basket; it does not take payment. Returns { text, applied, code, discount, total }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "The discount code, exactly as the customer received it."
+          }
+        },
+        "required": [
+          "code"
+        ]
+      }
+    },
+    {
       "name": "get_product_details",
-      "description": "Look up one product at Bearded Colonel by name and return its price, the frequencies available, stock and category. Read-only. Some products carry no written description, so follow the link for the full page.",
+      "description": "Everything about ONE product at Bearded Colonel, looked up by name: price, subscription frequencies, stock, category. This is the tool to use whenever a product name is known, including a partial one. Read-only. Some products carry no written description, so follow the link for the full page. Returns { text, found, ambiguous, alternatives[], id, sku, name, price, in_stock, categories[], options[], url } - when several products match, one is chosen and the rest are named in alternatives.",
       "kind": "imperative",
       "inputSchema": {
         "type": "object",
         "properties": {
           "name": {
             "type": "string",
-            "description": "The product name, or part of it."
+            "description": "The product name, or part of it. Ignored when `id` is given."
+          },
+          "id": {
+            "type": "integer",
+            "description": "The product ID from an earlier answer. Exact, and never ambiguous - prefer it over a name when you have one."
           }
         },
         "required": [
@@ -22,7 +75,7 @@
     },
     {
       "name": "get_site_overview",
-      "description": "What Bearded Colonel is, and the main sections of the site with links. Read-only. Use it first to see what the site covers.",
+      "description": "What Bearded Colonel is, and the main sections of the site. Read-only. Use it first to see what the site covers. Returns { text, name, tagline, sections[] } where each section has title and url.",
       "kind": "imperative",
       "inputSchema": {
         "type": "object",
@@ -32,7 +85,17 @@
     },
     {
       "name": "get_subscription_terms",
-      "description": "How subscriptions work at Bearded Colonel: commitment, changing delivery frequency, pausing and cancelling. Read-only.",
+      "description": "How subscriptions work at Bearded Colonel: commitment, changing delivery frequency, pausing and cancelling. Read-only. Returns { text, contract, can_change_date, can_pause, can_cancel, self_service, manage_url } as booleans plus the account URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "go_to_checkout",
+      "description": "Take the visitor to the checkout page at Bearded Colonel with the basket as it stands. This moves the browser to the checkout; it fills nothing in, pays for nothing and orders nothing - the person completes it themselves. Returns { text, ready, count, total, navigate }.",
       "kind": "imperative",
       "inputSchema": {
         "type": "object",
@@ -42,7 +105,7 @@
     },
     {
       "name": "list_categories",
-      "description": "The product categories at Bearded Colonel, with how many products each holds and a link. Read-only.",
+      "description": "The product categories at Bearded Colonel. Read-only. Returns { text, categories[] } where each category has id, slug, name, products count and url.",
       "kind": "imperative",
       "inputSchema": {
         "type": "object",
@@ -52,7 +115,7 @@
     },
     {
       "name": "list_delivery_options",
-      "description": "Where Bearded Colonel delivers and what postage costs. Postage is charged by item type and is free above an order threshold, so this returns both. Read-only. The figure for a particular basket is confirmed at checkout.",
+      "description": "Where Bearded Colonel delivers and what postage costs. Postage is charged by item type and is free above an order threshold, so this returns both. Read-only. The figure for a particular basket is confirmed at checkout. Returns { text, zones[] } where each zone has zone, free_over and postage[] of item type and cost including VAT.",
       "kind": "imperative",
       "inputSchema": {
         "type": "object",
@@ -62,7 +125,7 @@
     },
     {
       "name": "search_content",
-      "description": "Search the pages and articles on Bearded Colonel and return the matches with a short extract and a link. Read-only.",
+      "description": "Search the pages and articles on Bearded Colonel. Read-only. Returns { text, results[] } where each result has title, extract and url.",
       "kind": "imperative",
       "inputSchema": {
         "type": "object",
@@ -72,8 +135,11 @@
             "description": "What to look for, in plain words."
           },
           "limit": {
-            "type": "number",
-            "description": "How many results to return, 1 to 10. Defaults to 5."
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "default": 5,
+            "description": "How many results to return."
           }
         },
         "required": [
@@ -83,7 +149,7 @@
     },
     {
       "name": "search_products",
-      "description": "Search the products Bearded Colonel sells and return the matches with prices, subscription terms, stock and links. Read-only: it does not add anything to a basket or place an order.",
+      "description": "Browse or search what Bearded Colonel sells when the product is not known by name: a keyword, a category, or a need like \"dry skin\". Returns a shortlist. For one named product, call get_product_details instead. Read-only. Returns { text, products[] } where each product has id, sku, name, price, in_stock and url - hold the id and use it for the next call.",
       "kind": "imperative",
       "inputSchema": {
         "type": "object",
@@ -93,13 +159,53 @@
             "description": "What to look for, in plain words."
           },
           "limit": {
-            "type": "number",
-            "description": "How many products to return, 1 to 10. Defaults to 5."
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "default": 5,
+            "description": "How many products to return."
           }
         },
         "required": [
           "query"
         ]
+      }
+    },
+    {
+      "name": "update_cart_item",
+      "description": "Change how many of a line already in the basket, or remove it by setting quantity to 0. Changes the basket; it does not take payment. Returns { text, updated, name, quantity, count, total }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product": {
+            "type": "string",
+            "description": "The name of a line already in the basket, or part of it. Ignored when `id` is given."
+          },
+          "id": {
+            "type": "integer",
+            "description": "The product ID of a line in the basket, as view_cart reports it."
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 20,
+            "description": "The new quantity. 0 removes the line."
+          }
+        },
+        "required": [
+          "quantity"
+        ]
+      }
+    },
+    {
+      "name": "view_cart",
+      "description": "What is in the basket at Bearded Colonel right now, line by line, with the total and any discount applied. Read-only. Returns { text, empty, items[], count, total, cart_url } where each item has id, name, quantity and subtotal - the id is what update_cart_item wants.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
       }
     }
   ],
