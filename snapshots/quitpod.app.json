@@ -1,0 +1,326 @@
+{
+  "sponsio": 1,
+  "url": "https://quitpod.app/?app=1",
+  "capturedAt": "2026-09-18T11:05:38.117Z",
+  "tools": [
+    {
+      "name": "begin-programme",
+      "description": "Start the programme at its first stage, as the Begin button on the person's path does. Does nothing if it has begun.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "complete-task",
+      "description": "Record that the person did a task, in their words: pass what they said happened as the note when the task asks for one. Records only what they report; never mark a task done they have not said they did. Set status to not-for-now to set a task aside instead.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "Task id or title."
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 400,
+            "description": "What the person said happened, if the task asks for it."
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "done",
+              "not-for-now"
+            ],
+            "description": "done (default) or not-for-now."
+          }
+        },
+        "required": [
+          "task"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get-account",
+      "description": "Who is signed in to Quitpod in this browser, if anyone, whether that has finished loading, and their remaining AI requests. Signing in carries AI requests and book bookmarks between browsers; the quit plan, tasks and journal stay in the browser the page is open in, so an empty plan here is not a sign of being signed out.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get-programme-overview",
+      "description": "Where the person is on Quitpod's six-stage programme: the stages, the current stage and page, whether they have begun, and their quit date if chosen. Progress is self-reported practice, never a score.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get-quit-plan",
+      "description": "The person's saved quit plan: their approach, the six written parts, the quit date, and which parts are still empty, with the question each part answers. Saved answers are intentions, not proof of anything done.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get-todays-tasks",
+      "description": "Today's page on the programme: its title, the tasks it asks for with their status, the things to find out, and the reading it points to. Tasks are done by the person in their life; complete-task records what they report.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list-book-chapters",
+      "description": "List the chapters of The Free Breath, the book behind Quitpod: a guide to letting go of vaping, with each chapter's numbered sections. Then read-book-chapter returns the text of a chapter or one section directly; there is no need to open or scroll the app's reader.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list-support-options",
+      "description": "The support Quitpod offers for a hard moment: the eight routes on its Get support now sheet, and the short activities that help while an urge passes. Use open-support or start-craving-activity to open one for the person.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "open-in-app",
+      "description": "Bring a part of Quitpod onto the person's screen: their path, the chat, the practices, the quit plan, their details, the book, the journal, or the account sheet with sign-in and AI requests.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "screen": {
+            "type": "string",
+            "enum": [
+              "path",
+              "talk",
+              "practices",
+              "quit-plan",
+              "details",
+              "book",
+              "journal",
+              "account"
+            ]
+          }
+        },
+        "required": [
+          "screen"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "open-support",
+      "description": "Open Quitpod's Get support now sheet on the person's screen, where they choose a route themselves. Use when they say they are struggling right now.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "read-book-chapter",
+      "description": "Read The Free Breath: a whole chapter, or one section of it by number or title, returned as text so nothing needs scrolling. A whole chapter comes in parts: pass the offset returned as nextOffset to continue. The text is the book's own words; quote it as the book's, not as Quitpod's advice.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chapter": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12,
+            "description": "Chapter number from list-book-chapters."
+          },
+          "section": {
+            "type": "string",
+            "description": "A section number as text (1 is the first) or a section title, from list-book-chapters. Omit for the whole chapter."
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Character offset to continue from; omit to start."
+          }
+        },
+        "required": [
+          "chapter"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "save-quit-plan",
+      "description": "Save answers to the person's quit plan, in their own words. Pass only the parts they have answered; other parts are left as they are. Each answer is at most 400 characters. The approach is the intended method; saving it does not change current vaping status. It is one of: undecided, stop-at-once, step-down, with-nicotine-support, as-usual.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "approach": {
+            "type": "string",
+            "enum": [
+              "undecided",
+              "stop-at-once",
+              "step-down",
+              "with-nicotine-support",
+              "as-usual"
+            ]
+          },
+          "function": {
+            "type": "string",
+            "maxLength": 400,
+            "description": "What does vaping do for you on an ordinary day?"
+          },
+          "reasons": {
+            "type": "string",
+            "maxLength": 400,
+            "description": "What is making you want to stop now?"
+          },
+          "environment": {
+            "type": "string",
+            "maxLength": 400
+          },
+          "people": {
+            "type": "string",
+            "maxLength": 400
+          },
+          "withdrawal": {
+            "type": "string",
+            "maxLength": 400
+          },
+          "slip": {
+            "type": "string",
+            "maxLength": 400
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search-book",
+      "description": "Find passages in The Free Breath that mention a word or phrase. Returns up to eight paragraphs with their chapter, most relevant first.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 80,
+            "description": "A word or short phrase, for example: craving, shame, sleep."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set-quit-date",
+      "description": "Set or clear the person's chosen quit date. A date is a plan, not a record of stopping; the person can move it. Pass the word clear to remove it.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "description": "A calendar date as YYYY-MM-DD in the person's local time, or the word clear to remove the date."
+          }
+        },
+        "required": [
+          "date"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "sign-in",
+      "description": "Start signing in to Quitpod with Google. The page goes to Google's sign-in and comes back to Quitpod signed in; the person completes it themselves. Does nothing if already signed in.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "start-craving-activity",
+      "description": "Open one of Quitpod's short activities for riding out an urge: a five-minute walk timer, a sixty-second game (blocks, snake, tower, letters), a drawing pad, sixty seconds of breathing, or a silent forest-stream video. Nothing is scored and the person can stop any time.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "activity": {
+            "type": "string",
+            "enum": [
+              "walk",
+              "blocks",
+              "snake",
+              "tower",
+              "letters",
+              "draw",
+              "breathe",
+              "stream"
+            ]
+          }
+        },
+        "required": [
+          "activity"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "start-task",
+      "description": "Mark a task from today's page as in progress, so it is pinned on the person's path. Use the task id or its exact title.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "Task id or title."
+          }
+        },
+        "required": [
+          "task"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "quitpod.app",
+  "source": "webmcp.com/api/directory.json"
+}

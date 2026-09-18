@@ -1,0 +1,248 @@
+{
+  "sponsio": 1,
+  "url": "https://abierto.us/",
+  "capturedAt": "2026-09-18T11:05:38.117Z",
+  "tools": [
+    {
+      "name": "get-agency",
+      "description": "Read a federal buyer: a department, a sub-agency or a contracting office. Returns what it buys, how much it has obligated, its top vendors, its open opportunities and the units under it. Accepts an agency key (d-036, s-3600, o-36C262) or an Abierto department, agency or office URL. To find an agency by name, call search first.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "agency": {
+            "type": "string",
+            "description": "Agency key (d- department, s- sub-agency, o- office, e.g. d-036) or an Abierto department, agency or office URL.",
+            "minLength": 1,
+            "maxLength": 300
+          }
+        },
+        "required": [
+          "agency"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get-opportunity",
+      "description": "Read one US federal contract opportunity: what is being bought, by which agency, the response deadline and whether it is still open, set-aside, place of performance, a description excerpt, attachments, contacts and the award when there is one. Accepts a solicitation number, a SAM.gov notice id or an Abierto opportunity URL, including the page being viewed.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "opportunity": {
+            "type": "string",
+            "description": "Solicitation number (W91ZLK-26-Q-A017), 32-character SAM.gov notice id, or Abierto opportunity URL.",
+            "minLength": 1,
+            "maxLength": 300
+          }
+        },
+        "required": [
+          "opportunity"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get-vendor",
+      "description": "Read a vendor’s federal contracting record: dollars obligated and number of awards, the agencies it sells to, its industries, its largest awards and the solicitations it won. Accepts a Unique Entity ID (UEI) or an Abierto vendor URL. To find a vendor by name, call search first.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "vendor": {
+            "type": "string",
+            "description": "12-character Unique Entity ID (UEI), e.g. HUN2LAYMAWA2, or an Abierto vendor URL.",
+            "minLength": 1,
+            "maxLength": 300
+          }
+        },
+        "required": [
+          "vendor"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list-opportunities",
+      "description": "List US federal contract opportunities posted on SAM.gov, filtered by agency, industry (NAICS), product or service code, small-business set-aside, state, notice type or winning vendor. Open opportunities closing soonest come first by default. Returns the total count, one page of opportunities with deadlines and links, and a link to the same list on Abierto.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "open: still taking offers; closed: past deadline or not biddable; awarded: has a matched award; all: everything.",
+            "enum": [
+              "open",
+              "closed",
+              "awarded",
+              "all"
+            ],
+            "default": "open"
+          },
+          "sort": {
+            "type": "string",
+            "description": "closing: soonest deadline first; newest: most recently posted first; amount: largest award first.",
+            "enum": [
+              "closing",
+              "newest",
+              "amount"
+            ],
+            "default": "closing"
+          },
+          "agency": {
+            "type": "string",
+            "description": "A department name (\"Department of Veterans Affairs\"), an agency key (d-036, s-3600, o-36C262) or an Abierto agency URL."
+          },
+          "naics": {
+            "type": "string",
+            "description": "NAICS industry code, 2 to 6 digits, e.g. 541512 for computer systems design. Shorter codes match every industry under them."
+          },
+          "psc": {
+            "type": "string",
+            "description": "Product or service code, 1 to 4 characters, e.g. R425 for engineering support or D3 for IT services."
+          },
+          "set_aside": {
+            "type": "string",
+            "description": "Small-business set-aside program.",
+            "oneOf": [
+              {
+                "const": "SBA",
+                "title": "Total small business set-aside"
+              },
+              {
+                "const": "SBP",
+                "title": "Partial small business set-aside"
+              },
+              {
+                "const": "8A",
+                "title": "8(a) set-aside"
+              },
+              {
+                "const": "8AN",
+                "title": "8(a) sole source"
+              },
+              {
+                "const": "HZC",
+                "title": "HUBZone set-aside"
+              },
+              {
+                "const": "HZS",
+                "title": "HUBZone sole source"
+              },
+              {
+                "const": "SDVOSBC",
+                "title": "Service-disabled veteran-owned small business set-aside"
+              },
+              {
+                "const": "SDVOSBS",
+                "title": "Service-disabled veteran-owned small business sole source"
+              },
+              {
+                "const": "WOSB",
+                "title": "Women-owned small business set-aside"
+              },
+              {
+                "const": "WOSBSS",
+                "title": "Women-owned small business sole source"
+              },
+              {
+                "const": "EDWOSB",
+                "title": "Economically disadvantaged women-owned small business set-aside"
+              },
+              {
+                "const": "EDWOSBSS",
+                "title": "Economically disadvantaged women-owned small business sole source"
+              },
+              {
+                "const": "LAS",
+                "title": "Local area set-aside"
+              },
+              {
+                "const": "IEE",
+                "title": "Indian economic enterprise"
+              },
+              {
+                "const": "ISBEE",
+                "title": "Indian small business economic enterprise"
+              },
+              {
+                "const": "BICiv",
+                "title": "Buy Indian set-aside"
+              },
+              {
+                "const": "VSA",
+                "title": "Veteran-owned small business set-aside"
+              },
+              {
+                "const": "VSS",
+                "title": "Veteran-owned small business sole source"
+              }
+            ]
+          },
+          "state": {
+            "type": "string",
+            "description": "Two-letter postal code of the state where the work is performed, e.g. TX."
+          },
+          "notice_type": {
+            "type": "string",
+            "description": "Kind of notice. Solicitations and combined synopses take offers; sources sought is market research.",
+            "enum": [
+              "solicitation",
+              "presolicitation",
+              "combined-synopsis-solicitation",
+              "sources-sought",
+              "special-notice",
+              "award-notice",
+              "justification",
+              "surplus-sale",
+              "consolidation"
+            ]
+          },
+          "vendor": {
+            "type": "string",
+            "description": "Winning vendor, by its 12-character Unique Entity ID (UEI) or its Abierto vendor URL."
+          },
+          "page": {
+            "type": "integer",
+            "description": "Page number, starting at 1.",
+            "minimum": 1,
+            "maximum": 1000,
+            "default": 1
+          },
+          "limit": {
+            "type": "integer",
+            "description": "How many opportunities to return, 1 to 25.",
+            "minimum": 1,
+            "maximum": 25,
+            "default": 10
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search",
+      "description": "Search US federal contract opportunities, agencies, vendors and places by keyword, solicitation number, agency name, vendor name or city. Returns the best matching opportunities (open ones first) and the matching agencies, vendors and places, each with its Abierto URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Words to look for: a keyword (\"janitorial\"), a solicitation number, or the name of an agency, vendor or city.",
+            "minLength": 1,
+            "maxLength": 120
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "abierto.us",
+  "source": "webmcp.com/api/directory.json"
+}

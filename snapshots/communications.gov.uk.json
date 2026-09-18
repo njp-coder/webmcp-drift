@@ -1,0 +1,303 @@
+{
+  "sponsio": 1,
+  "url": "https://www.communications.gov.uk/",
+  "capturedAt": "2026-09-18T11:05:38.117Z",
+  "tools": [
+    {
+      "name": "check_membership_eligibility",
+      "description": "Return the public membership eligibility page. This is non-binding guidance, not a decision about whether someone can join.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    },
+    {
+      "name": "define_term",
+      "description": "Resolve a controlled GCS term or acronym from the site vocabulary.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "term"
+        ],
+        "properties": {
+          "term": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          }
+        }
+      }
+    },
+    {
+      "name": "find_contact",
+      "description": "Return the public contact page, optionally searching public pages. Never invents email addresses or phone numbers.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 300
+          }
+        }
+      }
+    },
+    {
+      "name": "find_guidance",
+      "description": "Recommend current public guidance for a communications topic. Required topic is a slug from list_topics (see the enum). Ranked by authority.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "topic"
+        ],
+        "properties": {
+          "topic": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 300,
+            "description": "Registered topic slug from list_topics.",
+            "enum": [
+              "blog",
+              "case-study",
+              "evaluation-cycle",
+              "framework",
+              "guidance",
+              "oasis",
+              "policy",
+              "publication",
+              "resist"
+            ]
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10
+          }
+        }
+      }
+    },
+    {
+      "name": "get_career_guidance",
+      "description": "Return public career-entry or progression information from the configured careers page, or a public search.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 300
+          }
+        }
+      }
+    },
+    {
+      "name": "get_latest_updates",
+      "description": "Find recent public news, updates or publications. Optional query and after date (YYYY-MM-DD).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 300
+          },
+          "after": {
+            "type": "string",
+            "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10
+          }
+        }
+      }
+    },
+    {
+      "name": "get_page_context",
+      "description": "Describe the currently viewed public page. Pass format markdown for the full document and chrome-stripped body. Omit url to use this page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "url": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "format": {
+            "type": "string",
+            "enum": [
+              "summary",
+              "metadata",
+              "markdown"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "get_related_resources",
+      "description": "Return public resources related to a canonical URL. Omit url to use this page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "url": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10
+          }
+        }
+      }
+    },
+    {
+      "name": "get_resource",
+      "description": "Retrieve a specific public resource by canonical URL. Pass format markdown for the full document and chrome-stripped body.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "url": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "format": {
+            "type": "string",
+            "enum": [
+              "summary",
+              "metadata",
+              "markdown"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "list_topics",
+      "description": "List registered communications topic names and slugs. Pass a slug to find_guidance.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    },
+    {
+      "name": "search",
+      "description": "Search public guidance, publications, blogs and case studies.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "query"
+        ],
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 300
+          },
+          "contentType": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10
+          }
+        }
+      }
+    },
+    {
+      "name": "search_news",
+      "description": "Search public news and announcements by topic and optional after date (YYYY-MM-DD).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 300
+          },
+          "after": {
+            "type": "string",
+            "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10
+          }
+        }
+      }
+    },
+    {
+      "name": "send_message_to_website",
+      "description": "Email the site a message, a problem report, or another reason. Requires the visitor’s name and reply-to email. Does not invent contact addresses.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "reason",
+          "name",
+          "email",
+          "message"
+        ],
+        "properties": {
+          "reason": {
+            "type": "string",
+            "enum": [
+              "message",
+              "problem",
+              "other"
+            ],
+            "description": "message, problem, or other."
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "minLength": 3,
+            "maxLength": 254,
+            "description": "Visitor reply-to address. Must be a valid email."
+          },
+          "message": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000
+          }
+        }
+      }
+    }
+  ],
+  "host": "communications.gov.uk",
+  "source": "webmcp.com/api/directory.json"
+}

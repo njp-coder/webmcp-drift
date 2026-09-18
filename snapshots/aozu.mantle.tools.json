@@ -1,0 +1,1261 @@
+{
+  "sponsio": 1,
+  "url": "https://aozu.mantle.tools/",
+  "capturedAt": "2026-09-18T11:05:38.117Z",
+  "tools": [
+    {
+      "name": "export_library",
+      "description": "Download one resource without returning a huge base64 payload. resource may be library (complete backup), world (Albums, Locations and Story Books), character, storyboard, or photo. Character/storyboard require id and exact expectedRevision. Photo requires id. Returns the filename and size after starting the browser download.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "expectedRevision": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "id": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string"
+          },
+          "resource": {
+            "enum": [
+              "library",
+              "world",
+              "character",
+              "storyboard",
+              "photo"
+            ]
+          }
+        },
+        "readOnly": true,
+        "required": [
+          "resource"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "import_library",
+      "description": "Import one AOZU resource from a base64 data URL. library/world/storyboard/character expect application/zip. image expects PNG, JPEG, or WebP and exactly one destination: locationId stores a direct Location or Condition setting image without creating an Album photo. albumId stores a finished composition and requires prompt. Undefined subjects may be invented freely. Every defined AOZU subject used must carry its ref: for each Character, first call inspect_character_contract with scope:model-sheet and images:[appearance], actually view it, then pass characterId/revision/sha256 in characterSources; pass sourceLocationId and optional sourceConditionId for defined settings. Missing or stale refs are rejected and AOZU derives provenance from validated sources. Optional collectionId files an imported Character. Payloads above 20 MiB should use the visible Library file control. AOZU itself handles effects.navigation.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "albumId": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string"
+          },
+          "characterSources": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "characterId": {
+                  "maxLength": 100,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "revision": {
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "sha256": {
+                  "pattern": "^[a-f0-9]{64}$",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "characterId",
+                "revision",
+                "sha256"
+              ],
+              "type": "object"
+            },
+            "maxItems": 10,
+            "type": "array"
+          },
+          "collectionId": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string"
+          },
+          "conditionId": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string"
+          },
+          "dataUrl": {
+            "maxLength": 28000000,
+            "pattern": "^data:(?:application/zip|image/(?:png|jpeg|webp));base64,",
+            "type": "string"
+          },
+          "description": {
+            "maxLength": 8000,
+            "type": "string"
+          },
+          "filename": {
+            "maxLength": 200,
+            "minLength": 1,
+            "type": "string"
+          },
+          "label": {
+            "maxLength": 120,
+            "minLength": 1,
+            "type": "string"
+          },
+          "locationId": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string"
+          },
+          "name": {
+            "maxLength": 120,
+            "minLength": 1,
+            "type": "string"
+          },
+          "prompt": {
+            "maxLength": 8000,
+            "minLength": 1,
+            "type": "string"
+          },
+          "purpose": {
+            "enum": [
+              "inspiration",
+              "design"
+            ]
+          },
+          "resource": {
+            "enum": [
+              "library",
+              "world",
+              "character",
+              "storyboard",
+              "image"
+            ]
+          },
+          "source": {
+            "maxLength": 2000,
+            "type": "string"
+          },
+          "sourceConditionId": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string"
+          },
+          "sourceLocationId": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "resource",
+          "dataUrl"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "inspect_character_contract",
+      "description": "Use scope:model-sheet for reference art, scope:appearance (default) for composited layers. Inspect character.appearances and activeAppearanceId for named combinations. Use set_character_variant_selection with appearance to create/save-as/select/rename/delete a combination; then re-inspect its model sheet. For model sheets, use referenceId (a default view or a supplemental ID), optional label/kind/viewpoint/pose, and images (up to 5 IDs: appearance, canonical, or stored reference IDs) to obtain actual source PNGs. Image bytes are opt-in for model sheets. Save-as captures the current front; create starts with no selected variants or references, keeping the shared base body and assets. fromAppearance can explicitly capture or replace the front. Supplement it with head/structure/expression/detail/style references. Follow generationGuidance for identity, source precedence and the requested study, plus the returned task-specific policy and required browser visual-review workflow. Appearance only: The first Appearance body establishes a front A-pose: upright torso, neutral face, arms angled down and away from the torso, relaxed visible hands, stable feet, and the complete head-to-feet silhouette inside the canvas. This is the AOZU authoring convention, not a claim of skeleton compatibility. Preserve this pose and registration in derived outfits and expressions. Existing artwork is not automatically verified A-pose; review it visually before proposing a baseline change, which can make derived layers stale. Required before replacing, repairing, or aligning character art; use inspect_workspace first to identify the user's current view. Optionally name one target to receive its allowed operations, exact current asset hash, visual alignment reference, layer ownership, alpha policy, generation size (1024×1536) and final size (512×768), normalization, revision, z-order, diagnostics, and required browser visual-review workflow. Follow generationRecipe.backgroundPreparation before submission and alignment.visualReview.checks for Composite, Overlay, Difference, and Align. These are browser preview buttons, not WebMCP tools. replace_character_asset installs complete layers and is the only operation for outfits; repair_character_asset stitches only into the current expression head.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "characterId": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "group": {
+            "enum": [
+              "body",
+              "expression",
+              "outfit",
+              "prop"
+            ]
+          },
+          "images": {
+            "items": {
+              "pattern": "^[a-z0-9][a-z0-9_-]{0,39}$",
+              "type": "string"
+            },
+            "maxItems": 5,
+            "type": "array",
+            "uniqueItems": true
+          },
+          "kind": {
+            "enum": [
+              "full-body",
+              "head",
+              "structure",
+              "expression",
+              "detail",
+              "style"
+            ]
+          },
+          "label": {
+            "maxLength": 80,
+            "minLength": 1,
+            "type": "string"
+          },
+          "layer": {
+            "enum": [
+              "body",
+              "head",
+              "back",
+              "front"
+            ]
+          },
+          "needsReview": {
+            "type": "boolean"
+          },
+          "pose": {
+            "maxLength": 80,
+            "minLength": 1,
+            "type": "string"
+          },
+          "referenceId": {
+            "pattern": "^[a-z0-9][a-z0-9_-]{0,39}$",
+            "type": "string"
+          },
+          "scope": {
+            "enum": [
+              "appearance",
+              "model-sheet"
+            ]
+          },
+          "sourceSha256": {
+            "pattern": "^[0-9a-f]{64}$",
+            "type": "string"
+          },
+          "variantId": {
+            "pattern": "^[a-z0-9][a-z0-9_-]{0,39}$",
+            "type": "string"
+          },
+          "viewpoint": {
+            "maxLength": 80,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "readOnly": true,
+        "required": [
+          "characterId"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "inspect_storyboard",
+      "description": "List standalone storyboards or read one exact revision, selected candidates, pinned reference standards and source changes. Boards may mix collections and external PNGs. Image bytes are opt-in, at most five image IDs. Actually view images before visual feedback. Stored, selected and human-confirmed are distinct. UI context is exposed through inspect_workspace. No navigation or mutation.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "boardId": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "images": {
+            "items": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "maxItems": 5,
+            "type": "array",
+            "uniqueItems": true
+          }
+        },
+        "readOnly": true,
+        "required": [],
+        "type": "object"
+      }
+    },
+    {
+      "name": "inspect_workspace",
+      "description": "Start here and call again after user navigation or tool mutations: context is a snapshot, not a live subscription. intent:world starts the required world-authoring sequence: first choose and inspect a Collection's backstory, Characters, Locations and Conditions, then create setting art or a composed Album photo. resource/id can inspect an exact collection, album, photo, location or story book without navigating; images requests up to five Album photos or direct Location setting images with original data URLs. includeSnapshot:true returns the current Character composite or exact open/requested Photo, Location design, or model-sheet reference. Actually view returned image data before visual feedback. For storyboard originals use inspect_storyboard. A snapshot never navigates, saves or changes selections.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string"
+          },
+          "images": {
+            "items": {
+              "maxLength": 100,
+              "minLength": 1,
+              "type": "string"
+            },
+            "maxItems": 5,
+            "type": "array",
+            "uniqueItems": true
+          },
+          "includeSnapshot": {
+            "description": "Include the current Character, Photo, Location, or model-sheet image when available.",
+            "type": "boolean"
+          },
+          "intent": {
+            "description": "Select the authoring workflow so nextActions require the right context before creation.",
+            "enum": [
+              "character",
+              "world",
+              "storyboard"
+            ]
+          },
+          "resource": {
+            "enum": [
+              "collection",
+              "album",
+              "photo",
+              "location",
+              "story-book"
+            ]
+          }
+        },
+        "readOnly": true,
+        "required": [],
+        "type": "object"
+      }
+    },
+    {
+      "name": "navigate_workspace",
+      "description": "Open an exact AOZU resource without guessing a route. resource is home, collections, collection, location, albums, album, photo, storyboards, story-book, storyboard, or character. Supply id for one resource; Location view may be setting-images, profile, or conditions and itemId opens a Condition. Character view may be expressions, outfits, props, profile, or model-sheet and itemId opens a variant/reference. Collection view may be characters, profile, or locations (the Collection’s Location tree); storyboard view may be storyboard or details. AOZU applies the returned navigation in this tab. Re-run inspect_workspace after rendering.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string"
+          },
+          "itemId": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string"
+          },
+          "resource": {
+            "enum": [
+              "home",
+              "collections",
+              "collection",
+              "location",
+              "albums",
+              "album",
+              "photo",
+              "storyboards",
+              "story-book",
+              "storyboard",
+              "character"
+            ]
+          },
+          "view": {
+            "enum": [
+              "characters",
+              "profile",
+              "locations",
+              "setting-images",
+              "conditions",
+              "expressions",
+              "outfits",
+              "props",
+              "model-sheet",
+              "storyboard",
+              "details"
+            ]
+          }
+        },
+        "readOnly": true,
+        "required": [
+          "resource"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "redo_character_change",
+      "description": "Redo the most recently undone Appearance edit in the current session, preserving Character profile and shared height. Same preconditions and structured statuses as undo_character_change. Success persists the restored Appearance as a new Character revision and opens that Character editor. AOZU itself handles effects.navigation in this browser tab; the agent must not repeat that navigation. Observe the resulting page after rendering, then call inspect_workspace again for fresh context. A successful tool result is not proof of visual correctness.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "characterId": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "expectedRevision": {
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "characterId",
+          "expectedRevision"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "repair_character_asset",
+      "description": "Repair one existing expression after inspect_character_contract and its backgroundPreparation workflow. The current head asset and editable-region mask are the only edit source; this tool never falls back to the canonical body. Accepted pixels are deterministically stitched into that current asset, preserving protected pixels. Outfits and other complete layers must use replace_character_asset. After acceptance, follow the returned alignment.visualReview through all four browser modes before the next asset. AOZU itself handles effects.navigation in this browser tab; the agent must not repeat that navigation. Observe the resulting page after rendering, then call inspect_workspace again for fresh context. A successful tool result is not proof of visual correctness.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "characterId": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "dataUrl": {
+            "maxLength": 7100000,
+            "pattern": "^data:image/png;base64,",
+            "type": "string"
+          },
+          "expectedAssetSha256": {
+            "pattern": "^[0-9a-f]{64}$",
+            "type": "string"
+          },
+          "expectedRevision": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "filename": {
+            "maxLength": 200,
+            "minLength": 1,
+            "type": "string"
+          },
+          "group": {
+            "const": "expression"
+          },
+          "label": {
+            "maxLength": 80,
+            "minLength": 1,
+            "type": "string"
+          },
+          "layer": {
+            "const": "head"
+          },
+          "normalization": {
+            "additionalProperties": false,
+            "properties": {
+              "align": {
+                "enum": [
+                  "none",
+                  "reference-visible-bounds"
+                ]
+              },
+              "resize": {
+                "enum": [
+                  "none",
+                  "exact-aspect-downscale"
+                ]
+              }
+            },
+            "required": [
+              "resize",
+              "align"
+            ],
+            "type": "object"
+          },
+          "variantId": {
+            "pattern": "^[a-z0-9][a-z0-9_-]{0,39}$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "characterId",
+          "group",
+          "variantId",
+          "label",
+          "layer",
+          "expectedRevision",
+          "expectedAssetSha256",
+          "filename",
+          "dataUrl"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "replace_character_asset",
+      "description": "Install one complete canonical Character layer after inspect_character_contract with scope:appearance. The first Appearance body establishes a front A-pose: upright torso, neutral face, arms angled down and away from the torso, relaxed visible hands, stable feet, and the complete head-to-feet silhouette inside the canvas. This is the AOZU authoring convention, not a claim of skeleton compatibility. Preserve this pose and registration in derived outfits and expressions. Existing artwork is not automatically verified A-pose; review it visually before proposing a baseline change, which can make derived layers stale. Follow its backgroundPreparation workflow: solid-color generation, removal with a permitted environment tool, then alpha/edge verification. This is a true replacement without preserving old pixels. Expressions contain only a complete whole head with transparency elsewhere. Outfits contain the complete dressed character skin compatible with the reference pose; exact base-pixel coverage is not required. Opaque input is rejected; AOZU never removes backgrounds. Rejected or stale input does not mutate or navigate. Submit exact 512×768 RGBA or explicitly request the inspected normalization. After variant acceptance, follow the returned alignment.visualReview through all four browser modes before the next asset; review the canonical body in its regular Composite preview. AOZU itself handles effects.navigation in this browser tab; the agent must not repeat that navigation. Observe the resulting page after rendering, then call inspect_workspace again for fresh context. A successful tool result is not proof of visual correctness.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "characterId": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "dataUrl": {
+            "maxLength": 7100000,
+            "pattern": "^data:image/png;base64,",
+            "type": "string"
+          },
+          "expectedAssetSha256": {
+            "pattern": "^[0-9a-f]{64}$",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "expectedRevision": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "filename": {
+            "maxLength": 200,
+            "minLength": 1,
+            "type": "string"
+          },
+          "group": {
+            "enum": [
+              "body",
+              "expression",
+              "outfit",
+              "prop"
+            ]
+          },
+          "label": {
+            "maxLength": 80,
+            "minLength": 1,
+            "type": "string"
+          },
+          "layer": {
+            "enum": [
+              "body",
+              "head",
+              "back",
+              "front"
+            ]
+          },
+          "normalization": {
+            "additionalProperties": false,
+            "properties": {
+              "align": {
+                "enum": [
+                  "none",
+                  "reference-visible-bounds"
+                ]
+              },
+              "resize": {
+                "enum": [
+                  "none",
+                  "exact-aspect-downscale"
+                ]
+              }
+            },
+            "required": [
+              "resize",
+              "align"
+            ],
+            "type": "object"
+          },
+          "variantId": {
+            "pattern": "^[a-z0-9][a-z0-9_-]{0,39}$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "characterId",
+          "group",
+          "variantId",
+          "label",
+          "layer",
+          "expectedRevision",
+          "expectedAssetSha256",
+          "filename",
+          "dataUrl"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "set_character_variant_selection",
+      "description": "Activate or deactivate an existing expression, outfit, or prop using the inspected revision. Edits automatically save into the current named Appearance; no separate save/commit action is needed. Alternatively use appearance:{action:create|save-as|select|rename|delete,id,label?}, omitting group/variantId/active. create and save-as require a new ID and label. create opens a fresh look with no selected expression/outfit/props and an empty model sheet, preserving the base body, shared variants and other looks. save-as keeps the current combination and captures its front, with other references empty; do this BEFORE editing to preserve the original. Legacy working art is exposed as a real Default Appearance without a write on read; its next edit persists that adoption. select waits for saving and restores that look; failed/conflicted saves block switching. rename changes the label. delete removes that Appearance and its references, keeps shared assets, and opens the first remaining look when deleting the active one. The last Appearance cannot be deleted. Switching or creating an Appearance starts a fresh Appearance undo session, not an undoable navigation step. Captured fronts follow composition edits; other references are retained with needsReview:true. Shared variant art affects all looks using it. selected.props is bottom-to-top activation order; deactivate then reactivate to move a prop to the top. UI and agents share one autosaving command lifecycle. AOZU itself handles effects.navigation in this browser tab; the agent must not repeat that navigation. Observe the resulting page after rendering, then call inspect_workspace again for fresh context. A successful tool result is not proof of visual correctness.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "active": {
+            "type": "boolean"
+          },
+          "appearance": {
+            "additionalProperties": false,
+            "properties": {
+              "action": {
+                "enum": [
+                  "create",
+                  "save-as",
+                  "select",
+                  "rename",
+                  "delete"
+                ]
+              },
+              "id": {
+                "pattern": "^[a-z0-9][a-z0-9_-]{0,39}$",
+                "type": "string"
+              },
+              "label": {
+                "maxLength": 80,
+                "minLength": 1,
+                "type": "string"
+              }
+            },
+            "required": [
+              "action",
+              "id"
+            ],
+            "type": "object"
+          },
+          "characterId": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "expectedRevision": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "group": {
+            "enum": [
+              "expression",
+              "outfit",
+              "prop"
+            ]
+          },
+          "variantId": {
+            "pattern": "^[a-z0-9][a-z0-9_-]{0,39}$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "characterId",
+          "expectedRevision"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "set_character_variant_transform",
+      "description": "Visually align an existing expression whole head, outfit, or prop by changing only its full-canvas translation and uniform scale. Inspect the Character in the browser first; x moves right, y moves down, and values are absolute rather than deltas. Use the exact revision from inspect_character_contract. Success opens the exact variant; follow alignment.visualReview.checks using the browser buttons Composite, Overlay, Difference, and Align, then return to Composite. Repeat after every correction before continuing. Head-anchor changes rebase current expressions; front and back prop layers share one transform. The canonical body is locked. AOZU itself handles effects.navigation in this browser tab; the agent must not repeat that navigation. Observe the resulting page after rendering, then call inspect_workspace again for fresh context. A successful tool result is not proof of visual correctness.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "characterId": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "expectedRevision": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "group": {
+            "enum": [
+              "expression",
+              "outfit",
+              "prop"
+            ]
+          },
+          "scale": {
+            "maximum": 4,
+            "minimum": 0.25,
+            "type": "number"
+          },
+          "variantId": {
+            "pattern": "^[a-z0-9][a-z0-9_-]{0,39}$",
+            "type": "string"
+          },
+          "x": {
+            "maximum": 512,
+            "minimum": -512,
+            "type": "number"
+          },
+          "y": {
+            "maximum": 768,
+            "minimum": -768,
+            "type": "number"
+          }
+        },
+        "required": [
+          "characterId",
+          "group",
+          "variantId",
+          "expectedRevision",
+          "x",
+          "y",
+          "scale"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "undo_character_change",
+      "description": "Undo the latest Appearance edit in the current session. Character profile and shared height are preserved. Switching Appearance or save-as starts a fresh undo session; navigation itself is not undoable. Shared variant art retains its shared scope. Requires the exact saved Character revision and a settled (saved) session; inactive, pending, failed, conflicted, stale, or empty-history requests return a structured status without mutation or navigation. Success persists the restored Appearance as a new Character revision and opens that Character editor. AOZU itself handles effects.navigation in this browser tab; the agent must not repeat that navigation. Observe the resulting page after rendering, then call inspect_workspace again for fresh context. A successful tool result is not proof of visual correctness.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "characterId": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "expectedRevision": {
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "characterId",
+          "expectedRevision"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "update_character_model_sheet",
+      "description": "Edit the active Appearance’s model sheet after inspect_character_contract with scope:model-sheet. References belong to modelSheet.appearanceId; switch saved sets through set_character_variant_selection, then re-inspect. Composition edits autosave into the current Appearance and synchronize linked front images. Other references may have needsReview:true; visually compare against the updated Appearance, then replace them or set needsReview:false. This is a consistency flag, not user approval. Optional shared height is edited through update_character_profile. Use referenceId for one image: front/three-quarter/side/back are the default turnaround slots; other IDs create supplemental references with label and kind. view is a compatibility alias for a default slot. Optional viewpoint and pose describe that reference. PNGs may be opaque and keep original dimensions up to 4096 × 4096 / 5 MiB. For replacement supply dataUrl, filename and exact expectedAssetSha256 (null for empty). Alternatively fromAppearance:true captures the current composition into front with its source hash; do not supply dataUrl or filename. sourceSha256 identifies the source image used for generated art. remove:true deletes only this reference and requires its exact hash. All edits use expectedRevision. Replacement clears old guides and source hash unless a new source is supplied. Notes and guides need existing art; guides are original-image y fractions with head above feet, excluding hats, raised arms and props. Never infer height from pixels; null clears guides. Omitted fields remain unchanged. accepted:true means stored, not visually verified or user-approved. Follow visualReview on the exact reference. AOZU itself handles effects.navigation in this browser tab; the agent must not repeat that navigation. Observe the resulting page after rendering, then call inspect_workspace again for fresh context. A successful tool result is not proof of visual correctness.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "characterId": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "dataUrl": {
+            "maxLength": 7100000,
+            "pattern": "^data:image/png;base64,",
+            "type": "string"
+          },
+          "expectedAssetSha256": {
+            "pattern": "^[0-9a-f]{64}$",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "expectedRevision": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "filename": {
+            "maxLength": 200,
+            "minLength": 1,
+            "type": "string"
+          },
+          "fromAppearance": {
+            "type": "boolean"
+          },
+          "guides": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "additionalProperties": false,
+                "properties": {
+                  "feet": {
+                    "maximum": 1,
+                    "minimum": 0,
+                    "type": "number"
+                  },
+                  "head": {
+                    "maximum": 1,
+                    "minimum": 0,
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "head",
+                  "feet"
+                ],
+                "type": "object"
+              }
+            ]
+          },
+          "kind": {
+            "enum": [
+              "full-body",
+              "head",
+              "structure",
+              "expression",
+              "detail",
+              "style"
+            ]
+          },
+          "label": {
+            "maxLength": 80,
+            "minLength": 1,
+            "type": "string"
+          },
+          "needsReview": {
+            "type": "boolean"
+          },
+          "notes": {
+            "maxLength": 1000,
+            "type": "string"
+          },
+          "pose": {
+            "maxLength": 80,
+            "minLength": 1,
+            "type": "string"
+          },
+          "referenceId": {
+            "pattern": "^[a-z0-9][a-z0-9_-]{0,39}$",
+            "type": "string"
+          },
+          "remove": {
+            "type": "boolean"
+          },
+          "sourceSha256": {
+            "pattern": "^[0-9a-f]{64}$",
+            "type": "string"
+          },
+          "view": {
+            "enum": [
+              "front",
+              "three-quarter",
+              "side",
+              "back"
+            ]
+          },
+          "viewpoint": {
+            "maxLength": 80,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "characterId",
+          "expectedRevision"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "update_character_profile",
+      "description": "Update one or more identity fields of a Character using its exact revision. The current unsaved workshop uses characterId new and revision 0; its first edit creates a saved Character and returns its permanent ID. heightCm is an optional shared character height in cm; null clears it. Leave it unset for unknown or variable size. Use this field, not a custom attribute. Omitted fields stay unchanged; empty description, backstory, or attributes clear that field. A successful call saves the profile and opens the Character profile tab with its current Appearance. Profile edits are outside Appearance Undo/Redo. Finish local unsaved input first. AOZU itself handles effects.navigation in this browser tab; the agent must not repeat that navigation. Observe the resulting page after rendering, then call inspect_workspace again for fresh context. A successful tool result is not proof of visual correctness.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "attributes": {
+            "additionalProperties": {
+              "maxLength": 200,
+              "type": [
+                "string",
+                "number",
+                "boolean"
+              ]
+            },
+            "maxProperties": 32,
+            "type": "object"
+          },
+          "backstory": {
+            "maxLength": 8000,
+            "type": "string"
+          },
+          "characterId": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "description": {
+            "maxLength": 500,
+            "type": "string"
+          },
+          "expectedRevision": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "heightCm": {
+            "exclusiveMinimum": 0,
+            "maximum": 100000,
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "name": {
+            "maxLength": 80,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "characterId",
+          "expectedRevision"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "update_library",
+      "description": "Create, update, duplicate, delete, or move AOZU library records with one revision-checked command. Resources: collection; character (move between collections or delete); album; photo; location; condition; reference (explicitly reuse a finished Album photo as Location inspiration/design); story-book; storyboard-book. Duplicate is supported for Locations and Conditions and preserves their setting images with new IDs. Use IDs and expectedRevision from inspect_workspace. Omitted update fields stay unchanged. Moving a Photo requires id and albumId and routes to the Photo in its destination Album. Deleting an Album moves its photos to My images; deleting a Location moves its children to its parent; deleting a Story Book leaves its storyboards unfiled. This does not edit storyboard frames or character artwork. AOZU itself handles effects.navigation.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "action": {
+            "enum": [
+              "create",
+              "update",
+              "delete",
+              "duplicate",
+              "move"
+            ]
+          },
+          "albumId": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string"
+          },
+          "backstory": {
+            "maxLength": 8000,
+            "type": "string"
+          },
+          "boardId": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string"
+          },
+          "bookId": {
+            "oneOf": [
+              {
+                "maxLength": 100,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "collectionId": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string"
+          },
+          "collectionIds": {
+            "items": {
+              "maxLength": 100,
+              "minLength": 1,
+              "type": "string"
+            },
+            "maxItems": 100,
+            "type": "array",
+            "uniqueItems": true
+          },
+          "conditionId": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string"
+          },
+          "consistency": {
+            "maxLength": 8000,
+            "type": "string"
+          },
+          "description": {
+            "maxLength": 8000,
+            "type": "string"
+          },
+          "direction": {
+            "maxLength": 8000,
+            "type": "string"
+          },
+          "expectedRevision": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "id": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string"
+          },
+          "label": {
+            "maxLength": 120,
+            "minLength": 1,
+            "type": "string"
+          },
+          "locationId": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string"
+          },
+          "name": {
+            "maxLength": 120,
+            "minLength": 1,
+            "type": "string"
+          },
+          "parentId": {
+            "oneOf": [
+              {
+                "maxLength": 100,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "photoId": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string"
+          },
+          "purpose": {
+            "enum": [
+              "inspiration",
+              "design"
+            ]
+          },
+          "resource": {
+            "enum": [
+              "collection",
+              "character",
+              "album",
+              "photo",
+              "location",
+              "condition",
+              "reference",
+              "story-book",
+              "storyboard-book"
+            ]
+          },
+          "source": {
+            "maxLength": 2000,
+            "type": "string"
+          },
+          "synopsis": {
+            "maxLength": 8000,
+            "type": "string"
+          },
+          "tags": {
+            "items": {
+              "maxLength": 40,
+              "minLength": 1,
+              "type": "string"
+            },
+            "maxItems": 30,
+            "type": "array",
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "resource",
+          "action"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "update_storyboard",
+      "description": "Create a standalone board or mutate it using its exact expectedRevision. Actions: rename (name/notes), add-frame (title/notes), edit-frame (frameId/title/notes/review/transition/duration), remove-frame, reorder (all frame IDs exactly once), add-candidate (frameId/filename/PNG dataUrl/source/settings), select (frameId/imageId), reference (frameId/imageId/purpose or remove:true), undo, redo. Undefined subjects in candidates may be invented freely. Every defined AOZU Character, Location, Condition or Album Photo used in a candidate must be included in settings. Character settings require the exact Appearance sha256 from inspect_character_contract with scope:model-sheet and images:[appearance]; world settings use the revision from inspect_workspace. Missing or stale refs are rejected. Uploaded candidates NEVER automatically replace selections. Confirmed review requires explicit human approval, never merely successful upload. Reference pins exact image ID/hash; changes to source selection do not rewrite it. Same operations and persisted undo/redo as UI. PNG originals up to 4096×4096 and 5 MiB, at most 100 frames/500 images/128 MiB per board. Source text is provenance only. Returns navigation to affected board for visual review. No same-collection requirement. pin-setting stores the same setting snapshot (id, kind character/location/photo, sourceId, revision, name, details, optional sha256) on frameId, optionally with PNG dataUrl/filename/source/purpose; it never selects or approves an image. unpin-setting removes a snapshot by imageId. inspect_workspace exposes current location and album metadata; local location settings take precedence over ancestor context.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "action": {
+            "enum": [
+              "create",
+              "rename",
+              "add-frame",
+              "edit-frame",
+              "remove-frame",
+              "reorder",
+              "add-candidate",
+              "select",
+              "reference",
+              "pin-setting",
+              "unpin-setting",
+              "undo",
+              "redo"
+            ]
+          },
+          "boardId": {
+            "pattern": "^[a-zA-Z0-9_-]{1,100}$",
+            "type": "string"
+          },
+          "dataUrl": {
+            "maxLength": 7100000,
+            "pattern": "^data:image/png;base64,",
+            "type": "string"
+          },
+          "duration": {
+            "exclusiveMinimum": 0,
+            "maximum": 600,
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "expectedRevision": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "filename": {
+            "maxLength": 200,
+            "type": "string"
+          },
+          "frameId": {
+            "pattern": "^[a-zA-Z0-9_-]{1,100}$",
+            "type": "string"
+          },
+          "imageId": {
+            "pattern": "^[a-zA-Z0-9_-]{1,100}$",
+            "type": "string"
+          },
+          "name": {
+            "maxLength": 120,
+            "type": "string"
+          },
+          "notes": {
+            "maxLength": 8000,
+            "type": "string"
+          },
+          "order": {
+            "items": {
+              "pattern": "^[a-zA-Z0-9_-]{1,100}$",
+              "type": "string"
+            },
+            "maxItems": 100,
+            "type": "array",
+            "uniqueItems": true
+          },
+          "purpose": {
+            "maxLength": 2000,
+            "type": "string"
+          },
+          "remove": {
+            "type": "boolean"
+          },
+          "review": {
+            "enum": [
+              "draft",
+              "needs-work",
+              "confirmed"
+            ]
+          },
+          "setting": {
+            "additionalProperties": false,
+            "properties": {
+              "details": {
+                "maxLength": 32000,
+                "type": "string"
+              },
+              "id": {
+                "pattern": "^[a-zA-Z0-9_-]{1,100}$",
+                "type": "string"
+              },
+              "kind": {
+                "enum": [
+                  "character",
+                  "location",
+                  "photo"
+                ]
+              },
+              "name": {
+                "maxLength": 200,
+                "type": "string"
+              },
+              "revision": {
+                "minimum": 0,
+                "type": "integer"
+              },
+              "sha256": {
+                "pattern": "^[a-f0-9]{64}$",
+                "type": "string"
+              },
+              "sourceId": {
+                "pattern": "^[a-zA-Z0-9_-]{1,100}$",
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "kind",
+              "sourceId",
+              "revision",
+              "name",
+              "details"
+            ],
+            "type": "object"
+          },
+          "settings": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "details": {
+                  "maxLength": 32000,
+                  "type": "string"
+                },
+                "id": {
+                  "pattern": "^[a-zA-Z0-9_-]{1,100}$",
+                  "type": "string"
+                },
+                "kind": {
+                  "enum": [
+                    "character",
+                    "location",
+                    "photo"
+                  ]
+                },
+                "name": {
+                  "maxLength": 200,
+                  "type": "string"
+                },
+                "revision": {
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "sha256": {
+                  "pattern": "^[a-f0-9]{64}$",
+                  "type": "string"
+                },
+                "sourceId": {
+                  "pattern": "^[a-zA-Z0-9_-]{1,100}$",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "kind",
+                "sourceId",
+                "revision",
+                "name",
+                "details"
+              ],
+              "type": "object"
+            },
+            "maxItems": 20,
+            "type": "array"
+          },
+          "source": {
+            "maxLength": 2000,
+            "type": "string"
+          },
+          "title": {
+            "maxLength": 160,
+            "type": "string"
+          },
+          "transition": {
+            "maxLength": 8000,
+            "type": "string"
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "type": "object"
+      }
+    }
+  ],
+  "host": "aozu.mantle.tools",
+  "source": "webmcp.com/api/directory.json"
+}

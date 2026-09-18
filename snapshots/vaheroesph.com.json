@@ -1,0 +1,197 @@
+{
+  "sponsio": 1,
+  "url": "https://vaheroesph.com/",
+  "capturedAt": "2026-09-18T11:05:38.117Z",
+  "tools": [
+    {
+      "name": "get_hero_path",
+      "description": "Retrieve the full published detail of one VA Heroes PH Hero Path, identified by its slug (for example 'general-va'), so an agent can explain that specific track to a visitor. Use it after get_hero_paths when the user asks about one track — what it covers, who it suits, or where to read more. Requires 'slug': the exact lowercase slug of an existing path; an unknown or misspelled slug returns a NOT_FOUND error that lists the valid slugs. Returns one record with slug, name, label, tagline, description, intro, highlights, type, featured, externalUrl and canonical url. It does NOT return pricing, schedules, enrolment or applicant data, and it cannot submit an application.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]{1,64}$",
+            "description": "The unique slug identifying the Hero Path, e.g. 'general-va'."
+          }
+        },
+        "required": [
+          "slug"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_hero_paths",
+      "description": "Retrieve every publicly published VA Heroes PH Hero Path — the career and training tracks a Filipino virtual assistant can start with or specialise in — so an agent can help a visitor identify a suitable path. Use it when someone asks what programs, tracks, specialisations or career options VA Heroes PH offers, or to obtain a slug before calling get_hero_path. Requires no input; optional filters are 'type' ('training' for VA skill paths, 'sales' for the Loan Officer path), 'featured' (only the recommended starting path) and 'limit' (1-100). Returns { total, count, items[] } where each item has slug, name, label, tagline, description, intro, highlights, type, featured, externalUrl and canonical url. It does NOT return pricing, schedules, enrolment status, applicant records or any private data, and it cannot submit an application.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "training",
+              "sales"
+            ],
+            "description": "Optional. Filter by path type."
+          },
+          "featured": {
+            "type": "boolean",
+            "description": "Optional. Return only featured paths."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "description": "Optional. Maximum number of paths to return."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_program_information",
+      "description": "Retrieve a single structured overview of how the VA Heroes PH program works: the training Hero Paths, the separate sales (Loan Officer) path, the published community impact statistics, and the page where candidates apply. Use it when a visitor asks broadly what VA Heroes PH offers, how the training works, or how to get started, instead of asking about one specific track. Requires no input. Returns { applicationUrl, trainingPrograms[], salesPrograms[], impactStats[] }, where each program carries slug, name, tagline, description, highlights, featured and url. It does NOT expose pricing, class schedules, enrolment status, batch dates or any applicant data — programs in this project are the Hero Paths and no separate course catalogue exists.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_site_information",
+      "description": "Retrieve the public organization profile of VA Heroes PH — name, website URL, logo, slogan, description, area served, social profile links and the application page URL — together with the published testimonials (Hero Stories), so an agent can introduce the organization and point a visitor to the right page. Use it when a visitor asks who VA Heroes PH is, what it does, whether it is credible, where to follow it, or where to apply. Requires no input. Returns { organization, heroStories[] } with quote, display name and role per story. It does NOT return phone numbers, postal addresses, staff contacts, applicant records or any private data — only content already visible on the public website.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_faq",
+      "description": "Search the published VA Heroes PH FAQ entries (About VA Heroes page) so an agent can answer applicant questions with the organization's own wording. Use it for questions about who can apply, required experience, needed skills, equipment and internet, how to apply, what happens after submitting, interviews, working hours, earnings, and whether applying costs anything. Requires no input; optional 'query' is case-insensitive text matched against both question and answer (max 200 characters) and optional 'limit' caps results (1-100). Returns { total, count, items[] } with id, question and answer verbatim. It does NOT generate answers: when nothing matches, the list is empty — say so or use another tool rather than inventing an answer.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "description": "The question or topic to search for in the VA Heroes PH FAQ content."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "description": "Optional. Maximum number of FAQ entries to return."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "submit_application",
+      "description": "Submit a VA Heroes PH job application on behalf of the visitor. CONSEQUENTIAL: this creates a real application record, so only call it with information the visitor has explicitly provided and confirmed. Requires 'fullName' and 'email'; 'phone', 'heroPathSlug' (one of the published Hero Path slugs) and 'message' are optional. Returns a receipt { id, createdAt, status, duplicate } and never echoes the submitted personal data; an identical repeat submission returns the original receipt with duplicate=true instead of creating a second record. It does NOT replace the website's own application form and cannot read, edit or delete any existing application.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "description": "Fields accepted when submitting a job application. Unknown properties are rejected.",
+        "properties": {
+          "fullName": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 120,
+            "description": "Applicant's full name."
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "minLength": 3,
+            "maxLength": 254,
+            "description": "Contact email address."
+          },
+          "phone": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 32,
+            "description": "Optional contact phone number."
+          },
+          "heroPathSlug": {
+            "type": "string",
+            "enum": [
+              "general-va",
+              "highlevel",
+              "executive-assistant",
+              "loan-processing",
+              "bookkeeping-va",
+              "shopify-va",
+              "loan-officer"
+            ],
+            "description": "Optional slug of the Hero Path the applicant is interested in."
+          },
+          "message": {
+            "type": "string",
+            "maxLength": 2000,
+            "description": "Optional message from the applicant."
+          }
+        },
+        "required": [
+          "fullName",
+          "email"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "submit_contact_request",
+      "description": "Send a contact message to the VA Heroes PH team on behalf of the visitor. CONSEQUENTIAL: this creates a real contact record, so only call it with content the visitor has explicitly provided and confirmed. Requires 'name', 'email' and 'message'; 'subject' is optional. Returns a receipt { id, createdAt, status, duplicate } and never echoes the submitted message; an identical repeat submission returns the original receipt with duplicate=true. It does NOT read existing messages and cannot reach any other part of the system.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "description": "Fields accepted when submitting a contact message. Unknown properties are rejected.",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 120,
+            "description": "Sender's name."
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "minLength": 3,
+            "maxLength": 254,
+            "description": "Contact email address."
+          },
+          "subject": {
+            "type": "string",
+            "maxLength": 160,
+            "description": "Optional subject line."
+          },
+          "message": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 2000,
+            "description": "Message body."
+          }
+        },
+        "required": [
+          "name",
+          "email",
+          "message"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "vaheroesph.com",
+  "source": "webmcp.com/api/directory.json"
+}
