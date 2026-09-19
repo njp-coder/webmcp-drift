@@ -1,0 +1,81 @@
+{
+  "sponsio": 1,
+  "url": "https://www.target.com/",
+  "capturedAt": "2026-09-19T10:50:32.676Z",
+  "tools": [
+    {
+      "name": "filter_products",
+      "description": "Applies search filters and sorting to the current Target.com product listing page. Overwrites all active filters—any omitted parameter will clear that filter from the page. To preserve existing filters, include them in the call.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "keyword": {
+            "type": "string",
+            "description": "Search term to navigate to (if not already on a search page)"
+          },
+          "brand": {
+            "type": "string",
+            "description": "Brand name to filter by (e.g. 'KitchenAid', 'Keurig')"
+          },
+          "category": {
+            "type": "string",
+            "description": "Category to filter by (e.g. 'Coffee Makers', 'Single Serve')"
+          },
+          "minPrice": {
+            "type": "number",
+            "description": "Minimum price in dollars"
+          },
+          "maxPrice": {
+            "type": "number",
+            "description": "Maximum price in dollars"
+          },
+          "rating": {
+            "type": "number",
+            "description": "Minimum guest rating from 1 to 5."
+          },
+          "sortBy": {
+            "type": "string",
+            "enum": [
+              "relevance",
+              "PriceLow",
+              "PriceHigh",
+              "RatingHigh",
+              "newest"
+            ],
+            "description": "Sort order for the product results ('relevance': Most relevant, 'PriceLow': Price low to high, 'PriceHigh': Price high to low, 'RatingHigh': Highest rated, 'newest': Newest)."
+          },
+          "availability": {
+            "type": "string",
+            "enum": [
+              "ship",
+              "pickup",
+              "delivery",
+              "store"
+            ],
+            "description": "Fulfillment option to filter by ('ship': Shipping, 'pickup': Buy online pick up in store, 'delivery': Same-day delivery, 'store': Shop in store)."
+          }
+        }
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Search for products on Target.com. Use this when the user wants to find products by keyword. Navigates to the search results page. Use filter_products after this to narrow results.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "searchTerm": {
+            "type": "string",
+            "description": "The search term to find products (e.g. \"coffee maker\", \"Nike running shoes\", \"baby stroller\")"
+          }
+        },
+        "required": [
+          "searchTerm"
+        ]
+      }
+    }
+  ],
+  "host": "target.com",
+  "source": "webmcp.com/api/directory.json"
+}

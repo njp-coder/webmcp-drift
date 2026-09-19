@@ -1,0 +1,275 @@
+{
+  "sponsio": 1,
+  "url": "https://www.granvilleinn.com/",
+  "capturedAt": "2026-09-19T10:50:32.676Z",
+  "tools": [
+    {
+      "name": "check_availability",
+      "description": "Check real-time room availability. Always call get_hotel_booking_config first, then call this tool with booking_url, engine, and hotelId all together (engine and hotelId come from get_hotel_booking_config's response and the hotel id you already have) — engine and hotelId let this tool use a direct API instead of scraping when one is available for that hotel. Supplying engine + hotelId without booking_url also works.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "booking_url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "engine": {
+            "type": "string"
+          },
+          "hotelId": {
+            "type": "string"
+          },
+          "checkIn": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          },
+          "checkOut": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          },
+          "adults": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "default": 2
+          },
+          "children": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0
+          },
+          "childAges": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "rooms": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "default": 1
+          },
+          "currency": {
+            "type": "string",
+            "default": "USD"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "chain": {
+            "type": "string"
+          },
+          "propertyId": {
+            "type": "string"
+          },
+          "propertyCode": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "checkIn",
+          "checkOut"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "compare_availability",
+      "description": "Compare room availability and prices across multiple hotels. PREFERRED: pass booking_url from get_hotel_booking_config for each item. If booking_url is provided, do not pass engine or hotelId. Returns an array where each entry has status 'ok' with data, or status 'error' with an error message.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "booking_url": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "engine": {
+                  "type": "string"
+                },
+                "hotelId": {
+                  "type": "string"
+                },
+                "checkIn": {
+                  "type": "string",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                },
+                "checkOut": {
+                  "type": "string",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                },
+                "adults": {
+                  "type": "integer",
+                  "exclusiveMinimum": 0,
+                  "default": 2
+                },
+                "children": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "default": 0
+                },
+                "childAges": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer",
+                    "minimum": 0
+                  }
+                },
+                "rooms": {
+                  "type": "integer",
+                  "exclusiveMinimum": 0,
+                  "default": 1
+                },
+                "currency": {
+                  "type": "string",
+                  "default": "USD"
+                },
+                "slug": {
+                  "type": "string"
+                },
+                "chain": {
+                  "type": "string"
+                },
+                "propertyId": {
+                  "type": "string"
+                },
+                "propertyCode": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "checkIn",
+                "checkOut"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 1
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "get_booking_link",
+      "description": "Get a direct booking link for a selected room and rate. Always call get_hotel_booking_config first and pass its booking_url here. Alternatively supply engine + hotelId directly. Used after the user has chosen a room from check_availability results.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "booking_url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "engine": {
+            "type": "string"
+          },
+          "hotelId": {
+            "type": "string"
+          },
+          "checkIn": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          },
+          "checkOut": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          },
+          "roomCode": {
+            "type": "string"
+          },
+          "rateCode": {
+            "type": "string"
+          },
+          "adults": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "default": 2
+          },
+          "children": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0
+          },
+          "childAges": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "rooms": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "default": 1
+          },
+          "currency": {
+            "type": "string",
+            "default": "USD"
+          },
+          "slug": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "checkIn",
+          "checkOut",
+          "roomCode",
+          "rateCode"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "get_hotel_amenities",
+      "description": "Get the amenities of a specific hotel from the Tambourine portfolio. Use this when the user asks about hotel facilities, services or features. Requires the hotel id from search_hotels.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "hotelId": {
+            "type": "integer",
+            "exclusiveMinimum": 0
+          }
+        },
+        "required": [
+          "hotelId"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "get_hotel_rooms",
+      "description": "Get the room types available at a specific hotel from the Tambourine portfolio. Use this when the user wants to know what types of rooms a hotel has. Requires the hotel id from search_hotels.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "hotelId": {
+            "type": "integer",
+            "exclusiveMinimum": 0
+          }
+        },
+        "required": [
+          "hotelId"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    }
+  ],
+  "host": "granvilleinn.com",
+  "source": "webmcp.com/api/directory.json"
+}
