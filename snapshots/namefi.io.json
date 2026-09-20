@@ -1,0 +1,156 @@
+{
+  "sponsio": 1,
+  "url": "https://namefi.io/",
+  "capturedAt": "2026-09-20T11:13:53.442Z",
+  "tools": [
+    {
+      "name": "namefi_add_domain_to_cart",
+      "description": "Recheck a domain’s live availability, exact price, and allowed registration duration, then add it to the current Namefi cart. This reversible action does not register or purchase the domain; the cart remains visible and editable.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "domain": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255,
+            "description": "The exact domain to recheck and add to the Namefi cart"
+          },
+          "durationInYears": {
+            "description": "Registration duration in years, up to 10. The domain’s live registrar limits may be stricter. Omit to use the registry-sourced minimum.",
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 10
+          }
+        },
+        "required": [
+          "domain"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "namefi_get_cart",
+      "description": "Read the current cart with item IDs, domains, durations, and prices in USD cents. Use item IDs for updates. No purchase is made.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "namefi_remove_from_cart",
+      "description": "Remove one or more domains from the current cart. Pass domain names in input. Refreshes the visible cart; never deletes an owned domain.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "input": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z0-9_]([a-z0-9-]{0,61}[a-z0-9_])?(\\.[a-z0-9_]([a-z0-9-]{0,61}[a-z0-9_])?)*$"
+            }
+          }
+        },
+        "required": [
+          "input"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "namefi_search_domains",
+      "description": "Search Namefi for domain registration options. Checks live authoritative availability and exact USD prices, updates the visible Namefi search results, and does not reserve or purchase domains.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255,
+            "description": "A brand name, phrase, or domain to search for on Namefi"
+          },
+          "resultLimit": {
+            "default": 16,
+            "description": "Maximum number of ranked domain options to verify and return to the agent. The page independently displays its normal search results and pagination.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 16
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "namefi_update_cart_item",
+      "description": "Update an existing cart item using its ID from namefi_get_cart. Supports duration in years, domain setup options, registration-requirement acknowledgement, and transfer authorization code. Refreshes the visible cart; does not purchase or register a domain.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "durationInYears": {
+                "description": "New duration in years (1–10, subject to registrar limits). Omit to keep the current duration.",
+                "type": "integer",
+                "exclusiveMinimum": 0,
+                "maximum": 10
+              },
+              "eppAuthorizationCode": {
+                "type": "string"
+              },
+              "domainSetupOptions": {
+                "type": "object",
+                "properties": {
+                  "autoPark": {
+                    "type": "boolean"
+                  },
+                  "autoEns": {
+                    "type": "boolean"
+                  },
+                  "autoRenew": {
+                    "type": "boolean"
+                  },
+                  "dnssec": {
+                    "type": "boolean"
+                  },
+                  "keepExistingNameservers": {
+                    "type": "boolean"
+                  }
+                }
+              },
+              "tldRegistrationRequirementAcknowledged": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "id"
+            ]
+          }
+        },
+        "required": [
+          "input"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "namefi.io",
+  "source": "webmcp.com/api/directory.json"
+}

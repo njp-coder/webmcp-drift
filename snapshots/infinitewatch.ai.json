@@ -1,0 +1,424 @@
+{
+  "sponsio": 1,
+  "url": "https://infinitewatch.ai/",
+  "capturedAt": "2026-09-20T11:13:53.442Z",
+  "tools": [
+    {
+      "name": "analyze_trend",
+      "description": "Analyze whether a metric, theme, or issue is increasing, decreasing, or changing over time in available InfiniteWatch data.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "topic": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Metric, theme, or question to trend, for example \"unresolved calls\"."
+          },
+          "domain": {
+            "description": "Domain to inspect. Use all for cross-domain trends.",
+            "type": "string",
+            "enum": [
+              "voice",
+              "text",
+              "web",
+              "all"
+            ]
+          },
+          "dateRange": {
+            "description": "Natural language or explicit date range, for example \"July 2026\".",
+            "type": "string"
+          },
+          "granularity": {
+            "description": "Optional trend grain.",
+            "type": "string",
+            "enum": [
+              "daily",
+              "weekly",
+              "monthly"
+            ]
+          },
+          "locale": {
+            "description": "Optional response language hint.",
+            "type": "string",
+            "enum": [
+              "en",
+              "es"
+            ]
+          }
+        },
+        "required": [
+          "topic"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "ask_how_to",
+      "description": "Ask for grounded operational guidance or next-step handling based on InfiniteWatch data. If the request is internal policy that InfiniteWatch cannot know, the answer should say so safely.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "question": {
+            "type": "string",
+            "minLength": 1,
+            "description": "How-to or operational guidance question."
+          },
+          "domain": {
+            "description": "Optional product scope for the question.",
+            "type": "string",
+            "enum": [
+              "voice",
+              "text",
+              "web",
+              "all"
+            ]
+          },
+          "locale": {
+            "description": "Optional response language hint.",
+            "type": "string",
+            "enum": [
+              "en",
+              "es"
+            ]
+          }
+        },
+        "required": [
+          "question"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "ask_infinitewatch",
+      "description": "Ask InfiniteWatch a grounded question about customer interactions, insights, examples, trends, comparisons, or diagnostics.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Plain-language question to answer using InfiniteWatch data."
+          },
+          "productScope": {
+            "description": "Optional product scope. Use all for available cross-domain data.",
+            "type": "string",
+            "enum": [
+              "voice",
+              "text",
+              "web",
+              "all"
+            ]
+          },
+          "conversationId": {
+            "description": "Optional persisted global-chat conversation id for follow-up context.",
+            "type": "string"
+          },
+          "locale": {
+            "description": "Optional response language hint.",
+            "type": "string",
+            "enum": [
+              "en",
+              "es"
+            ]
+          },
+          "context": {
+            "description": "Optional dashboard context such as selected call/text/web id or filters.",
+            "type": "object",
+            "properties": {},
+            "additionalProperties": {}
+          },
+          "selectedEntityId": {
+            "description": "Selected dashboard entity id, such as a voice call id, text conversation id, or web session id.",
+            "type": "string"
+          },
+          "selectedEntityType": {
+            "description": "Selected entity type, for example voice-call or text-conversation.",
+            "type": "string"
+          },
+          "callId": {
+            "description": "Selected voice call id.",
+            "type": "string"
+          },
+          "textConversationId": {
+            "description": "Selected text conversation id.",
+            "type": "string"
+          },
+          "webSessionId": {
+            "description": "Selected web session/replay id.",
+            "type": "string"
+          },
+          "replaySessionId": {
+            "description": "Selected replay session id.",
+            "type": "string"
+          },
+          "dateRange": {
+            "description": "Natural language or explicit date range, for example \"July 2026\".",
+            "type": "string"
+          },
+          "filters": {
+            "description": "Dashboard filters to apply.",
+            "type": "object",
+            "properties": {},
+            "additionalProperties": {}
+          },
+          "activeFilters": {
+            "description": "Already-applied dashboard filters to apply.",
+            "type": "object",
+            "properties": {},
+            "additionalProperties": {}
+          },
+          "availableDomains": {
+            "description": "Product domains available to this organization or request.",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "voice",
+                "text",
+                "web",
+                "all"
+              ]
+            }
+          },
+          "pagePath": {
+            "description": "Dashboard path that provides page context.",
+            "type": "string"
+          },
+          "pageTitle": {
+            "description": "Dashboard page title that provides page context.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "prompt"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "compare_channels",
+      "description": "Compare results, issues, trends, or priorities across available InfiniteWatch channels.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Comparison request, for example \"Compare voice and text issues in July\"."
+          },
+          "dateRange": {
+            "description": "Natural language or explicit date range, for example \"July 2026\".",
+            "type": "string"
+          },
+          "locale": {
+            "description": "Optional response language hint.",
+            "type": "string",
+            "enum": [
+              "en",
+              "es"
+            ]
+          }
+        },
+        "required": [
+          "prompt"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "diagnose_issue",
+      "description": "Explain likely drivers behind an issue, poor outcome, escalation risk, low QA, or other diagnostic question.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "issue": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Issue or diagnostic question to investigate."
+          },
+          "domain": {
+            "description": "Domain to inspect. Use all for cross-domain diagnostics.",
+            "type": "string",
+            "enum": [
+              "voice",
+              "text",
+              "web",
+              "all"
+            ]
+          },
+          "dateRange": {
+            "description": "Natural language or explicit date range, for example \"July 2026\".",
+            "type": "string"
+          },
+          "locale": {
+            "description": "Optional response language hint.",
+            "type": "string",
+            "enum": [
+              "en",
+              "es"
+            ]
+          }
+        },
+        "required": [
+          "issue"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "get_examples",
+      "description": "Find direct examples from available InfiniteWatch interactions for a theme, issue, insight, agent, or outcome.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "theme": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Theme or issue to find evidence for."
+          },
+          "domain": {
+            "description": "Domain to search. Defaults to all available domains.",
+            "type": "string",
+            "enum": [
+              "voice",
+              "text",
+              "web",
+              "all"
+            ]
+          },
+          "directOnly": {
+            "description": "When true, omit adjacent examples.",
+            "type": "boolean"
+          },
+          "dateRange": {
+            "description": "Natural language or explicit date range, for example \"July 2026\".",
+            "type": "string"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10
+          },
+          "locale": {
+            "description": "Optional response language hint.",
+            "type": "string",
+            "enum": [
+              "en",
+              "es"
+            ]
+          }
+        },
+        "required": [
+          "theme"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "get_insights",
+      "description": "Get top or important insights from the selected or available InfiniteWatch data.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "domain": {
+            "description": "Domain to inspect. Defaults to all available domains.",
+            "type": "string",
+            "enum": [
+              "voice",
+              "text",
+              "web",
+              "all"
+            ]
+          },
+          "dateRange": {
+            "description": "Natural language or explicit date range, for example \"July 2026\".",
+            "type": "string"
+          },
+          "focus": {
+            "description": "Optional focus such as high impact, new, unresolved, QA, or support priorities.",
+            "type": "string"
+          },
+          "locale": {
+            "description": "Optional response language hint.",
+            "type": "string",
+            "enum": [
+              "en",
+              "es"
+            ]
+          }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "iw_webmcp_authorize",
+      "description": "Request an OAuth authorization link for this page's MCP. Ask the user before opening the link in this same tab. The user completes sign-in and consent; no dashboard connection button is needed.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "iw_webmcp_disconnect",
+      "description": "Revoke this tab's MCP authorization when the user asks to disconnect or change accounts/organizations. Public tool discovery remains available.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "summarize_interaction",
+      "description": "Summarize or answer a question about one selected InfiniteWatch interaction.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "domain": {
+            "type": "string",
+            "enum": [
+              "voice",
+              "text",
+              "web"
+            ],
+            "description": "Interaction modality."
+          },
+          "interactionId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Voice call id, text conversation id, or web session/replay id."
+          },
+          "question": {
+            "description": "Optional specific question, for example \"Was this resolved?\".",
+            "type": "string"
+          },
+          "locale": {
+            "description": "Optional response language hint.",
+            "type": "string",
+            "enum": [
+              "en",
+              "es"
+            ]
+          }
+        },
+        "required": [
+          "domain",
+          "interactionId"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    }
+  ],
+  "host": "infinitewatch.ai",
+  "source": "webmcp.com/api/directory.json"
+}

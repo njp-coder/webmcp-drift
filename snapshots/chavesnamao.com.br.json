@@ -1,0 +1,295 @@
+{
+  "sponsio": 1,
+  "url": "https://www.chavesnamao.com.br/",
+  "capturedAt": "2026-09-20T11:13:53.442Z",
+  "tools": [
+    {
+      "name": "search_realty_listings",
+      "description": "Busca anúncios de imóveis (venda ou aluguel) no Chaves na Mão. Retorna lista paginada com título, preço, localização, quartos, vagas, área e URL. Para buscas 'perto de X', use `proximity.target` para X e não transforme o ponto de referência em bairro. IMPORTANTE: use o campo `url` de cada resultado como link do anúncio — não reconstrua URLs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "description": "Texto livre em português do usuário (ex.: 'apartamento 3 quartos Curitiba 500 mil'). Usado como fallback quando os filtros estruturados estão ausentes."
+          },
+          "filters": {
+            "type": "object",
+            "description": "Filtros estruturados. Se presentes, são autoritativos sobre `query`. Não coloque nomes de pontos de referência de frases como 'perto de X' em `neighborhood`; use `proximity.target`.",
+            "properties": {
+              "transaction": {
+                "type": "string",
+                "description": "Tipo de transação. Valores principais: 'venda', 'aluguel', 'lancamentos'. Aceita variações NL como 'comprar', 'alugar', 'na planta'.",
+                "default": "venda"
+              },
+              "propertyType": {
+                "type": "string",
+                "description": "Tipo de imóvel. Exemplos: 'apartamento', 'casa', 'terreno', 'kitnet', 'studio', 'sobrado', 'cobertura', 'loft', 'flat', 'sala comercial', 'casa comercial', 'ponto comercial', 'galpão', 'prédio', 'chácara', 'fazenda', 'garagem', 'casa em condomínio', 'terreno em condomínio', 'terreno comercial'. Categorias: 'comercial', 'rural', 'residencial'."
+              },
+              "city": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 80
+              },
+              "state": {
+                "type": "string",
+                "minLength": 2,
+                "maxLength": 2,
+                "description": "UF com 2 letras (ex.: 'PR')."
+              },
+              "neighborhood": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 80
+              },
+              "street": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120,
+                "description": "Nome da rua/avenida (ex.: 'Avenida Sete de Setembro'). Abreviações como 'av', 'r.' são normalizadas automaticamente."
+              },
+              "bedrooms": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 10
+              },
+              "bathrooms": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 10
+              },
+              "parkingSpots": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 10
+              },
+              "minPrice": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "maxPrice": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "minArea": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              "maxArea": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              "amenities": {
+                "type": "array",
+                "maxItems": 30,
+                "items": {
+                  "type": "string"
+                },
+                "description": "Características/amenidades do imóvel. Exemplos: 'piscina', 'academia', 'elevador', 'portaria 24h', 'mobiliado', 'churrasqueira', 'sacada', 'aceita pets', 'condomínio fechado', 'direto com proprietário'. Termos são resolvidos dinamicamente contra os filtros disponíveis."
+              }
+            },
+            "additionalProperties": false
+          },
+          "proximity": {
+            "type": "object",
+            "description": "Intenção explícita de proximidade. Quando o usuário disser 'perto de X', 'próximo de X' ou 'nas proximidades de X', preencha `target` com o nome do ponto de referência e não transforme esse ponto em bairro.",
+            "properties": {
+              "target": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120,
+                "description": "Nome do ponto de referência informado pelo usuário (ex.: 'Passeio Público', 'Hospital Pequeno Príncipe', 'Shopping Curitiba')."
+              },
+              "category": {
+                "type": "string",
+                "enum": [
+                  "busStops",
+                  "hospitals",
+                  "parks",
+                  "schools",
+                  "gyms",
+                  "restaurants",
+                  "supermarkets",
+                  "pharmacies",
+                  "malls",
+                  "metros"
+                ],
+                "description": "Categoria opcional quando conhecida: busStops, hospitals, parks, schools, gyms, restaurants, supermarkets, pharmacies, malls ou metros."
+              }
+            },
+            "required": [
+              "target"
+            ],
+            "additionalProperties": false
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "default": 1
+          },
+          "pageSize": {
+            "type": "integer",
+            "minimum": 15,
+            "maximum": 15,
+            "default": 15
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_vehicle_listings",
+      "description": "Busca anúncios de veículos (carros, motos, caminhões, ônibus) no Chaves na Mão. Retorna lista paginada com marca, modelo, ano, KM, preço, localização e URL. IMPORTANTE: use o campo `url` de cada resultado como link do anúncio — não reconstrua URLs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "description": "Texto livre em português (ex.: 'Honda Civic usado até 90 mil'). Fallback quando `filters` estão ausentes."
+          },
+          "filters": {
+            "type": "object",
+            "properties": {
+              "vehicleCategory": {
+                "type": "string",
+                "description": "Categoria: carro, moto (aceita sinônimos como automóvel, motocicleta)",
+                "default": "carro",
+                "examples": [
+                  "carro",
+                  "moto"
+                ]
+              },
+              "condition": {
+                "type": "string",
+                "description": "Condição: novo, usado, seminovo, 0km (aceita sinônimos)",
+                "examples": [
+                  "usado",
+                  "seminovo",
+                  "novo",
+                  "0km"
+                ]
+              },
+              "bodyType": {
+                "type": "string",
+                "description": "Tipo de carroceria (aceita sinônimos e nomes informais)",
+                "examples": [
+                  "suv",
+                  "sedan",
+                  "hatch",
+                  "picape",
+                  "conversível",
+                  "perua",
+                  "cupê",
+                  "buggy",
+                  "utilitário"
+                ]
+              },
+              "brand": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 60
+              },
+              "model": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 80
+              },
+              "minYear": {
+                "type": "integer",
+                "minimum": 1950,
+                "maximum": 2100
+              },
+              "maxYear": {
+                "type": "integer",
+                "minimum": 1950,
+                "maximum": 2100
+              },
+              "minPrice": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "maxPrice": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "maxKm": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "fuel": {
+                "type": "string",
+                "description": "Combustível (aceita sinônimos: álcool→etanol, elétrico, híbrido, etc.)",
+                "examples": [
+                  "flex",
+                  "gasolina",
+                  "etanol",
+                  "diesel",
+                  "híbrido",
+                  "elétrico",
+                  "gnv"
+                ]
+              },
+              "transmission": {
+                "type": "string",
+                "description": "Câmbio (aceita sinônimos: automático, mecânico→manual, cvt)",
+                "examples": [
+                  "automático",
+                  "manual",
+                  "cvt"
+                ]
+              },
+              "color": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 30
+              },
+              "city": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 80
+              },
+              "state": {
+                "type": "string",
+                "minLength": 2,
+                "maxLength": 2
+              },
+              "optionals": {
+                "type": "array",
+                "maxItems": 15,
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 60
+                },
+                "description": "Opcionais em linguagem natural (ex.: 'ar condicionado', 'câmera de ré', 'teto solar', 'airbag')"
+              }
+            },
+            "additionalProperties": false
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "default": 1
+          },
+          "pageSize": {
+            "type": "integer",
+            "minimum": 15,
+            "maximum": 15,
+            "default": 15
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "chavesnamao.com.br",
+  "source": "webmcp.com/api/directory.json"
+}

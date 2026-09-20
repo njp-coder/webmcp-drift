@@ -1,0 +1,54 @@
+{
+  "sponsio": 1,
+  "url": "https://apis.io/",
+  "capturedAt": "2026-09-20T11:13:53.442Z",
+  "tools": [
+    {
+      "name": "describe_network",
+      "description": "Describe the apis.io network: subdomains, machine-readable catalogs, and primary discovery endpoints. Use this before searching to understand the available scopes.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "search_apis",
+      "description": "Search the apis.io federated catalog by keyword, tag, or provider. Returns ranked matches across providers, APIs, AsyncAPI specs, JSON-LD vocabularies, and rule sets. JSON Schemas are large and only included when dimension is \"schema\".",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Free-text search query."
+          },
+          "dimension": {
+            "type": "string",
+            "enum": [
+              "all",
+              "provider",
+              "api",
+              "schema",
+              "asyncapi",
+              "jsonld",
+              "rules"
+            ],
+            "description": "Optional dimension filter. Defaults to \"all\"."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "description": "Maximum number of results to return. Default 20."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "apis.io",
+  "source": "webmcp.com/api/directory.json"
+}

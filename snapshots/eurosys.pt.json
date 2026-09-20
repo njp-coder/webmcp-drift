@@ -1,0 +1,188 @@
+{
+  "sponsio": 1,
+  "url": "https://eurosys.pt/",
+  "capturedAt": "2026-09-20T11:13:53.442Z",
+  "tools": [
+    {
+      "name": "get_builder_state",
+      "description": "Devolve a configuração de PC atualmente montada nesta página: componentes selecionados, preço total com IVA, passo ativo e se há itens sem preço.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_builder_options",
+      "description": "Lista os componentes disponíveis no PC Builder para um dado tipo (cpu, motherboard, gpu, ram, storage, psu, case, cooler), opcionalmente filtrados por texto. Devolve preço final com IVA e disponibilidade.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "cpu",
+              "motherboard",
+              "gpu",
+              "ram",
+              "storage",
+              "psu",
+              "case",
+              "cooler"
+            ],
+            "description": "Tipo de componente a listar."
+          },
+          "search": {
+            "type": "string",
+            "maxLength": 80,
+            "description": "Filtro de texto livre sobre o nome do componente."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 200,
+            "description": "Número máximo de resultados (default 50)."
+          }
+        },
+        "required": [
+          "type"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_catalog_categories",
+      "description": "Lista as categorias visíveis do catálogo com o respetivo URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "recommend_build",
+      "description": "Recomenda uma configuração de PC completa a partir das respostas do questionário (uso, orçamento, marca, estilo de caixa e sub-tipo). Usa a base de configurações pré-geradas; se não houver correspondência devolve { found: false } com a rota alternativa recomendada.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "use": {
+            "type": "string",
+            "enum": [
+              "gaming",
+              "work",
+              "creator",
+              "other"
+            ],
+            "description": "Uso principal do PC."
+          },
+          "budget": {
+            "type": "string",
+            "enum": [
+              "entry",
+              "mid",
+              "high",
+              "enthusiast"
+            ],
+            "description": "Escalão de orçamento."
+          },
+          "brand": {
+            "type": "string",
+            "enum": [
+              "amd",
+              "intel",
+              "any"
+            ],
+            "description": "Preferência de marca de CPU."
+          },
+          "caseStyle": {
+            "type": "string",
+            "enum": [
+              "glassRgb",
+              "silentClosed",
+              "anyCase"
+            ],
+            "description": "Estilo de caixa preferido."
+          },
+          "gameType": {
+            "type": "string",
+            "enum": [
+              "competitive",
+              "aaa",
+              "simulation",
+              "varied"
+            ],
+            "description": "Só para use=gaming."
+          },
+          "workApp": {
+            "type": "string",
+            "enum": [
+              "office",
+              "photo",
+              "video",
+              "heavy"
+            ],
+            "description": "Só para use=work."
+          },
+          "creatorType": {
+            "type": "string",
+            "enum": [
+              "photo",
+              "video",
+              "streaming",
+              "threeD"
+            ],
+            "description": "Só para use=creator."
+          }
+        },
+        "required": [
+          "use"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_catalog",
+      "description": "Pesquisa produtos no catálogo por texto, categoria e intervalo de preço. Devolve os produtos com preço final (com IVA) e o URL canónico de cada um.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "maxLength": 120,
+            "description": "Texto livre, ex.: 'portátil gaming' ou 'ssd 1tb'."
+          },
+          "category": {
+            "type": "string",
+            "maxLength": 80,
+            "description": "Slug da categoria, ex.: 'computers' ou 'computer-gaming'."
+          },
+          "min_price": {
+            "type": "number",
+            "minimum": 0
+          },
+          "max_price": {
+            "type": "number",
+            "minimum": 0
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "eurosys.pt",
+  "source": "webmcp.com/api/directory.json"
+}

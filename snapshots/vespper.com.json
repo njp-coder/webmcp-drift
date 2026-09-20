@@ -1,0 +1,113 @@
+{
+  "sponsio": 1,
+  "url": "https://www.vespper.com/",
+  "capturedAt": "2026-09-20T11:13:53.442Z",
+  "tools": [
+    {
+      "name": "ask_site",
+      "description": "Find relevant Vespper product, setup, security, benchmark, FAQ, documentation, and blog information. Use it to answer questions about Vespper or DOCX agent workflows. Returns matching excerpts and their site paths.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "description": "The visitor's question or topic"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "browse_blog",
+      "description": "Discover Vespper blog articles by topic or category. Use it to find research, benchmarks, engineering, or product writing. Returns article summaries, publication dates, reading times, and site paths.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Optional topic keywords"
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "Research",
+              "Benchmarks",
+              "Engineering",
+              "Product"
+            ],
+            "description": "Optional article category"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "default": 5
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "calculate_roi",
+      "description": "Calculate estimated annual savings, engineering hours reclaimed, and delivery acceleration from Vespper's ROI model. Use when evaluating DOCX integration costs. Updates the visible homepage calculator and returns its estimates.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "hourlyCost": {
+            "type": "number",
+            "minimum": 50,
+            "maximum": 400,
+            "description": "Engineering cost per hour in USD"
+          },
+          "weeklyHours": {
+            "type": "number",
+            "minimum": 2,
+            "maximum": 160,
+            "description": "Weekly DOCX maintenance hours"
+          },
+          "weeksSaved": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 52,
+            "description": "Implementation weeks saved"
+          }
+        },
+        "required": [
+          "hourlyCost",
+          "weeklyHours",
+          "weeksSaved"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_mcp_setup",
+      "description": "Get the hosted Vespper DOCX MCP endpoint, authentication requirements, client configuration, and official setup links. Use it when connecting an MCP client. Returns a safe template with no credentials embedded.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "client": {
+            "type": "string",
+            "enum": [
+              "cursor",
+              "generic"
+            ],
+            "default": "generic",
+            "description": "The MCP client being configured"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "vespper.com",
+  "source": "webmcp.com/api/directory.json"
+}

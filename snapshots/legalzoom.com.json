@@ -1,0 +1,139 @@
+{
+  "sponsio": 1,
+  "url": "https://www.legalzoom.com/",
+  "capturedAt": "2026-09-20T11:13:53.442Z",
+  "tools": [
+    {
+      "name": "check_business_name_availability",
+      "description": "Check whether a proposed business name is available for an entity type in a US state.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "entity_name": {
+            "type": "string",
+            "description": "Proposed business name."
+          },
+          "state_code": {
+            "type": "string",
+            "pattern": "^[A-Za-z]{2}$",
+            "description": "Two-letter US state code."
+          },
+          "entity_type": {
+            "type": "string",
+            "enum": [
+              "LLC",
+              "Corporation"
+            ],
+            "default": "LLC"
+          }
+        },
+        "required": [
+          "entity_name",
+          "state_code"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_legal_document_template",
+      "description": "Get one LegalZoom legal document template and its normalized question schema by exact slug.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Exact template slug from template search."
+          }
+        },
+        "required": [
+          "slug"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_legalzoom_ai_capability",
+      "description": "Get the schema, documentation, annotations, and integration availability for one exact LegalZoom MCP tool name.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tool_name": {
+            "type": "string",
+            "description": "Exact MCP tool name, such as search-legalzoom-articles."
+          }
+        },
+        "required": [
+          "tool_name"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_legalzoom_ai_capabilities",
+      "description": "List every published LegalZoom MCP capability, its taxonomy, schemas, supported integrations, and documentation URLs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_legal_document_templates",
+      "description": "Search the LegalZoom legal document template catalog by a word or phrase.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Words describing the needed legal document."
+          },
+          "attorney_drafted": {
+            "type": "boolean",
+            "description": "When set, include only templates matching this attorney-drafted status."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "default": 10
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "suggest_domain_names",
+      "description": "Suggest available domain-name candidates for a business or brand idea.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Business or brand idea."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 25,
+            "default": 6
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "legalzoom.com",
+  "source": "webmcp.com/api/directory.json"
+}

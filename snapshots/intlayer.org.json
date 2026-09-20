@@ -1,0 +1,218 @@
+{
+  "sponsio": 1,
+  "url": "https://intlayer.org/",
+  "capturedAt": "2026-09-20T11:13:53.442Z",
+  "tools": [
+    {
+      "name": "fetchDocChunks",
+      "description": "Fetch related doc chunks using keywords or questions. This tool will return the most relevant chunks of documentation based on the input query.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "The keywords or question to search for"
+          },
+          "limit": {
+            "description": "The number of chunks to retrieve (default: 10)",
+            "type": "number"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "getCurrentPage",
+      "description": "Describe the page the user is currently viewing on intlayer.org: URL, title, locale and the locales the site is available in.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "getDocBySlug",
+      "description": "Get an array of docs by their slugs. If not slug is provided, return all docs (1.2Mb). List all docs metadata first to get more details about what doc to retrieve.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "slug": {
+            "description": "Slug of the docs. If not provided, return all docs. If not provided, return all docs.",
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ]
+          },
+          "strict": {
+            "description": "Strict mode - only return docs that match all slugs, by excluding additional slugs",
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "getIntlayerDocumentationPage",
+      "description": "Fetch a single page of Intlayer's documentation, blog or FAQ as markdown. Accepts a page path such as `/doc/why`, `/doc/concept/cms` or `/blog/intlayer-with-react-i18next`, with or without a locale prefix or `.md` extension.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Documentation path beginning with /doc, /blog or /frequent-questions."
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "listIntlayerDocumentation",
+      "description": "List every page of Intlayer's documentation available to agents, as a markdown index of titles and URLs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "openPage",
+      "description": "Navigate the current tab to a page of intlayer.org, given its path (for example `/doc/why`, `/blog`, `/icu-message-formatter`, `/i18n-message-converter`, `/i18n-seo-scanner`). The path is localized to the current locale automatically.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Path on intlayer.org."
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "searchIntlayerDocumentation",
+      "description": "Search Intlayer's documentation, blog posts and FAQ by keywords or a question. Returns the most relevant pages with their title, description and path; read a page with `getIntlayerDocumentationPage` or open it with `openPage`.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Keywords or a question."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 30,
+            "description": "Maximum number of results (default 8)."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "sendUserToAuthentication",
+      "description": "Send the user to the Intlayer dashboard (app.intlayer.org) to sign in, create an account, or try a read-only demo. An already signed-in user is taken straight to the dashboard. Leaves intlayer.org.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "login",
+              "register",
+              "demo"
+            ],
+            "description": "Which flow to open (default `login`)."
+          },
+          "redirectPath": {
+            "type": "string",
+            "description": "Dashboard path to land on once authenticated, such as `/projects` or `/dictionary`."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "submitWebsiteScanForm",
+      "description": "Fill the i18n SEO scanner form with a website URL for the user to launch. To run the audit and get the report directly, call `createWebsiteI18nScan` instead.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "https://yourwebsite.com"
+          }
+        }
+      }
+    },
+    {
+      "name": "updateLocale",
+      "description": "Switch the language of intlayer.org for the current page and the rest of the visit.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "locale": {
+            "type": "string",
+            "enum": [
+              "en",
+              "fr",
+              "ru",
+              "ja",
+              "ko",
+              "zh",
+              "es",
+              "de",
+              "ar",
+              "it",
+              "en-GB",
+              "pt",
+              "hi",
+              "tr",
+              "pl",
+              "id",
+              "vi",
+              "uk"
+            ],
+            "description": "Target locale code."
+          }
+        },
+        "required": [
+          "locale"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "intlayer.org",
+  "source": "webmcp.com/api/directory.json"
+}

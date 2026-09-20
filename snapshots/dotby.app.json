@@ -1,0 +1,70 @@
+{
+  "sponsio": 1,
+  "url": "https://dotby.app/",
+  "capturedAt": "2026-09-20T11:13:53.442Z",
+  "tools": [
+    {
+      "name": "estimate_team_price",
+      "description": "Estimate dotby Pro pricing in USD for paid team seats. Updates the visible calculator. Annual billing is charged yearly; this is an estimate, not a purchase or subscription change.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "seats": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10000
+          },
+          "billing": {
+            "type": "string",
+            "enum": [
+              "monthly",
+              "annual"
+            ]
+          }
+        },
+        "required": [
+          "seats",
+          "billing"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_download_options",
+      "description": "List desktop download options currently published on this page. Returns actual release links and availability; never starts a download or invents a release. Disabled options may still be loading or unavailable.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "navigate_to_section",
+      "description": "Open a dotby public website page: product overview, pricing calculator, downloads, MCP integrations, or contact. Preserves the current language. Does not open or modify a workspace.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "destination": {
+            "type": "string",
+            "enum": [
+              "home",
+              "pricing",
+              "downloads",
+              "integrations",
+              "contact"
+            ]
+          }
+        },
+        "required": [
+          "destination"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "dotby.app",
+  "source": "webmcp.com/api/directory.json"
+}

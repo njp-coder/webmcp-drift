@@ -1,0 +1,125 @@
+{
+  "sponsio": 1,
+  "url": "https://www.napster.com/",
+  "capturedAt": "2026-09-20T11:13:53.442Z",
+  "tools": [
+    {
+      "name": "demo.fill",
+      "description": "Bring our demo/contact form on screen and fill it as the conversation flows. Call it IMMEDIATELY when a visitor wants a demo — with no arguments if you have no details yet — so the form is up while you talk. Then call it again with any subset of firstName, lastName, email, jobTitle, message as details arrive. Fields land quietly; keep the conversation natural instead of confirming each one. It never submits — you have no way to submit this form; when everything is in, the visitor presses Submit themselves.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "jobTitle": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string",
+            "description": "What they want the demo to cover"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "news.latest",
+      "description": "The latest from Napster — news/announcements (source: \"news\") or blog posts (source: \"blog\"). Brings that section on screen and returns the items with dates and links. Use for any ask about recent news, announcements, or blog posts.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "source": {
+            "type": "string",
+            "enum": [
+              "news",
+              "blog"
+            ],
+            "description": "news = newsroom/announcements/press; blog = blog posts. Default: news"
+          },
+          "limit": {
+            "type": "number",
+            "description": "Max items, default 5"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "products.explain",
+      "description": "The Napster product catalogue — every product with its pitch, what it does, who it is for, and its page. Use for quick, confident product answers. Asked about one specific product, it also brings that product’s page on screen.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product": {
+            "type": "string",
+            "description": "Optional: a product name or keyword (e.g. \"spaces\", \"mac\", \"api\"). Omit for the full catalogue or comparisons."
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "site.open",
+      "description": "Open a napster.com page on screen and get its full content back — the show-while-telling tool. Use it whenever the visitor asks to see, go to, or learn about a specific page or section. Known sections you can open directly without searching: /case-studies, /about, /news, /blog, /careers, /partners, /security, /ethics, /contact, and every product page. Path like /case-studies or /news/some-article.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Site path to open, e.g. /spaces"
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    },
+    {
+      "name": "site.read_page",
+      "description": "Read any napster.com page in the background (no navigation) to answer in detail from what the site actually says.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Site path to read, e.g. /developer"
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    },
+    {
+      "name": "site.search",
+      "description": "For when you do NOT know where something lives on napster.com — a topic, an article, a keyword. Returns titles and paths only, no content: follow up with site.open (or site.read_page) on what you found. For a known page or section, call site.open directly instead. Use before claiming something is not on the site.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "What the visitor is looking for"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "napster.com",
+  "source": "webmcp.com/api/directory.json"
+}

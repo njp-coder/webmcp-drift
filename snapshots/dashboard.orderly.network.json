@@ -1,0 +1,964 @@
+{
+  "sponsio": 1,
+  "url": "https://dashboard.orderly.network/",
+  "capturedAt": "2026-09-20T11:13:53.442Z",
+  "tools": [
+    {
+      "name": "focus_widget",
+      "description": "Scroll a dashboard widget into the user's view and highlight it briefly. Only widgets present on the current page can be focused (widgets render on specific pages, not everywhere). Use get_site_overview to learn which widgets live where.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "widget_id": {
+            "type": "string",
+            "enum": [
+              "volume",
+              "tvl-chain",
+              "net-fees",
+              "overview",
+              "dex-users",
+              "market-share",
+              "volume-segments",
+              "omnivault-tvl",
+              "stake-users",
+              "stake-vs-supply",
+              "distributors",
+              "fees-stats",
+              "builder-volume",
+              "builder-active-traders",
+              "builder-revenue",
+              "net-flow-by-builder",
+              "tvl-by-token",
+              "leaderboard",
+              "positions",
+              "kpi-analyst",
+              "funding-comparison",
+              "funding-rates",
+              "staking-daily",
+              "fund-flows-by-chain",
+              "liquidations-by-symbol",
+              "liquidation-heatmap",
+              "insurance-fund",
+              "market-price-chart",
+              "market-orderbook",
+              "market-recent-trades",
+              "market-funding-chart",
+              "market-recent-liquidations",
+              "market-top-traders",
+              "market-platform-positions"
+            ],
+            "description": "Widget id to focus."
+          }
+        },
+        "required": [
+          "widget_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_account_state",
+      "description": "Account snapshot for an address: collateral, margin ratios, 24h PnL, and all OPEN positions (qty, notional, entry/mark price, leverage, est. liquidation price). Drives the address Positions tab.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "description": "Wallet address (EVM 0x…)."
+          },
+          "broker_id": {
+            "type": "string"
+          },
+          "account_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "address"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_all_symbols",
+      "description": "Every known perp symbol (including delisted) as a hash→name map: {symbol, symbol_hash}. Use to resolve keccak256 symbol hashes in event/position data to display names. Active symbols are also available via get_markets.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_all_tokens",
+      "description": "Every known settlement/collateral token as a hash→name map: {token, token_hash}. Use to resolve keccak256 token hashes in settlement/fee fields to display names.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_brokers",
+      "description": "Directory of all Orderly brokers (broker_id → human-readable broker_name), sorted by name. Use to label broker_id values returned by other tools.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_builder_daily",
+      "description": "Per-builder daily metrics: taker/maker/total volume, active users, broker fees, and net flow. Drives the Builder Volume, Builder Active Traders, Builder Revenue, and Net Flow By Builder widgets.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "days": {
+            "type": "number",
+            "description": "Trailing days (default 30, max 730)."
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_current_view",
+      "description": "Read-only snapshot of what the user is currently looking at: the current route/URL, the page area, the active market symbol (base tick) when on a market page, and the list of widget ids currently rendered on screen (valid inputs for focus_widget / share_widget / get_widget_url). Call this to ground yourself in the user's current view before navigating or pointing at a widget. After open_market or open_address, call this to confirm the destination rendered — the result includes a status (loading | ready | not-found | error) and, when available, a short summary.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_daily_liquidations_by_symbol",
+      "description": "Daily liquidation notional aggregated per perpetual symbol across all markets. For individual recent liquidation events of one symbol use get_recent_liquidations.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_dashboard_main",
+      "description": "Daily platform totals for Orderly: taker/cumulative volume, revenue (fees), TVL, deposits/withdrawals, new accounts/addresses, and active builders, as a historical time series. For a live snapshot use get_market_summary; for weekly/monthly user aggregates use get_metrics_overview. Returns rows newest-last over the trailing `days` window.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "days": {
+            "type": "number",
+            "description": "Trailing days (default 90, max 730)."
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_dex_users",
+      "description": "Per-builder user activity snapshot: DAU/WAU/MAU with day/week/month-over-month deltas and new-user counts. Drives the DEX Users widget.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_distributor_invitees",
+      "description": "Per-invitee detail for referral distributors: invite date, DEX, status, and 30D volume/revenue share. Returns an array of invitee rows.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_distributor_stats",
+      "description": "Referral distributor statistics: invitee counts, graduated invitees, revenue share, and fee tier. Drives the Distributors widget. Returns an array of distributor rows.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_events",
+      "description": "Historical trading events for an account: trades, settlements, liquidations, ADLs, and margin transfers (versioned v1/v2/v3 already flattened to a uniform shape). Time range is capped at 31 days; omit both times for the most recent page. Drives the address Events tab. Returns { events, nextCursor, pageSizeLimit, tradesCount }; pass the nextCursor back as the cursor param to fetch the next page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "description": "Orderly account ID (0x + 64 hex)."
+          },
+          "event_type": {
+            "type": "string",
+            "enum": [
+              "TRANSACTION",
+              "PERPTRADE",
+              "SETTLEMENT",
+              "LIQUIDATION",
+              "ADL",
+              "MARGINTRANSFER"
+            ]
+          },
+          "from_time": {
+            "type": "number",
+            "description": "Inclusive start, Unix seconds."
+          },
+          "to_time": {
+            "type": "number",
+            "description": "Inclusive end, Unix seconds."
+          },
+          "cursor": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Opaque pagination cursor (the nextCursor value from a prior response). Do not construct this object yourself — only pass back the cursor you received."
+          }
+        },
+        "required": [
+          "account_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_fund_flows_by_broker",
+      "description": "Daily deposits, withdrawals, and net fund flow per broker. Drives the Net Flow By Builder widget (fund-flow variant).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "days": {
+            "type": "number",
+            "description": "Trailing days (default 30, max 730)."
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_fund_flows_by_chain",
+      "description": "Daily deposits, withdrawals, and net fund flow per chain. Drives the Fund Flows By Chain widget.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_funding_comparison",
+      "description": "Cross-exchange funding rate comparison: last value plus 1d/7d/30d averages per symbol across venues (Orderly vs. Binance, Bybit, etc.). Omit symbol for all symbols. For per-symbol 8h funding history use get_funding_rates.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string",
+            "description": "Perp symbol: base tick (BTC) or full form; omit for all."
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_funding_rates",
+      "description": "8-hour funding rates for every perpetual symbol, from a trailing start date. For cross-exchange funding comparisons use get_funding_comparison.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "days": {
+            "type": "number",
+            "description": "Trailing days for the start date (default 30)."
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_insurance_fund",
+      "description": "Orderly insurance fund balance, holdings, and status. Drives the Insurance Fund widget.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_leaderboard",
+      "description": "Daily trading leaderboard: realized PnL and perp volume per trader over a date range (YYYY-MM-DD). Supports pagination, broker/address filters, sort, and aggregation by address, account, or date. Drives the Leaderboard (trading) tab.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "start_date": {
+            "type": "string",
+            "description": "Inclusive start, YYYY-MM-DD."
+          },
+          "end_date": {
+            "type": "string",
+            "description": "Inclusive end, YYYY-MM-DD."
+          },
+          "page": {
+            "type": "number",
+            "description": "1-based page (default 1)."
+          },
+          "size": {
+            "type": "number",
+            "description": "Page size (default 20, max 100)."
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "ascending_realized_pnl",
+              "descending_realized_pnl",
+              "ascending_perp_volume",
+              "descending_perp_volume"
+            ],
+            "description": "Default descending_realized_pnl."
+          },
+          "broker_id": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string",
+            "description": "Filter to a wallet address."
+          },
+          "aggregateBy": {
+            "type": "string",
+            "enum": [
+              "address",
+              "address_per_builder",
+              "date",
+              "account"
+            ]
+          }
+        },
+        "required": [
+          "start_date",
+          "end_date"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_market_detail",
+      "description": "Composite single-symbol bundle for the market detail page. Returns only the requested sections (default: all of market info, top-50 orderbook levels, recent trades, funding history, and OHLCV candles). Requesting fewer sections keeps the payload small. Drives the Price Chart, Orderbook, Recent Trades, and Funding Chart.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string",
+            "description": "Perp symbol. Accepts a base tick (BTC) or full form (PERP_BTC_USDC)."
+          },
+          "include": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "market_info",
+                "orderbook",
+                "recent_trades",
+                "funding_history",
+                "candles"
+              ]
+            },
+            "description": "Sections to return; omit for all."
+          },
+          "candles_interval": {
+            "type": "string",
+            "enum": [
+              "5m",
+              "15m",
+              "1h",
+              "4h",
+              "1d"
+            ],
+            "description": "Candle interval (default '1h'). One of: 5m, 15m, 1h, 4h, 1d."
+          }
+        },
+        "required": [
+          "symbol"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_market_share",
+      "description": "Orderly's DEX perpetuals market share vs. other on-chain perp venues, computed from CoinGecko 24h derivatives volume and DefiLlama open interest. Drives the Market Share widget. Returns ranked protocols with volume, open interest, and share %.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_market_summary",
+      "description": "Live platform-wide market snapshot: 24h volume, open interest, trader counts, and fee totals across all symbols. For historical daily time series use get_dashboard_main; for weekly/monthly user aggregates use get_metrics_overview.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_markets",
+      "description": "Snapshot of all active perpetual markets: the futures market list, 24h price changes, and per-symbol open interest. Drives the Markets page. Returns an object { markets, priceChanges, openInterest }. Optional search (a case-insensitive substring on the symbol), sort_by (24h_volume | 24h_change | open_interest | symbol), limit (max 200), and desc (default true) filter and rank the markets and trim the priceChanges / openInterest arrays to the same symbol set. Defaults to 50 markets in API order; pass limit: 200 for the full set.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "search": {
+            "type": "string",
+            "description": "Case-insensitive substring on the symbol (e.g. \"btc\", \"sol\", \"perp_btc\")."
+          },
+          "sort_by": {
+            "type": "string",
+            "enum": [
+              "24h_volume",
+              "24h_change",
+              "open_interest",
+              "symbol"
+            ],
+            "description": "Rank markets by this metric (default: API order)."
+          },
+          "limit": {
+            "type": "number",
+            "description": "Max markets to return after filter/sort (default 50; max 200)."
+          },
+          "desc": {
+            "type": "boolean",
+            "description": "Sort descending (default true)."
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_metrics_overview",
+      "description": "Weekly and monthly aggregates for new users, active users, trading volume, and Orderly revenue. For daily historical totals use get_dashboard_main.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_omnivault_tvl",
+      "description": "Weekly average TVL per OmniVault (USD millions). Drives the OmniVault TVL widget.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_platform_positions",
+      "description": "Platform-wide open positions for a symbol (large-position liquidation-heatmap data). Returns up to 1000 positions filtered by minimum notional. Drives the Liquidation Heatmap.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string",
+            "description": "Perp symbol: base tick (BTC) or full form."
+          },
+          "min_notional": {
+            "type": "number",
+            "description": "Minimum position notional (default 0)."
+          }
+        },
+        "required": [
+          "symbol"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_portfolio",
+      "description": "Daily account-value time series with cumulative PnL (equity curve) for an address, up to 365 days. Drives the Portfolio Chart on the address page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "description": "Wallet address (EVM 0x…)."
+          },
+          "broker_id": {
+            "type": "string"
+          },
+          "account_id": {
+            "type": "string"
+          },
+          "start_time": {
+            "type": "number",
+            "description": "Inclusive start, Unix seconds."
+          },
+          "end_time": {
+            "type": "number",
+            "description": "Inclusive end, Unix seconds."
+          },
+          "limit": {
+            "type": "number",
+            "description": "Max snapshots (default 90, max 365)."
+          }
+        },
+        "required": [
+          "address"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_positions",
+      "description": "Open-positions leaderboard: largest open positions by notional, optionally filtered by account, broker, or symbol. Drives the Leaderboard (positions) tab.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string"
+          },
+          "broker_id": {
+            "type": "string"
+          },
+          "symbol": {
+            "type": "string",
+            "description": "Perp symbol: base tick (BTC) or full form (PERP_BTC_USDC)."
+          },
+          "offset": {
+            "type": "number",
+            "description": "Pagination offset (default 0)."
+          },
+          "limit": {
+            "type": "number",
+            "description": "Page size (default 50, max 500)."
+          },
+          "order_by": {
+            "type": "string",
+            "enum": [
+              "ASC",
+              "DESC"
+            ],
+            "description": "Default DESC."
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_recent_liquidations",
+      "description": "Recent individual liquidation events for one symbol: side, size, notional, mark/liquidation price, and the liquidated account. For daily liquidation totals aggregated across all symbols use get_daily_liquidations_by_symbol.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string",
+            "description": "Perp symbol: base tick (BTC) or full form (PERP_BTC_USDC)."
+          },
+          "limit": {
+            "type": "number",
+            "description": "Max events (default 50, max 500)."
+          }
+        },
+        "required": [
+          "symbol"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_site_overview",
+      "description": "START HERE. Returns a map of this site: what it is, its areas, which tools back each area, common multi-step flows, parameter conventions, and suggested first queries. Call this once to get oriented before using the other tools. This is a read-only analytics dashboard for the Orderly Network perpetual-futures DEX; it does not place trades.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_stake_users",
+      "description": "Weekly average active stakers. Drives the Stake Users widget.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_stake_vs_supply",
+      "description": "Weekly ORDER staked vs circulating supply and staking ratio. Drives the Stake vs Supply widget.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_staking_daily",
+      "description": "Daily $ORDER staking metrics: staked/unstaked/net amounts, cumulative staker addresses, buybacks, and burned ORDER. Drives the Staking Daily widget.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_symbol_info",
+      "description": "Full configuration for a single perpetual symbol: leverage limits (1/base_imr), tick/lot sizes, price precision, and status flags. Returns the symbol info object.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string",
+            "description": "Perp symbol: base tick (ETH) or full form."
+          }
+        },
+        "required": [
+          "symbol"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_top_traders",
+      "description": "Top addresses ranked by a chosen metric (notional, volume, PnL, or trade count) for a symbol or platform-wide. Paginated via cursor. Drives the Top Traders panel and Whale Leaderboard.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string",
+            "description": "Perp symbol: base tick (BTC) or full form; omit for platform-wide."
+          },
+          "sort_by": {
+            "type": "string",
+            "enum": [
+              "notional",
+              "volume_24h",
+              "volume_7d",
+              "volume_30d",
+              "pnl_24h",
+              "pnl_7d",
+              "pnl_30d",
+              "trade_count_24h"
+            ],
+            "description": "Ranking metric (default notional)."
+          },
+          "min_notional": {
+            "type": "number",
+            "description": "Minimum notional filter (default 0)."
+          },
+          "limit": {
+            "type": "number",
+            "description": "Page size (default 50, max 200)."
+          },
+          "cursor": {
+            "type": "string",
+            "description": "Opaque pagination cursor from a previous response — pass it back unchanged."
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_tvl_by_chain",
+      "description": "Total Value Locked broken down by chain, plus a total row. Drives the TVL By Chain widget. Returns newest snapshot rows.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_tvl_by_token",
+      "description": "TVL and token balance held per collateral token over a trailing window. Drives the TVL By Token widget.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "days": {
+            "type": "number",
+            "description": "Trailing days (default 30, max 730)."
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_volume_segments",
+      "description": "Weekly trading volume split by market-maker vs retail segment. Drives the Volume Segments widget.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_weekly_symbol_volume",
+      "description": "Weekly per-symbol volume and listed-markets count from the analytics API. For the live market list (prices, 24h change, open interest) use get_markets.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_whale_context",
+      "description": "Whale research bundle for a single address: account state (collateral, PnL), open positions, and recent trades. Requires an address; optionally scope to a broker or account_id. Drives the Whale Detail modal.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "description": "Wallet address (EVM 0x…)."
+          },
+          "broker_id": {
+            "type": "string",
+            "description": "Broker to scope to (optional)."
+          },
+          "account_id": {
+            "type": "string",
+            "description": "Account ID to scope to (optional)."
+          },
+          "recent_trades_limit": {
+            "type": "number",
+            "description": "Max trades (default 20, max 100)."
+          }
+        },
+        "required": [
+          "address"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_widget_url",
+      "description": "Return the embeddable share URL for a dashboard widget — the same link the Share dialog produces — without opening any UI. Use this to give the user a link to a widget. Market widgets (market-*) take an optional symbol.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "widget_id": {
+            "type": "string",
+            "enum": [
+              "volume",
+              "tvl-chain",
+              "net-fees",
+              "overview",
+              "dex-users",
+              "market-share",
+              "volume-segments",
+              "omnivault-tvl",
+              "stake-users",
+              "stake-vs-supply",
+              "distributors",
+              "fees-stats",
+              "builder-volume",
+              "builder-active-traders",
+              "builder-revenue",
+              "net-flow-by-builder",
+              "tvl-by-token",
+              "leaderboard",
+              "positions",
+              "kpi-analyst",
+              "funding-comparison",
+              "funding-rates",
+              "staking-daily",
+              "fund-flows-by-chain",
+              "liquidations-by-symbol",
+              "liquidation-heatmap",
+              "insurance-fund",
+              "market-price-chart",
+              "market-orderbook",
+              "market-recent-trades",
+              "market-funding-chart",
+              "market-recent-liquidations",
+              "market-top-traders",
+              "market-platform-positions"
+            ],
+            "description": "Widget id to get a link for."
+          },
+          "symbol": {
+            "type": "string",
+            "description": "Symbol for market widgets (e.g. BTC). Ignored for non-market widgets."
+          }
+        },
+        "required": [
+          "widget_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "open_address",
+      "description": "Navigate the user to an address / account detail page. Accepts an EVM address (0x + 40 hex), an Orderly account_id (0x + 64 hex), or a Solana base58 address. Solana addresses are url-safe-base64 encoded to match in-app AddressLink links.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "description": "EVM address, Solana address, or Orderly account_id."
+          }
+        },
+        "required": [
+          "address"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "open_market",
+      "description": "Navigate the user to a market detail page. Pass a base tick (BTC), the full form (PERP_BTC_USDC), or a broker-suffixed variant (PERP_AAPL_USDC_mythos). The page renders a graceful \"Market Not Found\" for unknown symbols, so no pre-validation is performed — the user lands on the right place regardless.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string",
+            "description": "Market symbol (e.g. BTC, ETH, PERP_BTC_USDC)."
+          }
+        },
+        "required": [
+          "symbol"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "resolve_address",
+      "description": "Resolve a wallet address or account ID into its Orderly broker/account pairs. Accepts an EVM address (0x + 40 hex), a Solana address (43-44 base58 chars), or an account ID (0x + 64 hex). Returns an array of {broker_id, account_id, …} pairs for the identity. For address queries (not account IDs) each account is enriched with 90-day perp_volume and realized_pnl, sorted by volume descending — matching the Search results page. First step of the Explorer/address flow.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "description": "EVM address, Solana address, or Orderly account ID."
+          }
+        },
+        "required": [
+          "address"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "share_widget",
+      "description": "Open the share dialog for a dashboard widget, presenting the user with the widget's embed/share link. Only works when the widget and its share button are rendered on the current page (share buttons are hidden on embeds).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "widget_id": {
+            "type": "string",
+            "enum": [
+              "volume",
+              "tvl-chain",
+              "net-fees",
+              "overview",
+              "dex-users",
+              "market-share",
+              "volume-segments",
+              "omnivault-tvl",
+              "stake-users",
+              "stake-vs-supply",
+              "distributors",
+              "fees-stats",
+              "builder-volume",
+              "builder-active-traders",
+              "builder-revenue",
+              "net-flow-by-builder",
+              "tvl-by-token",
+              "leaderboard",
+              "positions",
+              "kpi-analyst",
+              "funding-comparison",
+              "funding-rates",
+              "staking-daily",
+              "fund-flows-by-chain",
+              "liquidations-by-symbol",
+              "liquidation-heatmap",
+              "insurance-fund",
+              "market-price-chart",
+              "market-orderbook",
+              "market-recent-trades",
+              "market-funding-chart",
+              "market-recent-liquidations",
+              "market-top-traders",
+              "market-platform-positions"
+            ],
+            "description": "Widget id to share."
+          }
+        },
+        "required": [
+          "widget_id"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "dashboard.orderly.network",
+  "source": "webmcp.com/api/directory.json"
+}

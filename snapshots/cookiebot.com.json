@@ -1,0 +1,58 @@
+{
+  "sponsio": 1,
+  "url": "https://www.cookiebot.com/us/",
+  "capturedAt": "2026-09-20T11:13:53.442Z",
+  "tools": [
+    {
+      "name": "cb_list_pages",
+      "description": "List all pages in the Cookiebot site navigation as titles and URLs. Call this first when the user asks about a topic and you are unsure which page covers it — then pick the best match and read it with cb_read_page. Each entry includes an optional parent label so you can understand nested sections (e.g. \"Solutions > GDPR\").",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "cb_read_page",
+      "description": "Read the content of a Cookiebot page as clean markdown (about 10x fewer tokens than the HTML). Prefer this over fetching/scraping a page when you need to understand or quote its content to answer the user. Pass an absolute cookiebot.com URL or a known page_key such as \"pricing\".",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "Absolute cookiebot.com URL to read."
+          },
+          "page_key": {
+            "type": "string",
+            "description": "A known page key, e.g. \"pricing\"."
+          }
+        }
+      }
+    },
+    {
+      "name": "cb_scan_cmp",
+      "description": "Check whether a website is GDPR-compliant using Cookiebot's scanner. Ask the user for their domain and email before calling — the email is required to receive the results. The scan takes 30–90 seconds; this tool polls until it completes and returns the result inline. Results are also sent to the provided email.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "domain",
+          "email"
+        ],
+        "properties": {
+          "domain": {
+            "type": "string",
+            "description": "Domain to scan, e.g. \"example.com\"."
+          },
+          "email": {
+            "type": "string",
+            "description": "Email address to send the results to."
+          }
+        }
+      }
+    }
+  ],
+  "host": "cookiebot.com",
+  "source": "webmcp.com/api/directory.json"
+}
