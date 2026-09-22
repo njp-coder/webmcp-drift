@@ -1,11 +1,1084 @@
 {
   "sponsio": 1,
   "url": "https://magicbrain.es/",
-  "capturedAt": "2026-09-21T12:40:37.858Z",
+  "capturedAt": "2026-09-22T11:27:53.102Z",
   "tools": [
     {
+      "name": "ask_product_question",
+      "description": "Retrieve source-cited canonical evidence for a Magic Brain product or business question without calling another LLM. The host should synthesize the answer, preserve every epistemic status, state unknowns directly, and avoid unsupported metrics or superiority claims.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "request_summary": {
+            "description": "Optional short summary of why the user requested this tool call. Paraphrase the intent; do not include the original prompt, personal data, credentials, or secrets.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "request_context": {
+            "description": "Optional privacy-safe metadata inferred from the request. Do not copy the original prompt or include personal data, credentials, secrets, free-form notes, or identifiers.",
+            "type": "object",
+            "properties": {
+              "intent": {
+                "type": "string",
+                "enum": [
+                  "research",
+                  "compare",
+                  "monitor",
+                  "manage_collection",
+                  "manage_watchlist",
+                  "developer",
+                  "rules",
+                  "other"
+                ]
+              },
+              "language": {
+                "type": "string",
+                "enum": [
+                  "en",
+                  "es",
+                  "other"
+                ]
+              },
+              "output_format": {
+                "type": "string",
+                "enum": [
+                  "answer",
+                  "list",
+                  "table",
+                  "analysis",
+                  "action"
+                ]
+              },
+              "subject": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120
+              }
+            },
+            "required": [
+              "intent"
+            ],
+            "additionalProperties": false
+          },
+          "question": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 800
+          },
+          "limit": {
+            "default": 10,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12
+          }
+        },
+        "required": [
+          "question"
+        ]
+      }
+    },
+    {
+      "name": "ask_rules",
+      "description": "Retrieve official Magic Comprehensive Rules evidence for a rules question. Clearly separates bounded official excerpts from non-authoritative explanatory retrieval guidance; it does not issue judge rulings.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "request_summary": {
+            "description": "Optional short summary of why the user requested this tool call. Paraphrase the intent; do not include the original prompt, personal data, credentials, or secrets.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "request_context": {
+            "description": "Optional privacy-safe metadata inferred from the request. Do not copy the original prompt or include personal data, credentials, secrets, free-form notes, or identifiers.",
+            "type": "object",
+            "properties": {
+              "intent": {
+                "type": "string",
+                "enum": [
+                  "research",
+                  "compare",
+                  "monitor",
+                  "manage_collection",
+                  "manage_watchlist",
+                  "developer",
+                  "rules",
+                  "other"
+                ]
+              },
+              "language": {
+                "type": "string",
+                "enum": [
+                  "en",
+                  "es",
+                  "other"
+                ]
+              },
+              "output_format": {
+                "type": "string",
+                "enum": [
+                  "answer",
+                  "list",
+                  "table",
+                  "analysis",
+                  "action"
+                ]
+              },
+              "subject": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120
+              }
+            },
+            "required": [
+              "intent"
+            ],
+            "additionalProperties": false
+          },
+          "question": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 500
+          },
+          "limit": {
+            "default": 5,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10
+          },
+          "max_excerpt_chars": {
+            "default": 360,
+            "type": "integer",
+            "minimum": 80,
+            "maximum": 600
+          },
+          "include_glossary": {
+            "default": true,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "question"
+        ]
+      }
+    },
+    {
+      "name": "build_portfolio_scenario",
+      "description": "Build a professional, bounded portfolio for one Magic edition using Magic Brain's machine-learning opportunity signals. Returns card allocations, quantities, model scores, confidence, rationale, and unallocated budget. The scenario is read-only and never saved; it omits liquidity, inventory, fees, taxes, shipping, condition, language, and execution-price guarantees and is not financial advice.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "request_summary": {
+            "description": "Optional short summary of why the user requested this tool call. Paraphrase the intent; do not include the original prompt, personal data, credentials, or secrets.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "request_context": {
+            "description": "Optional privacy-safe metadata inferred from the request. Do not copy the original prompt or include personal data, credentials, secrets, free-form notes, or identifiers.",
+            "type": "object",
+            "properties": {
+              "intent": {
+                "type": "string",
+                "enum": [
+                  "research",
+                  "compare",
+                  "monitor",
+                  "manage_collection",
+                  "manage_watchlist",
+                  "developer",
+                  "rules",
+                  "other"
+                ]
+              },
+              "language": {
+                "type": "string",
+                "enum": [
+                  "en",
+                  "es",
+                  "other"
+                ]
+              },
+              "output_format": {
+                "type": "string",
+                "enum": [
+                  "answer",
+                  "list",
+                  "table",
+                  "analysis",
+                  "action"
+                ]
+              },
+              "subject": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120
+              }
+            },
+            "required": [
+              "intent"
+            ],
+            "additionalProperties": false
+          },
+          "set_code": {
+            "type": "string",
+            "pattern": "^[a-z0-9]{2,8}$"
+          },
+          "budget_eur": {
+            "type": "number",
+            "minimum": 25,
+            "maximum": 1000000
+          },
+          "risk": {
+            "type": "string",
+            "enum": [
+              "preservation",
+              "conservative",
+              "balanced",
+              "growth",
+              "aggressive"
+            ]
+          },
+          "max_positions": {
+            "default": 8,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20
+          }
+        },
+        "required": [
+          "set_code",
+          "budget_eur",
+          "risk"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_card",
+      "description": "Get public catalogue details for one Magic card by ID, including printing and set metadata when available. Does not return ownership, watchlist, portfolio, or user data.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "request_summary": {
+            "description": "Optional short summary of why the user requested this tool call. Paraphrase the intent; do not include the original prompt, personal data, credentials, or secrets.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "request_context": {
+            "description": "Optional privacy-safe metadata inferred from the request. Do not copy the original prompt or include personal data, credentials, secrets, free-form notes, or identifiers.",
+            "type": "object",
+            "properties": {
+              "intent": {
+                "type": "string",
+                "enum": [
+                  "research",
+                  "compare",
+                  "monitor",
+                  "manage_collection",
+                  "manage_watchlist",
+                  "developer",
+                  "rules",
+                  "other"
+                ]
+              },
+              "language": {
+                "type": "string",
+                "enum": [
+                  "en",
+                  "es",
+                  "other"
+                ]
+              },
+              "output_format": {
+                "type": "string",
+                "enum": [
+                  "answer",
+                  "list",
+                  "table",
+                  "analysis",
+                  "action"
+                ]
+              },
+              "subject": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120
+              }
+            },
+            "required": [
+              "intent"
+            ],
+            "additionalProperties": false
+          },
+          "card_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "description": "Magic Brain or canonical card identifier"
+          }
+        },
+        "required": [
+          "card_id"
+        ]
+      }
+    },
+    {
+      "name": "get_latest_market_brief",
+      "description": "Retrieve the latest immutable Magic Brain market brief derived from stored market observations. This is a deterministic market-data summary, not external reporting, a live quote, a recommendation, or financial advice; preserve its data date, methodology, freshness, and liquidity caveats.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "request_summary": {
+            "description": "Optional short summary of why the user requested this tool call. Paraphrase the intent; do not include the original prompt, personal data, credentials, or secrets.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "request_context": {
+            "description": "Optional privacy-safe metadata inferred from the request. Do not copy the original prompt or include personal data, credentials, secrets, free-form notes, or identifiers.",
+            "type": "object",
+            "properties": {
+              "intent": {
+                "type": "string",
+                "enum": [
+                  "research",
+                  "compare",
+                  "monitor",
+                  "manage_collection",
+                  "manage_watchlist",
+                  "developer",
+                  "rules",
+                  "other"
+                ]
+              },
+              "language": {
+                "type": "string",
+                "enum": [
+                  "en",
+                  "es",
+                  "other"
+                ]
+              },
+              "output_format": {
+                "type": "string",
+                "enum": [
+                  "answer",
+                  "list",
+                  "table",
+                  "analysis",
+                  "action"
+                ]
+              },
+              "subject": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120
+              }
+            },
+            "required": [
+              "intent"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_latest_prices",
+      "description": "Get the latest available public market prices for up to 100 card IDs in one read-only request. Price records preserve the API's source, observation time, currency, and finish metadata and are not financial advice.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "request_summary": {
+            "description": "Optional short summary of why the user requested this tool call. Paraphrase the intent; do not include the original prompt, personal data, credentials, or secrets.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "request_context": {
+            "description": "Optional privacy-safe metadata inferred from the request. Do not copy the original prompt or include personal data, credentials, secrets, free-form notes, or identifiers.",
+            "type": "object",
+            "properties": {
+              "intent": {
+                "type": "string",
+                "enum": [
+                  "research",
+                  "compare",
+                  "monitor",
+                  "manage_collection",
+                  "manage_watchlist",
+                  "developer",
+                  "rules",
+                  "other"
+                ]
+              },
+              "language": {
+                "type": "string",
+                "enum": [
+                  "en",
+                  "es",
+                  "other"
+                ]
+              },
+              "output_format": {
+                "type": "string",
+                "enum": [
+                  "answer",
+                  "list",
+                  "table",
+                  "analysis",
+                  "action"
+                ]
+              },
+              "subject": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120
+              }
+            },
+            "required": [
+              "intent"
+            ],
+            "additionalProperties": false
+          },
+          "card_ids": {
+            "minItems": 1,
+            "maxItems": 100,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "description": "Magic Brain or canonical card identifier"
+            }
+          }
+        },
+        "required": [
+          "card_ids"
+        ]
+      }
+    },
+    {
+      "name": "get_latest_set_opportunities",
+      "description": "Get Magic Brain's transparent, read-only ranking of cards in the newest released tabletop expansion, or a requested set. Returns bounded signals such as momentum, stability, drawdown, risk, confidence, and rationale. These are research indicators, not financial advice.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "request_summary": {
+            "description": "Optional short summary of why the user requested this tool call. Paraphrase the intent; do not include the original prompt, personal data, credentials, or secrets.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "request_context": {
+            "description": "Optional privacy-safe metadata inferred from the request. Do not copy the original prompt or include personal data, credentials, secrets, free-form notes, or identifiers.",
+            "type": "object",
+            "properties": {
+              "intent": {
+                "type": "string",
+                "enum": [
+                  "research",
+                  "compare",
+                  "monitor",
+                  "manage_collection",
+                  "manage_watchlist",
+                  "developer",
+                  "rules",
+                  "other"
+                ]
+              },
+              "language": {
+                "type": "string",
+                "enum": [
+                  "en",
+                  "es",
+                  "other"
+                ]
+              },
+              "output_format": {
+                "type": "string",
+                "enum": [
+                  "answer",
+                  "list",
+                  "table",
+                  "analysis",
+                  "action"
+                ]
+              },
+              "subject": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120
+              }
+            },
+            "required": [
+              "intent"
+            ],
+            "additionalProperties": false
+          },
+          "set_code": {
+            "type": "string",
+            "pattern": "^[a-z0-9]{2,8}$"
+          },
+          "minimum_confidence": {
+            "default": 0,
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "limit": {
+            "default": 10,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 25
+          }
+        }
+      }
+    },
+    {
+      "name": "get_market_brief_by_date",
+      "description": "Retrieve one immutable deterministic market brief for an exact market-data date. Preserve its provenance, coverage, freshness, and liquidity caveats; it is not external news or financial advice.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "request_summary": {
+            "description": "Optional short summary of why the user requested this tool call. Paraphrase the intent; do not include the original prompt, personal data, credentials, or secrets.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "request_context": {
+            "description": "Optional privacy-safe metadata inferred from the request. Do not copy the original prompt or include personal data, credentials, secrets, free-form notes, or identifiers.",
+            "type": "object",
+            "properties": {
+              "intent": {
+                "type": "string",
+                "enum": [
+                  "research",
+                  "compare",
+                  "monitor",
+                  "manage_collection",
+                  "manage_watchlist",
+                  "developer",
+                  "rules",
+                  "other"
+                ]
+              },
+              "language": {
+                "type": "string",
+                "enum": [
+                  "en",
+                  "es",
+                  "other"
+                ]
+              },
+              "output_format": {
+                "type": "string",
+                "enum": [
+                  "answer",
+                  "list",
+                  "table",
+                  "analysis",
+                  "action"
+                ]
+              },
+              "subject": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120
+              }
+            },
+            "required": [
+              "intent"
+            ],
+            "additionalProperties": false
+          },
+          "date": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          }
+        },
+        "required": [
+          "date"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_market_movers",
+      "description": "Get a public, read-only ranking of Magic: The Gathering card printings with the largest observed price gains or declines over 1, 7, 30, or 90 days. Returns up to 50 cards with source dates and is not financial advice.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "request_summary": {
+            "description": "Optional short summary of why the user requested this tool call. Paraphrase the intent; do not include the original prompt, personal data, credentials, or secrets.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "request_context": {
+            "description": "Optional privacy-safe metadata inferred from the request. Do not copy the original prompt or include personal data, credentials, secrets, free-form notes, or identifiers.",
+            "type": "object",
+            "properties": {
+              "intent": {
+                "type": "string",
+                "enum": [
+                  "research",
+                  "compare",
+                  "monitor",
+                  "manage_collection",
+                  "manage_watchlist",
+                  "developer",
+                  "rules",
+                  "other"
+                ]
+              },
+              "language": {
+                "type": "string",
+                "enum": [
+                  "en",
+                  "es",
+                  "other"
+                ]
+              },
+              "output_format": {
+                "type": "string",
+                "enum": [
+                  "answer",
+                  "list",
+                  "table",
+                  "analysis",
+                  "action"
+                ]
+              },
+              "subject": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120
+              }
+            },
+            "required": [
+              "intent"
+            ],
+            "additionalProperties": false
+          },
+          "direction": {
+            "default": "gainers",
+            "type": "string",
+            "enum": [
+              "gainers",
+              "losers"
+            ]
+          },
+          "days": {
+            "default": 7,
+            "anyOf": [
+              {
+                "type": "number",
+                "const": 1
+              },
+              {
+                "type": "number",
+                "const": 7
+              },
+              {
+                "type": "number",
+                "const": 30
+              },
+              {
+                "type": "number",
+                "const": 90
+              }
+            ]
+          },
+          "set_code": {
+            "type": "string",
+            "pattern": "^[a-z0-9]{2,8}$"
+          },
+          "limit": {
+            "default": 20,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50
+          }
+        }
+      }
+    },
+    {
+      "name": "get_price_history",
+      "description": "Get bounded public historical price observations for one card and date range. Use daily or weekly intervals; the maximum range is 366 days. Results are market observations, not investment guarantees.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "request_summary": {
+            "description": "Optional short summary of why the user requested this tool call. Paraphrase the intent; do not include the original prompt, personal data, credentials, or secrets.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "request_context": {
+            "description": "Optional privacy-safe metadata inferred from the request. Do not copy the original prompt or include personal data, credentials, secrets, free-form notes, or identifiers.",
+            "type": "object",
+            "properties": {
+              "intent": {
+                "type": "string",
+                "enum": [
+                  "research",
+                  "compare",
+                  "monitor",
+                  "manage_collection",
+                  "manage_watchlist",
+                  "developer",
+                  "rules",
+                  "other"
+                ]
+              },
+              "language": {
+                "type": "string",
+                "enum": [
+                  "en",
+                  "es",
+                  "other"
+                ]
+              },
+              "output_format": {
+                "type": "string",
+                "enum": [
+                  "answer",
+                  "list",
+                  "table",
+                  "analysis",
+                  "action"
+                ]
+              },
+              "subject": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120
+              }
+            },
+            "required": [
+              "intent"
+            ],
+            "additionalProperties": false
+          },
+          "card_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "description": "Magic Brain or canonical card identifier"
+          },
+          "start_date": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          },
+          "end_date": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          },
+          "finish": {
+            "default": "all",
+            "type": "string",
+            "enum": [
+              "all",
+              "nonfoil",
+              "foil"
+            ]
+          }
+        },
+        "required": [
+          "card_id",
+          "start_date",
+          "end_date"
+        ]
+      }
+    },
+    {
+      "name": "get_product_context",
+      "description": "Retrieve a bounded canonical evidence bundle for one or more Magic Brain diligence topics. Use it for broad product or business analysis where all returned claims must retain their shipped fact, operating principle, hypothesis, roadmap option, or unknown/not measured status.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "request_summary": {
+            "description": "Optional short summary of why the user requested this tool call. Paraphrase the intent; do not include the original prompt, personal data, credentials, or secrets.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "request_context": {
+            "description": "Optional privacy-safe metadata inferred from the request. Do not copy the original prompt or include personal data, credentials, secrets, free-form notes, or identifiers.",
+            "type": "object",
+            "properties": {
+              "intent": {
+                "type": "string",
+                "enum": [
+                  "research",
+                  "compare",
+                  "monitor",
+                  "manage_collection",
+                  "manage_watchlist",
+                  "developer",
+                  "rules",
+                  "other"
+                ]
+              },
+              "language": {
+                "type": "string",
+                "enum": [
+                  "en",
+                  "es",
+                  "other"
+                ]
+              },
+              "output_format": {
+                "type": "string",
+                "enum": [
+                  "answer",
+                  "list",
+                  "table",
+                  "analysis",
+                  "action"
+                ]
+              },
+              "subject": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120
+              }
+            },
+            "required": [
+              "intent"
+            ],
+            "additionalProperties": false
+          },
+          "topics": {
+            "minItems": 1,
+            "maxItems": 6,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "positioning",
+                "users_and_alternatives",
+                "differentiation_and_moat",
+                "metrics_and_demand",
+                "monetization",
+                "provenance_and_trust",
+                "regulatory_and_risk",
+                "liquidity_and_signals",
+                "incidents_and_corrections",
+                "growth",
+                "adjacent_tcgs"
+              ]
+            }
+          },
+          "statuses": {
+            "maxItems": 5,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "shipped_fact",
+                "operating_principle",
+                "hypothesis",
+                "roadmap_option",
+                "unknown_not_measured"
+              ]
+            }
+          },
+          "limit": {
+            "default": 12,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12
+          }
+        },
+        "required": [
+          "topics"
+        ]
+      }
+    },
+    {
+      "name": "list_market_briefs",
+      "description": "List a bounded archive of immutable Magic Brain market briefs derived from stored price observations. Archive entries are deterministic research snapshots rather than external news or executable market quotes, and they never include private account, portfolio, or watchlist data.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "request_summary": {
+            "description": "Optional short summary of why the user requested this tool call. Paraphrase the intent; do not include the original prompt, personal data, credentials, or secrets.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "request_context": {
+            "description": "Optional privacy-safe metadata inferred from the request. Do not copy the original prompt or include personal data, credentials, secrets, free-form notes, or identifiers.",
+            "type": "object",
+            "properties": {
+              "intent": {
+                "type": "string",
+                "enum": [
+                  "research",
+                  "compare",
+                  "monitor",
+                  "manage_collection",
+                  "manage_watchlist",
+                  "developer",
+                  "rules",
+                  "other"
+                ]
+              },
+              "language": {
+                "type": "string",
+                "enum": [
+                  "en",
+                  "es",
+                  "other"
+                ]
+              },
+              "output_format": {
+                "type": "string",
+                "enum": [
+                  "answer",
+                  "list",
+                  "table",
+                  "analysis",
+                  "action"
+                ]
+              },
+              "subject": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120
+              }
+            },
+            "required": [
+              "intent"
+            ],
+            "additionalProperties": false
+          },
+          "limit": {
+            "default": 10,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 30
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_sets",
+      "description": "List normalized public Magic set metadata, optionally filtering by name/code, set type, release dates, and tabletop availability. Results are cursor-paginated and bounded.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "request_summary": {
+            "description": "Optional short summary of why the user requested this tool call. Paraphrase the intent; do not include the original prompt, personal data, credentials, or secrets.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "request_context": {
+            "description": "Optional privacy-safe metadata inferred from the request. Do not copy the original prompt or include personal data, credentials, secrets, free-form notes, or identifiers.",
+            "type": "object",
+            "properties": {
+              "intent": {
+                "type": "string",
+                "enum": [
+                  "research",
+                  "compare",
+                  "monitor",
+                  "manage_collection",
+                  "manage_watchlist",
+                  "developer",
+                  "rules",
+                  "other"
+                ]
+              },
+              "language": {
+                "type": "string",
+                "enum": [
+                  "en",
+                  "es",
+                  "other"
+                ]
+              },
+              "output_format": {
+                "type": "string",
+                "enum": [
+                  "answer",
+                  "list",
+                  "table",
+                  "analysis",
+                  "action"
+                ]
+              },
+              "subject": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120
+              }
+            },
+            "required": [
+              "intent"
+            ],
+            "additionalProperties": false
+          },
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "tabletop_only": {
+            "default": true,
+            "type": "boolean"
+          },
+          "cursor": {
+            "type": "string",
+            "maxLength": 512
+          },
+          "limit": {
+            "default": 25,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50
+          }
+        }
+      }
+    },
+    {
       "name": "navigate_magic_brain",
-      "description": "Navigate to a named page in the Magic Brain website. Use this instead of guessing URLs or clicking through menus.",
+      "description": "Open a named Magic Brain page. Use the remote research tools to retrieve card or market data.",
       "kind": "imperative",
       "inputSchema": {
         "type": "object",
@@ -30,16 +1103,31 @@
               "developers"
             ],
             "description": "overview: Open the Magic Brain overview dashboard. market: Browse market movements and pricing activity. market_movers: Open the public daily ranking of the top 50 Magic card gainers and losers. latest-set-watch: Review opportunities in the latest Magic set. portfolio: Open the signed-in user's collection portfolio. inventory: Manage the signed-in user's card inventory. discover: Discover cards using Magic Brain filters. watchlist: Open the signed-in user's card watchlist. reserved-list: Explore Reserved List cards. brain: Open Magic Brain's research workspace. signals: Review market signals. analyst: Open the price analyst. predict: Open price prediction tools. settings: Open account and application settings. developers: Open API and MCP developer resources."
-          },
+          }
+        },
+        "required": [
+          "destination"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "predict_set_growth",
+      "description": "Calculate a transparent, read-only growth scenario for a requested set, or the default eligible set, using bounded assumptions and observed market evidence. Forecast ranges and benchmark comparisons are illustrative research outputs, not guarantees, executable prices, or financial advice.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
           "request_summary": {
+            "description": "Optional short summary of why the user requested this tool call. Paraphrase the intent; do not include the original prompt, personal data, credentials, or secrets.",
             "type": "string",
             "minLength": 1,
-            "maxLength": 500,
-            "description": "Optional short paraphrase of the user's navigation intent. Do not include the original prompt or personal data."
+            "maxLength": 500
           },
           "request_context": {
+            "description": "Optional privacy-safe metadata inferred from the request. Do not copy the original prompt or include personal data, credentials, secrets, free-form notes, or identifiers.",
             "type": "object",
-            "description": "Optional privacy-safe metadata inferred from the request; never include the original prompt or personal data.",
             "properties": {
               "intent": {
                 "type": "string",
@@ -47,7 +1135,10 @@
                   "research",
                   "compare",
                   "monitor",
+                  "manage_collection",
+                  "manage_watchlist",
                   "developer",
+                  "rules",
                   "other"
                 ]
               },
@@ -71,6 +1162,7 @@
               },
               "subject": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 120
               }
             },
@@ -78,12 +1170,437 @@
               "intent"
             ],
             "additionalProperties": false
+          },
+          "set_code": {
+            "type": "string",
+            "pattern": "^[a-z0-9]{2,8}$"
+          },
+          "target": {
+            "default": "sp500",
+            "type": "string",
+            "enum": [
+              "inflation",
+              "sp500",
+              "extreme"
+            ]
+          },
+          "horizon_months": {
+            "default": 24,
+            "anyOf": [
+              {
+                "type": "number",
+                "const": 12
+              },
+              {
+                "type": "number",
+                "const": 24
+              },
+              {
+                "type": "number",
+                "const": 36
+              }
+            ]
+          },
+          "demand": {
+            "default": 3,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5
+          },
+          "scarcity": {
+            "default": 3,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5
+          },
+          "reprint_resilience": {
+            "default": 3,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_cards",
+      "description": "Search Magic Brain's public card catalogue by name or text, with optional set, color, rarity, and type filters. Use this to discover card IDs before requesting details or prices. Returns a bounded cursor-paginated page and never accesses user collections.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "request_summary": {
+            "description": "Optional short summary of why the user requested this tool call. Paraphrase the intent; do not include the original prompt, personal data, credentials, or secrets.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "request_context": {
+            "description": "Optional privacy-safe metadata inferred from the request. Do not copy the original prompt or include personal data, credentials, secrets, free-form notes, or identifiers.",
+            "type": "object",
+            "properties": {
+              "intent": {
+                "type": "string",
+                "enum": [
+                  "research",
+                  "compare",
+                  "monitor",
+                  "manage_collection",
+                  "manage_watchlist",
+                  "developer",
+                  "rules",
+                  "other"
+                ]
+              },
+              "language": {
+                "type": "string",
+                "enum": [
+                  "en",
+                  "es",
+                  "other"
+                ]
+              },
+              "output_format": {
+                "type": "string",
+                "enum": [
+                  "answer",
+                  "list",
+                  "table",
+                  "analysis",
+                  "action"
+                ]
+              },
+              "subject": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120
+              }
+            },
+            "required": [
+              "intent"
+            ],
+            "additionalProperties": false
+          },
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 120,
+            "description": "Card name or text"
+          },
+          "set_code": {
+            "type": "string",
+            "pattern": "^[a-z0-9]{2,8}$"
+          },
+          "rarity": {
+            "type": "string",
+            "enum": [
+              "common",
+              "uncommon",
+              "rare",
+              "mythic",
+              "special",
+              "bonus"
+            ]
+          },
+          "language": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 10
+          },
+          "cursor": {
+            "type": "string",
+            "maxLength": 512
+          },
+          "limit": {
+            "default": 20,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50
           }
         },
         "required": [
-          "destination"
-        ],
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "search_opportunity_graph",
+      "description": "Search the public deterministic Opportunity Graph and retrieve bounded nodes, weighted neighbours, similarity reasons, clusters, methodology, and market-data date. Similarity is research context, not a recommendation.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "request_summary": {
+            "description": "Optional short summary of why the user requested this tool call. Paraphrase the intent; do not include the original prompt, personal data, credentials, or secrets.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "request_context": {
+            "description": "Optional privacy-safe metadata inferred from the request. Do not copy the original prompt or include personal data, credentials, secrets, free-form notes, or identifiers.",
+            "type": "object",
+            "properties": {
+              "intent": {
+                "type": "string",
+                "enum": [
+                  "research",
+                  "compare",
+                  "monitor",
+                  "manage_collection",
+                  "manage_watchlist",
+                  "developer",
+                  "rules",
+                  "other"
+                ]
+              },
+              "language": {
+                "type": "string",
+                "enum": [
+                  "en",
+                  "es",
+                  "other"
+                ]
+              },
+              "output_format": {
+                "type": "string",
+                "enum": [
+                  "answer",
+                  "list",
+                  "table",
+                  "analysis",
+                  "action"
+                ]
+              },
+              "subject": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120
+              }
+            },
+            "required": [
+              "intent"
+            ],
+            "additionalProperties": false
+          },
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 100
+          },
+          "focus_card_id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "limit": {
+            "default": 48,
+            "type": "integer",
+            "minimum": 12,
+            "maximum": 80
+          }
+        },
         "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_product_knowledge",
+      "description": "Search the canonical, deterministic Magic Brain product/business knowledge base. Returns bounded source-cited statements with explicit epistemic status for positioning, moat, users, metrics, monetization, trust, risk, incidents, growth, liquidity, signals, and adjacent TCG diligence.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "request_summary": {
+            "description": "Optional short summary of why the user requested this tool call. Paraphrase the intent; do not include the original prompt, personal data, credentials, or secrets.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "request_context": {
+            "description": "Optional privacy-safe metadata inferred from the request. Do not copy the original prompt or include personal data, credentials, secrets, free-form notes, or identifiers.",
+            "type": "object",
+            "properties": {
+              "intent": {
+                "type": "string",
+                "enum": [
+                  "research",
+                  "compare",
+                  "monitor",
+                  "manage_collection",
+                  "manage_watchlist",
+                  "developer",
+                  "rules",
+                  "other"
+                ]
+              },
+              "language": {
+                "type": "string",
+                "enum": [
+                  "en",
+                  "es",
+                  "other"
+                ]
+              },
+              "output_format": {
+                "type": "string",
+                "enum": [
+                  "answer",
+                  "list",
+                  "table",
+                  "analysis",
+                  "action"
+                ]
+              },
+              "subject": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120
+              }
+            },
+            "required": [
+              "intent"
+            ],
+            "additionalProperties": false
+          },
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 500
+          },
+          "topics": {
+            "maxItems": 11,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "positioning",
+                "users_and_alternatives",
+                "differentiation_and_moat",
+                "metrics_and_demand",
+                "monetization",
+                "provenance_and_trust",
+                "regulatory_and_risk",
+                "liquidity_and_signals",
+                "incidents_and_corrections",
+                "growth",
+                "adjacent_tcgs"
+              ]
+            }
+          },
+          "statuses": {
+            "maxItems": 5,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "shipped_fact",
+                "operating_principle",
+                "hypothesis",
+                "roadmap_option",
+                "unknown_not_measured"
+              ]
+            }
+          },
+          "limit": {
+            "default": 8,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "search_rules",
+      "description": "Search a pinned local lexical index of the official Magic: The Gathering Comprehensive Rules and glossary. Returns bounded official excerpts with rule, section, PDF page, checksum, freshness, and source URL citations.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "request_summary": {
+            "description": "Optional short summary of why the user requested this tool call. Paraphrase the intent; do not include the original prompt, personal data, credentials, or secrets.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "request_context": {
+            "description": "Optional privacy-safe metadata inferred from the request. Do not copy the original prompt or include personal data, credentials, secrets, free-form notes, or identifiers.",
+            "type": "object",
+            "properties": {
+              "intent": {
+                "type": "string",
+                "enum": [
+                  "research",
+                  "compare",
+                  "monitor",
+                  "manage_collection",
+                  "manage_watchlist",
+                  "developer",
+                  "rules",
+                  "other"
+                ]
+              },
+              "language": {
+                "type": "string",
+                "enum": [
+                  "en",
+                  "es",
+                  "other"
+                ]
+              },
+              "output_format": {
+                "type": "string",
+                "enum": [
+                  "answer",
+                  "list",
+                  "table",
+                  "analysis",
+                  "action"
+                ]
+              },
+              "subject": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120
+              }
+            },
+            "required": [
+              "intent"
+            ],
+            "additionalProperties": false
+          },
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 300
+          },
+          "limit": {
+            "default": 5,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10
+          },
+          "max_excerpt_chars": {
+            "default": 360,
+            "type": "integer",
+            "minimum": 80,
+            "maximum": 600
+          },
+          "include_glossary": {
+            "default": true,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "query"
+        ]
       }
     }
   ],

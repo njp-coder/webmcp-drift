@@ -1,0 +1,71 @@
+{
+  "sponsio": 1,
+  "url": "https://colinmichaels.com/",
+  "capturedAt": "2026-09-22T11:27:53.102Z",
+  "tools": [
+    {
+      "name": "get_public_article",
+      "description": "Read-only lookup of one published article by its canonical https://colinmichaels.com/blog/... URL. Returns citation metadata and an excerpt, never drafts or full private CMS content.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "canonicalUrl": {
+            "type": "string",
+            "description": "The canonical ColinMichaels.com article URL with no query string or fragment."
+          }
+        },
+        "required": [
+          "canonicalUrl"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_public_topic_guide",
+      "description": "Read-only lookup of one canonical ColinMichaels.com topic guide. Returns the guide description, canonical URL, and supported search terms.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "topicSlug": {
+            "type": "string",
+            "enum": [
+              "ai-setup",
+              "recovery-planning",
+              "angular-firebase-architecture",
+              "labs-projects",
+              "gadgets-toys",
+              "drones-fpv"
+            ],
+            "description": "The canonical public topic slug."
+          }
+        },
+        "required": [
+          "topicSlug"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_public_content",
+      "description": "Read-only search of published ColinMichaels.com articles and public topic guides. Returns at most five canonical results with citation metadata. Do not use for drafts, private CMS data, or write actions.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "A focused public-content search query between 2 and 160 characters."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "colinmichaels.com",
+  "source": "webmcp.com/api/directory.json"
+}

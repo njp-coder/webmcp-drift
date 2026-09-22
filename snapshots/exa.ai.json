@@ -1,18 +1,64 @@
 {
   "sponsio": 1,
   "url": "https://exa.ai/docs",
-  "capturedAt": "2026-09-21T12:40:37.858Z",
+  "capturedAt": "2026-09-22T11:27:53.102Z",
   "tools": [
     {
-      "name": "open_skill",
-      "description": "Open an agent skill document by name.",
+      "name": "get_site_overview",
+      "description": "Get an outline of the Exa documentation, grouped by section, with a short description of each page. May be truncated for large sites; use search_docs to find pages not listed.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "navigate_page",
+      "description": "Navigate the current browser tab to a Exa documentation page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Path or URL of the page, as returned by search_docs"
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "read_page",
+      "description": "Read the full content of a Exa documentation page as markdown.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Path or URL of the page, as returned by search_docs"
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "read_skill",
+      "description": "Read a Exa agent skill document by name.",
       "kind": "imperative",
       "inputSchema": {
         "type": "object",
         "properties": {
           "skill_name": {
             "type": "string",
-            "description": "The slug of the skill to open"
+            "description": "The slug of the skill to read"
           }
         },
         "required": [
@@ -23,7 +69,7 @@
     },
     {
       "name": "search_docs",
-      "description": "Search the documentation for relevant pages and content.",
+      "description": "Search the Exa documentation for relevant pages and content.",
       "kind": "imperative",
       "inputSchema": {
         "type": "object",

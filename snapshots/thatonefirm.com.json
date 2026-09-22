@@ -1,0 +1,148 @@
+{
+  "sponsio": 1,
+  "url": "https://thatonefirm.com/",
+  "capturedAt": "2026-09-22T11:27:53.102Z",
+  "tools": [
+    {
+      "name": "get_page_content",
+      "description": "Get detailed text sections, headings, and overview for a specific service, case study, pricing page, or lab note on That One Firm.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "path"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Relative path or URL on That One Firm (e.g. '/pricing', '/retainer', '/projects/junkgf', '/lab-notes/hoc420-network-redesign')."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_case_studies_and_lab_notes",
+      "description": "List That One Firm's client case studies, portfolio projects, and lab research notes.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "enum": [
+              "all",
+              "projects",
+              "lab_notes"
+            ],
+            "type": "string",
+            "default": "all",
+            "description": "Filter by item type: 'projects' for case studies, 'lab_notes' for research/lab articles, or 'all'."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_services",
+      "description": "List That One Firm's core service offerings and pricing tiers.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "enum": [
+              "all",
+              "services",
+              "pricing_offers"
+            ],
+            "type": "string",
+            "default": "all",
+            "description": "Filter by category: 'services' for agency capabilities, 'pricing_offers' for packages/retainers, or 'all'."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_tof_services",
+      "description": "Summarize public services That One Firm offers: web and app builds, marketing and media, AI visibility (AIVIS), and Agent Ready site upgrades for AI agents.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "start_project_inquiry",
+      "description": "Initiate a project inquiry or consultation request with That One Firm by populating inquiry parameters and focusing the intake form.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "goals": {
+            "type": "string",
+            "description": "Outcome or goals the user is optimizing for (minimum 15 characters)."
+          },
+          "company": {
+            "type": "string",
+            "description": "Company or organization name."
+          },
+          "territory": {
+            "type": "string",
+            "description": "Business location or market (e.g. 'Tacoma / Pierce County', 'Nationwide')."
+          },
+          "service_interest": {
+            "type": "string",
+            "description": "The service or offer the user is interested in (e.g. 'AI Visibility Audit', 'Custom App & Web Development', 'Growth Retainer')."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "submit_project_intake",
+      "description": "Submit a project inquiry to That One Firm ??? contact info, territory or market, and goals for web, marketing, visibility, or agent-ready work.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "lead_source": {
+            "type": "string",
+            "description": "Lead attribution source (e.g. agent_ready campaign)"
+          },
+          "company": {
+            "type": "string",
+            "description": "Company"
+          },
+          "name": {
+            "type": "string",
+            "description": "Contact full name"
+          },
+          "email": {
+            "type": "string",
+            "description": "Valid email for follow-up"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Optional phone number"
+          },
+          "territory": {
+            "type": "string",
+            "description": "Market, city, or region served"
+          },
+          "goals": {
+            "type": "string",
+            "description": "Project goals ??? minimum 15 characters describing desired outcome"
+          }
+        },
+        "required": [
+          "name",
+          "email",
+          "goals"
+        ]
+      }
+    }
+  ],
+  "host": "thatonefirm.com",
+  "source": "webmcp.com/api/directory.json"
+}

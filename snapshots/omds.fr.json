@@ -1,0 +1,161 @@
+{
+  "sponsio": 1,
+  "url": "https://www.omds.fr/",
+  "capturedAt": "2026-09-22T11:27:53.102Z",
+  "tools": [
+    {
+      "name": "omds_compare_services",
+      "description": "Compare deux à quatre prestations OMDS sur le prix indicatif, le public cible, les fonctionnalités incluses et l’usage recommandé.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "service_ids": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 4,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "enum": [
+                "site-vitrine",
+                "ecommerce",
+                "google-ads",
+                "institutionnel"
+              ]
+            },
+            "description": "Services OMDS à comparer."
+          }
+        },
+        "required": [
+          "service_ids"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "omds_get_contact_options",
+      "description": "Retourne les moyens officiels pour contacter OMDS ou poursuivre une demande de devis après avoir identifié une prestation.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "service_id": {
+            "type": "string",
+            "enum": [
+              "site-vitrine",
+              "ecommerce",
+              "google-ads",
+              "institutionnel"
+            ],
+            "description": "Service concerné, si connu."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "omds_get_service_details",
+      "description": "Retourne le détail fiable d’une prestation OMDS précise, notamment son tarif indicatif, ce qu’elle comprend, son public cible et son URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "service_id": {
+            "type": "string",
+            "enum": [
+              "site-vitrine",
+              "ecommerce",
+              "google-ads",
+              "institutionnel"
+            ],
+            "description": "Identifiant de la prestation OMDS."
+          }
+        },
+        "required": [
+          "service_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "omds_get_services",
+      "description": "Retourne les principales prestations OMDS avec prix indicatifs, public cible, contenu de l’offre et URL officielle. Utilisez cet outil pour découvrir ce que propose OMDS.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "enum": [
+              "all",
+              "website",
+              "ecommerce",
+              "advertising",
+              "institutional"
+            ],
+            "description": "Filtre optionnel par catégorie de service."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "omds_recommend_service",
+      "description": "Recommande la prestation OMDS la plus adaptée au besoin d’un prospect. Peut tenir compte de l’objectif, du type d’organisation, du budget et des fonctionnalités souhaitées.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "objective": {
+            "type": "string",
+            "enum": [
+              "present_business",
+              "sell_online",
+              "get_more_clients",
+              "institutional_or_custom",
+              "redesign_institutional",
+              "unsure"
+            ],
+            "description": "Objectif principal du projet."
+          },
+          "need": {
+            "type": "string",
+            "description": "Description libre et concise du besoin du prospect."
+          },
+          "organization_type": {
+            "type": "string",
+            "description": "Type de structure : artisan, PME, association, mairie, organisme de formation, etc."
+          },
+          "budget_eur": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Budget indicatif en euros, si connu."
+          },
+          "needs_online_payment": {
+            "type": "boolean",
+            "description": "Le projet nécessite-t-il du paiement en ligne ?"
+          },
+          "needs_advanced_features": {
+            "type": "boolean",
+            "description": "Le projet nécessite-t-il des fonctions avancées comme annuaire, documents, extranet, agenda ou multilingue ?"
+          },
+          "wants_paid_acquisition": {
+            "type": "boolean",
+            "description": "Le prospect souhaite-t-il obtenir plus rapidement des prospects via de la publicité payante ?"
+          },
+          "details": {
+            "type": "string",
+            "description": "Informations complémentaires utiles."
+          }
+        },
+        "required": [
+          "objective"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "omds.fr",
+  "source": "webmcp.com/api/directory.json"
+}

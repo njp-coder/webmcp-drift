@@ -1,0 +1,130 @@
+{
+  "sponsio": 1,
+  "url": "https://dunelli.com.br/",
+  "capturedAt": "2026-09-22T11:27:53.102Z",
+  "tools": [
+    {
+      "name": "get_product",
+      "description": "Get detailed specifications, description, photos, and quote options for a specific furniture product (params: url, name) -> {title, url, description, specifications, images, whatsapp_quote_url, quote_page_url}",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "URL da página do produto (ex: 'https://dunelli.com.br/produto/poltrona/manaca/')"
+          },
+          "name": {
+            "type": "string",
+            "description": "Nome ou modelo do produto caso a URL não esteja disponível"
+          }
+        }
+      }
+    },
+    {
+      "name": "list_products",
+      "description": "List or filter furniture products from Dunelli catalog by category or keyword (params: category, query, limit) -> {category, total_found, products: [{title, url, image, category}]}",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "default": 10,
+            "description": "Número máximo de produtos a retornar (padrão: 10)"
+          },
+          "query": {
+            "type": "string",
+            "description": "Termo de busca opcional para filtrar pelo nome do produto"
+          },
+          "category": {
+            "enum": [
+              "sofas",
+              "poltronas",
+              "cadeiras",
+              "mesas-de-jantar",
+              "mesas-de-centro",
+              "mesas-laterais",
+              "buffets",
+              "aparadores",
+              "puffs",
+              "area-externa",
+              "living",
+              "quarto",
+              "escritorio",
+              "sala-de-jantar"
+            ],
+            "type": "string",
+            "description": "Categoria de móveis (ex: 'sofas', 'poltronas', 'cadeiras', 'mesas-de-jantar', 'mesas-de-centro', 'buffets', 'aparadores', 'puffs', 'area-externa', 'living', 'quarto', 'escritorio', 'sala-de-jantar')"
+          }
+        }
+      }
+    },
+    {
+      "name": "list_projects",
+      "description": "List architectural design inspirations and partner interior design projects featuring Dunelli furniture (params: limit) -> {total_projects, projects: [{title, url, image}]}",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "default": 8,
+            "description": "Quantidade máxima de projetos a retornar (padrão: 8)"
+          }
+        }
+      }
+    },
+    {
+      "name": "start_quote_request",
+      "description": "Initiate a customized quote or consultation request with customer details and preferred showroom (params: name, email, whatsapp, store, architect, notes, navigate=true) -> {status: 'handoff', action, url, customer, instructions}",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Nome completo do cliente ou solicitante"
+          },
+          "email": {
+            "type": "string",
+            "description": "E-mail de contato para envio da proposta comercial"
+          },
+          "notes": {
+            "type": "string",
+            "description": "Observações adicionais ou lista de produtos desejados para orçamento"
+          },
+          "store": {
+            "enum": [
+              "ded",
+              "gab2069",
+              "gab1718",
+              "ibira",
+              "analia",
+              "santana",
+              "pinheiros"
+            ],
+            "type": "string",
+            "default": "ded",
+            "description": "Código da loja / unidade Dunelli preferida para atendimento"
+          },
+          "navigate": {
+            "type": "boolean",
+            "default": true,
+            "description": "Se verdadeiro, redireciona o navegador para a página de finalização do orçamento (padrão: true)"
+          },
+          "whatsapp": {
+            "type": "string",
+            "description": "Telefone / WhatsApp com DDD"
+          },
+          "architect": {
+            "type": "string",
+            "description": "Nome do arquiteto ou designer responsável pelo projeto (se houver)"
+          }
+        }
+      }
+    }
+  ],
+  "host": "dunelli.com.br",
+  "source": "webmcp.com/api/directory.json"
+}

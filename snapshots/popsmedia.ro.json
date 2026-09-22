@@ -1,0 +1,132 @@
+{
+  "sponsio": 1,
+  "url": "https://popsmedia.ro/",
+  "capturedAt": "2026-09-22T11:27:53.102Z",
+  "tools": [
+    {
+      "name": "get_company_info",
+      "description": "Read-only. Returns public company, contact, service and URL information for POPSMEDIA.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_service_details",
+      "description": "Read-only. Returns complete public details for an exact POPSMEDIA service id, slug or name.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "service": {
+            "type": "string",
+            "description": "Exact service id, Romanian slug, English slug, Romanian name or English name."
+          }
+        },
+        "required": [
+          "service"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_faqs",
+      "description": "Read-only. Lists public POPSMEDIA frequently asked questions and answers in Romanian and English, optionally filtered by text query or language.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Optional text query matched against FAQ questions and answers."
+          },
+          "lang": {
+            "type": "string",
+            "enum": [
+              "ro",
+              "en"
+            ],
+            "description": "Optional language filter for a simplified localized response."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_portfolio_projects",
+      "description": "Read-only. Lists public POPSMEDIA portfolio projects using the site's published portfolio data.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "description": "Optional category slug or category name."
+          },
+          "query": {
+            "type": "string",
+            "description": "Optional text query matched against titles, descriptions and categories."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "description": "Optional maximum number of projects to return."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_services",
+      "description": "Read-only. Lists the public services offered by POPSMEDIA, optionally filtered by a text query.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Optional text query matched against service names, descriptions, features and deliverables."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "start_inquiry",
+      "description": "Action. Prefills the existing POPSMEDIA contact form for user review. It does not submit the form and performs no financial transaction.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Sender name."
+          },
+          "email": {
+            "type": "string",
+            "description": "Sender email address."
+          },
+          "message": {
+            "type": "string",
+            "description": "Project or inquiry message."
+          },
+          "service": {
+            "type": "string",
+            "description": "Optional requested service id, slug or name."
+          }
+        },
+        "required": [
+          "name",
+          "email",
+          "message"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "popsmedia.ro",
+  "source": "webmcp.com/api/directory.json"
+}

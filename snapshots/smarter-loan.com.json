@@ -1,0 +1,129 @@
+{
+  "sponsio": 1,
+  "url": "https://smarter-loan.com/",
+  "capturedAt": "2026-09-22T11:27:53.102Z",
+  "tools": [
+    {
+      "name": "apply_mortgage_scenario",
+      "description": "Replace the calculator inputs with a new mortgage scenario after the user confirms.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "description": "Same scenario fields accepted by calculateMortgage."
+      }
+    },
+    {
+      "name": "calculateMortgage",
+      "description": "Calculate a mortgage scenario. Returns a compact summary by default; request bounded yearly or monthly detail when needed.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "principal": {
+            "type": "number",
+            "description": "Loan amount",
+            "minimum": 0.01
+          },
+          "annualInterestRate": {
+            "type": "number",
+            "description": "Single annual percentage rate. Use interestRatePeriods for changing rates.",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "interestRatePeriods": {
+            "type": "array",
+            "description": "Rate changes, each with a zero-based startMonth and annual percentage interestRate.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "startMonth": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "interestRate": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 100
+                }
+              },
+              "required": [
+                "startMonth",
+                "interestRate"
+              ]
+            }
+          },
+          "loanTermYears": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 50
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD",
+              "EUR",
+              "GBP",
+              "JPY",
+              "CAD",
+              "AUD",
+              "CHF",
+              "PLN"
+            ]
+          },
+          "repaymentModel": {
+            "type": "string",
+            "enum": [
+              "equalInstallments",
+              "decreasingInstallments",
+              "custom"
+            ]
+          },
+          "startDate": {
+            "type": "string",
+            "description": "Loan start date in ISO 8601 format."
+          },
+          "fees": {
+            "type": "object",
+            "description": "Optional origination, insurance, and administration fees."
+          },
+          "overpayments": {
+            "type": "array",
+            "description": "Optional scheduled overpayments."
+          },
+          "detail": {
+            "type": "string",
+            "description": "Response detail level. Monthly requires scheduleStartMonth and scheduleEndMonth.",
+            "enum": [
+              "summary",
+              "yearly",
+              "monthly"
+            ]
+          },
+          "scheduleStartMonth": {
+            "type": "number",
+            "minimum": 1
+          },
+          "scheduleEndMonth": {
+            "type": "number",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "principal",
+          "loanTermYears"
+        ]
+      }
+    },
+    {
+      "name": "get_current_scenario",
+      "description": "Read the scenario currently shown in the mortgage calculator. Does not change the page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    }
+  ],
+  "host": "smarter-loan.com",
+  "source": "webmcp.com/api/directory.json"
+}

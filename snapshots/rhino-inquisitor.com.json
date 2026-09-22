@@ -1,0 +1,78 @@
+{
+  "sponsio": 1,
+  "url": "https://rhino-inquisitor.com/",
+  "capturedAt": "2026-09-22T11:27:53.102Z",
+  "tools": [
+    {
+      "name": "getArticle",
+      "description": "Returns a summary of one article on rhino-inquisitor.com: its title, publication date, topic, hand-written key takeaways, opening paragraph, and the URL of its full Markdown text. Use it after searchArticles or listRecentArticles to learn what an article covers. Fetch the returned markdownUrl for the complete article.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "The article's URL or path as returned by searchArticles or listRecentArticles, for example \"/cartridge-path-and-overrides/\"."
+          }
+        },
+        "required": [
+          "url"
+        ]
+      }
+    },
+    {
+      "name": "getSiteOverview",
+      "description": "Describes rhino-inquisitor.com: what it publishes, how many articles it has, the range of publication dates, the topics it covers with an article count for each, and the URLs of its machine-readable feeds. Use it first to judge whether this site covers a subject, and to get valid topic names for searchArticles.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "listRecentArticles",
+      "description": "Lists the most recently published articles on rhino-inquisitor.com, newest first. Use it to find out what is new on the site, or to get the URL of a recent article before calling getArticle. For a subject-specific search, use searchArticles instead.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "description": "How many articles to list, newest first. Defaults to 4."
+          }
+        }
+      }
+    },
+    {
+      "name": "searchArticles",
+      "description": "Searches the titles, topics and summaries of every article and reference page published on rhino-inquisitor.com, a technical blog about Salesforce B2C Commerce Cloud. Use it to find what this site has written on a subject, and to get the URL of an article before calling getArticle. Results are ranked by relevance, best match first.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Words to search for. Every word must appear in an article's title, topic, category or summary for it to match."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "description": "How many results to return. Defaults to 4. Fewer, better-ranked results usually serve better than many."
+          },
+          "topic": {
+            "type": "string",
+            "description": "Restrict results to one topic, using a topic name from getSiteOverview, for example \"Architecture\"."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "rhino-inquisitor.com",
+  "source": "webmcp.com/api/directory.json"
+}

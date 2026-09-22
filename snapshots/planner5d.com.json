@@ -1,0 +1,137 @@
+{
+  "sponsio": 1,
+  "url": "https://planner5d.com/",
+  "capturedAt": "2026-09-22T11:27:53.102Z",
+  "tools": [
+    {
+      "name": "authClose",
+      "description": "Close the active authentication dialog if the application allows closing it. Standalone authentication pages and requests already in progress cannot be cancelled by this tool.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "authGetState",
+      "description": "Read login/registration state, active method, invalid field names and resend cooldown. No credentials or tokens are returned. Re-read after navigation and after submitting a form.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "authOpen",
+      "description": "Start login or registration through the existing application flow. Default email_code can redirect to the email authentication page and can create a new account. Reuse any open form; read its method. password supports regular or Pro registration where that form is available.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "description": "Requested form mode",
+            "enum": [
+              "sign_in",
+              "sign_up"
+            ]
+          },
+          "method": {
+            "type": "string",
+            "description": "Requested method",
+            "enum": [
+              "email_code",
+              "password"
+            ]
+          },
+          "accountType": {
+            "type": "string",
+            "description": "Password registration account type",
+            "enum": [
+              "regular",
+              "pro"
+            ]
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "authRequestEmailCode",
+      "description": "Send or resend a login/registration code using the active email-code form and its cooldown. Email verification may create an account. Newsletter consent defaults to false. Provide a promo code only when required by the active form.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Email address",
+            "minLength": 1,
+            "maxLength": 320
+          },
+          "newsletters": {
+            "type": "boolean",
+            "description": "Explicit newsletter opt-in"
+          },
+          "promoCode": {
+            "type": "string",
+            "description": "Promo code for the active promotional form",
+            "maxLength": 256
+          }
+        },
+        "required": [
+          "email"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "authStartSocial",
+      "description": "Continue the active login/registration form with Google or Apple. The user completes provider authentication and consent on the provider page. Provider URLs and credentials are not returned.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "provider": {
+            "type": "string",
+            "description": "Authentication provider",
+            "enum": [
+              "google",
+              "apple"
+            ]
+          }
+        },
+        "required": [
+          "provider"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "authSubmitEmailCode",
+      "description": "Submit the code supplied by the user for the active email authentication request. This signs in or registers the account and continues the normal onboarding/redirect flow. Poll authGetState after submission and navigation.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "Six-digit code from the authentication email",
+            "pattern": "^[0-9]{6}$"
+          }
+        },
+        "required": [
+          "code"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "planner5d.com",
+  "source": "webmcp.com/api/directory.json"
+}

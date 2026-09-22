@@ -1,0 +1,162 @@
+{
+  "sponsio": 1,
+  "url": "https://durian.rent/",
+  "capturedAt": "2026-09-22T11:27:53.102Z",
+  "tools": [
+    {
+      "name": "filter_listings_by_price",
+      "description": "Find rental property listings in Danang whose monthly rent is from the specified minimum price (inclusive) up to, but not including, the specified maximum price. Prices are in Vietnamese dong (VND). Use this tool when the user asks to find rentals within a price range.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Minimum monthly rental price in Vietnamese dong (VND), inclusive."
+          },
+          "to": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Maximum monthly rental price in Vietnamese dong (VND), exclusive."
+          }
+        },
+        "required": [
+          "from",
+          "to"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "filter_rentals_by_price",
+      "description": "Set the price range filter on the map interface to filter visible Danang rental listings.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "max_price": {
+            "type": "number",
+            "description": "Maximum price in VND (or in millions if < 1000, e.g. 15 or 15000000)"
+          },
+          "min_price": {
+            "type": "number",
+            "description": "Minimum price in VND (or in millions if < 1000, e.g. 3 or 3000000)"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_rental_detail",
+      "description": "Get detailed property information for a specific rental ad by listing ID, including price, size, photos, location coordinates, and NhaTot source link.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "The listing ID of the rental property"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_site_info",
+      "description": "Returns information about durian.rent and its purpose.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_rentals",
+      "description": "List available rental properties in Danang from the interactive map, with optional filters for price range and property size.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "description": "Maximum number of listings to return (default 20, max 100)"
+          },
+          "max_size": {
+            "type": "number",
+            "description": "Maximum apartment/room size in square meters"
+          },
+          "min_size": {
+            "type": "number",
+            "description": "Minimum apartment/room size in square meters"
+          },
+          "max_price": {
+            "type": "number",
+            "description": "Maximum monthly rent in VND (or in millions if < 1000, e.g. 15 or 15000000)"
+          },
+          "min_price": {
+            "type": "number",
+            "description": "Minimum monthly rent in VND (or in millions if < 1000, e.g. 5 or 5000000)"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "manage_favorites",
+      "description": "Add, remove, list, or clear saved favorite rental listings, generating a shareable map URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "required": [
+          "action"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Rental listing ID (required for add and remove actions)"
+          },
+          "action": {
+            "enum": [
+              "list",
+              "add",
+              "remove",
+              "clear"
+            ],
+            "type": "string",
+            "description": "Favorites operation to perform"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "open_rental_contact",
+      "description": "Navigate to the NhaTot listing contact page for a specified rental ad.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "The rental listing ID to open contact info for"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "durian.rent",
+  "source": "webmcp.com/api/directory.json"
+}

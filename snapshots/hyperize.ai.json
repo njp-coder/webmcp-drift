@@ -1,0 +1,303 @@
+{
+  "sponsio": 1,
+  "url": "https://www.hyperize.ai/en",
+  "capturedAt": "2026-09-22T11:27:53.102Z",
+  "tools": [
+    {
+      "name": "check_agent_readiness",
+      "description": "Run an instant five-check surface probe on ANY website: is the front door reachable for agents (or does a bot wall answer), does robots.txt allow AI assistant crawlers (GPTBot, ClaudeBot, PerplexityBot, Google-Extended), does an llms.txt site guide exist, is schema.org JSON-LD present, and does the homepage serve a Markdown twin. Returns pass/fail per check with evidence, plus how the result compares to Hyperize's measured DAX 40 index. This is a surface probe in seconds, not the measured Agent Success Score; the measured score comes from the free Snapshot (request_snapshot tool).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "The website to check, e.g. https://example.com or just example.com"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_adaptation_capabilities",
+      "description": "Read how the hyperize.ai homepage lets a visitor's agent rewrite it: the per-section field contracts (each with the field's job, the original text and a hard length budget), the style rules, the stable product facts, and the accepted visitor profile. Call this first.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "detail": {
+            "type": "string",
+            "enum": [
+              "express",
+              "full"
+            ],
+            "description": "express (default): the highest-impact fields incl. the complete FAQ, sized for one writing pass. full: every field."
+          }
+        }
+      }
+    },
+    {
+      "name": "get_brand_agent_success_score",
+      "description": "Look up a DAX 40 brand in the Hyperize Agent Success Index. Returns whether the brand is scored, its Agent Success Score (composite plus the AI Visibility and AI Usability axes) where published, the measured bottleneck, and the link to the full BrandScore page. Data source: the public index at hyperize.ai/en/dax40-index.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "brand": {
+            "type": "string",
+            "description": "Brand name, legal entity, or DAX ticker to look up, e.g. 'Allianz', 'adidas AG', 'BMW'. Partial names match."
+          }
+        },
+        "required": [
+          "brand"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "request_snapshot",
+      "description": "Request a free Hyperize Agent Success Snapshot for a brand website. Hyperize tests how AI agents find, evaluate, and transact with that website, scores it on the Agent Success Score, benchmarks it against the DAX 40, and delivers the report by email within 48 hours. Free, no commitment, no sales call. Requires the user's work email: confirm the website URL and the email address with the user before calling this tool.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "The brand website URL to test, e.g. https://example.com"
+          },
+          "email": {
+            "type": "string",
+            "description": "The user's work email address. The finished report is delivered there."
+          }
+        },
+        "required": [
+          "url",
+          "email"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "reset_experience",
+      "description": "Remove the visitor's context and rewritten text. Restore the original page and the form values from before personalization.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    },
+    {
+      "name": "search_insights",
+      "description": "Search Hyperize Insights: original research and field tests on how AI agents evaluate, recommend, and transact with enterprise brands (agent commerce, GEO, agent readiness, DAX 40 measurements). Returns matching articles with links. Call with an empty query to get the latest articles.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search terms matched against article titles and subtitles, e.g. 'agent checkout' or 'Grok'. Empty returns the latest articles."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "show_decision_brief",
+      "description": "Prepare a compact internal decision brief from the visitor's context and this page's published product truth. Returns brief_markdown for the agent to hand over; the page offers copy, download and an email draft.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "audience": {
+            "type": "string",
+            "maxLength": 80,
+            "description": "Optional role or decision-maker the brief is for."
+          }
+        }
+      }
+    },
+    {
+      "name": "start_personalization",
+      "description": "Start a personalization session from the visitor's context. The page immediately labels itself with their context, mints the headline verb, prefills the free-snapshot form from website_url and work_email, and shows a live progress receipt. Then submit all text in one write_all call. Context and text stay in this tab; only tool names are sent to the usage counter.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "profile": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "organization": {
+                "type": "string",
+                "maxLength": 80,
+                "description": "The visitor's organization, only when the user approved sharing it."
+              },
+              "industry": {
+                "type": "string",
+                "maxLength": 100
+              },
+              "visitor_role": {
+                "type": "string",
+                "maxLength": 80
+              },
+              "decision_maker": {
+                "type": "string",
+                "maxLength": 80,
+                "description": "The person whose decision criteria the visitor needs to satisfy."
+              },
+              "mission": {
+                "type": "string",
+                "minLength": 5,
+                "maxLength": 220,
+                "description": "The concrete job the visitor was asked to solve."
+              },
+              "mission_short": {
+                "type": "string",
+                "maxLength": 48,
+                "description": "A three-to-five word handle for the mission."
+              },
+              "priorities": {
+                "type": "array",
+                "maxItems": 6,
+                "items": {
+                  "type": "string",
+                  "maxLength": 120
+                }
+              },
+              "constraints": {
+                "type": "array",
+                "maxItems": 6,
+                "items": {
+                  "type": "string",
+                  "maxLength": 120
+                }
+              },
+              "current_stack": {
+                "type": "array",
+                "maxItems": 6,
+                "items": {
+                  "type": "string",
+                  "maxLength": 120
+                }
+              },
+              "success_metrics": {
+                "type": "array",
+                "maxItems": 6,
+                "items": {
+                  "type": "string",
+                  "maxLength": 120
+                }
+              },
+              "deadline": {
+                "type": "string",
+                "maxLength": 100
+              },
+              "situation": {
+                "type": "string",
+                "maxLength": 220,
+                "description": "How the work runs today, in the visitor's own words."
+              },
+              "pain_points": {
+                "type": "array",
+                "maxItems": 6,
+                "items": {
+                  "type": "string",
+                  "maxLength": 120
+                },
+                "description": "What hurts about the current setup, in the visitor's own words."
+              },
+              "company_profile": {
+                "type": "string",
+                "maxLength": 260,
+                "description": "One or two sentences on what the visitor's company is and does. Rendered as visitor context, never as a Hyperize claim."
+              },
+              "why_now": {
+                "type": "string",
+                "maxLength": 260,
+                "description": "Why this mission matters right now."
+              },
+              "website_url": {
+                "type": "string",
+                "maxLength": 140,
+                "description": "The visitor's company website. Used to prefill the free-snapshot form on this page; never submitted by the page."
+              },
+              "work_email": {
+                "type": "string",
+                "maxLength": 140,
+                "description": "The visitor's work email. Used to prefill the free-snapshot form on this page; never submitted by the page."
+              }
+            },
+            "required": [
+              "mission"
+            ]
+          }
+        },
+        "required": [
+          "profile"
+        ]
+      }
+    },
+    {
+      "name": "write_all",
+      "description": "Submit the rewritten text for ALL sections in one call: {sections: {hero: {lede: \"...\"}, whatwedo: {...}, ...}}. The page validates every field against its length budget and applies accepted fields immediately. It returns explicit rejections and incomplete fields. Prefer this over many write_section calls. Do not research the visitor on the web first; use what the user told you.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "sections": {
+            "type": "object",
+            "description": "section_id -> {field_id: rewritten plain text}.",
+            "additionalProperties": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string",
+                "maxLength": 900
+              }
+            }
+          }
+        },
+        "required": [
+          "sections"
+        ]
+      }
+    },
+    {
+      "name": "write_section",
+      "description": "Submit the rewritten text for one section's fields. The page validates every field against its length budget then renders accepted fields immediately. Check line wraps in the preview; the receipt shows before/after text. Omit a field to keep its original text. Product claims only from productFacts; never invent customers, numbers, prices or guarantees.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "section_id": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 40
+          },
+          "fields": {
+            "type": "object",
+            "description": "field_id -> rewritten plain text, inside that field's budget.",
+            "additionalProperties": {
+              "type": "string",
+              "maxLength": 900
+            }
+          }
+        },
+        "required": [
+          "section_id",
+          "fields"
+        ]
+      }
+    }
+  ],
+  "host": "hyperize.ai",
+  "source": "webmcp.com/api/directory.json"
+}

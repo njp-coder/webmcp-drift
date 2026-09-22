@@ -1,0 +1,68 @@
+{
+  "sponsio": 1,
+  "url": "https://elevaterecoverymentalhealth.com/",
+  "capturedAt": "2026-09-22T11:27:53.102Z",
+  "tools": [
+    {
+      "name": "get_condition_details",
+      "description": "Fetch in-depth treatment details and clinical focus for a specific condition (params: url) -> {title, url, summary, key_points}",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "URL of the condition treatment page (defaults to depression treatment)"
+          }
+        }
+      }
+    },
+    {
+      "name": "get_contact_info",
+      "description": "Get facility contact information, phone numbers, email, and admissions intake links -> {facility_name, phone, alt_phone, email, state, services, hours, insurance_verification_url, contact_url}",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_conditions",
+      "description": "List mental health disorders and conditions treated (params: target_audience, query) -> {count, conditions: [{title, url, target_audience}]}",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Keyword search for condition (e.g. 'anxiety', 'depression', 'bpd')"
+          },
+          "target_audience": {
+            "enum": [
+              "adult",
+              "teen"
+            ],
+            "type": "string",
+            "description": "Filter by patient age group"
+          }
+        }
+      }
+    },
+    {
+      "name": "list_programs",
+      "description": "Browse available treatment programs offered by Elevate Recovery (params: filter) -> {count, programs: [{title, url}]}",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "filter": {
+            "type": "string",
+            "description": "Optional keyword to filter programs (e.g. 'teen', 'outpatient', 'virtual')"
+          }
+        }
+      }
+    }
+  ],
+  "host": "elevaterecoverymentalhealth.com",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,147 @@
+{
+  "sponsio": 1,
+  "url": "https://www.tax4us.co.il/",
+  "capturedAt": "2026-09-22T11:27:53.102Z",
+  "tools": [
+    {
+      "name": "get_article",
+      "description": "Fetch the full text and section headings of a specific tax guide or article (params: url, navigate=false) -> {title, url, headings, content_preview, content_length}",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "URL of the guide or article to read. Defaults to the first guide."
+          },
+          "navigate": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether to navigate to the article page (defaults to false)"
+          }
+        }
+      }
+    },
+    {
+      "name": "get_contact_info",
+      "description": "Get firm contact details, phone numbers (Israel/US), WhatsApp, email, office address, and client portal links -> {company_name, description, phone_israel, phone_us, whatsapp, email, address_us, social_links, portal_registration_url}",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_services",
+      "description": "List all US tax consulting services and topic categories offered by Tax4US (params: query) -> list [{title, url}]",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "default": "",
+            "description": "Optional search or filter term for services"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_tax_guides",
+      "description": "List all main tax service guides and topics covered on the site -> {count, guides: [{title, url}]}",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "search_articles",
+      "description": "Search tax guides, forms, and articles by keyword (params: query, navigate=false) -> navigates to results or returns list of matching guides [{title, url, excerpt}]",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "query"
+        ],
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search keyword or form name (e.g., '1040', 'FBAR', 'LLC')"
+          },
+          "navigate": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether to navigate to the search results page in the browser (defaults to false)"
+          }
+        }
+      }
+    },
+    {
+      "name": "tax4us_list_content_by_section",
+      "description": "List every published URL on this site, split by site section: the English section under /en/ and the main section at the root. This is structural only — it reads the sitemaps, which carry no text, so it cannot tell you what language a page is written in (the main section does contain some English posts). For actual content language use tax4us_search_by_language. Read-only; never navigates the page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "section": {
+            "type": "string",
+            "enum": [
+              "he",
+              "en",
+              "any"
+            ],
+            "description": "Restrict to the main section ('he'), the /en/ section ('en'), or return both ('any'). Defaults to 'any'."
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "posts",
+              "pages",
+              "all"
+            ],
+            "description": "Which content to list. Defaults to 'all'."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum URLs to return (1-50). Defaults to 50."
+          }
+        }
+      }
+    },
+    {
+      "name": "tax4us_search_by_language",
+      "description": "Search this site's tax guides and articles and filter by the language they are actually written in. This site is bilingual and the two do not line up with the URL: the Hebrew section hosts a number of English-language posts, so language is detected from the text itself. Each result also reports 'section' (which half of the site the URL sits in) separately. Use this instead of an unfiltered search when the reader has a language preference. Read-only; never navigates the page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search keywords. Hebrew or English text both work."
+          },
+          "language": {
+            "type": "string",
+            "enum": [
+              "he",
+              "en",
+              "any"
+            ],
+            "description": "Restrict to results written in Hebrew ('he') or English ('en'), or return both ('any'). Detected from the text, not the URL. Defaults to 'any'."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum results to return (1-50). Defaults to 10."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "tax4us.co.il",
+  "source": "webmcp.com/api/directory.json"
+}

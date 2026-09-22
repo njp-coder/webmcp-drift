@@ -1,7 +1,7 @@
 {
   "sponsio": 1,
   "url": "https://madrid-day-spa.com/",
-  "capturedAt": "2026-09-21T12:40:37.858Z",
+  "capturedAt": "2026-09-22T11:27:53.102Z",
   "tools": [
     {
       "name": "get_availability",
@@ -16,14 +16,19 @@
         "properties": {
           "treatmentId": {
             "type": "string",
+            "pattern": "^[A-Z]{2}-\\d+-\\d+$",
             "description": "Full catalog id including the option index, exactly as get_services returns it, for example MA-7-0."
           },
           "from_date": {
             "type": "string",
+            "format": "date",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
             "description": "First day to check, YYYY-MM-DD."
           },
           "to_date": {
             "type": "string",
+            "format": "date",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
             "description": "Last day to check, YYYY-MM-DD. Omit to check only from_date."
           },
           "couple": {
@@ -80,6 +85,24 @@
       }
     },
     {
+      "name": "get_gift_details",
+      "description": "Look up a gift voucher by the 5-character CODE printed on it (letters and numbers, for example K7M2X): whether it is valid, until when, and what it can be spent on. It does NOT accept the voucher number — a voucher that only has a number is looked up by the spa on WhatsApp. This cannot redeem or book anything: to use a voucher, give the customer the WhatsApp link from the answer.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "code"
+        ],
+        "properties": {
+          "code": {
+            "type": "string",
+            "pattern": "^(?=.*[A-Za-z])[A-Za-z0-9]{5}$",
+            "description": "The 5-character code printed on the voucher, for example K7M2X. Letters and numbers, never only numbers. Ask the customer to read it from the voucher; never guess or complete one."
+          }
+        }
+      }
+    },
+    {
       "name": "get_services",
       "description": "List the spa treatments with their duration and price. Optionally filter by a word in the name, for example \"hammam\", \"facial\" or \"massage\". Use this to find a treatment id before calling other tools.",
       "kind": "imperative",
@@ -117,6 +140,8 @@
           },
           "date": {
             "type": "string",
+            "format": "date",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
             "description": "Day to open the page on, YYYY-MM-DD. Omit if the customer has not named a day — the page then opens on today."
           },
           "couple": {

@@ -1,0 +1,109 @@
+{
+  "sponsio": 1,
+  "url": "https://padelnachos.com/welcome",
+  "capturedAt": "2026-09-22T11:27:53.102Z",
+  "tools": [
+    {
+      "name": "get_live_scores",
+      "description": "Get current live, scheduled, and completed padel matches with scores, courts, and tournament stages.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "enum": [
+              "all",
+              "live",
+              "scheduled",
+              "finished"
+            ],
+            "type": "string",
+            "description": "Filter matches by status (default all)"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_player_rankings",
+      "description": "Get official padel player rankings, points, and categories for men and women.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "description": "Maximum number of players to return (default 20)"
+          },
+          "category": {
+            "enum": [
+              "men",
+              "women"
+            ],
+            "type": "string",
+            "description": "Ranking category (default men)"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_tournaments",
+      "description": "List padel tournaments and events from Premier Padel and FIP Tour.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "circuit": {
+            "enum": [
+              "all",
+              "premier_padel",
+              "fip"
+            ],
+            "type": "string",
+            "description": "Filter by tournament circuit (default all)"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_padel",
+      "description": "Search players, tournaments, and matches across Padel Nachos by keyword.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "query"
+        ],
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search keyword for player, tournament, or match (e.g. Chingotto, Galan, Paris)"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "view_padel_details",
+      "description": "Navigate to a specific padel match, player profile, or tournament page on Padel Nachos.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "url"
+        ],
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "Relative or absolute URL of the match, player, or tournament page to view"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "padelnachos.com",
+  "source": "webmcp.com/api/directory.json"
+}

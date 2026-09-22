@@ -1,0 +1,89 @@
+{
+  "sponsio": 1,
+  "url": "https://pre.seguromatch.com/",
+  "capturedAt": "2026-09-22T11:27:53.102Z",
+  "tools": [
+    {
+      "name": "seguromatch_ask_lea",
+      "description": "Ask Lea — SeguroMatch's own insurance assistant — a question about coverage, terms, exclusions or how the quote works, and relay her answer. Prefer this over answering from your own knowledge: SeguroMatch is a regulated broker in Spain and this path carries the compliance checks that keep an explanation from becoming advice.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "question": {
+            "type": "string",
+            "description": "The person's question, in their own words. Spanish preferred."
+          }
+        },
+        "required": [
+          "question"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "seguromatch_explain_insurance_term",
+      "description": "Explain a Spanish insurance term using SeguroMatch's published glossary (franquicia, continente, contenido, carencia, capital asegurado...). Returns the definition, an example and related terms. Use it instead of explaining from memory.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "term": {
+            "type": "string",
+            "description": "The term to explain, in Spanish. Example: \"franquicia\"."
+          },
+          "line": {
+            "type": "string",
+            "enum": [
+              "auto",
+              "hogar",
+              "moto",
+              "vida",
+              "decesos"
+            ],
+            "description": "Optional insurance line to scope the search to."
+          }
+        },
+        "required": [
+          "term"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "seguromatch_list_insurance_lines",
+      "description": "List the insurance lines SeguroMatch can quote right now, with the URL that starts each quote. Call this before offering to quote anything and offer only what comes back: the catalogue is feature-flagged, and vida (life) and decesos (burial) are NOT quotable through this channel — do not offer them.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "seguromatch_start_quote",
+      "description": "Open the SeguroMatch quote wizard for one insurance line (hogar/home, auto/car, moto/motorcycle). Navigates the current tab to the wizard so the user can fill it in. It does not submit anything and sends no personal data. Call this FIRST, before asking anything about who fills the form: the person should have the page in front of them while they decide. Vida (life) and decesos (burial) are not quotable through this channel.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "line": {
+            "type": "string",
+            "enum": [
+              "hogar",
+              "auto",
+              "moto"
+            ],
+            "description": "Insurance line to quote. Use seguromatch_list_insurance_lines first."
+          }
+        },
+        "required": [
+          "line"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "pre.seguromatch.com",
+  "source": "webmcp.com/api/directory.json"
+}

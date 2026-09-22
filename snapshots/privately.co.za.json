@@ -1,0 +1,230 @@
+{
+  "sponsio": 1,
+  "url": "https://privately.co.za/",
+  "capturedAt": "2026-09-22T11:27:53.102Z",
+  "tools": [
+    {
+      "name": "calculate_bond",
+      "description": "Calculate estimated monthly bond repayments, total loan interest, and total repayments for a property purchase in South Africa.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "purchase_price"
+        ],
+        "properties": {
+          "deposit": {
+            "type": "number",
+            "description": "The deposit amount in ZAR (default 0)."
+          },
+          "term_years": {
+            "type": "number",
+            "description": "The loan term in years (default 20)."
+          },
+          "purchase_price": {
+            "type": "number",
+            "description": "The purchase price of the property in South African Rand (ZAR)."
+          },
+          "annual_interest_rate": {
+            "type": "number",
+            "description": "The annual interest rate percentage (default 10.5)."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_property",
+      "description": "Fetch detailed specifications and pricing for a property listing (params: id, url, navigate=false) -> {id, title, price, specs: {bedrooms, bathrooms, floor_size, land_size, rates_and_taxes, levies}, url}",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Property ID or UUID"
+          },
+          "url": {
+            "type": "string",
+            "description": "Full URL to property detail page"
+          },
+          "navigate": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether to navigate to property page"
+          }
+        }
+      }
+    },
+    {
+      "name": "get_property_detail",
+      "description": "Retrieve comprehensive details for a specific property listing, including title, pricing, specifications, and description.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "url"
+        ],
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "The URL of the property listing page."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_properties",
+      "description": "Search and list private properties for sale across South Africa, extracting verified listings from Privately's browse catalog.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_properties",
+      "description": "Search and filter private property listings across South Africa (params: query, province, property_type, bedrooms, bathrooms, min_price, max_price, navigate=true) -> navigates or returns {count, items: [{id, title, price, url}]}",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "City, suburb, or keyword"
+          },
+          "bedrooms": {
+            "enum": [
+              "",
+              "1+",
+              "2+",
+              "3+",
+              "4+",
+              "5+"
+            ],
+            "type": "string",
+            "description": "Minimum bedrooms"
+          },
+          "navigate": {
+            "type": "boolean",
+            "default": true,
+            "description": "Whether to navigate to browse page or fetch quietly"
+          },
+          "province": {
+            "enum": [
+              "",
+              "Eastern Cape",
+              "Free State",
+              "Gauteng",
+              "KwaZulu-Natal",
+              "Limpopo",
+              "Mpumalanga",
+              "Northern Cape",
+              "North West",
+              "Western Cape"
+            ],
+            "type": "string",
+            "description": "South African province"
+          },
+          "bathrooms": {
+            "enum": [
+              "",
+              "1+",
+              "2+",
+              "3+",
+              "4+",
+              "5+"
+            ],
+            "type": "string",
+            "description": "Minimum bathrooms"
+          },
+          "max_price": {
+            "enum": [
+              "",
+              "R500k",
+              "R1M",
+              "R1.5M",
+              "R2M",
+              "R3M",
+              "R5M",
+              "R10M"
+            ],
+            "type": "string",
+            "description": "Maximum price"
+          },
+          "min_price": {
+            "enum": [
+              "",
+              "R500k",
+              "R1M",
+              "R1.5M",
+              "R2M",
+              "R3M",
+              "R5M",
+              "R10M"
+            ],
+            "type": "string",
+            "description": "Minimum price"
+          },
+          "property_type": {
+            "enum": [
+              "",
+              "House",
+              "Apartment/Flat",
+              "Townhouse",
+              "Cluster",
+              "Estate",
+              "Farm/Smallholding",
+              "Land/Plot",
+              "Commercial",
+              "Other"
+            ],
+            "type": "string",
+            "description": "Property type"
+          }
+        }
+      }
+    },
+    {
+      "name": "start_property_inquiry",
+      "description": "Initiate seller contact or formal offer submission on a chosen property listing.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "property_url"
+        ],
+        "properties": {
+          "property_url": {
+            "type": "string",
+            "description": "The URL of the property listing."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "start_registration",
+      "description": "Start user onboarding flow as a verified buyer or seller (params: role) -> {status: 'handoff', role, registration_url, message}",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "enum": [
+              "buyer",
+              "seller"
+            ],
+            "type": "string",
+            "default": "buyer",
+            "description": "User account role"
+          }
+        }
+      }
+    }
+  ],
+  "host": "privately.co.za",
+  "source": "webmcp.com/api/directory.json"
+}

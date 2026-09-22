@@ -1,0 +1,108 @@
+{
+  "sponsio": 1,
+  "url": "https://whidbeyisland.hoc420.com/",
+  "capturedAt": "2026-09-22T11:27:53.102Z",
+  "tools": [
+    {
+      "name": "get_product_details",
+      "description": "Get detailed information for a specific cannabis product including name, brand, pricing, active discounts, potency, image, and description.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "Direct product URL (e.g. https://hoc420.com/shop/products/...)"
+          },
+          "product_id": {
+            "type": "string",
+            "description": "Product ID"
+          }
+        }
+      }
+    },
+    {
+      "name": "list_products",
+      "description": "List cannabis products by category (such as flower, edibles, pre-rolls, vapes, extracts, concentrates, gear, or deals) from the House of Cannabis Whidbey dispensary menu.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "default": 20,
+            "description": "Maximum number of products to return"
+          },
+          "category": {
+            "enum": [
+              "featured",
+              "deals",
+              "flower",
+              "edible",
+              "pre_roll",
+              "extract",
+              "tincture",
+              "topical",
+              "vape",
+              "gear",
+              "shop_all"
+            ],
+            "type": "string",
+            "default": "featured",
+            "description": "Menu category to browse"
+          }
+        }
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Search dispensary products by keyword or brand name across the House of Cannabis Whidbey menu.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "query"
+        ],
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search keyword, product name, strain, or brand"
+          }
+        }
+      }
+    },
+    {
+      "name": "start_order_handoff",
+      "description": "Safely navigate the user to the selected product page or category menu to configure weights, view live stock, and proceed with pickup ordering.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "enum": [
+              "featured",
+              "deals",
+              "flower",
+              "edible",
+              "pre_roll",
+              "extract",
+              "tincture",
+              "topical",
+              "vape",
+              "gear",
+              "shop_all"
+            ],
+            "type": "string",
+            "description": "Menu category to open if no specific product is chosen"
+          },
+          "product_url": {
+            "type": "string",
+            "description": "Product URL to navigate to for ordering"
+          }
+        }
+      }
+    }
+  ],
+  "host": "whidbeyisland.hoc420.com",
+  "source": "webmcp.com/api/directory.json"
+}

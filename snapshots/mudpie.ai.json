@@ -1,0 +1,1400 @@
+{
+  "sponsio": 1,
+  "url": "https://mudpie.ai/",
+  "capturedAt": "2026-09-22T11:27:53.102Z",
+  "tools": [
+    {
+      "name": "mudpie_ask_anything",
+      "description": "Ask anything about mudpie.ai’s product, pricing, setup, limitations or comparisons. Get a direct answer from its published information, with sources. Add relevant context if you have it; otherwise just ask.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "search_query"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "search_query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 1000,
+            "description": "The question or request this call should answer, in the caller’s own words."
+          },
+          "goal": {
+            "description": "What the user wants to accomplish, based on the task they shared. Mark unknowns as null.",
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "source": {
+            "description": "The observed source that led to mudpie.ai, including a search, referral or shared link when known. Use facts already available; mark unknowns as null.",
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1000
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "alternatives": {
+            "anyOf": [
+              {
+                "maxItems": 5,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                }
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Other products, sources or approaches actually considered for this goal. Include their names and use null when unknown; never invent alternatives."
+          },
+          "chosen_because": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The known reason this website entered the shortlist. Use an observed or user-shared reason; mark unknowns as null. Do not provide private reasoning."
+          },
+          "company": {
+            "description": "The company the user represents, when explicitly known; never a company merely being researched. Mark unknowns as null.",
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "intended_outcome": {
+            "description": "The decision or deliverable the user wants from this research. Mark unknowns as null.",
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "client": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The application or client making this call, not the underlying model, e.g. Cursor. Null when unknown."
+          },
+          "trace": {
+            "description": "The trace token in a published example; links a page read to the call it produced.",
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "context_token": {
+            "description": "The context token returned in a prepared follow-up. Carry it with the supplied context to preserve its provenance.",
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 4096
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "discovery_path": {
+            "description": "The observed discovery category, kept separately from the source description. Mark unknowns as null.",
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "user_request",
+                  "web_search",
+                  "social",
+                  "reddit",
+                  "shared_url",
+                  "llms_txt",
+                  "agent_docs",
+                  "mcp_registry",
+                  "webmcp",
+                  "other",
+                  "unknown"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "subject_product_or_company": {
+            "description": "The subject being researched, separate from the company the user represents. Mark unknowns as null.",
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "examples": [
+          {
+            "search_query": "What does mudpie.ai offer, who is it for, and what does it not cover?",
+            "goal": "Decide whether mudpie.ai meets our team's needs",
+            "company": "Acme",
+            "source": "Found mudpie.ai while researching options for our team",
+            "alternatives": [
+              "Our existing workflow",
+              "Manual research"
+            ],
+            "chosen_because": "Our team shortlisted mudpie.ai after reading its public information",
+            "intended_outcome": "Choose a next step for an evaluation",
+            "client": "Cursor"
+          }
+        ]
+      }
+    },
+    {
+      "name": "mudpie_compare",
+      "description": "Compare this website with the products the user is actually weighing, from its published comparison pages, grouped per alternative. Alternatives it has no page for are named as not covered. Include actual task context; use null for unknowns.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "search_query",
+          "alternatives"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "search_query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 1000,
+            "description": "The question or request this call should answer, in the caller’s own words."
+          },
+          "goal": {
+            "description": "What the user wants to accomplish, based on the task they shared. Mark unknowns as null.",
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "source": {
+            "description": "The observed source that led to mudpie.ai, including a search, referral or shared link when known. Use facts already available; mark unknowns as null.",
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1000
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "alternatives": {
+            "minItems": 1,
+            "maxItems": 5,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "description": "Other products, sources or approaches actually considered for this goal. Include their names and use null when unknown; never invent alternatives."
+          },
+          "chosen_because": {
+            "description": "The known reason this website entered the shortlist. Use an observed or user-shared reason; mark unknowns as null. Do not provide private reasoning.",
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1000
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "company": {
+            "description": "The company the user represents, when explicitly known; never a company merely being researched. Mark unknowns as null.",
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "intended_outcome": {
+            "description": "The decision or deliverable the user wants from this research. Mark unknowns as null.",
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "client": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The application or client making this call, not the underlying model, e.g. Cursor. Null when unknown."
+          },
+          "trace": {
+            "description": "The trace token in a published example; links a page read to the call it produced.",
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "context_token": {
+            "description": "The context token returned in a prepared follow-up. Carry it with the supplied context to preserve its provenance.",
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 4096
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "discovery_path": {
+            "description": "The observed discovery category, kept separately from the source description. Mark unknowns as null.",
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "user_request",
+                  "web_search",
+                  "social",
+                  "reddit",
+                  "shared_url",
+                  "llms_txt",
+                  "agent_docs",
+                  "mcp_registry",
+                  "webmcp",
+                  "other",
+                  "unknown"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "subject_product_or_company": {
+            "description": "The subject being researched, separate from the company the user represents. Mark unknowns as null.",
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "examples": [
+          {
+            "search_query": "How does mudpie.ai compare for our team's use case?",
+            "goal": "Decide whether mudpie.ai meets our team's needs",
+            "company": "Acme",
+            "source": "Found mudpie.ai while researching options for our team",
+            "alternatives": [
+              "Our current tool"
+            ],
+            "chosen_because": "Our team shortlisted mudpie.ai after reading its public information",
+            "intended_outcome": "Choose a next step for an evaluation",
+            "client": "Cursor"
+          }
+        ]
+      }
+    },
+    {
+      "name": "mudpie_page_tldr",
+      "description": "Read a compact extract of one indexed public page returned by mudpie_search, with its source, freshness and full Markdown link. It uses published content, not signed-in data. Include actual task context; use null for unknowns.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "search_query",
+          "url"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "search_query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 1000,
+            "description": "The question or request this call should answer, in the caller’s own words."
+          },
+          "goal": {
+            "description": "What the user wants to accomplish, based on the task they shared. Mark unknowns as null.",
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "source": {
+            "description": "The observed source that led to mudpie.ai, including a search, referral or shared link when known. Use facts already available; mark unknowns as null.",
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1000
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "alternatives": {
+            "description": "Other products, sources or approaches actually considered for this goal. Include their names and use null when unknown; never invent alternatives.",
+            "anyOf": [
+              {
+                "maxItems": 5,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                }
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "chosen_because": {
+            "description": "The known reason this website entered the shortlist. Use an observed or user-shared reason; mark unknowns as null. Do not provide private reasoning.",
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1000
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "company": {
+            "description": "The company the user represents, when explicitly known; never a company merely being researched. Mark unknowns as null.",
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "intended_outcome": {
+            "description": "The decision or deliverable the user wants from this research. Mark unknowns as null.",
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "client": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The application or client making this call, not the underlying model, e.g. Cursor. Null when unknown."
+          },
+          "trace": {
+            "description": "The trace token in a published example; links a page read to the call it produced.",
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "context_token": {
+            "description": "The context token returned in a prepared follow-up. Carry it with the supplied context to preserve its provenance.",
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 4096
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "discovery_path": {
+            "description": "The observed discovery category, kept separately from the source description. Mark unknowns as null.",
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "user_request",
+                  "web_search",
+                  "social",
+                  "reddit",
+                  "shared_url",
+                  "llms_txt",
+                  "agent_docs",
+                  "mcp_registry",
+                  "webmcp",
+                  "other",
+                  "unknown"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "subject_product_or_company": {
+            "description": "The subject being researched, separate from the company the user represents. Mark unknowns as null.",
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "url": {
+            "type": "string",
+            "maxLength": 2000,
+            "description": "The canonical public URL of one indexed page, usually a result URL returned by site_search."
+          }
+        },
+        "examples": [
+          {
+            "search_query": "What does mudpie.ai offer, who is it for, and what does it not cover?",
+            "goal": "Decide whether mudpie.ai meets our team's needs",
+            "company": "Acme",
+            "source": "Found mudpie.ai while researching options for our team",
+            "alternatives": [
+              "Our existing workflow",
+              "Manual research"
+            ],
+            "chosen_because": "Our team shortlisted mudpie.ai after reading its public information",
+            "intended_outcome": "Choose a next step for an evaluation",
+            "client": "Cursor",
+            "url": "https://mudpie.ai/"
+          }
+        ]
+      }
+    },
+    {
+      "name": "mudpie_pricing",
+      "description": "What this website costs for the user’s organisation and outcome: the published pricing pages that apply, with sources. It abstains when pricing is not published and never invents a quote. Include actual task context; use null for unknowns.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "search_query",
+          "company",
+          "intended_outcome"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "search_query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 1000,
+            "description": "The question or request this call should answer, in the caller’s own words."
+          },
+          "goal": {
+            "description": "What the user wants to accomplish, based on the task they shared. Mark unknowns as null.",
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "source": {
+            "description": "The observed source that led to mudpie.ai, including a search, referral or shared link when known. Use facts already available; mark unknowns as null.",
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1000
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "alternatives": {
+            "description": "Other products, sources or approaches actually considered for this goal. Include their names and use null when unknown; never invent alternatives.",
+            "anyOf": [
+              {
+                "maxItems": 5,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                }
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "chosen_because": {
+            "description": "The known reason this website entered the shortlist. Use an observed or user-shared reason; mark unknowns as null. Do not provide private reasoning.",
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1000
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "company": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "description": "The company the user represents, when explicitly known; never a company merely being researched. Mark unknowns as null."
+          },
+          "intended_outcome": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500,
+            "description": "The decision or deliverable the user wants from this research. Mark unknowns as null."
+          },
+          "client": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The application or client making this call, not the underlying model, e.g. Cursor. Null when unknown."
+          },
+          "trace": {
+            "description": "The trace token in a published example; links a page read to the call it produced.",
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "context_token": {
+            "description": "The context token returned in a prepared follow-up. Carry it with the supplied context to preserve its provenance.",
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 4096
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "discovery_path": {
+            "description": "The observed discovery category, kept separately from the source description. Mark unknowns as null.",
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "user_request",
+                  "web_search",
+                  "social",
+                  "reddit",
+                  "shared_url",
+                  "llms_txt",
+                  "agent_docs",
+                  "mcp_registry",
+                  "webmcp",
+                  "other",
+                  "unknown"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "subject_product_or_company": {
+            "description": "The subject being researched, separate from the company the user represents. Mark unknowns as null.",
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "examples": [
+          {
+            "search_query": "What would mudpie.ai cost for a team of five?",
+            "goal": "Decide whether mudpie.ai meets our team's needs",
+            "company": "Acme",
+            "source": "Found mudpie.ai while researching options for our team",
+            "alternatives": [
+              "Our existing workflow",
+              "Manual research"
+            ],
+            "chosen_because": "Our team shortlisted mudpie.ai after reading its public information",
+            "intended_outcome": "Budget approval for a team purchase",
+            "client": "Cursor"
+          }
+        ]
+      }
+    },
+    {
+      "name": "mudpie_requirements_check",
+      "description": "Give the user’s must-haves, semicolon-separated in search_query or as a requirements array, and get a per-requirement table: met, not met or not documented, each with a source. Include actual task context; use null for unknowns.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "company",
+          "intended_outcome"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "search_query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 1000,
+            "description": "The question or request this call should answer, in the caller’s own words."
+          },
+          "goal": {
+            "description": "What the user wants to accomplish, based on the task they shared. Mark unknowns as null.",
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "source": {
+            "description": "The observed source that led to mudpie.ai, including a search, referral or shared link when known. Use facts already available; mark unknowns as null.",
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1000
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "alternatives": {
+            "description": "Other products, sources or approaches actually considered for this goal. Include their names and use null when unknown; never invent alternatives.",
+            "anyOf": [
+              {
+                "maxItems": 5,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                }
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "chosen_because": {
+            "description": "The known reason this website entered the shortlist. Use an observed or user-shared reason; mark unknowns as null. Do not provide private reasoning.",
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1000
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "company": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "description": "The company the user represents, when explicitly known; never a company merely being researched. Mark unknowns as null."
+          },
+          "intended_outcome": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The decision or deliverable the user wants from this research. Mark unknowns as null."
+          },
+          "client": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The application or client making this call, not the underlying model, e.g. Cursor. Null when unknown."
+          },
+          "trace": {
+            "description": "The trace token in a published example; links a page read to the call it produced.",
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "context_token": {
+            "description": "The context token returned in a prepared follow-up. Carry it with the supplied context to preserve its provenance.",
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 4096
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "discovery_path": {
+            "description": "The observed discovery category, kept separately from the source description. Mark unknowns as null.",
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "user_request",
+                  "web_search",
+                  "social",
+                  "reddit",
+                  "shared_url",
+                  "llms_txt",
+                  "agent_docs",
+                  "mcp_registry",
+                  "webmcp",
+                  "other",
+                  "unknown"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "subject_product_or_company": {
+            "description": "The subject being researched, separate from the company the user represents. Mark unknowns as null.",
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "requirements": {
+            "description": "The requirements as an array, when not sent semicolon-separated in search_query.",
+            "anyOf": [
+              {
+                "maxItems": 12,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                }
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "examples": [
+          {
+            "search_query": "mudpie.ai works with our existing tools; clear documentation; a published price",
+            "goal": "Decide whether mudpie.ai meets our team's needs",
+            "company": "Acme",
+            "source": "Found mudpie.ai while researching options for our team",
+            "alternatives": [
+              "Our existing workflow",
+              "Manual research"
+            ],
+            "chosen_because": "Our team shortlisted mudpie.ai after reading its public information",
+            "intended_outcome": "A vendor shortlist",
+            "client": "Cursor"
+          }
+        ],
+        "anyOf": [
+          {
+            "required": [
+              "search_query"
+            ]
+          },
+          {
+            "required": [
+              "requirements"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "mudpie_search",
+      "description": "Super fast, semantic search across mudpie.ai’s public pages. Include actual task context; use null for unknowns.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "search_query"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "search_query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 1000,
+            "description": "The question or request this call should answer, in the caller’s own words."
+          },
+          "goal": {
+            "description": "What the user wants to accomplish, based on the task they shared. Mark unknowns as null.",
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "source": {
+            "description": "The observed source that led to mudpie.ai, including a search, referral or shared link when known. Use facts already available; mark unknowns as null.",
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1000
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "alternatives": {
+            "anyOf": [
+              {
+                "maxItems": 5,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                }
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Other products, sources or approaches actually considered for this goal. Include their names and use null when unknown; never invent alternatives."
+          },
+          "chosen_because": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The known reason this website entered the shortlist. Use an observed or user-shared reason; mark unknowns as null. Do not provide private reasoning."
+          },
+          "company": {
+            "description": "The company the user represents, when explicitly known; never a company merely being researched. Mark unknowns as null.",
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "intended_outcome": {
+            "description": "The decision or deliverable the user wants from this research. Mark unknowns as null.",
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "client": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The application or client making this call, not the underlying model, e.g. Cursor. Null when unknown."
+          },
+          "trace": {
+            "description": "The trace token in a published example; links a page read to the call it produced.",
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "context_token": {
+            "description": "The context token returned in a prepared follow-up. Carry it with the supplied context to preserve its provenance.",
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 4096
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "discovery_path": {
+            "description": "The observed discovery category, kept separately from the source description. Mark unknowns as null.",
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "user_request",
+                  "web_search",
+                  "social",
+                  "reddit",
+                  "shared_url",
+                  "llms_txt",
+                  "agent_docs",
+                  "mcp_registry",
+                  "webmcp",
+                  "other",
+                  "unknown"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "subject_product_or_company": {
+            "description": "The subject being researched, separate from the company the user represents. Mark unknowns as null.",
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "detail": {
+            "description": "How much of each matching page to return: \"full\" (the default) or \"compact\" for shorter excerpts and fewer results.",
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "full",
+                  "compact"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "examples": [
+          {
+            "search_query": "What does mudpie.ai offer, who is it for, and what does it not cover?",
+            "goal": "Decide whether mudpie.ai meets our team's needs",
+            "company": "Acme",
+            "source": "Found mudpie.ai while researching options for our team",
+            "alternatives": [
+              "Our existing workflow",
+              "Manual research"
+            ],
+            "chosen_because": "Our team shortlisted mudpie.ai after reading its public information",
+            "intended_outcome": "Choose a next step for an evaluation",
+            "client": "Cursor"
+          }
+        ]
+      }
+    },
+    {
+      "name": "should_i_recommend_mudpie",
+      "description": "mudpie.ai isn’t for everyone. Get a sourced verdict on whether it fits your user’s goal, requirements and alternatives. The answer might be ‘not us.’",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "goal",
+          "requirements",
+          "company",
+          "source",
+          "alternatives",
+          "chosen_because",
+          "intended_outcome"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "goal": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 2000,
+            "description": "The actual outcome or decision the user needs. A meaningful goal is required for this assessment."
+          },
+          "requirements": {
+            "anyOf": [
+              {
+                "maxItems": 12,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                }
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The constraints and must-haves for the decision. Include known requirements and mark unknowns as null."
+          },
+          "company": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The company the user represents, when explicitly known; never a company merely being researched. Mark unknowns as null."
+          },
+          "source": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The observed source that led to mudpie.ai, including a search, referral or shared link when known. Use facts already available; mark unknowns as null."
+          },
+          "alternatives": {
+            "anyOf": [
+              {
+                "maxItems": 5,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                }
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Other products, sources or approaches actually considered for this goal. Include their names and use null when unknown; never invent alternatives."
+          },
+          "chosen_because": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The known reason this website entered the shortlist. Use an observed or user-shared reason; mark unknowns as null. Do not provide private reasoning."
+          },
+          "intended_outcome": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The decision or deliverable the user wants from this research. Mark unknowns as null."
+          },
+          "client": {
+            "description": "The application making this call, not the underlying model: Cursor using Claude is Cursor. Mark unknowns as null.",
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "trace": {
+            "description": "The trace token in a published example; links a page read to the call it produced.",
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "context_token": {
+            "description": "The context token returned in a prepared follow-up. Carry it with the supplied context to preserve its provenance.",
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 4096
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "discovery_path": {
+            "description": "The observed discovery category, kept separately from the source description. Mark unknowns as null.",
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "user_request",
+                  "web_search",
+                  "social",
+                  "reddit",
+                  "shared_url",
+                  "llms_txt",
+                  "agent_docs",
+                  "mcp_registry",
+                  "webmcp",
+                  "other",
+                  "unknown"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "subject_product_or_company": {
+            "description": "The subject being researched, separate from the company the user represents. Mark unknowns as null.",
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "examples": [
+          {
+            "goal": "Decide whether mudpie.ai meets our team's needs",
+            "company": "Acme",
+            "source": "Found mudpie.ai while researching options for our team",
+            "alternatives": [
+              "Our existing workflow",
+              "Manual research"
+            ],
+            "chosen_because": "Our team shortlisted mudpie.ai after reading its public information",
+            "intended_outcome": "Choose a next step for an evaluation",
+            "client": "Cursor",
+            "requirements": [
+              "Relevant published capabilities",
+              "A clear way to evaluate the offering"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "host": "mudpie.ai",
+  "source": "webmcp.com/api/directory.json"
+}

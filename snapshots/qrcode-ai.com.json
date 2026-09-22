@@ -1,0 +1,1896 @@
+{
+  "sponsio": 1,
+  "url": "https://qrcode-ai.com/en-US",
+  "capturedAt": "2026-09-22T11:27:53.102Z",
+  "tools": [
+    {
+      "name": "configure_qr_generator",
+      "description": "Apply destination URL or content into the on-page QR generator input to prepare code creation.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "required": [
+          "content_url"
+        ],
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "description": "Optional prompt for AI art styling"
+          },
+          "content_url": {
+            "type": "string",
+            "description": "The target web address or content string to encode in the QR code"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_faq_list",
+      "description": "Retrieve grounded frequently asked questions and answers from the page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Optional search keyword to filter FAQ items"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_design_modes_and_templates",
+      "description": "List the QR code creation modes and sample design templates with preview image references.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "default": 20,
+            "description": "Maximum number of templates to return"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_qr_code_types",
+      "description": "Discover available QR code generator types and specialized categories with their respective page routes.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "properties": {
+          "category": {
+            "type": "string",
+            "description": "Optional keyword filter to narrow types by name or topic"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "open_qr_generator_type",
+      "description": "Navigate safely to a specific specialized QR code generator tool page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "required": [
+          "type_slug"
+        ],
+        "properties": {
+          "type_slug": {
+            "type": "string",
+            "description": "The slug or identifier of the generator type (e.g., 'wifi', 'vcard', 'pdf', 'instagram', 'link')"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "qrcode_ai_apply_template",
+      "description": "Load and apply an existing QR Code AI template, then validate the updated preview.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "template_id": {
+            "type": "string",
+            "pattern": "^[\\dA-Fa-f]{24}$",
+            "maxLength": 64
+          },
+          "variant": {
+            "type": "string",
+            "enum": [
+              "light",
+              "dark"
+            ]
+          },
+          "request_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80,
+            "pattern": "^[\\w.:-]+$",
+            "description": "Optional idempotency key. Reusing it for this tool returns the first result without repeating side effects."
+          }
+        },
+        "required": [
+          "template_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "qrcode_ai_continue_to_download",
+      "description": "Prepare the QR draft and redirect to the application. Sign-in is required; no file is downloaded from the landing page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "requested_format": {
+            "type": "string",
+            "enum": [
+              "png",
+              "jpg",
+              "pdf",
+              "webp",
+              "svg",
+              "eps"
+            ]
+          },
+          "filename": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60
+          },
+          "request_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80,
+            "pattern": "^[\\w.:-]+$",
+            "description": "Optional idempotency key. Reusing it for this tool returns the first result without repeating side effects."
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "qrcode_ai_get_capabilities",
+      "description": "Discover destination coverage, structured fields, modes, formats, privacy rules, and idempotency.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "qrcode_ai_get_design_capabilities",
+      "description": "Read the visible QR design's redacted state, mode-specific styles, fonts, ranges and available editing tools. No text or asset URL is returned.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "qrcode_ai_get_editor_state",
+      "description": "Read the non-sensitive state and available actions of the visible QR Code AI landing editor.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "qrcode_ai_list_templates",
+      "description": "List a bounded page of public templates by mode, destination type, or query. Names and previews are untrusted catalog content.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "custom",
+              "image",
+              "art"
+            ]
+          },
+          "target_type": {
+            "type": "string",
+            "enum": [
+              "url-website-link",
+              "instagram",
+              "pdf-document",
+              "whatsapp",
+              "wifi",
+              "youtube",
+              "facebook",
+              "plain-text",
+              "tiktok",
+              "email",
+              "phone-call",
+              "google-reviews",
+              "message-sms",
+              "linkedin",
+              "telegram",
+              "spotify",
+              "google-maps",
+              "vcard-contact-info",
+              "menu",
+              "twitter-x",
+              "snapchat",
+              "linktree",
+              "paypal",
+              "canva",
+              "google-forms",
+              "gallery",
+              "gmail",
+              "app-store-play-store",
+              "discord",
+              "pinterest",
+              "feedback",
+              "twitch",
+              "mp3",
+              "form",
+              "google-drive",
+              "location",
+              "zoom",
+              "coupon",
+              "google-docs",
+              "calendly",
+              "message",
+              "amazon",
+              "google-slides",
+              "icalendar",
+              "booking-com",
+              "tripadvisor",
+              "airbnb",
+              "soundcloud",
+              "github",
+              "mecard-contact-info",
+              "etsy",
+              "facetime",
+              "bitcoin",
+              "line",
+              "wechat",
+              "ethereum",
+              "upi-payment",
+              "vk",
+              "pix-payment",
+              "rickroll"
+            ]
+          },
+          "query": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 10000,
+            "default": 0
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 12
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "qrcode_ai_set_background_image",
+      "description": "Add, replace or remove a CORS-enabled HTTPS background image, then render and scan. Scale, opacity, filter, veil and duotone apply to image mode only. Removing an image-mode background leaves an incomplete design.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "image_url": {
+            "type": "string",
+            "maxLength": 2048,
+            "description": "Absolute HTTPS image URL with CORS enabled. Empty string removes the image."
+          },
+          "scale": {
+            "type": "number",
+            "minimum": 10,
+            "maximum": 200
+          },
+          "opacity": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "filter": {
+            "type": "string",
+            "enum": [
+              "none",
+              "grayscale",
+              "sepia",
+              "duotone",
+              "duotone-auto",
+              "posterize",
+              "blur"
+            ]
+          },
+          "veil": {
+            "type": "string",
+            "enum": [
+              "none",
+              "light",
+              "dark",
+              "auto"
+            ]
+          },
+          "duotone": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 2,
+            "items": {
+              "type": "string",
+              "pattern": "^#[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?$"
+            },
+            "description": "Dark and light colors used by the duotone filter."
+          },
+          "request_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80,
+            "pattern": "^[A-Za-z0-9_.:-]+$"
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "qrcode_ai_set_colors",
+      "description": "Set strict foreground and background colors in custom or image mode and rescan the QR code.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "foreground": {
+            "type": "string",
+            "pattern": "^#[\\dA-Fa-f]{6}$"
+          },
+          "background": {
+            "type": "string",
+            "pattern": "^#[\\dA-Fa-f]{6}$"
+          },
+          "request_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80,
+            "pattern": "^[\\w.:-]+$",
+            "description": "Optional idempotency key. Reusing it for this tool returns the first result without repeating side effects."
+          }
+        },
+        "required": [
+          "foreground",
+          "background"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "qrcode_ai_set_design_colors",
+      "description": "Set solid/gradient QR colors, finder colors and palette in the visible custom/image editor, then render and scan. Arrays contain one solid color or two gradient stops (#RRGGBB or #RRGGBBAA); palette accepts zero or two to four colors. Gradient geometry is custom-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "foreground": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 2,
+            "items": {
+              "type": "string",
+              "pattern": "^#[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?$"
+            }
+          },
+          "background": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 2,
+            "items": {
+              "type": "string",
+              "pattern": "^#[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?$"
+            }
+          },
+          "eyes": {
+            "type": "array",
+            "minItems": 0,
+            "maxItems": 2,
+            "items": {
+              "type": "string",
+              "pattern": "^#[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?$"
+            }
+          },
+          "eye_centers": {
+            "type": "array",
+            "minItems": 0,
+            "maxItems": 2,
+            "items": {
+              "type": "string",
+              "pattern": "^#[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?$"
+            }
+          },
+          "palette": {
+            "type": "array",
+            "minItems": 0,
+            "maxItems": 4,
+            "items": {
+              "type": "string",
+              "pattern": "^#[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?$"
+            }
+          },
+          "gradient_type": {
+            "type": "string",
+            "enum": [
+              "linear",
+              "radial"
+            ]
+          },
+          "gradient_angle": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 360
+          },
+          "request_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80,
+            "pattern": "^[A-Za-z0-9_.:-]+$"
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "qrcode_ai_set_destination",
+      "description": "Set a URL, text, or encoded direct destination, then normalize, regenerate, scan, and save it. Rich hosted content uses the structured tool.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "target_type": {
+            "type": "string",
+            "enum": [
+              "url-website-link",
+              "instagram",
+              "pdf-document",
+              "whatsapp",
+              "wifi",
+              "youtube",
+              "facebook",
+              "plain-text",
+              "tiktok",
+              "email",
+              "phone-call",
+              "google-reviews",
+              "message-sms",
+              "linkedin",
+              "telegram",
+              "spotify",
+              "google-maps",
+              "vcard-contact-info",
+              "menu",
+              "twitter-x",
+              "snapchat",
+              "linktree",
+              "paypal",
+              "canva",
+              "google-forms",
+              "gallery",
+              "gmail",
+              "app-store-play-store",
+              "discord",
+              "pinterest",
+              "feedback",
+              "twitch",
+              "mp3",
+              "form",
+              "google-drive",
+              "location",
+              "zoom",
+              "coupon",
+              "google-docs",
+              "calendly",
+              "message",
+              "amazon",
+              "google-slides",
+              "icalendar",
+              "booking-com",
+              "tripadvisor",
+              "airbnb",
+              "soundcloud",
+              "github",
+              "mecard-contact-info",
+              "etsy",
+              "facetime",
+              "bitcoin",
+              "line",
+              "wechat",
+              "ethereum",
+              "upi-payment",
+              "vk",
+              "pix-payment",
+              "rickroll"
+            ]
+          },
+          "target": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 8192
+          },
+          "request_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80,
+            "pattern": "^[\\w.:-]+$",
+            "description": "Optional idempotency key. Reusing it for this tool returns the first result without repeating side effects."
+          }
+        },
+        "required": [
+          "target_type",
+          "target"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "qrcode_ai_set_logo",
+      "description": "Add, replace, remove or position a logo in the visible QR editor, then render and scan. Image loading and CORS are checked before changing the design. Image mode supports layer and a maximum scale of 20; background_shape/background_scale are custom-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "image_url": {
+            "type": "string",
+            "maxLength": 2048,
+            "description": "Absolute HTTPS image URL with CORS enabled. Empty string removes the image."
+          },
+          "scale": {
+            "type": "number",
+            "minimum": 2,
+            "maximum": 22
+          },
+          "position_x": {
+            "type": "number",
+            "minimum": -100,
+            "maximum": 100
+          },
+          "position_y": {
+            "type": "number",
+            "minimum": -100,
+            "maximum": 100
+          },
+          "border_color": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 2,
+            "items": {
+              "type": "string",
+              "pattern": "^#[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?$"
+            }
+          },
+          "border_scale": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 50
+          },
+          "background_shape": {
+            "type": "string",
+            "enum": [
+              "square",
+              "rounded",
+              "circle",
+              "none"
+            ]
+          },
+          "background_scale": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 50
+          },
+          "layer": {
+            "type": "string",
+            "enum": [
+              "front",
+              "back"
+            ]
+          },
+          "request_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80,
+            "pattern": "^[A-Za-z0-9_.:-]+$"
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "qrcode_ai_set_mode",
+      "description": "Switch the visible QR editor between custom, image, and art modes using its existing state.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "custom",
+              "image",
+              "art"
+            ]
+          },
+          "request_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80,
+            "pattern": "^[\\w.:-]+$",
+            "description": "Optional idempotency key. Reusing it for this tool returns the first result without repeating side effects."
+          }
+        },
+        "required": [
+          "mode"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "qrcode_ai_set_shapes",
+      "description": "Set the QR modules, finder shapes, size and margin using the product's supported styles, then render and scan. Call design capabilities for mode-specific choices.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "pixel_style": {
+            "type": "string",
+            "enum": [
+              "square",
+              "rounded",
+              "dot",
+              "squircle",
+              "row",
+              "column",
+              "hexagon",
+              "maze",
+              "sketch",
+              "triangle",
+              "star",
+              "heart",
+              "outline",
+              "line-h",
+              "line-v",
+              "interlock",
+              "diagonal",
+              "cross",
+              "bubble",
+              "leaf",
+              "diamond",
+              "sparkle",
+              "flower",
+              "plus",
+              "dsj",
+              "wave",
+              "crystalize",
+              "liquidify",
+              "auto",
+              "mix",
+              "ring",
+              "halftone3x3",
+              "dither",
+              "ghost",
+              "brush"
+            ]
+          },
+          "marker_shape": {
+            "type": "string",
+            "enum": [
+              "square",
+              "circle",
+              "octagon",
+              "tiny-plus",
+              "leaf",
+              "squircle",
+              "hexagon",
+              "dashed",
+              "target",
+              "sketch",
+              "rounded",
+              "heart",
+              "planet"
+            ]
+          },
+          "marker_inner": {
+            "type": "string",
+            "enum": [
+              "square",
+              "circle",
+              "plus",
+              "diamond",
+              "eye",
+              "heart",
+              "squircle",
+              "star",
+              "sparkle",
+              "leaf",
+              "donut",
+              "auto"
+            ]
+          },
+          "pixel_scale": {
+            "type": "number",
+            "minimum": 30,
+            "maximum": 200
+          },
+          "margin": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 10
+          },
+          "request_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80,
+            "pattern": "^[A-Za-z0-9_.:-]+$"
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "qrcode_ai_set_structured_destination",
+      "description": "Build and validate a contact, message, network, payment, event, location, hosted-content, media, or form destination with native serializers.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "target_type": {
+            "type": "string",
+            "enum": [
+              "email",
+              "gmail",
+              "phone-call",
+              "message-sms",
+              "whatsapp",
+              "plain-text",
+              "pdf-document",
+              "wifi",
+              "vcard-contact-info",
+              "mecard-contact-info",
+              "app-store-play-store",
+              "bitcoin",
+              "ethereum",
+              "facetime",
+              "location",
+              "icalendar",
+              "upi-payment",
+              "pix-payment",
+              "gallery",
+              "coupon",
+              "feedback",
+              "menu",
+              "message",
+              "mp3",
+              "form"
+            ]
+          },
+          "fields": {
+            "type": "object"
+          },
+          "request_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80,
+            "pattern": "^[\\w.:-]+$",
+            "description": "Optional idempotency key. Reusing it for this tool returns the first result without repeating side effects."
+          }
+        },
+        "required": [
+          "target_type",
+          "fields"
+        ],
+        "additionalProperties": false,
+        "oneOf": [
+          {
+            "properties": {
+              "target_type": {
+                "const": "email"
+              },
+              "fields": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 254
+                  },
+                  "subject": {
+                    "type": "string",
+                    "maxLength": 500
+                  },
+                  "body": {
+                    "type": "string",
+                    "maxLength": 5000
+                  }
+                },
+                "required": [
+                  "email"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          {
+            "properties": {
+              "target_type": {
+                "const": "gmail"
+              },
+              "fields": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 254
+                  },
+                  "subject": {
+                    "type": "string",
+                    "maxLength": 500
+                  },
+                  "body": {
+                    "type": "string",
+                    "maxLength": 5000
+                  }
+                },
+                "required": [
+                  "email"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          {
+            "properties": {
+              "target_type": {
+                "const": "phone-call"
+              },
+              "fields": {
+                "type": "object",
+                "properties": {
+                  "phone": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 64
+                  }
+                },
+                "required": [
+                  "phone"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          {
+            "properties": {
+              "target_type": {
+                "const": "message-sms"
+              },
+              "fields": {
+                "type": "object",
+                "properties": {
+                  "phone": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 64
+                  },
+                  "text": {
+                    "type": "string",
+                    "maxLength": 5000
+                  }
+                },
+                "required": [
+                  "phone"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          {
+            "properties": {
+              "target_type": {
+                "const": "whatsapp"
+              },
+              "fields": {
+                "type": "object",
+                "properties": {
+                  "destination": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2048
+                  },
+                  "text": {
+                    "type": "string",
+                    "maxLength": 5000
+                  }
+                },
+                "required": [
+                  "destination"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          {
+            "properties": {
+              "target_type": {
+                "const": "plain-text"
+              },
+              "fields": {
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 8192
+                  }
+                },
+                "required": [
+                  "text"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          {
+            "properties": {
+              "target_type": {
+                "const": "pdf-document"
+              },
+              "fields": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2048
+                  }
+                },
+                "required": [
+                  "url"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          {
+            "properties": {
+              "target_type": {
+                "const": "wifi"
+              },
+              "fields": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "password": {
+                    "type": "string",
+                    "maxLength": 256
+                  },
+                  "encryption": {
+                    "type": "string",
+                    "enum": [
+                      "WPA",
+                      "WEP",
+                      "nopass"
+                    ]
+                  },
+                  "hidden": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "name",
+                  "encryption"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          {
+            "properties": {
+              "target_type": {
+                "const": "vcard-contact-info"
+              },
+              "fields": {
+                "type": "object",
+                "properties": {
+                  "first_name": {
+                    "type": "string",
+                    "maxLength": 256
+                  },
+                  "last_name": {
+                    "type": "string",
+                    "maxLength": 256
+                  },
+                  "phone": {
+                    "type": "string",
+                    "maxLength": 64
+                  },
+                  "email": {
+                    "type": "string",
+                    "maxLength": 254
+                  },
+                  "company": {
+                    "type": "string",
+                    "maxLength": 256
+                  },
+                  "job": {
+                    "type": "string",
+                    "maxLength": 256
+                  },
+                  "street": {
+                    "type": "string",
+                    "maxLength": 500
+                  },
+                  "city": {
+                    "type": "string",
+                    "maxLength": 256
+                  },
+                  "zip": {
+                    "type": "string",
+                    "maxLength": 64
+                  },
+                  "state": {
+                    "type": "string",
+                    "maxLength": 256
+                  },
+                  "country": {
+                    "type": "string",
+                    "maxLength": 256
+                  },
+                  "website": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2048
+                  }
+                },
+                "required": [],
+                "additionalProperties": false
+              }
+            }
+          },
+          {
+            "properties": {
+              "target_type": {
+                "const": "mecard-contact-info"
+              },
+              "fields": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "phone": {
+                    "type": "string",
+                    "maxLength": 64
+                  },
+                  "email": {
+                    "type": "string",
+                    "maxLength": 254
+                  },
+                  "address": {
+                    "type": "string",
+                    "maxLength": 500
+                  },
+                  "url": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2048
+                  },
+                  "note": {
+                    "type": "string",
+                    "maxLength": 2000
+                  }
+                },
+                "required": [
+                  "name"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          {
+            "properties": {
+              "target_type": {
+                "const": "app-store-play-store"
+              },
+              "fields": {
+                "type": "object",
+                "properties": {
+                  "ios_url": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2048
+                  },
+                  "android_url": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2048
+                  },
+                  "web_url": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2048
+                  }
+                },
+                "required": [],
+                "additionalProperties": false
+              }
+            }
+          },
+          {
+            "properties": {
+              "target_type": {
+                "const": "bitcoin"
+              },
+              "fields": {
+                "type": "object",
+                "properties": {
+                  "address": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  },
+                  "amount": {
+                    "type": "string",
+                    "maxLength": 64
+                  },
+                  "label": {
+                    "type": "string",
+                    "maxLength": 500
+                  },
+                  "message": {
+                    "type": "string",
+                    "maxLength": 2000
+                  }
+                },
+                "required": [
+                  "address"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          {
+            "properties": {
+              "target_type": {
+                "const": "ethereum"
+              },
+              "fields": {
+                "type": "object",
+                "properties": {
+                  "address": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "amount": {
+                    "type": "string",
+                    "maxLength": 64
+                  }
+                },
+                "required": [
+                  "address"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          {
+            "properties": {
+              "target_type": {
+                "const": "facetime"
+              },
+              "fields": {
+                "type": "object",
+                "properties": {
+                  "contact": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 254
+                  },
+                  "mode": {
+                    "type": "string",
+                    "enum": [
+                      "video",
+                      "audio"
+                    ]
+                  }
+                },
+                "required": [
+                  "contact"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          {
+            "properties": {
+              "target_type": {
+                "const": "location"
+              },
+              "fields": {
+                "type": "object",
+                "properties": {
+                  "latitude": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 32
+                  },
+                  "longitude": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 32
+                  }
+                },
+                "required": [
+                  "latitude",
+                  "longitude"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          {
+            "properties": {
+              "target_type": {
+                "const": "icalendar"
+              },
+              "fields": {
+                "type": "object",
+                "properties": {
+                  "summary": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 500
+                  },
+                  "starts_at": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 64
+                  },
+                  "ends_at": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 64
+                  },
+                  "location": {
+                    "type": "string",
+                    "maxLength": 500
+                  },
+                  "description": {
+                    "type": "string",
+                    "maxLength": 5000
+                  },
+                  "stamp_at": {
+                    "type": "string",
+                    "maxLength": 64
+                  }
+                },
+                "required": [
+                  "summary",
+                  "starts_at",
+                  "ends_at"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          {
+            "properties": {
+              "target_type": {
+                "const": "upi-payment"
+              },
+              "fields": {
+                "type": "object",
+                "properties": {
+                  "vpa": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "payee_name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "amount": {
+                    "type": "string",
+                    "maxLength": 64
+                  },
+                  "note": {
+                    "type": "string",
+                    "maxLength": 500
+                  }
+                },
+                "required": [
+                  "vpa",
+                  "payee_name"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          {
+            "properties": {
+              "target_type": {
+                "const": "pix-payment"
+              },
+              "fields": {
+                "type": "object",
+                "properties": {
+                  "payload": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 512
+                  }
+                },
+                "required": [
+                  "payload"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          {
+            "properties": {
+              "target_type": {
+                "const": "gallery"
+              },
+              "fields": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 160
+                  },
+                  "description": {
+                    "type": "string",
+                    "maxLength": 5000
+                  },
+                  "images": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 50,
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "url": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 2048
+                        },
+                        "alt": {
+                          "type": "string",
+                          "maxLength": 500
+                        },
+                        "caption": {
+                          "type": "string",
+                          "maxLength": 500
+                        }
+                      },
+                      "required": [
+                        "url"
+                      ],
+                      "additionalProperties": false
+                    }
+                  }
+                },
+                "required": [
+                  "title",
+                  "images"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          {
+            "properties": {
+              "target_type": {
+                "const": "coupon"
+              },
+              "fields": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 160
+                  },
+                  "code": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 100
+                  },
+                  "description": {
+                    "type": "string",
+                    "maxLength": 5000
+                  },
+                  "terms": {
+                    "type": "string",
+                    "maxLength": 5000
+                  },
+                  "expires_at": {
+                    "type": "string",
+                    "maxLength": 64
+                  },
+                  "image_url": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2048
+                  },
+                  "cta_url": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2048
+                  },
+                  "cta_label": {
+                    "type": "string",
+                    "maxLength": 100
+                  }
+                },
+                "required": [
+                  "title",
+                  "code"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          {
+            "properties": {
+              "target_type": {
+                "const": "feedback"
+              },
+              "fields": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 160
+                  },
+                  "description": {
+                    "type": "string",
+                    "maxLength": 5000
+                  },
+                  "scale": {
+                    "type": "integer",
+                    "enum": [
+                      5,
+                      10
+                    ]
+                  },
+                  "positive_threshold": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 10
+                  },
+                  "comment_enabled": {
+                    "type": "boolean"
+                  },
+                  "email_enabled": {
+                    "type": "boolean"
+                  },
+                  "positive_url": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2048
+                  },
+                  "thank_you_message": {
+                    "type": "string",
+                    "maxLength": 500
+                  }
+                },
+                "required": [
+                  "title",
+                  "scale",
+                  "positive_threshold"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          {
+            "properties": {
+              "target_type": {
+                "const": "menu"
+              },
+              "fields": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 160
+                  },
+                  "description": {
+                    "type": "string",
+                    "maxLength": 5000
+                  },
+                  "currency": {
+                    "type": "string",
+                    "maxLength": 10
+                  },
+                  "sections": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 20,
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 160
+                        },
+                        "items": {
+                          "type": "array",
+                          "minItems": 1,
+                          "maxItems": 100,
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 160
+                              },
+                              "description": {
+                                "type": "string",
+                                "maxLength": 500
+                              },
+                              "price": {
+                                "type": "string",
+                                "maxLength": 50
+                              },
+                              "image_url": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 2048
+                              }
+                            },
+                            "required": [
+                              "name"
+                            ],
+                            "additionalProperties": false
+                          }
+                        }
+                      },
+                      "required": [
+                        "name",
+                        "items"
+                      ],
+                      "additionalProperties": false
+                    }
+                  }
+                },
+                "required": [
+                  "title",
+                  "sections"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          {
+            "properties": {
+              "target_type": {
+                "const": "message"
+              },
+              "fields": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "maxLength": 160
+                  },
+                  "message": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 5000
+                  },
+                  "image_url": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2048
+                  },
+                  "cta_url": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2048
+                  },
+                  "cta_label": {
+                    "type": "string",
+                    "maxLength": 100
+                  }
+                },
+                "required": [
+                  "message"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          {
+            "properties": {
+              "target_type": {
+                "const": "mp3"
+              },
+              "fields": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2048
+                  },
+                  "title": {
+                    "type": "string",
+                    "maxLength": 160
+                  },
+                  "artist": {
+                    "type": "string",
+                    "maxLength": 160
+                  },
+                  "cover_url": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2048
+                  },
+                  "download_enabled": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "url"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          {
+            "properties": {
+              "target_type": {
+                "const": "form"
+              },
+              "fields": {
+                "type": "object",
+                "properties": {
+                  "logo": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2048
+                  },
+                  "background_colors": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 3,
+                    "items": {
+                      "type": "string",
+                      "pattern": "^#[\\dA-Fa-f]{6}$"
+                    }
+                  },
+                  "text_colors": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 3,
+                    "items": {
+                      "type": "string",
+                      "pattern": "^#[\\dA-Fa-f]{6}$"
+                    }
+                  },
+                  "input_colors": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 3,
+                    "items": {
+                      "type": "string",
+                      "pattern": "^#[\\dA-Fa-f]{6}$"
+                    }
+                  },
+                  "btn_background_colors": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 3,
+                    "items": {
+                      "type": "string",
+                      "pattern": "^#[\\dA-Fa-f]{6}$"
+                    }
+                  },
+                  "btn_text_colors": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 3,
+                    "items": {
+                      "type": "string",
+                      "pattern": "^#[\\dA-Fa-f]{6}$"
+                    }
+                  },
+                  "items": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 10,
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "given-name",
+                            "family-name",
+                            "email",
+                            "tel",
+                            "organization",
+                            "url"
+                          ]
+                        },
+                        "label": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 50
+                        },
+                        "is_required": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "label",
+                        "is_required"
+                      ],
+                      "additionalProperties": false
+                    }
+                  }
+                },
+                "required": [
+                  "items"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "qrcode_ai_set_text",
+      "description": "Add, edit, style, position or remove text drawn on the QR code, then render and scan. This does not change the encoded destination. Layer is image-only; content is never echoed in results.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "maxLength": 100,
+            "description": "Text drawn on the QR, not its encoded destination. Empty string removes it."
+          },
+          "size": {
+            "type": "number",
+            "minimum": 10,
+            "maximum": 300
+          },
+          "font": {
+            "type": "string",
+            "enum": [
+              "Arial",
+              "Helvetica",
+              "Times",
+              "Courier",
+              "Verdana",
+              "Georgia"
+            ]
+          },
+          "weight": {
+            "type": "string",
+            "enum": [
+              "normal",
+              "bold"
+            ]
+          },
+          "color": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 2,
+            "items": {
+              "type": "string",
+              "pattern": "^#[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?$"
+            }
+          },
+          "border_color": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 2,
+            "items": {
+              "type": "string",
+              "pattern": "^#[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?$"
+            }
+          },
+          "border_scale": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "position_x": {
+            "type": "number",
+            "minimum": -100,
+            "maximum": 100
+          },
+          "position_y": {
+            "type": "number",
+            "minimum": -100,
+            "maximum": 100
+          },
+          "layer": {
+            "type": "string",
+            "enum": [
+              "front",
+              "back"
+            ]
+          },
+          "request_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80,
+            "pattern": "^[A-Za-z0-9_.:-]+$"
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "qrcode_ai_validate_qr",
+      "description": "Regenerate the exact visible QR state and validate it with QR Code AI's production scanner.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "qrcode-ai.com",
+  "source": "webmcp.com/api/directory.json"
+}

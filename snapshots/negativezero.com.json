@@ -1,0 +1,918 @@
+{
+  "sponsio": 1,
+  "url": "https://negativezero.com/",
+  "capturedAt": "2026-09-22T11:27:53.102Z",
+  "tools": [
+    {
+      "name": "answer_security_questionnaire",
+      "description": "Answers standard vendor-security / procurement questionnaire items about Negative Zero using only what the public Trust Center and privacy notice state — certifications, penetration testing, vulnerability disclosure, sub-processors and data locations, international transfers, retention, AI use, cookies, bot protection, UK GDPR. Each answer carries its source page and whether the underlying document is NDA-gated (request via request_trust_center_access). Items the site does not publish are returned as 'not published' with the route to ask — never guessed. Read-only; nothing is stored.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "questions": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 40,
+            "items": {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 500
+            },
+            "description": "Questionnaire items, one string each."
+          }
+        },
+        "required": [
+          "questions"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "assess_ce_readiness",
+      "description": "Scores answers to Negative Zero's 12-question Cyber Essentials readiness check and returns a per-area status (Ready for review / Needs review / Likely blocker), the scope verdict, and what to fix first. Answers are matched to the exact option labels from get_ce_question_set; the status is derived here, never trusted from the caller. No email, no CRM record, nothing stored — this is the try-before-you-share-details step. Read-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "answers": {
+            "type": "object",
+            "description": "Map of question id → chosen option label (case-insensitive), e.g. { \"scope-cloud\": \"Yes, all included\" }. Partial answer sets are scored, with unanswered ids listed.",
+            "additionalProperties": {
+              "type": "string",
+              "maxLength": 120
+            }
+          }
+        },
+        "required": [
+          "answers"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "book_demo",
+      "description": "Requests a walkthrough of the Negative Zero platform with a consultant. Creates a sales record (contact, company and deal in the CRM), alerts the team, and emails the user a confirmation with a reference id; the team replies within 1 business day to schedule. Use a work email — personal webmail addresses are accepted but the request is treated as lower priority. Before calling, confirm the exact details with the user and that they want this submitted — it creates a record and sends email. Returns the reference id for check_request_status.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 100,
+            "pattern": "^[\\p{L}\\p{M}][\\p{L}\\p{M}' .-]{1,99}$",
+            "patternHint": "must be letters, spaces, apostrophes, periods or hyphens only (no digits)",
+            "description": "Full name."
+          },
+          "email": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 254,
+            "description": "Work email. must be a valid email address."
+          },
+          "company": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "role": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "description": "Job title / role."
+          },
+          "requirements": {
+            "type": "string",
+            "maxLength": 2000,
+            "description": "What they want to see or solve (optional)."
+          }
+        },
+        "required": [
+          "name",
+          "email",
+          "company",
+          "role"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "check_request_status",
+      "description": "Reports what has happened to a request made through this site (demo booking, enquiry, Cyber Essentials Plus quote, readiness report, Trust Center access request) using the reference id returned by the tool that made it and included in the confirmation email (format NZ-XXXX-XXXX-XXXX). Returns the current stage (received / processing / in progress / completed / closed) and what to do next. No personal data is returned. Read-only; references expire 90 days after submission.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "referenceId": {
+            "type": "string",
+            "pattern": "^NZ-[A-HJ-NP-Z2-9]{4}-[A-HJ-NP-Z2-9]{4}-[A-HJ-NP-Z2-9]{4}$",
+            "patternHint": "must look like NZ-XXXX-XXXX-XXXX",
+            "description": "Reference id, e.g. NZ-7K2M-QX9A-B4TD."
+          }
+        },
+        "required": [
+          "referenceId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "contact_team",
+      "description": "Sends a general enquiry to the Negative Zero team when none of the more specific tools fit (demo → book_demo; enterprise deployment → request_enterprise_consultation; partnership/reseller → request_partnership; Cyber Essentials quote → request_ce_plus_quote; security documents → request_trust_center_access). Creates a contact and a follow-up task in the CRM and emails the user a confirmation with a reference id; reply within 1 business day. Before calling, confirm the exact details with the user and that they want this submitted — it creates a record and sends email.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60,
+            "pattern": "^[\\p{L}\\p{M}][\\p{L}\\p{M}' .-]{1,99}$",
+            "patternHint": "must be letters, spaces, apostrophes, periods or hyphens only (no digits)"
+          },
+          "lastName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60,
+            "pattern": "^[\\p{L}\\p{M}][\\p{L}\\p{M}' .-]{1,99}$",
+            "patternHint": "must be letters, spaces, apostrophes, periods or hyphens only (no digits)"
+          },
+          "email": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 254,
+            "description": "Work email preferred. must be a valid email address."
+          },
+          "phone": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 40,
+            "pattern": "^[0-9+()\\-.\\s]{5,40}$",
+            "patternHint": "must be 5–40 characters of digits, spaces, +, (), - or ."
+          },
+          "requirements": {
+            "type": "string",
+            "maxLength": 2000,
+            "description": "What they need (optional but strongly recommended)."
+          },
+          "marketingOptIn": {
+            "type": "boolean",
+            "description": "Default true: business contacts receive occasional email about Negative Zero products, services and events (unsubscribe link in every email). Set false if the user does not want this. Personal/webmail addresses are never opted in."
+          }
+        },
+        "required": [
+          "firstName",
+          "lastName",
+          "email",
+          "phone",
+          "requirements"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "estimate_ce_plus_price",
+      "description": "Returns Negative Zero's indicative Cyber Essentials Plus certification price for an organisation size band, instantly and without collecting any details: the list price and the discounted price available when the quote is requested through this site's agent tools (10% off, launch offer). Give either the orgSize band label or an employee count. Read-only; nothing is recorded. The formal, binding quote is a separate step.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "orgSize": {
+            "type": "string",
+            "enum": [
+              "Micro (0-9 Employees)",
+              "Small (10-49 Employees)",
+              "Medium (50-249 Employees)",
+              "Large (250+ Employees)"
+            ],
+            "description": "Organisation size band (exact label)."
+          },
+          "employees": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000000,
+            "description": "Alternative to orgSize: total headcount; the band is derived."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "explain_ce_control",
+      "description": "Asks Negative Zero's Cyber Essentials readiness agent (grounded in the NCSC Requirements for IT Infrastructure v3.3 and IASME guidance) to explain a control area or answer a specific Cyber Essentials question in plain English, optionally for the user's situation. Returns the answer text. Uses assessor-safe language; never a pass/fail verdict. The exchange is retained for 30 days for quality and abuse monitoring — do not include passwords, credentials or IP addresses. Rate-limited per connection.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "question": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 1500,
+            "description": "What to explain or answer."
+          },
+          "area": {
+            "type": "string",
+            "enum": [
+              "Scope",
+              "Firewalls",
+              "Secure configuration",
+              "Update management",
+              "User access control",
+              "Malware protection"
+            ],
+            "description": "Optional control area to focus on."
+          },
+          "context": {
+            "type": "string",
+            "maxLength": 400,
+            "description": "Optional one-line description of the user's organisation or setup (no secrets)."
+          }
+        },
+        "required": [
+          "question"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "gap_analysis_from_estate",
+      "description": "Turns what you know about the user's IT estate into a Cyber Essentials gap analysis: which of the five control areas (and scope) are ready for review, need review or are likely blockers, the requirement behind each gap, the evidence an assessor will ask for, and the fix. Give a structured `estate` description and/or explicit `answers` to the 12 readiness questions (answers win over estate-derived values); anything not covered is listed as not assessed with the question to ask. Deterministic and read-only; nothing is stored. Set narrative:true for a short plain-English summary from the Cyber Essentials agent (that one exchange is retained 30 days).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "estate": {
+            "type": "object",
+            "description": "Structured facts about the user's estate. Only set what is known; omit unknowns.",
+            "properties": {
+              "employees": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 1000000
+              },
+              "cloudServices": {
+                "type": "array",
+                "maxItems": 30,
+                "items": {
+                  "type": "string",
+                  "maxLength": 60
+                },
+                "description": "e.g. [\"Microsoft 365\",\"HubSpot\",\"Xero\"]"
+              },
+              "cloudServicesInScope": {
+                "type": "boolean",
+                "description": "Will all cloud services be included in scope?"
+              },
+              "byodOrHomeWorking": {
+                "type": "boolean"
+              },
+              "byodIncludedInScope": {
+                "type": "boolean"
+              },
+              "softwareFirewallsEnforced": {
+                "type": "boolean",
+                "description": "Host firewall enforced on laptops/desktops used outside the office."
+              },
+              "defaultCredentialsChanged": {
+                "type": "boolean",
+                "description": "Default passwords changed and unnecessary services disabled on internet-facing devices, routers and firewalls."
+              },
+              "unsupportedSoftwareInUse": {
+                "type": "boolean"
+              },
+              "windows10Devices": {
+                "type": "boolean"
+              },
+              "windows10Esu": {
+                "type": "boolean",
+                "description": "Extended Security Updates in place for remaining Windows 10 devices."
+              },
+              "criticalPatchesWithin14Days": {
+                "type": "boolean"
+              },
+              "mfaCoverage": {
+                "type": "string",
+                "enum": [
+                  "all",
+                  "admins",
+                  "none"
+                ],
+                "description": "MFA coverage on cloud services."
+              },
+              "separateAdminAccounts": {
+                "type": "boolean"
+              },
+              "offboardingProcess": {
+                "type": "boolean"
+              },
+              "antiMalwareOnComputers": {
+                "type": "boolean"
+              },
+              "mobileDevices": {
+                "type": "boolean",
+                "description": "Are mobiles/tablets used for work?"
+              },
+              "mdmOrAppStoreRestrictions": {
+                "type": "boolean"
+              },
+              "managedServiceProvider": {
+                "type": "boolean",
+                "description": "An MSP manages the environment."
+              }
+            },
+            "additionalProperties": false
+          },
+          "answers": {
+            "type": "object",
+            "description": "Optional explicit answers: question id → option label (see get_ce_question_set). These override estate-derived values.",
+            "additionalProperties": {
+              "type": "string",
+              "maxLength": 120
+            }
+          },
+          "narrative": {
+            "type": "boolean",
+            "description": "Also return a short plain-English summary from the Cyber Essentials agent. Default false."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_article",
+      "description": "Returns the full text of one Negative Zero news post or resource article as Markdown, with title, date, tags and canonical URL. Use the id from list_news (it is the last path segment of the article URL). Read-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120,
+            "description": "Article id / slug, e.g. \"what-is-cyber-essentials\"."
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_ce_question_set",
+      "description": "Returns Negative Zero's 12-question Cyber Essentials readiness check as structured data (question id, control area, question text, the exact answer options, and the assessor note), plus how it is scored and links to the official IASME/NCSC question set documents. Use it to walk a user through the check, then call assess_ce_readiness with their answers. Read-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "set": {
+            "type": "string",
+            "enum": [
+              "nz-readiness"
+            ],
+            "description": "Only \"nz-readiness\" is available as data. Official documents are returned as links."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_meeting_booking_link",
+      "description": "Returns the self-service booking link for a 20-minute call with Negative Zero's lead assessor (scoping a Cyber Essentials / Cyber Essentials Plus assessment, or discussing a platform demo), with guidance on when to use it versus the request tools. Read-only; nothing is recorded — the booking itself happens on the linked page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "purpose": {
+            "type": "string",
+            "enum": [
+              "ce-scoping",
+              "demo",
+              "general"
+            ],
+            "description": "What the call is for. Default \"general\"."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_trust_center_summary",
+      "description": "Returns Negative Zero's public security posture as structured data for vendor reviews, procurement questionnaires and audits: certifications and their status, vulnerability disclosure policy and contact, which documents are NDA-gated and how to request them, and privacy/data-handling facts. Only what the public Trust Center states; nothing gated is described. Read-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "topic": {
+            "type": "string",
+            "enum": [
+              "all",
+              "certifications",
+              "vulnerability-disclosure",
+              "gated-documents",
+              "privacy"
+            ],
+            "description": "Narrow the response. Default \"all\"."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_events",
+      "description": "Lists Negative Zero events (hackathons, briefings, webcasts) with start time, location, audience, who may register (\"registration\": open | code-required | customers-and-prospects | invitation-only) and a link. Defaults to upcoming events; pass scope \"past\" or \"all\" for history. Read-only; nothing is recorded. Use this instead of scraping /events; register with register_event_interest where registration is not invitation-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "scope": {
+            "type": "string",
+            "enum": [
+              "upcoming",
+              "past",
+              "all"
+            ],
+            "description": "Which events to return. Default \"upcoming\"."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_news",
+      "description": "Lists Negative Zero news posts and research/resource articles (title, summary, date, tags, URL), newest first. Filter by type (\"news\" or \"research\") or a tag, and optionally only items published since a date. Read-only. Follow up with get_article for the full text.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "news",
+              "research",
+              "all"
+            ],
+            "description": "Default \"all\"."
+          },
+          "tag": {
+            "type": "string",
+            "maxLength": 60,
+            "description": "Case-insensitive tag filter, e.g. \"Cyber Essentials\"."
+          },
+          "since": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 10,
+            "description": "YYYY-MM-DD; only items on or after this date."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "description": "Default 20."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "register_event_interest",
+      "description": "Registers the user's interest in an upcoming Negative Zero event, using the event id from list_events. Events are gated: \"open\" events accept any work email; \"code-required\" events need the event's access code (accessCode); \"customers-and-prospects\" events are only for people already in Negative Zero's CRM as a customer or prospect; \"invitation-only\" events (all Synthetic Signal associate events) cannot be registered for through this tool — tell the user they are invitation only. Personal/webmail addresses are never accepted. On success the interest is recorded on the user's CRM contact, the team is alerted, and the user is emailed a confirmation with an .ics calendar file (also returned here so you can offer to add it to their calendar). Before calling, confirm the exact details with the user and that they want this submitted — it creates a record and sends email. Returns a reference id for check_request_status.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "eventId": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 80,
+            "pattern": "^[a-z0-9-]+$",
+            "patternHint": "must be an event id from list_events",
+            "description": "Event id from list_events."
+          },
+          "name": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 100,
+            "pattern": "^[\\p{L}\\p{M}][\\p{L}\\p{M}' .-]{1,99}$",
+            "patternHint": "must be letters, spaces, apostrophes, periods or hyphens only (no digits)"
+          },
+          "email": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 254,
+            "description": "Work email (personal/webmail addresses are rejected). must be a valid email address."
+          },
+          "company": {
+            "type": "string",
+            "maxLength": 120,
+            "description": "Optional organisation."
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 500,
+            "description": "Optional message for the organisers (dietary needs, accessibility, questions)."
+          },
+          "accessCode": {
+            "type": "string",
+            "maxLength": 64,
+            "description": "Required for \"code-required\" events."
+          }
+        },
+        "required": [
+          "eventId",
+          "name",
+          "email"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "request_ce_plus_quote",
+      "description": "Requests a formal, priced Cyber Essentials Plus certification quote from Negative Zero (IASME Certification Body). A branded PDF quote is generated and emailed to the contact, usually within a few minutes, and a sales record is created. Quotes requested through this tool get the 10% agent launch offer applied automatically (list price is shown on the quote with the discount). Call estimate_ce_plus_price first to tell the user the price. Cyber Essentials Plus requires a current Cyber Essentials (basic) certificate — if hasBasic is \"Yes\", give the pass date and certificate number if known. Before calling, confirm the exact details with the user and that they want this submitted — it creates a record and sends email. Returns the reference id and the expected price.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "companyName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "contactName": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 100,
+            "pattern": "^[\\p{L}\\p{M}][\\p{L}\\p{M}' .-]{1,99}$",
+            "patternHint": "must be letters, spaces, apostrophes, periods or hyphens only (no digits)"
+          },
+          "contactEmail": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 254,
+            "description": "must be a valid email address"
+          },
+          "contactPhone": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 40,
+            "pattern": "^[0-9+()\\-.\\s]{5,40}$",
+            "patternHint": "must be 5–40 characters of digits, spaces, +, (), - or ."
+          },
+          "streetAddress": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "city": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "zipCode": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 20,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9 -]{1,19}$",
+            "patternHint": "must be a postcode / ZIP (letters, digits, spaces, hyphens)"
+          },
+          "country": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 60,
+            "description": "Default \"United Kingdom\"."
+          },
+          "orgSize": {
+            "type": "string",
+            "enum": [
+              "Micro (0-9 Employees)",
+              "Small (10-49 Employees)",
+              "Medium (50-249 Employees)",
+              "Large (250+ Employees)"
+            ],
+            "description": "Organisation size band — drives the price."
+          },
+          "hasBasic": {
+            "type": "string",
+            "enum": [
+              "Yes",
+              "No"
+            ],
+            "description": "Does the organisation currently hold Cyber Essentials (basic)?"
+          },
+          "basicPassDate": {
+            "type": "string",
+            "maxLength": 20,
+            "description": "Date Cyber Essentials was achieved (e.g. 2026-03-14). Required if hasBasic is \"Yes\"."
+          },
+          "certNumber": {
+            "type": "string",
+            "maxLength": 40,
+            "pattern": "^[A-Za-z0-9 /-]{0,40}$",
+            "patternHint": "may contain letters, digits, spaces, / and -",
+            "description": "Cyber Essentials certificate number, if known."
+          },
+          "vulnScanning": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 40,
+            "description": "Vulnerability scanning solution in use, e.g. \"Qualys\", \"Nessus\", \"Other\", or \"Not sure or none\"."
+          },
+          "vulnScanningOther": {
+            "type": "string",
+            "maxLength": 100,
+            "description": "Name of the solution if vulnScanning is \"Other\"."
+          },
+          "reason": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 5,
+            "items": {
+              "type": "string",
+              "enum": [
+                "Required by Customer",
+                "Supply Chain Requirement",
+                "Internal Policy / Improvement",
+                "Government Contract (MoD, etc)",
+                "Other"
+              ]
+            },
+            "description": "Why they want Cyber Essentials Plus."
+          },
+          "otherReason": {
+            "type": "string",
+            "maxLength": 1000,
+            "description": "Required if reason includes \"Other\"."
+          }
+        },
+        "required": [
+          "companyName",
+          "contactName",
+          "contactEmail",
+          "contactPhone",
+          "streetAddress",
+          "city",
+          "zipCode",
+          "orgSize",
+          "hasBasic",
+          "vulnScanning",
+          "reason"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "request_enterprise_consultation",
+      "description": "For organisations that want to deploy Negative Zero's platform at enterprise scale: opens a high-priority sales enquiry (contact, company and deal in the CRM), alerts the team, and emails the user a confirmation with a reference id; a consultant replies within 1 business day. Not for partnership/reseller questions (use request_partnership) or general questions (use contact_team). Before calling, confirm the exact details with the user and that they want this submitted — it creates a record and sends email.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60,
+            "pattern": "^[\\p{L}\\p{M}][\\p{L}\\p{M}' .-]{1,99}$",
+            "patternHint": "must be letters, spaces, apostrophes, periods or hyphens only (no digits)"
+          },
+          "lastName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60,
+            "pattern": "^[\\p{L}\\p{M}][\\p{L}\\p{M}' .-]{1,99}$",
+            "patternHint": "must be letters, spaces, apostrophes, periods or hyphens only (no digits)"
+          },
+          "email": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 254,
+            "description": "Work email preferred. must be a valid email address."
+          },
+          "phone": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 40,
+            "pattern": "^[0-9+()\\-.\\s]{5,40}$",
+            "patternHint": "must be 5–40 characters of digits, spaces, +, (), - or ."
+          },
+          "requirements": {
+            "type": "string",
+            "maxLength": 2000,
+            "description": "What they need (optional but strongly recommended)."
+          },
+          "marketingOptIn": {
+            "type": "boolean",
+            "description": "Default true: business contacts receive occasional email about Negative Zero products, services and events (unsubscribe link in every email). Set false if the user does not want this. Personal/webmail addresses are never opted in."
+          }
+        },
+        "required": [
+          "firstName",
+          "lastName",
+          "email",
+          "phone"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "request_partnership",
+      "description": "For consultancies, MSPs/MSSPs and other companies that want to partner with or resell Negative Zero. program \"partnership\" for a general partnership enquiry, \"msp\" for the MSP/MSSP reseller programme. Records the company as a prospective partner/reseller in the CRM, creates a follow-up task for the partnerships team, and emails the user a confirmation with a reference id; reply within 1 business day. No sales deal is created. Before calling, confirm the exact details with the user and that they want this submitted — it creates a record and sends email.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "program": {
+            "type": "string",
+            "enum": [
+              "partnership",
+              "msp"
+            ],
+            "description": "\"partnership\" or \"msp\" (MSP/MSSP programme)."
+          },
+          "firstName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60,
+            "pattern": "^[\\p{L}\\p{M}][\\p{L}\\p{M}' .-]{1,99}$",
+            "patternHint": "must be letters, spaces, apostrophes, periods or hyphens only (no digits)"
+          },
+          "lastName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60,
+            "pattern": "^[\\p{L}\\p{M}][\\p{L}\\p{M}' .-]{1,99}$",
+            "patternHint": "must be letters, spaces, apostrophes, periods or hyphens only (no digits)"
+          },
+          "email": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 254,
+            "description": "Work email preferred. must be a valid email address."
+          },
+          "phone": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 40,
+            "pattern": "^[0-9+()\\-.\\s]{5,40}$",
+            "patternHint": "must be 5–40 characters of digits, spaces, +, (), - or ."
+          },
+          "requirements": {
+            "type": "string",
+            "maxLength": 2000,
+            "description": "What they need (optional but strongly recommended)."
+          },
+          "marketingOptIn": {
+            "type": "boolean",
+            "description": "Default true: business contacts receive occasional email about Negative Zero products, services and events (unsubscribe link in every email). Set false if the user does not want this. Personal/webmail addresses are never opted in."
+          }
+        },
+        "required": [
+          "program",
+          "firstName",
+          "lastName",
+          "email",
+          "phone"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "request_readiness_report",
+      "description": "Generates Negative Zero's Cyber Essentials readiness report (PDF and/or Excel) from the user's answers to all 12 readiness questions and emails it to them immediately, with an executive summary and a link to book a call. Also opens a sales record so an assessor can follow up. Requires a WORK email (personal webmail is rejected). Use get_ce_question_set for the questions and assess_ce_readiness to preview the result first; all 12 answers are required here. Before calling, confirm the exact details with the user and that they want this submitted — it creates a record and sends email. Returns a reference id for check_request_status.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 100,
+            "pattern": "^[\\p{L}\\p{M}][\\p{L}\\p{M}' .-]{1,99}$",
+            "patternHint": "must be letters, spaces, apostrophes, periods or hyphens only (no digits)"
+          },
+          "email": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 254,
+            "description": "Work email. must be a valid email address."
+          },
+          "organisation": {
+            "type": "string",
+            "maxLength": 120,
+            "description": "Organisation name (defaults to the email domain)."
+          },
+          "phone": {
+            "type": "string",
+            "maxLength": 40,
+            "pattern": "^[0-9+()\\-.\\s]{5,40}$",
+            "patternHint": "must be 5–40 characters of digits, spaces, +, (), - or ."
+          },
+          "ceLevel": {
+            "type": "string",
+            "enum": [
+              "Cyber Essentials",
+              "Cyber Essentials Plus"
+            ],
+            "description": "Certification level of interest. Default \"Cyber Essentials\"."
+          },
+          "deadline": {
+            "type": "string",
+            "maxLength": 60,
+            "description": "Target date or deadline, free text (optional)."
+          },
+          "answers": {
+            "type": "object",
+            "description": "All 12 question ids → chosen option label, exactly as in get_ce_question_set.",
+            "additionalProperties": {
+              "type": "string",
+              "maxLength": 120
+            }
+          },
+          "formats": {
+            "type": "object",
+            "properties": {
+              "pdf": {
+                "type": "boolean"
+              },
+              "excel": {
+                "type": "boolean"
+              }
+            },
+            "additionalProperties": false,
+            "description": "Which attachments to send. Default { pdf: true, excel: false }."
+          }
+        },
+        "required": [
+          "name",
+          "email",
+          "answers"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "request_trust_center_access",
+      "description": "Requests access to Negative Zero's NDA-gated security documents — \"Penetration Testing\" or \"Product Roadmap\" (see get_trust_center_summary for what each contains). This opens a support ticket reviewed by a person; access is granted case by case after NDA review and is never automatic, so the documents are NOT returned by this tool. Requires a WORK email (personal webmail is rejected). The user gets a confirmation email with a reference id; the security team replies within 1 business day. Before calling, confirm the exact details with the user and that they want this submitted — it creates a record and sends email.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "resource": {
+            "type": "string",
+            "enum": [
+              "Penetration Testing",
+              "Product Roadmap"
+            ]
+          },
+          "reason": {
+            "type": "string",
+            "enum": [
+              "vendor-review",
+              "procurement",
+              "audit",
+              "other"
+            ],
+            "description": "vendor-review = vendor security review; procurement = procurement / RFP; audit = customer audit."
+          },
+          "firstName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60,
+            "pattern": "^[\\p{L}\\p{M}][\\p{L}\\p{M}' .-]{1,99}$",
+            "patternHint": "must be letters, spaces, apostrophes, periods or hyphens only (no digits)"
+          },
+          "lastName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60,
+            "pattern": "^[\\p{L}\\p{M}][\\p{L}\\p{M}' .-]{1,99}$",
+            "patternHint": "must be letters, spaces, apostrophes, periods or hyphens only (no digits)"
+          },
+          "email": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 254,
+            "description": "Work email. must be a valid email address."
+          },
+          "company": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          }
+        },
+        "required": [
+          "resource",
+          "reason",
+          "firstName",
+          "lastName",
+          "email",
+          "company"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "negativezero.com",
+  "source": "webmcp.com/api/directory.json"
+}

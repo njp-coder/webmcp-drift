@@ -1,0 +1,135 @@
+{
+  "sponsio": 1,
+  "url": "https://lanierrecoverycenter.com/",
+  "capturedAt": "2026-09-22T11:27:53.102Z",
+  "tools": [
+    {
+      "name": "list_accepted_insurances",
+      "description": "List in-network and accepted healthcare insurance providers for rehabilitation services (params: query) -> list [{name, url, accepted}]",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Optional search term for an insurance carrier (e.g. 'Aetna', 'Cigna', 'Blue Cross', 'Humana')."
+          }
+        }
+      }
+    },
+    {
+      "name": "list_conditions_treated",
+      "description": "List substance addictions, mental health disorders, and process addictions treated at Lanier Recovery Center (params: type) -> list [{name, category, url}]",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "enum": [
+              "all",
+              "substance",
+              "mental_health",
+              "process_addiction"
+            ],
+            "type": "string",
+            "description": "Filter by condition type: 'all', 'substance', 'mental_health', or 'process_addiction'."
+          }
+        }
+      }
+    },
+    {
+      "name": "list_programs",
+      "description": "List addiction and mental health treatment programs offered by Lanier Recovery Center (params: category) -> list [{name, url, description}]",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "description": "Optional category or keyword filter (e.g. 'detox', 'inpatient', 'outpatient', 'iop', 'php')."
+          }
+        }
+      }
+    },
+    {
+      "name": "request_consultation",
+      "description": "Initiate admissions inquiry or request a 24/7 consultation call with admissions specialists (params: name, phone, email, message, navigate=true) -> {status, url, contact_phone, contact_email, address, staged_info, message}",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Caller or prospective client name."
+          },
+          "email": {
+            "type": "string",
+            "description": "Contact email address."
+          },
+          "phone": {
+            "type": "string",
+            "description": "Contact phone number."
+          },
+          "message": {
+            "type": "string",
+            "description": "Brief message or inquiry regarding treatment."
+          },
+          "navigate": {
+            "type": "boolean",
+            "default": true,
+            "description": "Whether to navigate to the contact page."
+          }
+        }
+      }
+    },
+    {
+      "name": "verify_insurance",
+      "description": "Initiate confidential health insurance verification for rehab coverage (params: first_name, last_name, phone, email, insurance_provider, date_of_birth, member_id, group_id, navigate=true) -> {status, url, provided_info, message}",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Contact email address."
+          },
+          "phone": {
+            "type": "string",
+            "description": "Contact phone number."
+          },
+          "group_id": {
+            "type": "string",
+            "description": "Insurance policy group ID number."
+          },
+          "navigate": {
+            "type": "boolean",
+            "default": true,
+            "description": "Whether to navigate to the insurance verification page."
+          },
+          "last_name": {
+            "type": "string",
+            "description": "Patient last name."
+          },
+          "member_id": {
+            "type": "string",
+            "description": "Insurance policy member ID number."
+          },
+          "first_name": {
+            "type": "string",
+            "description": "Patient first name."
+          },
+          "date_of_birth": {
+            "type": "string",
+            "description": "Patient date of birth (MM/DD/YYYY)."
+          },
+          "insurance_provider": {
+            "type": "string",
+            "description": "Insurance provider / carrier name (e.g. Aetna, Blue Cross, Cigna)."
+          }
+        }
+      }
+    }
+  ],
+  "host": "lanierrecoverycenter.com",
+  "source": "webmcp.com/api/directory.json"
+}

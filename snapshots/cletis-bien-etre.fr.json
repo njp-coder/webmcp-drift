@@ -1,0 +1,137 @@
+{
+  "sponsio": 1,
+  "url": "https://cletis-bien-etre.fr/",
+  "capturedAt": "2026-09-22T11:27:53.102Z",
+  "tools": [
+    {
+      "name": "get_article",
+      "description": "Fetch the full text content and excerpts of an article or blog guide (params: url, query) -> {url, title, excerpts, content}",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "URL exacte de l'article"
+          },
+          "query": {
+            "type": "string",
+            "description": "Titre ou mot-clé de l'article recherché"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_service",
+      "description": "Retrieve comprehensive details and practitioner approach for a specific care or coaching service (params: id, name) -> {id, name, price_standard, price_solidary, format, url, details}",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Identifiant ou nom du soin (ex: 'soin-energie-de-vie', 'soin-de-venus', 'bilan-chemin-de-vie')"
+          },
+          "name": {
+            "type": "string",
+            "description": "Nom ou mot-clé de la prestation"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_articles",
+      "description": "Browse and filter published educational articles and guides by topic category (params: category, limit) -> {total, category, articles: [{title, url}]}",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "description": "Nombre maximal d'articles à retourner (défaut: 10)"
+          },
+          "category": {
+            "type": "string",
+            "description": "Catégorie d'articles (ex: 'mon-approche', 'blog', 'faq', 'coaching-de-vie', 'tous-les-articles')"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_books",
+      "description": "List all books and e-books published on soul healing and natural well-being -> {total, books: [{title, url}]}",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_services",
+      "description": "List all soul healing care formulas, coaching programs, and life path assessments with standard and solidary prices (params: category) -> {total, solidarity_pricing_info, services: [{id, name, price_standard, price_solidary, format, description, url}]}",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "enum": [
+              "all",
+              "soin",
+              "coaching",
+              "bilan"
+            ],
+            "type": "string",
+            "description": "Filtrer par catégorie de prestation (soin énergétique, coaching, ou bilan de chemin de vie)"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "start_contact_request",
+      "description": "Initiate an appointment booking or information inquiry, preparing contact details and direct phone/SMS options (params: subject, name, email, phone, message, navigate=true) -> {status, url, direct_contact, prepared_data, instructions}",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Nom et prénom"
+          },
+          "email": {
+            "type": "string",
+            "description": "Adresse e-mail"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Numéro de téléphone"
+          },
+          "message": {
+            "type": "string",
+            "description": "Message ou précisions sur votre situation"
+          },
+          "subject": {
+            "enum": [
+              "Prendre rendez-vous",
+              "Demande d'information",
+              "Journée Mondiale bien-être"
+            ],
+            "type": "string",
+            "description": "Objet de la demande"
+          },
+          "navigate": {
+            "type": "boolean",
+            "description": "Naviguer vers la page de contact (défaut: true)"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "cletis-bien-etre.fr",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,121 @@
+{
+  "sponsio": 1,
+  "url": "https://www.empiva.com/",
+  "capturedAt": "2026-09-22T11:27:53.102Z",
+  "tools": [
+    {
+      "name": "empiva_get_stay_quote",
+      "description": "Get the authoritative price for a specific villa and date range. Provide the villa slug (from empiva_search_villas) and check-in/check-out dates as YYYY-MM-DD. Returns the nightly breakdown and total in EUR and whether the stay meets the villa's minimum-nights rule.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "villa": {
+            "type": "string",
+            "description": "Villa slug, e.g. villa-atlas"
+          },
+          "checkIn": {
+            "type": "string",
+            "description": "Check-in date, YYYY-MM-DD"
+          },
+          "checkOut": {
+            "type": "string",
+            "description": "Check-out date, YYYY-MM-DD"
+          }
+        },
+        "required": [
+          "villa",
+          "checkIn",
+          "checkOut"
+        ]
+      }
+    },
+    {
+      "name": "empiva_get_villa",
+      "description": "Get full details for one Empiva villa by slug: description, bedrooms, capacity, amenities, minimum nights and indicative nightly rate (EUR). Use empiva_get_stay_quote for the exact price on dates.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "villa": {
+            "type": "string",
+            "description": "Villa slug, e.g. villa-atlas"
+          }
+        },
+        "required": [
+          "villa"
+        ]
+      }
+    },
+    {
+      "name": "empiva_list_dining",
+      "description": "List Empiva's dining packages (breakfast, half-board, full-board, private chef). Optionally filter by destination. Returns each package's name, meal type and per-person-per-day price in EUR.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "destination": {
+            "type": "string",
+            "description": "Destination slug",
+            "enum": [
+              "agadir",
+              "madeira",
+              "bali",
+              "tuscany",
+              "muscat"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "empiva_list_experiences",
+      "description": "List Empiva's curated experiences (hammam rituals, desert stargazing, truffle hunting, and more). Optionally filter by destination. Returns each experience's name, slug, destination and per-person price in EUR.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "destination": {
+            "type": "string",
+            "description": "Destination slug",
+            "enum": [
+              "agadir",
+              "madeira",
+              "bali",
+              "tuscany",
+              "muscat"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "empiva_search_villas",
+      "description": "Search Empiva's luxury villas. Optionally filter by destination and minimum guest capacity. Returns each villa's name, slug, destination, capacity and indicative nightly rate in EUR. Use empiva_get_stay_quote for the exact price on specific dates.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "destination": {
+            "type": "string",
+            "description": "Destination slug",
+            "enum": [
+              "agadir",
+              "madeira",
+              "bali",
+              "tuscany",
+              "muscat"
+            ]
+          },
+          "guests": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Minimum guests the villa must sleep"
+          }
+        }
+      }
+    }
+  ],
+  "host": "empiva.com",
+  "source": "webmcp.com/api/directory.json"
+}

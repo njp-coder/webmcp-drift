@@ -1,0 +1,183 @@
+{
+  "sponsio": 1,
+  "url": "https://peterschmalfeldt.com/",
+  "capturedAt": "2026-09-22T11:27:53.102Z",
+  "tools": [
+    {
+      "name": "get_contact_options",
+      "description": "Read Peter's email and scheduling links, published availability and consulting options. Does not send email, open windows, or book appointments. Live slots and rates must be checked on Calendly.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_profile",
+      "description": "Read Peter Schmalfeldt's biography, skill areas, experience metrics and professional links from this page. LinkedIn is a link only; its content is not available here.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_project",
+      "description": "Read a project by its catalog ID returned by search_projects. Includes Peter's last public commit, technology evidence, license and source links. Does not claim sole authorship or fetch live source code.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Catalog ID, for example PoliceScorecard/api or opensfcc/sfcc-docs."
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_prototype_showcase",
+      "description": "Read the featured prototype description, limitations, video link and source repository. Does not transcribe or play the video.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_resume",
+      "description": "Read the published HTML resume data, including career highlights, all skill groups, certifications and education. Skills come from the linked PDF resume. Includes source links and a review date; this is not a live PDF fetch.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_github_repositories",
+      "description": "Fetch live repository metadata for projects included in the published catalog, for one supported account or organization. Excluded projects are omitted; an API page may contain no included projects. Organization membership and repository ownership do not establish Peter's contributions; use search_projects for attribution. Includes forks and archives. Use page for more results.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "owner": {
+            "type": "string",
+            "enum": [
+              "manifestinteractive",
+              "FindByColor",
+              "PoliceScorecard",
+              "sfccdevops",
+              "opensfcc"
+            ],
+            "description": "Repository owner. Defaults to manifestinteractive."
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "description": "Page number. Defaults to 1."
+          },
+          "per_page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 30,
+            "description": "Repositories per page. Defaults to 10."
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_services",
+      "description": "Read consulting options, engineering services, process steps and team engagement models. Includes published availability, but no live booking slots or prices.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "enum": [
+              "all",
+              "consulting",
+              "services",
+              "process",
+              "engagement"
+            ],
+            "description": "Section to return. Defaults to all."
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_testimonials",
+      "description": "Read attributed testimonials published on this site, including inactive carousel slides. These are personal recommendations, not independently verified outcomes.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "description": "Maximum testimonials. Defaults to 10."
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_projects",
+      "description": "Search Peter's published project catalog across manifestinteractive, FindByColor, PoliceScorecard, sfccdevops, and opensfcc. Filter by technology and project type. Query searches names, descriptions, and the stack; combine technology Python with query Streamlit. Results include technology sources and resume skill matches. Dependency evidence does not verify production use or specific AI models. Missing results do not prove no experience.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Project name, organization, or description. Defaults to all projects."
+          },
+          "technology": {
+            "type": "string",
+            "description": "Exact technology name, ignoring punctuation and case; NextJS and Next.js are equivalent."
+          },
+          "project_type": {
+            "type": "string",
+            "description": "Project type, such as CLI tool, API, Web application, or Browser extension."
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "description": "Page number. Defaults to 1."
+          },
+          "per_page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 30,
+            "description": "Results per page. Defaults to 10."
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "peterschmalfeldt.com",
+  "source": "webmcp.com/api/directory.json"
+}
