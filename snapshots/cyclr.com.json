@@ -1,0 +1,161 @@
+{
+  "sponsio": 1,
+  "url": "https://cyclr.com/",
+  "capturedAt": "2026-09-23T11:25:31.115Z",
+  "tools": [
+    {
+      "name": "find_relevant_cyclr_resource",
+      "description": "Recommend relevant Cyclr product pages, reports, case studies or resources for a SaaS integration, MCP, AI orchestration or embedded iPaaS problem.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "problem": {
+            "type": "string",
+            "description": "The user’s problem or research goal."
+          }
+        },
+        "required": [
+          "problem"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_current_page_markdown",
+      "description": "Return clean Markdown for the current Cyclr page using Cyclr’s dedicated agent Markdown endpoint. Canonical page URLs remain HTML-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_cyclr_content_index",
+      "description": "Return a curated index of important Cyclr product pages, reports, case studies and agent endpoints for public website research.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "section": {
+            "type": "string",
+            "enum": [
+              "all",
+              "products",
+              "reports",
+              "case_studies",
+              "agent_resources"
+            ],
+            "description": "Optional section to return."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Optional maximum number of items per section."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_cyclr_page_context",
+      "description": "Get structured context about the current Cyclr page, including title, canonical URL, meta description, page type, headings and Markdown fallback URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_cyclr_public_page_context",
+      "description": "Get structured metadata for a specified public Cyclr page path or URL, including canonical URL, description, headings and Markdown fallback URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "A public Cyclr path or URL, such as /product/mcp-paas/."
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "prepare_cyclr_demo_request",
+      "description": "Open the Cyclr Get Started page with optional interest context. This does not submit a form; the user must review and submit manually.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "interest": {
+            "type": "string",
+            "description": "The area of interest, such as embedded iPaaS, MCP PaaS, AI orchestration, connector creation or integration scaling."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_cyclr_connectors",
+      "description": "Search Cyclr connector and integration pages by app name, SaaS category or integration use case.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Application, connector, API or category to search for."
+          },
+          "category": {
+            "type": "string",
+            "description": "Optional connector category such as CRM, marketing, accounting, support, ecommerce or data."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_cyclr_site",
+      "description": "Search Cyclr public content for product pages, reports, resources, case studies and connector-related pages.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search query, such as embedded iPaaS, MCP PaaS, AI orchestration, Salesforce connector or integration marketplace."
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "any",
+              "product",
+              "report",
+              "resource",
+              "case-study",
+              "connector",
+              "integration",
+              "article",
+              "page"
+            ],
+            "description": "Optional content type filter."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "cyclr.com",
+  "source": "webmcp.com/api/directory.json"
+}

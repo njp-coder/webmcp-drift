@@ -1,0 +1,187 @@
+{
+  "sponsio": 1,
+  "url": "https://atlan.com/",
+  "capturedAt": "2026-09-23T11:25:31.115Z",
+  "tools": [
+    {
+      "name": "book_meeting",
+      "description": "Book a 30-minute Talk to Sales call with Atlan on the team's cal.com calendar at the slot the user picked, and record the contact in HubSpot. Ask the user for basic details first: first name, last name and work email (required), plus company and what they want to discuss (optional). Call only after the user has explicitly confirmed the slot. Required: startTime, exactly as returned by get_meeting_slots. Contact fields (firstname, lastname, email, company, interest) may be passed directly; when omitted, the details staged by fill_lead_form are used. Returns a confirmation like { ok: true, startTime, endTime, meetingUrl, host, hubspotForm }; the user also gets a calendar invite by email.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "startTime": {
+            "type": "string",
+            "description": "The chosen slot's startTime, exactly as returned by get_meeting_slots (ISO 8601)."
+          },
+          "firstname": {
+            "type": "string",
+            "description": "First name. Falls back to the lead staged by fill_lead_form."
+          },
+          "lastname": {
+            "type": "string",
+            "description": "Last name. Falls back to the staged lead."
+          },
+          "email": {
+            "type": "string",
+            "description": "Work email address. Falls back to the staged lead."
+          },
+          "company": {
+            "type": "string",
+            "description": "Company name (optional)."
+          },
+          "interest": {
+            "type": "string",
+            "description": "What the user wants to discuss, in their words (optional)."
+          },
+          "timezone": {
+            "type": "string",
+            "description": "IANA timezone of the attendee. Defaults to the visitor's browser timezone."
+          }
+        },
+        "required": [
+          "startTime"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "fill_lead_form",
+      "description": "Validate and stage the user's contact details for Atlan's talk-to-sales flow, and prefill the human-visible form. Required: firstname, lastname, email (work email). Optional: company, interest. This tool NEVER submits anything — after staging, ask the user to explicitly confirm, then call submit_lead_form. Returns the staged summary or the list of invalid fields.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "firstname": {
+            "type": "string",
+            "description": "First name (required)."
+          },
+          "lastname": {
+            "type": "string",
+            "description": "Last name (required)."
+          },
+          "email": {
+            "type": "string",
+            "description": "Work email address (required)."
+          },
+          "company": {
+            "type": "string",
+            "description": "Company name (optional)."
+          },
+          "interest": {
+            "type": "string",
+            "description": "What the user is interested in, in their words (optional)."
+          }
+        },
+        "required": [
+          "firstname",
+          "lastname",
+          "email"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_atlan_resources",
+      "description": "List Atlan's public machine-readable resources for AI agents: documentation, the Atlan MCP Server, the llms.txt site index, the API catalog, and the talk-to-sales form. No input. Returns a JSON array of {name, url}.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_meeting_slots",
+      "description": "Show live availability for a 30-minute Talk to Sales call with Atlan, read from the team's cal.com calendar. Use this when the user wants to book time with Atlan: call it first to get open slots, let the user pick one, then call book_meeting with that slot's startTime. Optional: days (how far ahead to search, 1-14, default 7), timezone (IANA name; defaults to the visitor's own). Read-only: reserves nothing. Returns JSON {host, durationMinutes, timezone, daysSearched, days: [{date, slots: [{startTime, label}]}]}.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "days": {
+            "type": "number",
+            "description": "How many days ahead to search (1-14). Default 7."
+          },
+          "timezone": {
+            "type": "string",
+            "description": "IANA timezone for the labels, e.g. America/New_York. Defaults to the visitor's browser timezone."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "go_to_atlan_section",
+      "description": "Navigate this browser tab to a top-level Atlan section. Input 'section' must be one of: product, pricing, customers, docs, mcp-server, talk-to-sales. Returns a confirmation of the destination URL, or the valid values on an unknown section.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "section": {
+            "type": "string",
+            "enum": [
+              "product",
+              "pricing",
+              "customers",
+              "docs",
+              "mcp-server",
+              "talk-to-sales"
+            ],
+            "description": "Which Atlan section to open."
+          }
+        },
+        "required": [
+          "section"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_atlan_products",
+      "description": "List Atlan's products with a one-line summary and canonical URL for each: Context Agents, Context Engineering Studio, Context Lakehouse, MCP Server, Data Marketplace, Data Lineage, and Connectors. No input. Returns a JSON array of {name, summary, url}.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_customer_stories",
+      "description": "List Atlan customer stories and case-study videos (Mastercard, CME Group, Workday, General Motors, DigiKey, Virgin Media O2, Nasdaq, HelloFresh, Fox). Optional 'query' filters by customer name or topic substring. Returns a JSON array of {customer, format, summary, url}; empty array when nothing matches.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Optional case-insensitive substring to match against customer name or story summary, e.g. 'mastercard' or 'governance'."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "submit_lead_form",
+      "description": "Creates or updates a HubSpot contact. Call only after the user has explicitly confirmed submission. Takes no fields: it submits exactly the details previously staged by fill_lead_form to HubSpot's Forms Submission API. Returns a minimal result like { ok: true }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "what_is_atlan",
+      "description": "Explain what Atlan is and does: the Context Layer for AI, the Enterprise Data Graph, who uses it, and where to learn more. No input. Returns a short plain-text explanation with canonical URLs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "atlan.com",
+  "source": "webmcp.com/api/directory.json"
+}

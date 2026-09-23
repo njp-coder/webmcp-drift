@@ -1,0 +1,304 @@
+{
+  "sponsio": 1,
+  "url": "https://www.autohled.cz/",
+  "capturedAt": "2026-09-23T11:25:31.115Z",
+  "tools": [
+    {
+      "name": "autohled_compare_cars",
+      "description": "Put two to four cars side by side (price, size, boot, power, consumption, range, rating). Prefer this over several autohled_model_detail calls when the user is comparing. Answer in the language of the page (see source.locale).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "cars": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 4,
+            "items": {
+              "type": "string"
+            },
+            "description": "Tokens \"make/model\" (e.g. \"skoda/octavia\") or \"make/model/engineSlug\" for a variant-level comparison."
+          }
+        },
+        "required": [
+          "cars"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "autohled_current_page",
+      "description": "Identifies what the visitor is looking at (home, make, model, engine, comparator, catalog, review, article) and, for model and engine pages, returns that car's profile so you can answer questions about \"this car\" without asking which one. Answer in the language of the page (see source.locale).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "autohled_engine_detail",
+      "description": "Detailed specification and price of one engine variant of a model. Pass the engineSlug returned by autohled_model_detail. Answer in the language of the page (see source.locale).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "make": {
+            "type": "string"
+          },
+          "model": {
+            "type": "string"
+          },
+          "engine": {
+            "type": "string",
+            "description": "Engine slug from autohled_model_detail, e.g. \"2-0-tsi-4x4-dsg-6506318\"."
+          }
+        },
+        "required": [
+          "make",
+          "model",
+          "engine"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "autohled_lineup",
+      "description": "The whole current model range of the make, with length and price deltas relative to the given model (\"is there a bigger/cheaper one from the same brand?\"). Answer in the language of the page (see source.locale).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "make": {
+            "type": "string"
+          },
+          "model": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "make",
+          "model"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "autohled_model_detail",
+      "description": "Full profile of one current model: Czech price from the official price list (with date and source), dimensions, boot, towing, editorial rating with pros/cons, and the engine/variant list with per-variant prices and slugs. Use make/model slugs from autohled_search_cars. Answer in the language of the page (see source.locale).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "make": {
+            "type": "string",
+            "description": "Make slug, e.g. \"skoda\"."
+          },
+          "model": {
+            "type": "string",
+            "description": "Model slug, e.g. \"octavia\" or \"id-4\"."
+          },
+          "engines": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 30,
+            "description": "How many engine variants to include, default 8."
+          }
+        },
+        "required": [
+          "make",
+          "model"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "autohled_open_page",
+      "description": "Navigate the visitor's browser to a page on autohled.cz: a model page, an engine variant, a comparison of 2-4 cars, or the catalog. Nothing is submitted or purchased; it only changes the page shown.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "string",
+            "enum": [
+              "model",
+              "engine",
+              "compare",
+              "catalog",
+              "review",
+              "enquiry"
+            ],
+            "description": "Which page type to open. \"enquiry\" opens Autohled's free new-car offer request form for the model."
+          },
+          "make": {
+            "type": "string",
+            "description": "Make slug (model/engine/review)."
+          },
+          "model": {
+            "type": "string",
+            "description": "Model slug (model/engine/review)."
+          },
+          "engine": {
+            "type": "string",
+            "description": "Engine slug (engine)."
+          },
+          "cars": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 2,
+            "maxItems": 4,
+            "description": "\"make/model\" tokens (compare)."
+          }
+        },
+        "required": [
+          "page"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "autohled_rivals",
+      "description": "Competing models Autohled lists against a given model (same class, similar price), with price and key specs. Answer in the language of the page (see source.locale).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "make": {
+            "type": "string"
+          },
+          "model": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "make",
+          "model"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "autohled_search_cars",
+      "description": "Search the Autohled catalog of new cars sold in the Czech Republic by make, body, fuel, drive, price (CZK), power, seats, boot, towing, EV range or length. Returns models with the cheapest variant price, spec ranges and a link. Use this first to find the right make/model slugs. Answer in the language of the page (see source.locale).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "make": {
+            "type": "string",
+            "description": "Make name or slug, e.g. \"Škoda\" or \"skoda\". Optional."
+          },
+          "body": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "suv",
+                "hatchback",
+                "sedan",
+                "kombi",
+                "mpv",
+                "coupe",
+                "cabrio",
+                "pickup",
+                "van"
+              ]
+            },
+            "description": "Body styles to include."
+          },
+          "fuel": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "gasoline",
+                "diesel",
+                "electricity",
+                "phev",
+                "hybrid",
+                "lpg",
+                "cng"
+              ]
+            },
+            "description": "Fuel / powertrain types to include."
+          },
+          "drive": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "FWD",
+                "RWD",
+                "AWD"
+              ]
+            },
+            "description": "Drive types to include."
+          },
+          "price_min": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Minimum price in CZK."
+          },
+          "price_max": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Maximum price in CZK."
+          },
+          "power_min": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Minimum power in kW."
+          },
+          "seats_min": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9
+          },
+          "trunk_min": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Minimum boot volume in litres."
+          },
+          "towing_min": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Minimum braked towing capacity in kg."
+          },
+          "range_min": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Minimum WLTP electric range in km (EVs)."
+          },
+          "length_max": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Maximum length in mm."
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "popularity",
+              "price_asc",
+              "price_desc",
+              "power_desc",
+              "range_desc"
+            ],
+            "description": "Default popularity (Czech registrations)."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 30,
+            "description": "Max results, default 10."
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "autohled.cz",
+  "source": "webmcp.com/api/directory.json"
+}

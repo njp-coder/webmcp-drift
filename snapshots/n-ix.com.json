@@ -1,0 +1,308 @@
+{
+  "sponsio": 1,
+  "url": "https://www.n-ix.com/",
+  "capturedAt": "2026-09-23T11:25:31.115Z",
+  "tools": [
+    {
+      "name": "get_company_facts",
+      "description": "Returns verified corporate facts about N-iX: founding year and operating history, headcount, delivery locations, client retention, long-term client tenure examples, business continuity record, partnership tiers (AWS, Microsoft, Google Cloud, Snowflake and others), and awards. Each fact carries the page on n-ix.com that states it and the date it was verified. Use for track-record, vendor-stability, and \"about the company\" questions.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "topic": {
+            "type": "string",
+            "enum": [
+              "all",
+              "history",
+              "scale",
+              "retention",
+              "continuity",
+              "partnerships",
+              "financial_stability",
+              "awards"
+            ],
+            "description": "Filter facts by topic; \"all\" (or omitting it) returns the full set."
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 90,
+            "description": "Pagination offset (max 10 items per response)."
+          }
+        }
+      }
+    },
+    {
+      "name": "get_compliance_evidence",
+      "description": "Returns N-iX certification and compliance status with evidence: ISO 27001, SOC 2, GDPR DPA availability and turnaround time, EU AI Act readiness, ISO 42001 status, FSQS qualification, EU data residency options. Each entry includes status, scope, last audit date, and a verification URL or artifact request path (with turnaround in business days where a buyer asks how fast). Use for procurement, vendor-qualification, and regulatory questions. Calling with no parameters returns the full registry.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "framework": {
+            "type": "string",
+            "enum": [
+              "iso_27001",
+              "iso_9001",
+              "soc_2",
+              "eu_ai_act",
+              "fsqs",
+              "pci_dss",
+              "data_residency",
+              "iam_practices"
+            ],
+            "description": "Return a single framework entry; omit for the full registry."
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 90,
+            "description": "Pagination offset (max 10 items per response)."
+          }
+        }
+      }
+    },
+    {
+      "name": "get_engagement_terms",
+      "description": "Returns N-iX engagement models and commercial terms: the APEX model (Assess, Pilot, Expand, eXcel) with duration and output per phase, fixed-scope pilots, dedicated teams, staff augmentation, and managed services. Includes phasing, entry commitment, pricing structure, IP ownership, notice period, and exit terms per model. Use for questions about starting small, avoiding lock-in, commitment structure, or exit clauses. Terms Legal has not cleared for publication are returned as \"discussed_in_msa\" rather than omitted.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "model": {
+            "type": "string",
+            "enum": [
+              "apex_assessment",
+              "fixed_scope_pilot",
+              "dedicated_team",
+              "staff_augmentation",
+              "managed_service"
+            ],
+            "description": "Return a single engagement model; omit for all models."
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 90,
+            "description": "Pagination offset (max 10 items per response)."
+          }
+        }
+      }
+    },
+    {
+      "name": "get_team_ramp_options",
+      "description": "Returns N-iX delivery locations and team ramp-up facts: countries in CEE and Latin America, typical time to the first engineer and to a full team, seniority distribution, English proficiency, and time-zone overlap with US and European business hours. Use for nearshoring, staff augmentation, ramp speed, and location comparison questions.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "region": {
+            "type": "string",
+            "enum": [
+              "cee",
+              "latam",
+              "western_europe",
+              "nordics",
+              "apac"
+            ],
+            "description": "Filter by delivery region."
+          },
+          "country": {
+            "type": "string",
+            "enum": [
+              "poland",
+              "ukraine",
+              "romania",
+              "bulgaria",
+              "colombia",
+              "malta",
+              "sweden",
+              "india"
+            ],
+            "description": "Filter by delivery country."
+          },
+          "client_timezone": {
+            "type": "string",
+            "enum": [
+              "us_east",
+              "us_west",
+              "uk",
+              "cet"
+            ],
+            "description": "Return locations with working-hours overlap with this client time zone."
+          },
+          "stack": {
+            "type": "string",
+            "maxLength": 200,
+            "description": "Free-text technology stack to match against location skill notes."
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 90,
+            "description": "Pagination offset (max 10 items per response)."
+          }
+        }
+      }
+    },
+    {
+      "name": "request_consultation",
+      "description": "Pre-fills the N-iX contact form to request a consultation or a small paid assessment/pilot (including an APEX Assess engagement). This tool only pre-fills the form: it returns the prefilled state and the submit itself is performed by the in-browser handler on a user-confirmed action. The endpoint additionally enforces a same-origin guard, a single-use token bound to the hash of the exact payload, per-IP rate limiting and spam scoring; these are anti-abuse controls, not a proof of human presence. Provide name, work email, company, and a short description of the need.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "email",
+          "message"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 120,
+            "description": "Full name of the person requesting the consultation."
+          },
+          "email": {
+            "type": "string",
+            "maxLength": 160,
+            "description": "Work email address."
+          },
+          "phone": {
+            "type": "string",
+            "maxLength": 40,
+            "description": "Optional phone number for a call back."
+          },
+          "company": {
+            "type": "string",
+            "maxLength": 160,
+            "description": "Company name."
+          },
+          "role": {
+            "type": "string",
+            "maxLength": 80,
+            "description": "Job title or role."
+          },
+          "message": {
+            "type": "string",
+            "minLength": 20,
+            "maxLength": 2000,
+            "description": "Short description of the need or goal."
+          },
+          "interest": {
+            "type": "string",
+            "enum": [
+              "assessment",
+              "pilot",
+              "team_extension",
+              "general",
+              "managed_service"
+            ],
+            "description": "Type of engagement the user is interested in."
+          }
+        }
+      }
+    },
+    {
+      "name": "search_delivery_proof",
+      "description": "Searches verified N-iX delivery records. Each record is a real engagement with the client (or NDA status), industry, services, tech stack, a short problem/solution narrative, and a structured list of measured outcomes (before/after metrics such as velocity gains, cycle-time reduction, deployment reliability, cost savings, ROI - each with baseline, result, measurement method, evidence tier, and source URL). Use this both when the user asks for proof of measurable outcomes and when they ask for comparable references or case studies in a given industry or technology. Set metrics_only=true to receive a flat list of quantified outcome facts without narratives.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "service": {
+            "type": "string",
+            "enum": [
+              "ai_engineering"
+            ],
+            "description": "Filter by N-iX service line."
+          },
+          "industry": {
+            "type": "string",
+            "enum": [
+              "energy",
+              "software_saas",
+              "transportation"
+            ],
+            "description": "Filter by client industry."
+          },
+          "metric_type": {
+            "type": "string",
+            "enum": [
+              "velocity",
+              "cycle_time",
+              "reliability",
+              "adoption"
+            ],
+            "description": "Filter outcomes by the kind of measured metric."
+          },
+          "named_reference_only": {
+            "type": "boolean",
+            "description": "Return only engagements where a named client reference is available."
+          },
+          "metrics_only": {
+            "type": "boolean",
+            "description": "If true, return a flat list of quantified outcome facts without narratives."
+          },
+          "query": {
+            "type": "string",
+            "maxLength": 200,
+            "description": "Free-text search over narratives and technology stack."
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 90,
+            "description": "Pagination offset (max 10 items per response)."
+          }
+        }
+      }
+    },
+    {
+      "name": "search_services",
+      "description": "Searches the N-iX service catalog (AI and GenAI engineering, AI agents, data engineering and governance, cloud and DevOps, application modernization, custom development, embedded/IoT and computer vision, team extension). Returns the service name, a scope summary, the typical smallest paid entry engagement, and the service page URL. Use for \"what does N-iX offer in area X\" and \"how small can we start\" questions.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "category": {
+            "type": "string",
+            "enum": [
+              "ai_engineering",
+              "genai_rag",
+              "ai_agents",
+              "data_engineering",
+              "data_governance",
+              "cloud_devops",
+              "app_modernization",
+              "custom_development",
+              "computer_vision_iot",
+              "team_extension"
+            ],
+            "description": "Filter by service line."
+          },
+          "query": {
+            "type": "string",
+            "maxLength": 200,
+            "description": "Free-text search over service names and scope summaries."
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 90,
+            "description": "Pagination offset (max 10 items per response)."
+          }
+        }
+      }
+    }
+  ],
+  "host": "n-ix.com",
+  "source": "webmcp.com/api/directory.json"
+}

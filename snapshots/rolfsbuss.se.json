@@ -1,0 +1,162 @@
+{
+  "sponsio": 1,
+  "url": "https://www.rolfsbuss.se/",
+  "capturedAt": "2026-09-23T11:25:31.115Z",
+  "tools": [
+    {
+      "name": "list_group_trip_departures",
+      "description": "List the departures of a specific group trip, including the tripid that start_group_trip_booking needs, plus date, price, seats left and bookability for each departure. Reads data only — does not navigate.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "triptypeurl": {
+            "type": "string",
+            "description": "The trip identifier path, as returned by search_group_trips (triptypeurl) — or the current trip page path without its leading slash, e.g. \"bussresa/kroatienkrk\"."
+          },
+          "dateFrom": {
+            "type": "string",
+            "format": "date",
+            "description": "Only include departures on or after this date, in YYYY-MM-DD format."
+          },
+          "dateTo": {
+            "type": "string",
+            "format": "date",
+            "description": "Only include departures on or before this date, in YYYY-MM-DD format."
+          }
+        },
+        "required": [
+          "triptypeurl"
+        ]
+      }
+    },
+    {
+      "name": "search_charter_packages",
+      "description": "Search the charter packages (flight + hotel with flexible dates and hotel choice) sold on this travel website. Navigates to the package search results page and lists every matching package. Without dates it searches departures from tomorrow with the default trip length. Charter packages are booked through the page UI, not with start_group_trip_booking.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Free text filter: a destination, country or hotel name, written in the same language as the website."
+          },
+          "dateFrom": {
+            "type": "string",
+            "format": "date",
+            "description": "Earliest departure date, in YYYY-MM-DD format. Defaults to tomorrow."
+          },
+          "dateTo": {
+            "type": "string",
+            "format": "date",
+            "description": "Latest departure date, in YYYY-MM-DD format."
+          },
+          "durationNights": {
+            "type": "number",
+            "description": "Trip length in nights, e.g. 7 or 14."
+          },
+          "airport": {
+            "type": "string",
+            "description": "Departure airport IATA code, e.g. \"ARN\" or \"GOT\"."
+          },
+          "adults": {
+            "type": "number",
+            "description": "Number of adult travellers. Defaults to 2."
+          },
+          "children": {
+            "type": "number",
+            "description": "Number of children travelling. Only used together with adults."
+          }
+        }
+      }
+    },
+    {
+      "name": "search_group_trips",
+      "description": "Search the escorted group trips (bus and flight tours with fixed departure dates) sold on this travel website. Navigates to the search results page and returns the top matching group trips, each with the triptypeurl that list_group_trip_departures needs. Charter packages (flight + hotel) are searched with search_charter_packages instead, where available.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Free text to search for: a destination, country, city or group trip name, written in the same language as the website."
+          },
+          "travelMode": {
+            "type": "string",
+            "enum": [
+              "flight",
+              "bus"
+            ],
+            "description": "Only include trips travelling by flight or by bus. Omit to include all travel modes."
+          },
+          "dateFrom": {
+            "type": "string",
+            "format": "date",
+            "description": "Earliest departure date, in YYYY-MM-DD format."
+          },
+          "dateTo": {
+            "type": "string",
+            "format": "date",
+            "description": "Latest departure date, in YYYY-MM-DD format. Requires dateFrom."
+          },
+          "exactDates": {
+            "type": "boolean",
+            "description": "Only include trips that depart on dateFrom and return on dateTo. Requires both dates."
+          },
+          "priceMin": {
+            "type": "number",
+            "description": "Lowest price per person, in SEK."
+          },
+          "priceMax": {
+            "type": "number",
+            "description": "Highest price per person, in SEK."
+          }
+        }
+      }
+    },
+    {
+      "name": "search_site",
+      "description": "Free-text search across the whole website: trips, destinations, hotels and information pages. Navigates to the search results page and returns the top matches with their titles and urls; trip-like results carry isCharter to tell charter packages apart from group trips.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Free text to search the whole website for: trips, destinations, hotels and information pages. Use the same language as the website."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "start_group_trip_booking",
+      "description": "Start booking a group trip departure, the same way the book button on a trip page does. Navigates to the first step of the booking wizard, where the booking is completed manually — no purchase is made by this tool. Charter packages cannot be started this way; those are booked through the page UI.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tripid": {
+            "type": "string",
+            "description": "Id of the departure (a specific date of a trip) to book, as returned by the list_group_trip_departures tool where available — always also present in a departure's book link as the path segment after \"/boka/\", e.g. \"12345\" in \"/boka/12345?price=5000\"."
+          },
+          "price": {
+            "type": "number",
+            "description": "Advertised price per person for the departure in SEK, if known."
+          },
+          "singlePrice": {
+            "type": "number",
+            "description": "Advertised single room price for the departure in SEK, if known."
+          }
+        },
+        "required": [
+          "tripid"
+        ]
+      }
+    }
+  ],
+  "host": "rolfsbuss.se",
+  "source": "webmcp.com/api/directory.json"
+}

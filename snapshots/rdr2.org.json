@@ -1,0 +1,349 @@
+{
+  "sponsio": 1,
+  "url": "https://www.rdr2.org/",
+  "capturedAt": "2026-09-23T11:25:31.115Z",
+  "tools": [
+    {
+      "name": "get_navigation_api",
+      "description": "Get navigation.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "location": {
+            "type": "string",
+            "title": "Menu location",
+            "description": "Optional theme menu location such as primary or footer."
+          },
+          "menu_slug": {
+            "type": "string",
+            "title": "Menu slug",
+            "description": "Optional menu slug when you want one specific menu."
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_post_api",
+      "description": "Get post.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Post ID",
+            "description": "Lookup by numeric post ID."
+          },
+          "slug": {
+            "type": "string",
+            "title": "Post slug",
+            "description": "Lookup by slug or nested path."
+          },
+          "post_type": {
+            "type": "string",
+            "title": "Post type",
+            "description": "Optional public post type when resolving by slug."
+          },
+          "continuation": {
+            "type": "string",
+            "title": "Continuation",
+            "description": "Short-lived continuation returned by an earlier response for this exact post."
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_site_info_api",
+      "description": "Get site info.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_terms_api",
+      "description": "Get terms.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "taxonomy": {
+            "type": "string",
+            "title": "Taxonomy",
+            "description": "A public taxonomy such as category, post_tag, or product_cat."
+          },
+          "search": {
+            "type": "string",
+            "title": "Search",
+            "description": "Optional term search query."
+          },
+          "slug": {
+            "type": "string",
+            "title": "Slug",
+            "description": "Optional term slug filter."
+          },
+          "parent": {
+            "type": "integer",
+            "title": "Parent term ID",
+            "description": "Optional parent term filter."
+          },
+          "hide_empty": {
+            "type": "boolean",
+            "title": "Hide empty",
+            "description": "When true, only returns terms with content attached."
+          },
+          "per_page": {
+            "type": "integer",
+            "title": "Results per page",
+            "description": "Maximum 50."
+          },
+          "page": {
+            "type": "integer",
+            "title": "Page",
+            "description": "1-based page number."
+          }
+        },
+        "required": [
+          "taxonomy"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_post_types_api",
+      "description": "List post types.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_posts_api",
+      "description": "List posts.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "post_type": {
+            "type": "string",
+            "title": "Post type",
+            "description": "Optional public post type or comma-separated list."
+          },
+          "taxonomy": {
+            "type": "string",
+            "title": "Taxonomy",
+            "description": "Optional public taxonomy filter."
+          },
+          "term": {
+            "type": "string",
+            "title": "Term",
+            "description": "Term slug used with the taxonomy filter."
+          },
+          "per_page": {
+            "type": "integer",
+            "title": "Results per page",
+            "description": "Maximum 50."
+          },
+          "page": {
+            "type": "integer",
+            "title": "Page",
+            "description": "1-based page number."
+          },
+          "orderby": {
+            "type": "string",
+            "title": "Order by",
+            "description": "Sort field. Relevance only applies when searching.",
+            "enum": [
+              "date",
+              "modified",
+              "title",
+              "menu_order",
+              "relevance"
+            ],
+            "oneOf": [
+              {
+                "const": "date",
+                "title": "date"
+              },
+              {
+                "const": "modified",
+                "title": "modified"
+              },
+              {
+                "const": "title",
+                "title": "title"
+              },
+              {
+                "const": "menu_order",
+                "title": "menu_order"
+              },
+              {
+                "const": "relevance",
+                "title": "relevance"
+              }
+            ]
+          },
+          "order": {
+            "type": "string",
+            "title": "Order",
+            "description": "Sort direction.",
+            "enum": [
+              "DESC",
+              "ASC"
+            ],
+            "oneOf": [
+              {
+                "const": "DESC",
+                "title": "DESC"
+              },
+              {
+                "const": "ASC",
+                "title": "ASC"
+              }
+            ]
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_posts_api",
+      "description": "Search posts.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "title": "Search query",
+            "description": "Keyword query used to search public content."
+          },
+          "post_type": {
+            "type": "string",
+            "title": "Post type",
+            "description": "Optional public post type or comma-separated list."
+          },
+          "taxonomy": {
+            "type": "string",
+            "title": "Taxonomy",
+            "description": "Optional public taxonomy filter."
+          },
+          "term": {
+            "type": "string",
+            "title": "Term",
+            "description": "Term slug used with the taxonomy filter."
+          },
+          "per_page": {
+            "type": "integer",
+            "title": "Results per page",
+            "description": "Maximum 50."
+          },
+          "page": {
+            "type": "integer",
+            "title": "Page",
+            "description": "1-based page number."
+          },
+          "orderby": {
+            "type": "string",
+            "title": "Order by",
+            "description": "Sort field. Relevance only applies when searching.",
+            "enum": [
+              "date",
+              "modified",
+              "title",
+              "menu_order",
+              "relevance"
+            ],
+            "oneOf": [
+              {
+                "const": "date",
+                "title": "date"
+              },
+              {
+                "const": "modified",
+                "title": "modified"
+              },
+              {
+                "const": "title",
+                "title": "title"
+              },
+              {
+                "const": "menu_order",
+                "title": "menu_order"
+              },
+              {
+                "const": "relevance",
+                "title": "relevance"
+              }
+            ]
+          },
+          "order": {
+            "type": "string",
+            "title": "Order",
+            "description": "Sort direction.",
+            "enum": [
+              "DESC",
+              "ASC"
+            ],
+            "oneOf": [
+              {
+                "const": "DESC",
+                "title": "DESC"
+              },
+              {
+                "const": "ASC",
+                "title": "ASC"
+              }
+            ]
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_site",
+      "description": "Search site.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "s": {
+            "type": "string"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "search_site_2",
+      "description": "Search site.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "s": {
+            "type": "string"
+          }
+        },
+        "required": []
+      }
+    }
+  ],
+  "host": "rdr2.org",
+  "source": "webmcp.com/api/directory.json"
+}

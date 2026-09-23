@@ -1,0 +1,82 @@
+{
+  "sponsio": 1,
+  "url": "https://tulipia.com.br/",
+  "capturedAt": "2026-09-23T11:25:31.115Z",
+  "tools": [
+    {
+      "name": "adicionar_ao_carrinho",
+      "description": "Adiciona um produto ao carrinho do usuário logado. Requer login (igual ao site). Use o id de buscar_produtos.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "produto_id": {
+            "type": "integer",
+            "description": "ID do produto."
+          },
+          "quantidade": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 99,
+            "default": 1
+          }
+        },
+        "required": [
+          "produto_id"
+        ]
+      }
+    },
+    {
+      "name": "buscar_produtos",
+      "description": "Busca dermocosméticos da Tulípia por nome, ativo, categoria ou problema de pele. Retorna id, slug, nome e link. Use detalhes_produto para preço e estoque atuais.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Termo de busca, ex: \"ácido hialurônico\"."
+          },
+          "limite": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12,
+            "default": 6
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "detalhes_produto",
+      "description": "Detalhes atuais de um produto da Tulípia (preço, disponibilidade, link). Use o slug retornado por buscar_produtos.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Slug do produto, ex: \"serum-vitamina-c\"."
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "ir_para_checkout",
+      "description": "Leva o usuário à página de checkout para finalizar a compra com os itens que já estão no carrinho. NÃO conclui pagamento nem preenche dados. O usuário finaliza manualmente. Requer login.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    }
+  ],
+  "host": "tulipia.com.br",
+  "source": "webmcp.com/api/directory.json"
+}

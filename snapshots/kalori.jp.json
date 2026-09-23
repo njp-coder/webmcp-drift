@@ -1,0 +1,66 @@
+{
+  "sponsio": 1,
+  "url": "https://kalori.jp/ja/",
+  "capturedAt": "2026-09-23T11:25:31.115Z",
+  "tools": [
+    {
+      "name": "search_foods",
+      "description": "kaloriが公開する日本のコンビニ・外食商品のカロリーとPFCを、商品名や条件から検索します。公開商品ページへのリンクを最大4件返します。",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "description": "探す商品・料理・チェーン名。例: サラダチキン、マクドナルド ポテト"
+          },
+          "max_calories": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 5000,
+            "description": "1商品あたりの最大カロリー(kcal)"
+          },
+          "min_protein_grams": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 500,
+            "description": "1商品あたりの最小たんぱく質(g)"
+          },
+          "max_fat_grams": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 500,
+            "description": "1商品あたりの最大脂質(g)"
+          },
+          "max_carbohydrate_grams": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1000,
+            "description": "1商品あたりの最大炭水化物(g)"
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "relevance",
+              "lowest_calories",
+              "highest_protein",
+              "lowest_fat",
+              "lowest_carbohydrates",
+              "newest"
+            ],
+            "default": "relevance",
+            "description": "並び順: 関連度、低カロリー、高たんぱく、低脂質、低炭水化物、新着"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "kalori.jp",
+  "source": "webmcp.com/api/directory.json"
+}

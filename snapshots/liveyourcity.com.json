@@ -1,0 +1,84 @@
+{
+  "sponsio": 1,
+  "url": "https://liveyourcity.com/en",
+  "capturedAt": "2026-09-23T11:25:31.115Z",
+  "tools": [
+    {
+      "name": "home_list_cities",
+      "description": "Returns the list of top cities available on Fever, each with its name, slug, country, and direct feed URL. Call this to discover which cities a user can navigate to.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "type": "object"
+      }
+    },
+    {
+      "name": "home_navigate_to_city",
+      "description": "Navigates the browser to the event feed for the given city slug. Use slugs returned by home_list_cities. Navigation is blocked if the target URL leaves the current domain.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "citySlug": {
+            "description": "The city slug to navigate to, as returned by home_list_cities.",
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "citySlug"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "search_plans",
+      "description": "Searches for plans in the current city. Returns a list of matching events with their IDs, names, URLs, and dates. Use navigate_to_plan to open a specific result.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "query": {
+            "description": "Search keywords, e.g. \"concert\", \"jazz\", \"halloween\".",
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "toggle_plan_favorite",
+      "description": "Adds or removes a plan from the user's favorites. If the plan is already a favorite it will be removed; otherwise it will be added. Works on any page that shows plan cards (gallery or calendar view).",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "planId": {
+            "description": "The numeric plan ID to add or remove from favorites.",
+            "minimum": 1,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "planId"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "webmcp_get_page_summary",
+      "description": "Returns a high-level summary of the current page and the list of available tools. Call this first on any page to understand context and capabilities.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "type": "object"
+      }
+    }
+  ],
+  "host": "liveyourcity.com",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,92 @@
+{
+  "sponsio": 1,
+  "url": "https://99pandit.com/",
+  "capturedAt": "2026-09-23T11:25:31.115Z",
+  "tools": [
+    {
+      "name": "book_pandit",
+      "description": "Open the 99Pandit booking form pre-filled with the user's puja and date. For Indian users also pass city. The user completes their phone OTP and submits the form. Use this after the user has confirmed they want to book.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "puja_name": {
+            "type": "string",
+            "description": "Name of the puja. Example: Satyanarayan Puja, Griha Pravesh, Ganesh Puja."
+          },
+          "city": {
+            "type": "string",
+            "description": "City where the puja will be performed. Only needed for Indian bookings. Example: Pune, Delhi, Mumbai."
+          },
+          "date": {
+            "type": "string",
+            "description": "Preferred date in YYYY-MM-DD format."
+          }
+        },
+        "required": [
+          "puja_name"
+        ]
+      }
+    },
+    {
+      "name": "get_city_services",
+      "description": "Get a list of puja and religious ceremony services available in a specific Indian city on 99Pandit.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "city": {
+            "type": "string",
+            "description": "City name. Examples: Pune, Delhi, Mumbai, Bangalore, Hyderabad, Chennai, Kolkata, Jaipur, Varanasi."
+          }
+        },
+        "required": [
+          "city"
+        ]
+      }
+    },
+    {
+      "name": "get_puja_details",
+      "description": "Get detailed information about a specific puja — description, price range, duration, and what is included.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "puja_slug": {
+            "type": "string",
+            "description": "URL slug of the puja. Examples: satyanarayan-puja, griha-pravesh-puja, rudrabhishek-puja, ganesh-puja. Use get_pujas_list first to find the correct slug."
+          }
+        },
+        "required": [
+          "puja_slug"
+        ]
+      }
+    },
+    {
+      "name": "get_pujas_list",
+      "description": "Get a full list of puja and religious ceremony services offered by 99Pandit, grouped by category.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "search_puja",
+      "description": "Search for pujas and religious ceremonies available on 99Pandit. Returns a list of matching services with name, slug, and category.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Name of the puja or ceremony. Examples: Satyanarayan Puja, Griha Pravesh, Ganesh Puja, Rudrabhishek, Navgraha Puja."
+          }
+        },
+        "required": []
+      }
+    }
+  ],
+  "host": "99pandit.com",
+  "source": "webmcp.com/api/directory.json"
+}

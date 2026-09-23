@@ -1,0 +1,144 @@
+{
+  "sponsio": 1,
+  "url": "https://bialink.com/",
+  "capturedAt": "2026-09-23T11:25:31.115Z",
+  "tools": [
+    {
+      "name": "findBialinkService",
+      "description": "Lists Bialink's public service pages by category without purchasing or changing an account.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "enum": [
+              "all",
+              "domain",
+              "hosting",
+              "server",
+              "mail",
+              "legal"
+            ],
+            "description": "Service category to list."
+          }
+        },
+        "required": [
+          "category"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "listBialinkPlans",
+      "description": "Read public package prices, resources, availability and verified order links. These are website prices, not a live final checkout quote. No account, cart or payment is changed.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "service": {
+            "type": "string",
+            "enum": [
+              "all",
+              "web-hosting",
+              "bayi-hosting",
+              "kurumsal-hosting",
+              "nextjs-nodejs-hosting",
+              "n8n-hosting",
+              "openclaw-hosting",
+              "bulut-sunucu",
+              "fiziksel-sunucu",
+              "sunucu-barindirma",
+              "sunucu-yonetimi"
+            ]
+          }
+        },
+        "required": [
+          "service"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "prepareBialinkCheckout",
+      "description": "Prepare the verified order URL for a selected active package and period. Does NOT create an order, accept terms, set the period in the external panel, or charge a payment. The customer must confirm the panel's final price and purchase.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "service": {
+            "type": "string",
+            "enum": [
+              "web-hosting",
+              "bayi-hosting",
+              "kurumsal-hosting",
+              "nextjs-nodejs-hosting",
+              "n8n-hosting",
+              "openclaw-hosting",
+              "bulut-sunucu",
+              "fiziksel-sunucu",
+              "sunucu-yonetimi"
+            ]
+          },
+          "planId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "billingPeriod": {
+            "type": "string",
+            "enum": [
+              "monthly",
+              "annual"
+            ]
+          }
+        },
+        "required": [
+          "service",
+          "planId",
+          "billingPeriod"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "prepareBialinkDomainSearch",
+      "description": "Validates a public domain name and prepares the Bialink domain-search URL. It does not register, transfer, or purchase the domain.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "domain": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 253,
+            "description": "A domain name such as example.com, without a path or credentials."
+          }
+        },
+        "required": [
+          "domain"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_bialink_domain",
+      "description": "Bialink üzerinde bir alan adının kayıt veya transfer sürecini başlatmak için alan adı sorgusu yapar.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "domain": {
+            "type": "string",
+            "description": "Sorgulanacak alan adı. Örnek: sirketim.com"
+          }
+        },
+        "required": [
+          "domain"
+        ]
+      }
+    }
+  ],
+  "host": "bialink.com",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,116 @@
+{
+  "sponsio": 1,
+  "url": "https://aitmpl.com/",
+  "capturedAt": "2026-09-23T11:25:31.115Z",
+  "tools": [
+    {
+      "name": "get-catalog-stats",
+      "description": "Returns aggregate statistics for the aitmpl.com catalog: number of components per type and global download totals.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get-component-details",
+      "description": "Returns the full catalog entry for one component from aitmpl.com, including its description, category, install command and page URL. Requires the component name (as returned by search-components) and its type.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The component name or catalog path."
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "agent",
+              "command",
+              "mcp",
+              "setting",
+              "hook",
+              "skill",
+              "loop",
+              "mod",
+              "template"
+            ],
+            "description": "The component type."
+          }
+        },
+        "required": [
+          "name",
+          "type"
+        ]
+      }
+    },
+    {
+      "name": "get-install-command",
+      "description": "Returns the exact npx command to install a Claude Code component from aitmpl.com (e.g. \"npx claude-code-templates@latest --agent developer-team/frontend-developer\").",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The component name or catalog path."
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "agent",
+              "command",
+              "mcp",
+              "setting",
+              "hook",
+              "skill",
+              "loop",
+              "mod",
+              "template"
+            ],
+            "description": "The component type."
+          }
+        },
+        "required": [
+          "name",
+          "type"
+        ]
+      }
+    },
+    {
+      "name": "search-components",
+      "description": "Searches the aitmpl.com catalog of Claude Code components (agents, commands, MCPs, settings, hooks, skills, loops, mods, templates) by free-text query. Returns up to 20 matches with name, type, category, description and the npx install command.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Free-text search over component name, description and category."
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "agent",
+              "command",
+              "mcp",
+              "setting",
+              "hook",
+              "skill",
+              "loop",
+              "mod",
+              "template"
+            ],
+            "description": "Optional: restrict results to one component type."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "aitmpl.com",
+  "source": "webmcp.com/api/directory.json"
+}

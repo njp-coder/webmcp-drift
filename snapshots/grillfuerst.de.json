@@ -1,0 +1,230 @@
+{
+  "sponsio": 1,
+  "url": "https://www.grillfuerst.de/",
+  "capturedAt": "2026-09-23T11:25:31.115Z",
+  "tools": [
+    {
+      "name": "calculate_shipping",
+      "description": "Calculate available shipping methods and costs for products to Germany or Austria.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "countryCode": {
+            "type": "string",
+            "enum": [
+              "DE",
+              "AT"
+            ],
+            "description": "Shipping country code."
+          },
+          "customerStatusId": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12,
+            "description": "Optional XT customer status; default 2."
+          },
+          "items": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 20,
+            "description": "Products and quantities for shipping calculation.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "productId": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "XT product ID."
+                },
+                "model": {
+                  "type": "string",
+                  "description": "Product model if no product ID is known."
+                },
+                "quantity": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 100,
+                  "description": "Quantity; default 1."
+                }
+              }
+            }
+          }
+        },
+        "required": [
+          "countryCode",
+          "items"
+        ]
+      }
+    },
+    {
+      "name": "compare_products",
+      "description": "Compare 2 to 4 Grillfürst products by model or product ID using current shop data.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "products": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 4,
+            "description": "Preferred form: product references using productId or exact model.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "productId": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "XT product ID."
+                },
+                "model": {
+                  "type": "string",
+                  "description": "Exact product model if no ID is known."
+                }
+              }
+            }
+          },
+          "productIds": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 4,
+            "description": "Convenience alias: XT product IDs to compare.",
+            "items": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "models": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 4,
+            "description": "Convenience alias: exact product models to compare.",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "get_categories",
+      "description": "Find active Grillfürst product categories by readable category name.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Optional category name search."
+          },
+          "parentId": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Optional parent category ID."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "description": "Maximum number of categories."
+          }
+        }
+      }
+    },
+    {
+      "name": "get_manufacturers",
+      "description": "Find Grillfürst brands and manufacturers by readable name.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Optional manufacturer name search."
+          },
+          "exact": {
+            "type": "boolean",
+            "description": "Set true to return only exact manufacturer name matches."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "description": "Maximum number of manufacturers."
+          }
+        }
+      }
+    },
+    {
+      "name": "get_product",
+      "description": "Get current Grillfürst product details, price, stock, description and product URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "XT product ID returned by product search."
+          }
+        },
+        "required": [
+          "productId"
+        ]
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Search Grillfürst products by text, brand, category, price and availability.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Product name, type, model or search phrase."
+          },
+          "manufacturer": {
+            "type": "string",
+            "description": "Brand or manufacturer name, e.g. Napoleon."
+          },
+          "category": {
+            "type": "string",
+            "description": "Product category name, e.g. Gasgrill."
+          },
+          "minPrice": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Minimum gross price in EUR."
+          },
+          "maxPrice": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Maximum gross price in EUR."
+          },
+          "inStock": {
+            "type": "boolean",
+            "description": "Return only currently available products."
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "relevance",
+              "price_asc",
+              "price_desc"
+            ],
+            "description": "Result sorting."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "description": "Maximum number of products."
+          }
+        }
+      }
+    }
+  ],
+  "host": "grillfuerst.de",
+  "source": "webmcp.com/api/directory.json"
+}

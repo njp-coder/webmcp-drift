@@ -1,0 +1,236 @@
+{
+  "sponsio": 1,
+  "url": "https://okgiftshop.co.nz/index.html?language=en",
+  "capturedAt": "2026-09-23T11:25:31.115Z",
+  "tools": [
+    {
+      "name": "add_to_cart",
+      "description": "Add a public product to the current visitor cart. Products requiring option selection must be opened on the product page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "language": {
+            "type": "string",
+            "enum": [
+              "en",
+              "jp",
+              "zh"
+            ],
+            "description": "Response language: en, jp, or zh. Defaults to the current page language."
+          },
+          "products_id": {
+            "type": "integer",
+            "description": "Product ID to add."
+          },
+          "sku": {
+            "type": "string",
+            "description": "Product SKU to add when product ID is not provided."
+          },
+          "quantity": {
+            "type": "number",
+            "minimum": 0.01,
+            "description": "Quantity to add."
+          }
+        },
+        "required": [
+          "quantity"
+        ]
+      }
+    },
+    {
+      "name": "check_stock",
+      "description": "Check public product availability. Returns availability state only, not raw stock counts.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "language": {
+            "type": "string",
+            "enum": [
+              "en",
+              "jp",
+              "zh"
+            ],
+            "description": "Response language: en, jp, or zh. Defaults to the current page language."
+          },
+          "products_id": {
+            "type": "integer",
+            "description": "Single product ID."
+          },
+          "products_ids": {
+            "type": "string",
+            "description": "Comma-separated product IDs, up to 20."
+          },
+          "sku": {
+            "type": "string",
+            "description": "Single product SKU."
+          },
+          "skus": {
+            "type": "string",
+            "description": "Comma-separated product SKUs, up to 20."
+          }
+        }
+      }
+    },
+    {
+      "name": "get_categories",
+      "description": "Get public storefront categories with localized names and URLs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "language": {
+            "type": "string",
+            "enum": [
+              "en",
+              "jp",
+              "zh"
+            ],
+            "description": "Response language: en, jp, or zh. Defaults to the current page language."
+          }
+        }
+      }
+    },
+    {
+      "name": "get_product",
+      "description": "Get public details for one product or up to 20 product IDs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "language": {
+            "type": "string",
+            "enum": [
+              "en",
+              "jp",
+              "zh"
+            ],
+            "description": "Response language: en, jp, or zh. Defaults to the current page language."
+          },
+          "products_id": {
+            "type": "integer",
+            "description": "Single product ID."
+          },
+          "products_ids": {
+            "type": "string",
+            "description": "Comma-separated product IDs, up to 20."
+          }
+        }
+      }
+    },
+    {
+      "name": "get_shipping_estimate",
+      "description": "Estimate available shipping methods for the current cart and destination.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "language": {
+            "type": "string",
+            "enum": [
+              "en",
+              "jp",
+              "zh"
+            ],
+            "description": "Response language: en, jp, or zh. Defaults to the current page language."
+          },
+          "country_id": {
+            "type": "integer",
+            "description": "Zen Cart country ID. Defaults to store country."
+          },
+          "country_iso2": {
+            "type": "string",
+            "description": "Two-letter country code, such as NZ, JP, US."
+          },
+          "postcode": {
+            "type": "string",
+            "description": "Destination postal code."
+          },
+          "state": {
+            "type": "string",
+            "description": "Destination state or region."
+          },
+          "zone_id": {
+            "type": "integer",
+            "description": "Zen Cart zone ID when known."
+          }
+        }
+      }
+    },
+    {
+      "name": "get_store_info",
+      "description": "Get public OK Gift Shop store information and supported read-only tools.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "language": {
+            "type": "string",
+            "enum": [
+              "en",
+              "jp",
+              "zh"
+            ],
+            "description": "Response language: en, jp, or zh. Defaults to the current page language."
+          }
+        }
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Search public products using the storefront search logic. Returns at most 20 public products.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "language": {
+            "type": "string",
+            "enum": [
+              "en",
+              "jp",
+              "zh"
+            ],
+            "description": "Response language: en, jp, or zh. Defaults to the current page language."
+          },
+          "query": {
+            "type": "string",
+            "description": "Search keyword, SKU, manufacturer, or synonym."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "description": "Maximum number of products to return."
+          },
+          "madein_nz": {
+            "type": "integer",
+            "enum": [
+              0,
+              1
+            ],
+            "description": "Set to 1 to return only Made in New Zealand products."
+          },
+          "new_item": {
+            "type": "integer",
+            "enum": [
+              0,
+              1
+            ],
+            "description": "Set to 1 to return only products marked as New Item."
+          },
+          "categories_id": {
+            "type": "string",
+            "description": "Optional comma-separated category IDs to include."
+          },
+          "exclude_categories": {
+            "type": "string",
+            "description": "Optional comma-separated category IDs to exclude."
+          }
+        }
+      }
+    }
+  ],
+  "host": "okgiftshop.co.nz",
+  "source": "webmcp.com/api/directory.json"
+}

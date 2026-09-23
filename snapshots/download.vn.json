@@ -1,0 +1,72 @@
+{
+  "sponsio": 1,
+  "url": "https://download.vn/",
+  "capturedAt": "2026-09-23T11:25:31.115Z",
+  "tools": [
+    {
+      "name": "buy_document",
+      "description": "Mở trang mua một tài liệu DownLoad theo postId để người dùng xem giá và hoàn tất thanh toán. Lấy postId từ tài liệu trên website, không tự suy đoán. Tool không xác nhận thanh toán thành công.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "postId": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2147483647,
+            "description": "Mã bài viết/tài liệu cần mua."
+          }
+        },
+        "required": [
+          "postId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "buy_package",
+      "description": "Mở trang mua gói DownLoad để người dùng xem giá, chọn gói và hoàn tất thanh toán. Không có productId thì mở bảng gói. Chỉ dùng mã sản phẩm và mã giá lấy từ website, không tự suy đoán. Tool không xác nhận thanh toán thành công.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2147483647,
+            "description": "Mã sản phẩm gói trên DownLoad."
+          },
+          "priceId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "description": "Mã mức giá của gói đã chọn, cần đi kèm productId."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search",
+      "description": "Tìm tài liệu, đề thi, bài giải trên DownLoad bằng từ khóa. Điều hướng đến trang kết quả tìm kiếm.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500,
+            "description": "Từ khóa cần tìm."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "download.vn",
+  "source": "webmcp.com/api/directory.json"
+}

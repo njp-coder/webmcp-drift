@@ -1,0 +1,144 @@
+{
+  "sponsio": 1,
+  "url": "https://sps-industry.net/",
+  "capturedAt": "2026-09-23T11:25:31.115Z",
+  "tools": [
+    {
+      "name": "get_sps_industry_discovery",
+      "description": "Return public SPS Industry agent discovery links, including llms.txt, API catalog, Agent Skills, A2A Agent Card, MCP Server Card, OpenAPI, and ACP discovery.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "prepare_sps_industry_quote_payload",
+      "description": "Build a recommended /agent/quote-intent JSON payload for a product-specific B2B quote or proforma-invoice lead without submitting it.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sku": {
+            "type": "string",
+            "description": "SPS Industry product SKU if known."
+          },
+          "mpn": {
+            "type": "string",
+            "description": "Manufacturer part number if known."
+          },
+          "product_name": {
+            "type": "string",
+            "description": "Product name."
+          },
+          "product_url": {
+            "type": "string",
+            "description": "Canonical SPS Industry product URL."
+          },
+          "quantity": {
+            "type": "number",
+            "description": "Requested quantity."
+          },
+          "requested_document": {
+            "type": "string",
+            "enum": [
+              "quote",
+              "proforma_invoice"
+            ],
+            "description": "Human-reviewed document requested from SPS Industry."
+          },
+          "payment_method_preference": {
+            "type": "string",
+            "enum": [
+              "bank_transfer",
+              "not_specified"
+            ],
+            "description": "Preferred offline payment method for the later human-reviewed invoice flow."
+          },
+          "message": {
+            "type": "string",
+            "description": "Buyer request or procurement notes."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "request_sps_industry_quote",
+      "description": "Submit a product-specific SPS Industry B2B quote or proforma-invoice lead for human review without creating an order, cart, account, checkout session, invoice, or payment.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "customer_name": {
+            "type": "string",
+            "description": "Customer name"
+          },
+          "customer_email": {
+            "type": "string",
+            "description": "Customer email"
+          },
+          "customer_company": {
+            "type": "string",
+            "description": "Customer company"
+          },
+          "sku": {
+            "type": "string",
+            "description": "SKU"
+          },
+          "mpn": {
+            "type": "string",
+            "description": "MPN"
+          },
+          "product_url": {
+            "type": "string",
+            "description": "Product URL"
+          },
+          "quantity": {
+            "type": "number",
+            "minimum": 1,
+            "multipleOf": 1,
+            "description": "Quantity"
+          },
+          "message": {
+            "type": "string",
+            "description": "Message"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "search_sps_industry_catalog",
+      "description": "Return structured SPS Industry product results for industrial automation, electrical components, controls, sensors, switches, and spare parts.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Product name, MPN, EAN, brand, or industrial component search query."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "description": "Maximum structured product results to return."
+          },
+          "language": {
+            "type": "string",
+            "pattern": "^[a-z]{2}$",
+            "description": "Optional two-letter storefront language code."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "sps-industry.net",
+  "source": "webmcp.com/api/directory.json"
+}

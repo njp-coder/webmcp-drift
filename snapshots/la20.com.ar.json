@@ -1,0 +1,137 @@
+{
+  "sponsio": 1,
+  "url": "https://la20.com.ar/",
+  "capturedAt": "2026-09-23T11:25:31.115Z",
+  "tools": [
+    {
+      "name": "abrir_checkout",
+      "description": "Abre la página de compra de un servicio que devolvió buscar_pasajes, para que la persona complete sus datos y pague. No cobra ni confirma la compra: sólo lleva al formulario.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "servicio_id": {
+            "type": "string",
+            "description": "El id del servicio, tal como lo devolvió buscar_pasajes."
+          }
+        },
+        "required": [
+          "servicio_id"
+        ]
+      }
+    },
+    {
+      "name": "buscar_pasajes",
+      "description": "Busca pasajes de micro entre dos ciudades para una fecha. Devuelve los servicios disponibles con empresa, categoría, horario de salida y llegada, y precio. Sólo consulta: no reserva ni compra nada.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "origen": {
+            "type": "string",
+            "description": "Ciudad o terminal de salida."
+          },
+          "destino": {
+            "type": "string",
+            "description": "Ciudad o terminal de llegada."
+          },
+          "fecha": {
+            "type": "string",
+            "description": "Fecha del viaje en formato AAAA-MM-DD. Si no se indica, se busca para hoy."
+          },
+          "pasajeros": {
+            "type": "number",
+            "description": "Cantidad de pasajeros adultos. Por defecto 1."
+          }
+        },
+        "required": [
+          "origen",
+          "destino"
+        ]
+      }
+    },
+    {
+      "name": "buscar_pasajes_en_el_formulario",
+      "description": "Busca pasajes de micro completando el buscador de la página: origen, destino y fecha. Lleva a los resultados, donde la persona elige el servicio y paga.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "origen": {
+            "type": "string",
+            "description": "Ciudad o terminal desde donde sale el viaje, por ejemplo Retiro o Cordoba."
+          },
+          "destino": {
+            "type": "string",
+            "description": "Ciudad o terminal a donde llega el viaje, por ejemplo Mar del Plata o Posadas."
+          },
+          "fecha": {
+            "type": "string",
+            "description": "Fecha de ida en formato AAAA-MM-DD. Si no se indica, se busca para hoy."
+          },
+          "fecha_vuelta_opcional": {
+            "type": "string",
+            "description": "Fecha de vuelta en formato AAAA-MM-DD. Dejar vacio si el viaje es solo de ida."
+          }
+        },
+        "required": [
+          "origen",
+          "destino"
+        ]
+      }
+    },
+    {
+      "name": "buscar_terminales",
+      "description": "Busca terminales y paradas de micro por nombre de ciudad o de terminal. Sirve para confirmar cómo se llama un lugar en este sitio antes de buscar pasajes.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "texto": {
+            "type": "string",
+            "description": "Ciudad o terminal a buscar, por ejemplo \"Retiro\" o \"Neuquen\"."
+          },
+          "rol": {
+            "type": "string",
+            "enum": [
+              "origen",
+              "destino"
+            ],
+            "description": "Si el lugar es el punto de salida o el de llegada."
+          }
+        },
+        "required": [
+          "texto"
+        ]
+      }
+    },
+    {
+      "name": "ver_resultados",
+      "description": "Lleva a la persona a la página con todos los pasajes disponibles de un tramo y una fecha, para que compare y elija por su cuenta.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "origen": {
+            "type": "string",
+            "description": "Ciudad o terminal de salida."
+          },
+          "destino": {
+            "type": "string",
+            "description": "Ciudad o terminal de llegada."
+          },
+          "fecha": {
+            "type": "string",
+            "description": "Fecha del viaje en formato AAAA-MM-DD. Si no se indica, se usa hoy."
+          }
+        },
+        "required": [
+          "origen",
+          "destino"
+        ]
+      }
+    }
+  ],
+  "host": "la20.com.ar",
+  "source": "webmcp.com/api/directory.json"
+}

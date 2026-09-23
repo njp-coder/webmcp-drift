@@ -1,0 +1,210 @@
+{
+  "sponsio": 1,
+  "url": "https://www.mustakbil.com/",
+  "capturedAt": "2026-09-23T11:25:31.115Z",
+  "tools": [
+    {
+      "name": "job_get",
+      "description": "Fetches one public job by id: title, company, city, type, shift, career level, experience, salary when published, posted date, application deadline when set, and a plain-text description (capped at 1400 characters; pass fullDescription true for up to 4000). Returns the job's internal route path and apply path.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "jobId": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "The job id from jobs_search results or a job page URL."
+          },
+          "fullDescription": {
+            "type": "boolean",
+            "description": "true returns the description capped at 4000 characters instead of 1400."
+          }
+        },
+        "required": [
+          "jobId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "jobs_search",
+      "description": "Searches public job listings. Returns up to pageSize jobs (default 6, max 20) with ids, titles, company names, city, type, salary when published, posted age, and the internal route path for each job. Use jobs_search_options first when you need valid category, type, shift, career-level, experience, or country codes.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "keywords": {
+            "type": "string",
+            "maxLength": 120,
+            "description": "Free-text words to match against title, skills, and company."
+          },
+          "city": {
+            "type": "string",
+            "maxLength": 60,
+            "description": "City name as written on the site (for example \"Lahore\")."
+          },
+          "countryId": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Country code from jobs_search_options. Defaults to the site country."
+          },
+          "categoryId": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Job category code from jobs_search_options."
+          },
+          "typeId": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Employment type code from jobs_search_options."
+          },
+          "shiftId": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Shift code from jobs_search_options."
+          },
+          "careerLevelId": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Career level code from jobs_search_options."
+          },
+          "experienceLevelId": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Experience band code from jobs_search_options."
+          },
+          "salaryMin": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100000000,
+            "description": "Lower monthly salary bound in the local currency."
+          },
+          "salaryMax": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100000000,
+            "description": "Upper monthly salary bound in the local currency."
+          },
+          "telecommute": {
+            "type": "boolean",
+            "description": "true limits to remote-friendly jobs."
+          },
+          "postedWithinDays": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 90,
+            "description": "Only jobs posted within this many days."
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 250,
+            "description": "1-based page."
+          },
+          "pageSize": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "description": "Results per page. Default 6; ask for up to 20."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "jobs_search_options",
+      "description": "Lists the valid codes for jobs_search and job_alert tools as {id, name}. Without arguments it returns the compact lists (types, shifts, careerLevels, experienceLevels) and names the large ones; pass list to fetch one large list (categories, countries, currencies) on its own.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "list": {
+            "type": "string",
+            "enum": [
+              "categories",
+              "types",
+              "shifts",
+              "careerLevels",
+              "experienceLevels",
+              "countries",
+              "currencies"
+            ],
+            "description": "Fetch exactly this one list. Omit for the compact lists plus the names of the large ones."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "navigate_to",
+      "description": "Navigates this app to a named internal page. Use it to bring the person to the surface where route-specific tools become available (getTools changes after navigation). sign_in and create_account open the sign-in and sign-up screens for the PERSON to complete — no tool can create an account or sign in. Never accepts raw URLs. Does not submit or change any data.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "string",
+            "description": "The named internal destination.",
+            "enum": [
+              "home",
+              "jobs_search",
+              "job_detail",
+              "job_apply",
+              "companies",
+              "company_profile",
+              "jobseeker_dashboard",
+              "saved_jobs",
+              "matches",
+              "applications",
+              "job_alerts",
+              "resume",
+              "conversations",
+              "assessments",
+              "interviews",
+              "offers",
+              "employer_dashboard",
+              "employer_jobs",
+              "employer_job_new",
+              "employer_pipeline",
+              "people_search",
+              "employer_team",
+              "employer_departments",
+              "employer_venues",
+              "employer_calendar_integrations",
+              "job_screening_filters",
+              "interview_reschedule",
+              "sign_in",
+              "create_account"
+            ]
+          },
+          "id": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Entity id for job_detail, job_apply, company_profile, interview_reschedule; the job id for employer_pipeline (optional there)."
+          },
+          "query": {
+            "type": "string",
+            "maxLength": 120,
+            "description": "Optional keywords carried to jobs_search."
+          }
+        },
+        "required": [
+          "page"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "session_context",
+      "description": "Describes who is signed in for this session: role (guest, jobseeker, or employer) and display name. Call it once before using tools that need an account, and do not call it again unless a tool returns sign_in_required.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "mustakbil.com",
+  "source": "webmcp.com/api/directory.json"
+}

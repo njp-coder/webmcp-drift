@@ -1,0 +1,115 @@
+{
+  "sponsio": 1,
+  "url": "https://coffee-labo.co.jp/",
+  "capturedAt": "2026-09-23T11:25:31.115Z",
+  "tools": [
+    {
+      "name": "answer_coffee_question",
+      "description": "コーヒー豆研究所の公開記事から質問に関連する本文箇所と参考記事を提示します。外部の生成AIは使用しません。",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "question": {
+            "type": "string",
+            "minLength": 6,
+            "maxLength": 300,
+            "description": "利用者のコーヒーに関する質問です。"
+          }
+        },
+        "required": [
+          "question"
+        ]
+      }
+    },
+    {
+      "name": "browse_coffee_topics",
+      "description": "コーヒー豆研究所の記事カテゴリを、記事数、slug、カテゴリURLとともに表示します。検索対象のテーマを決めるときに使います。",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "query": {
+            "type": "string",
+            "maxLength": 50,
+            "description": "任意。カテゴリ名を絞る語句です。例: 器具、スタバ、淹れ方。"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12,
+            "description": "返すテーマ数。1〜12件です。"
+          }
+        }
+      }
+    },
+    {
+      "name": "get_coffee_article",
+      "description": "コーヒー豆研究所の公開記事1件から、タイトル、URL、著者、更新日、カテゴリ、本文抜粋を取得します。検索結果を詳しく確認するときに使います。",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "article": {
+            "type": "string",
+            "maxLength": 500,
+            "description": "記事ID、記事slug、またはcoffee-labo.co.jpの記事URLです。"
+          },
+          "max_chars": {
+            "type": "integer",
+            "minimum": 500,
+            "maximum": 1200,
+            "description": "本文抜粋の最大文字数。既定はサイト設定値です。"
+          }
+        },
+        "required": [
+          "article"
+        ]
+      }
+    },
+    {
+      "name": "search_coffee_articles",
+      "description": "コーヒー豆研究所の公開記事をキーワードで検索します。コーヒー豆、器具、淹れ方、カフェ、健康、スターバックスなどの解説記事を探すときに使います。",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 100,
+            "description": "利用者が知りたい内容を自然な日本語で指定します。"
+          },
+          "topic": {
+            "type": "string",
+            "description": "任意。browse_coffee_topicsで得たテーマ名またはslugです。"
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "relevance",
+              "newest",
+              "updated"
+            ],
+            "description": "関連度、新着、更新日のいずれか。既定は関連度です。"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5,
+            "description": "返す記事数。1〜5件です。"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "coffee-labo.co.jp",
+  "source": "webmcp.com/api/directory.json"
+}

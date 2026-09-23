@@ -1,0 +1,295 @@
+{
+  "sponsio": 1,
+  "url": "https://primecarers.co.uk/",
+  "capturedAt": "2026-09-23T11:25:31.115Z",
+  "tools": [
+    {
+      "name": "primecarers_get_area_prices",
+      "description": "Compare advertised PrimeCarers carer rates with recorded care-home and care-agency fees near a UK postcode. Returns GBP pence, explicit units, sample counts, dated provider observations and missing-data status. Carer samples use travel time; provider statistics use geographic radius. These are indicative prices, not quotes.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "postcode": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 9,
+            "description": "Full UK postcode, e.g. SW1A 1AA. Spaces and lowercase are accepted."
+          },
+          "radius_km": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 50,
+            "description": "Care-home/agency office radius in kilometres; default 15."
+          },
+          "provider_limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "description": "Examples per provider category; default 5."
+          },
+          "provider_offset": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 10000,
+            "description": "Offset for provider examples; default 0."
+          }
+        },
+        "required": [
+          "postcode"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "primecarers_get_carer",
+      "description": "Read a public carer profile using an ID returned by carer search. Respects anonymous profile visibility and returns a PrimeCarers signup/contact link.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "carer_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,100}$"
+          }
+        },
+        "required": [
+          "carer_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "primecarers_get_search_filters",
+      "description": "Discover public carer-search criteria and current language, condition, skill and pet IDs. No account required.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "primecarers_search_care_guides",
+      "description": "Search PrimeCarers public care information, costs, funding and practical guides. Returns excerpts and citation URLs; read the source page before giving detailed advice.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 200
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "description": "Maximum results; default 8."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "primecarers_search_carers",
+      "description": "Find carers for a UK postcode using public search preferences. Returns advertised prices, public profiles, unmet preferences and PrimeCarers contact/signup links. Partial matches are labelled; availability must be confirmed with the carer.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "postcode": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 9,
+            "description": "Full UK postcode, e.g. SW1A 1AA. Spaces and lowercase are accepted."
+          },
+          "care_type": {
+            "type": "string",
+            "enum": [
+              "hourly",
+              "live_in",
+              "nightly"
+            ]
+          },
+          "visit_length_minutes": {
+            "type": "integer",
+            "enum": [
+              30,
+              60,
+              120,
+              240,
+              480
+            ],
+            "description": "Minimum visit duration. Default 120; determines travel radius for hourly care."
+          },
+          "filters": {
+            "type": "object",
+            "properties": {
+              "gender": {
+                "type": "string",
+                "enum": [
+                  "male",
+                  "female"
+                ]
+              },
+              "language_ids": {
+                "type": "array",
+                "items": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 2147483647
+                },
+                "uniqueItems": true,
+                "maxItems": 1,
+                "description": "Language from primecarers_get_search_filters. The public UI selects one language."
+              },
+              "condition_ids": {
+                "type": "array",
+                "items": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 2147483647
+                },
+                "uniqueItems": true,
+                "maxItems": 20,
+                "description": "Experience supporting these conditions; use IDs from primecarers_get_search_filters."
+              },
+              "skill_ids": {
+                "type": "array",
+                "items": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 2147483647
+                },
+                "uniqueItems": true,
+                "maxItems": 20,
+                "description": "Care skills; use IDs from primecarers_get_search_filters."
+              },
+              "pet_ids": {
+                "type": "array",
+                "items": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 2147483647
+                },
+                "uniqueItems": true,
+                "maxItems": 20,
+                "description": "Pets at the care location; use IDs from primecarers_get_search_filters."
+              },
+              "has_driving_license": {
+                "type": "boolean",
+                "enum": [
+                  true
+                ],
+                "description": "Require a driving licence; omit for no preference."
+              },
+              "has_car": {
+                "type": "boolean",
+                "enum": [
+                  true
+                ],
+                "description": "Require own car; omit for no preference."
+              },
+              "accepts_pets": {
+                "type": "boolean",
+                "enum": [
+                  true
+                ],
+                "description": "Comfortable with pets; omit for no preference."
+              },
+              "couple_care": {
+                "type": "boolean",
+                "enum": [
+                  true
+                ],
+                "description": "Care for two people; omit for no preference."
+              },
+              "min_rate_gbp": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 2000,
+                "description": "Pounds per hour, or per day for live_in. Nightly search uses the public hourly budget filter."
+              },
+              "max_rate_gbp": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 2000,
+                "description": "Pounds per hour, or per day for live_in. Preferences rank results; inspect mismatches."
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "sort_by": {
+            "type": "string",
+            "enum": [
+              "relevance",
+              "distance",
+              "rating",
+              "price"
+            ]
+          },
+          "sort_dir": {
+            "type": "string",
+            "enum": [
+              "asc",
+              "desc"
+            ]
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "description": "Page size; default 20."
+          },
+          "cursor": {
+            "type": "string",
+            "maxLength": 2048,
+            "description": "Opaque next_cursor from the same search; keep all other inputs unchanged."
+          }
+        },
+        "required": [
+          "postcode"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "primecarers_start_care_request",
+      "description": "Get the PrimeCarers signup and post-job links for a postcode, care type and optional chosen carer. Open the signup link for a new account or post-job link when signed in. The forms expose additional WebMCP tools. This tool creates no account or job.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "postcode": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 9,
+            "description": "Full UK postcode, e.g. SW1A 1AA. Spaces and lowercase are accepted."
+          },
+          "care_type": {
+            "type": "string",
+            "enum": [
+              "hourly",
+              "live_in",
+              "nightly"
+            ]
+          },
+          "carer_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,100}$"
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "primecarers.co.uk",
+  "source": "webmcp.com/api/directory.json"
+}

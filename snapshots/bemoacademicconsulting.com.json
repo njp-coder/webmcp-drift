@@ -1,0 +1,80 @@
+{
+  "sponsio": 1,
+  "url": "https://bemoacademicconsulting.com/",
+  "capturedAt": "2026-09-23T11:25:31.115Z",
+  "tools": [
+    {
+      "name": "get_page_info",
+      "description": "Returns metadata and available structured sections for the current page. This tool never changes the page or server state.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_page_sections",
+      "description": "Lists the structured sections available to read on the current page, including their paths and approximate text sizes.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "read_page_content",
+      "description": "Reads structured content from the current page without changing it. Optionally select a section path and use the returned nextCursor to continue long content.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "section": {
+            "type": "string",
+            "description": "Optional section path from list_page_sections. Omit to read all structured page content."
+          },
+          "cursor": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Character cursor returned by a previous call. Defaults to 0."
+          },
+          "maxCharacters": {
+            "type": "integer",
+            "minimum": 200,
+            "maximum": 1500,
+            "description": "Maximum characters to return, from 200 to 1500."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_page_content",
+      "description": "Searches the structured content embedded in the current page and returns matching paths and concise snippets. This tool does not navigate or submit anything.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Text to find in the current page content."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "description": "Maximum number of matches to return. Defaults to 5."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "bemoacademicconsulting.com",
+  "source": "webmcp.com/api/directory.json"
+}

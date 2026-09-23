@@ -1,0 +1,167 @@
+{
+  "sponsio": 1,
+  "url": "https://easyaivoice.com/",
+  "capturedAt": "2026-09-23T11:25:31.115Z",
+  "tools": [
+    {
+      "name": "download_voice_conversion",
+      "description": "Prepare one completed, account-scoped conversion for a reliable built-in-browser download. After this tool returns, wait for status_url to load, arm the browser download event, and click download_selector. A file is complete only after that event and a local file check.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "batch_id": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Batch ID returned by get_voice_conversion_status."
+          },
+          "job_id": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Completed job ID returned by get_voice_conversion_status."
+          }
+        },
+        "required": [
+          "batch_id",
+          "job_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "easyaivoice_capabilities",
+      "description": "Explain how to convert generated speech or singing into a selected voice, including account, upload, status, and download requirements.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_voice_conversion_status",
+      "description": "Check an account-scoped EasyAIVoice conversion batch and return job IDs that are ready to download.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "batch_id": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Batch ID returned by submit_voice_conversion."
+          }
+        },
+        "required": [
+          "batch_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "prepare_account_connection",
+      "description": "Create a short approval link for a browser where the user is already signed in. This is the preferred way to use private models without exposing an API key or password.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "prepare_email_signup",
+      "description": "Open the EasyAIVoice email signup form with an authorized email prefilled. The user must review the email, enter a private password, and submit the form.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 254,
+            "description": "Email address the user authorized for their EasyAIVoice account."
+          }
+        },
+        "required": [
+          "email"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "prepare_sign_in",
+      "description": "Open the EasyAIVoice sign-in page for an existing account. Use this before signup when the user requests an account-owned private model.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "prepare_voice_conversion",
+      "description": "Open the conversion workspace with a voice model and one or more pitch variants returned by the latest search_voice_models call. This does not submit a job.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "model_id": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "A model_id returned by the latest voice search."
+          },
+          "pitch": {
+            "type": "integer",
+            "minimum": -50,
+            "maximum": 50,
+            "default": 0,
+            "description": "One pitch adjustment in semitones. Omit this when pitches is provided."
+          },
+          "pitches": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 10,
+            "uniqueItems": true,
+            "items": {
+              "type": "integer",
+              "minimum": -50,
+              "maximum": 50
+            },
+            "description": "All requested pitch variants in semitones, for example [-4, -5, -6]. Prefer this when the task names multiple pitches."
+          }
+        },
+        "required": [
+          "model_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_voice_models",
+      "description": "Search active public voice models or the signed-in account's private voice models. Use the returned model_id with prepare_voice_conversion.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "maxLength": 120,
+            "default": "",
+            "description": "Optional model name. Leave blank to list the selected library."
+          },
+          "library": {
+            "type": "string",
+            "enum": [
+              "public",
+              "private"
+            ],
+            "default": "public",
+            "description": "Search the public catalog or private models owned by the signed-in account."
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "easyaivoice.com",
+  "source": "webmcp.com/api/directory.json"
+}

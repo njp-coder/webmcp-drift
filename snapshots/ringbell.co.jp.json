@@ -1,0 +1,107 @@
+{
+  "sponsio": 1,
+  "url": "https://www.ringbell.co.jp/",
+  "capturedAt": "2026-09-23T11:25:31.115Z",
+  "tools": [
+    {
+      "name": "get_gift_detail",
+      "description": "リンベル本体ECの公開商品情報と、商品ページ上の購入コントロールをGET時点の観測値として返す。フォーム送信・カート操作は行わない。",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "product_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "product_id"
+        ]
+      }
+    },
+    {
+      "name": "search_gifts",
+      "description": "承認済みfeedのリンベル本体EC商品候補を検索する。feed在庫は購入可否へ変換せず、購入操作は行わない。",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "query": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "occasion": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "recipient": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "category": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "budget_min": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100000000
+          },
+          "budget_max": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100000000
+          },
+          "catalog_format": {
+            "default": "any",
+            "type": "string",
+            "enum": [
+              "any",
+              "book",
+              "card",
+              "digital"
+            ]
+          },
+          "delivery_mode": {
+            "default": "any",
+            "type": "string",
+            "enum": [
+              "any",
+              "physical",
+              "social_link"
+            ]
+          },
+          "sort": {
+            "default": "relevance",
+            "type": "string",
+            "enum": [
+              "relevance",
+              "price_asc",
+              "price_desc"
+            ]
+          },
+          "limit": {
+            "default": 3,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10
+          },
+          "cursor": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2048
+          }
+        }
+      }
+    }
+  ],
+  "host": "ringbell.co.jp",
+  "source": "webmcp.com/api/directory.json"
+}

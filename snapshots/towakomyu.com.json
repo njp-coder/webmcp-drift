@@ -1,0 +1,111 @@
+{
+  "sponsio": 1,
+  "url": "https://towakomyu.com/",
+  "capturedAt": "2026-09-23T11:25:31.115Z",
+  "tools": [
+    {
+      "name": "get_content",
+      "description": "とわこみゅの公開コンテンツをIDまたはslugで取得し、短い概要とcanonical URLを返す読取専用ツールです。公開RESTに露出しないJetEngineメタはnullで返します。",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "content_type": {
+            "type": "string",
+            "enum": [
+              "post",
+              "page",
+              "events",
+              "tourist-spot",
+              "gourmet",
+              "shops",
+              "hotels",
+              "videos",
+              "music-towada",
+              "people",
+              "towada-karuta-1977"
+            ],
+            "description": "取得対象の公開投稿タイプ"
+          },
+          "id": {
+            "description": "WordPress投稿ID",
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "slug": {
+            "description": "投稿slug",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "pattern": "^[a-z0-9][a-z0-9-]*$"
+          }
+        },
+        "required": [
+          "content_type"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_content",
+      "description": "とわこみゅの確認済み公開投稿タイプを検索し、短い概要とcanonical URLを返す読取専用ツールです。記事本文全文は返しません。",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "description": "とわこみゅの公開コンテンツを検索する語句"
+          },
+          "content_types": {
+            "description": "検索対象。省略時は初期allowlist全体",
+            "minItems": 1,
+            "maxItems": 11,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "post",
+                "page",
+                "events",
+                "tourist-spot",
+                "gourmet",
+                "shops",
+                "hotels",
+                "videos",
+                "music-towada",
+                "people",
+                "towada-karuta-1977"
+              ]
+            }
+          },
+          "page": {
+            "default": 1,
+            "description": "検索結果ページ",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "limit": {
+            "default": 10,
+            "description": "1回に返す最大件数",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "towakomyu.com",
+  "source": "webmcp.com/api/directory.json"
+}

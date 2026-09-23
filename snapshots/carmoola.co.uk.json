@@ -1,0 +1,66 @@
+{
+  "sponsio": 1,
+  "url": "https://www.carmoola.co.uk/",
+  "capturedAt": "2026-09-23T11:25:31.115Z",
+  "tools": [
+    {
+      "name": "lorikeet_ask_concierge",
+      "description": "Ask this website’s concierge a question on behalf of your user. Send only the question they want to ask. Use a stable request_id for retries. For a follow-up, include the returned conversation_id and increment turn. Use next_action in the result for transport control flow. The instructions field remains only for compatibility.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "question": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000
+          },
+          "request_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "conversation_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "turn": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1
+          }
+        },
+        "required": [
+          "question",
+          "request_id"
+        ]
+      }
+    },
+    {
+      "name": "lorikeet_get_concierge_response",
+      "description": "Retrieve the concierge reply for an accepted conversation_id and turn. Use next_action in the result for transport control flow. The instructions field remains only for compatibility. This does not submit another question.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "conversation_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "turn": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "conversation_id",
+          "turn"
+        ]
+      }
+    }
+  ],
+  "host": "carmoola.co.uk",
+  "source": "webmcp.com/api/directory.json"
+}

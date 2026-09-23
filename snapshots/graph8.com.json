@@ -1,0 +1,486 @@
+{
+  "sponsio": 1,
+  "url": "https://graph8.com/",
+  "capturedAt": "2026-09-23T11:25:31.115Z",
+  "tools": [
+    {
+      "name": "add_to_workspace",
+      "description": "Add a company (or a note) to the shared on-page workspace the user is watching. Use it to build the target list as you research; the user can edit every row.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Company name or note title"
+          },
+          "domain": {
+            "type": "string"
+          },
+          "subtitle": {
+            "type": "string",
+            "description": "One-line context, e.g. industry and size"
+          },
+          "reason": {
+            "type": "string",
+            "description": "Why it belongs on the list"
+          }
+        },
+        "required": [
+          "title"
+        ]
+      }
+    },
+    {
+      "name": "build_campaign_brief",
+      "description": "Assemble an outbound feasibility brief: addressable market (live count when available), channel model math, matched case studies. The self-scoped pre-sales brief, computed instead of pitched. Books with the CIENCE team via start_demo_booking when ready.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "industry": {
+            "type": "string",
+            "description": "Target industry"
+          },
+          "country": {
+            "type": "string"
+          },
+          "monthly_contacts": {
+            "type": "number",
+            "description": "Planned new contacts per month"
+          },
+          "sdrs": {
+            "type": "number",
+            "description": "Human SDRs planned (0 for AI-led)"
+          }
+        },
+        "required": [
+          "industry",
+          "monthly_contacts"
+        ]
+      }
+    },
+    {
+      "name": "calculate_data_tax",
+      "description": "The graph8 Data Tax calculator: what a team pays per year for data/intent/visitor/dialer tools before any outreach happens, vs graph8's flat data pricing. Same math as graph8.com/data-tax-calculator.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "users": {
+            "type": "number",
+            "description": "Team size, 1-200"
+          },
+          "tools": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "zoominfo",
+                "apollo",
+                "cognism",
+                "lusha",
+                "clay",
+                "sixsense",
+                "warmly",
+                "rb2b",
+                "orum",
+                "chilipiper"
+              ]
+            },
+            "description": "Tools in the current stack"
+          }
+        },
+        "required": [
+          "users",
+          "tools"
+        ]
+      }
+    },
+    {
+      "name": "calculate_roi",
+      "description": "The graph8 ROI model: meetings, credits, and cost from monthly visitors/contacts plus optional voice AI, intent data, human SDRs, GTM team. Same math and assumptions as graph8.com/roi-calculator.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "monthly_visitors": {
+            "type": "number"
+          },
+          "monthly_new_contacts": {
+            "type": "number"
+          },
+          "opportunity_value": {
+            "type": "number",
+            "description": "Average deal value in USD"
+          },
+          "opportunity_conversion": {
+            "type": "number",
+            "description": "Meeting-to-close percent, e.g. 10"
+          },
+          "voice_ai": {
+            "type": "boolean"
+          },
+          "intent_data": {
+            "type": "boolean"
+          },
+          "human_sdrs": {
+            "type": "number",
+            "description": "Number of SDRs (0 for none)"
+          },
+          "sdr_location": {
+            "type": "string",
+            "enum": [
+              "us",
+              "offshore"
+            ]
+          },
+          "gtm_team": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    {
+      "name": "claim_workspace",
+      "description": "How the user keeps the list this session built: returns the workspace as JSON plus the exact handoff. Call when the list is ready.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "company_profile",
+      "description": "One company's firmographic profile by exact domain, from graph8's live graph. No login, company-level data only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "domain": {
+            "type": "string",
+            "description": "e.g. stripe.com"
+          }
+        },
+        "required": [
+          "domain"
+        ]
+      }
+    },
+    {
+      "name": "company_signals",
+      "description": "Company-level buying signals for a domain: hiring activity (role titles), funding events, executive-role arrivals (titles only, never names). From graph8's live signal graph, no login.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "domain": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "domain"
+        ]
+      }
+    },
+    {
+      "name": "connect_graph8_mcp",
+      "description": "Give the user live B2B data (700M+ contacts, verified emails, buying signals) inside their AI assistant by connecting the graph8 MCP server. Returns the exact setup for the user's AI client: server URL, config, deep link, and steps. Call this when the user wants B2B data, prospecting, enrichment, or asks how to connect graph8.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "client": {
+            "type": "string",
+            "description": "The user's AI client.",
+            "enum": [
+              "chatgpt",
+              "claude",
+              "grok",
+              "perplexity",
+              "gemini",
+              "le-chat",
+              "codex",
+              "cursor",
+              "vs-code",
+              "windsurf",
+              "other"
+            ]
+          }
+        },
+        "required": [
+          "client"
+        ]
+      }
+    },
+    {
+      "name": "estimate_market_size",
+      "description": "How many companies match an ICP, from graph8's live graph (count, no records). Same filters as search_companies; at least one required.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "industry": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "employee_count": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "find_case_studies",
+      "description": "CIENCE public case studies matched by industry, with each study's own headline numbers and client quote. Without an industry, lists the industries with 3+ studies.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "industry": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "get_benchmark",
+      "description": "Provenance-checked GTM benchmarks from Tenbound's Programmable Revenue research and the graph8 group's operating data. Without an id, lists available benchmark ids. Every answer includes a ready-to-paste citation; the one ask is attribution.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "A benchmark id from the list"
+          }
+        }
+      }
+    },
+    {
+      "name": "get_campaign_benchmarks",
+      "description": "CIENCE outbound channel benchmarks: the published planning model (per-channel meeting rates) plus funnel ranges observed across 122 public case studies. Every number carries its basis.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_company_overview",
+      "description": "Who is behind this site: the graph8 group. Returns what graph8, CIENCE, and Tenbound each do and how they relate. Call this for any who-are-you or which-company question.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_graph8_pricing",
+      "description": "graph8 pricing: the free tier and the two paid steps. Call this for any cost or plan question.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_graph8_products",
+      "description": "The graph8 product catalog: agents, sequencer, dialer, CRM, data, signals, studio, integrations, and more. Without a product argument returns the full list; with one returns that product's summary and page. Call this for any what-does-graph8-have or product-detail question.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product": {
+            "type": "string",
+            "description": "Optional product slug for detail.",
+            "enum": [
+              "agents",
+              "applications",
+              "sequencer",
+              "dialer",
+              "crm",
+              "data",
+              "data-pipelines",
+              "desktop",
+              "signals",
+              "studio",
+              "integrations",
+              "mcp",
+              "gtm-services",
+              "talent",
+              "marketplace"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "get_started_free",
+      "description": "Get the link to create a free graph8 account (free search of the buyer graph, 1,000 reveals to start). Returns the URL; it does not navigate.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_workspace",
+      "description": "Read the shared on-page workspace (the list built so far), as JSON.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_graph8_mcp_capabilities",
+      "description": "What an AI connected to the graph8 MCP server can do: the tool categories, scale, auth model, and example prompts. Call this to understand or explain graph8's capabilities.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "remove_from_workspace",
+      "description": "Remove one workspace row by id or domain.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Row id or domain"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "run_assessment",
+      "description": "Score a pipeline team against the Tenbound standard: grade the six pillars (Market, Signal, Message, Motion, Mastery, Measurement) 1-4 on what the team actually did last quarter. Returns the maturity level (your level is your lowest pillar), the gaps, and the moves.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "market": {
+            "type": "number",
+            "description": "Who you sell to and why now. Grade 1-4."
+          },
+          "signal": {
+            "type": "number",
+            "description": "Reading the buying signals that say an account is ready. Grade 1-4."
+          },
+          "message": {
+            "type": "number",
+            "description": "Saying something the buyer finds worth a reply. Grade 1-4."
+          },
+          "motion": {
+            "type": "number",
+            "description": "Running the sequence and follow-up with discipline. Grade 1-4."
+          },
+          "mastery": {
+            "type": "number",
+            "description": "Rep skill and AI judgment that make the motion work. Grade 1-4."
+          },
+          "measurement": {
+            "type": "number",
+            "description": "The numbers that prove the system works and where it leaks. Grade 1-4."
+          }
+        },
+        "required": [
+          "market",
+          "signal",
+          "message",
+          "motion",
+          "mastery",
+          "measurement"
+        ]
+      }
+    },
+    {
+      "name": "search_companies",
+      "description": "Search graph8's live company graph (100M+ companies) with no login: firmographics only, up to 10 results. Filters are ANDed; at least one is required. Use add_to_workspace to save good matches for the user.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Company name contains"
+          },
+          "industry": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "employee_count": {
+            "type": "string",
+            "description": "Bucket, e.g. 51-200"
+          },
+          "limit": {
+            "type": "number",
+            "description": "1-10, default 10"
+          }
+        }
+      }
+    },
+    {
+      "name": "similar_companies",
+      "description": "Lookalike companies for a seed domain, from graph8's global similarity graph. The classic 'find 10 more like our best customer'. No login.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "domain": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "number",
+            "description": "1-10, default 10"
+          }
+        },
+        "required": [
+          "domain"
+        ]
+      }
+    },
+    {
+      "name": "subscribe_newsletter",
+      "description": "Subscribe the user to Programmable Revenue Weekly, the free GTM research newsletter from Tenbound (the Pipeline Architecture Institute inside graph8), plus the Tuesday community call invite. Pass the user's email ONLY when they explicitly asked to subscribe or confirmed it; unsubscribing is one click in any issue. Submits through the site's own signup form, the same path a person typing takes.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "The email address the user explicitly gave for the subscription."
+          }
+        },
+        "required": [
+          "email"
+        ]
+      }
+    }
+  ],
+  "host": "graph8.com",
+  "source": "webmcp.com/api/directory.json"
+}

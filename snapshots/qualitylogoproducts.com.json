@@ -1,0 +1,194 @@
+{
+  "sponsio": 1,
+  "url": "https://www.qualitylogoproducts.com/",
+  "capturedAt": "2026-09-23T11:25:31.115Z",
+  "tools": [
+    {
+      "name": "check_product_stock",
+      "description": "Check in-stock quantities for a QLP product by color (and size for apparel). Use after search_products when the user asks whether a color/size is available or how many units are in stock. Pass product_id from a prior result (numeric ID or Q-number like Q70797).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "description": "QLP product ID — numeric (e.g. 70797) or Q-number string from search_products (e.g. \"Q70797\")."
+          },
+          "color": {
+            "type": "string",
+            "description": "Optional color name filter when the user asks about a specific color only."
+          }
+        },
+        "required": [
+          "product_id"
+        ]
+      }
+    },
+    {
+      "name": "get_product_details",
+      "description": "Fetch structured details for a QLP catalog product: title, body colors, minimum order quantity (MOQ), unit-price brackets, and decoration options (imprint type, locations, setup). Use after search_products when the user asks about a specific product_id / Q-number.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "description": "QLP product ID — numeric (e.g. 12345) or Q-number string from search_products (e.g. \"Q12345\")."
+          }
+        },
+        "required": [
+          "product_id"
+        ]
+      }
+    },
+    {
+      "name": "lookup_order_status",
+      "description": "Look up order or sample status. AUTH-GATED: never call without proof of ownership. WebMCP (browser): visitor must be signed into the customer portal. OpenAI Ads MCP: portal session_token OR order_number plus ship-to zip. If proof is missing, tell the user to sign in at the customer portal (email/phone one-time code) or — on Ads — provide order number + zip.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "order_number": {
+            "type": "string",
+            "description": "Order / sample / PO / quote number (e.g. Z11389432 or a web lead ID)."
+          },
+          "zip": {
+            "type": "string",
+            "description": "Ship-to zip for guest verification on OpenAI Ads MCP only. Ignored on the public WebMCP remote (use portal sign-in instead — site order lookup uses reCAPTCHA)."
+          },
+          "session_token": {
+            "type": "string",
+            "description": "Customer portal session token when available (Ads MCP). WebMCP uses the browser portal session automatically and usually omits this."
+          }
+        },
+        "required": [
+          "order_number"
+        ]
+      }
+    },
+    {
+      "name": "open_live_chat",
+      "description": "Open the on-site live chat widget so the visitor can talk with QLP support. Use when the user asks to chat, talk to a person, get live help, or continue with a human agent. Browser / WebMCP only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "open_product",
+      "description": "Resolve a catalog product to its absolute product-page URL. Pass product_id and/or path/url from a prior search_products result. Prefer path or url when available; product_id alone is also accepted (numeric ID or Q-number such as Q8). Optionally navigate this browser tab to the product page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "description": "Product ID from search_products (numeric or Q-number string, e.g. 8 or \"Q8\")."
+          },
+          "path": {
+            "type": "string",
+            "description": "Relative product path from search_products (e.g. \"/custom-travelmugs/16oz-low-rider-mug.htm\")."
+          },
+          "url": {
+            "type": "string",
+            "description": "Absolute or relative product URL from search_products."
+          },
+          "navigate": {
+            "type": "boolean",
+            "description": "If true, navigate this tab to the product page after resolving the URL."
+          }
+        }
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Search the Quality Logo Products promotional catalog by keyword. Use this when the user wants to find products (pens, tumblers, bags, apparel, etc.). Returns matching product titles, Q-numbers, prices, and product page URLs. Optionally navigate the browser to the full search results page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search keywords (e.g. \"blue pens\", \"insulated tumblers\", \"tote bags\")."
+          },
+          "quantity": {
+            "type": "integer",
+            "description": "Desired order quantity for price/MOQ filtering. Only pass when the user stated a number."
+          },
+          "budget": {
+            "type": "number",
+            "description": "Total budget in dollars when the user states a spend limit."
+          },
+          "color": {
+            "type": "string",
+            "description": "Product body color family filter (e.g. Red, Blue, Black, Camouflage)."
+          },
+          "brand": {
+            "type": "string",
+            "description": "Brand filter when the user names a brand."
+          },
+          "sort_by": {
+            "type": "string",
+            "enum": [
+              "popularity",
+              "relevance",
+              "price-asc",
+              "price-desc",
+              "qty-asc",
+              "qty-desc"
+            ],
+            "description": "Sort order for results. Default popularity."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Max products to return in the tool response (1-20). Default 8."
+          },
+          "navigate": {
+            "type": "boolean",
+            "description": "If true, navigate this tab to the on-site search results page after searching."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "start_quote",
+      "description": "Begin a quote or sample request for a known product_id by resolving the product page URL with the on-site #lead=quote|sample deep-link. Does not create a CRM record by itself — the customer completes the existing form. Optionally navigate this browser tab to quote_url, or open the form in-page when already on that product.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "description": "QLP product ID — numeric or Q-number from search_products (e.g. 8 or \"Q8\")."
+          },
+          "flow": {
+            "type": "string",
+            "enum": [
+              "quote",
+              "sample"
+            ],
+            "description": "Form type to open. Default quote."
+          },
+          "path": {
+            "type": "string",
+            "description": "Optional relative product path from search_products."
+          },
+          "url": {
+            "type": "string",
+            "description": "Optional absolute or relative product URL from search_products."
+          },
+          "navigate": {
+            "type": "boolean",
+            "description": "If true, navigate this tab to quote_url (or open the form in-page when already on that product PDP)."
+          }
+        },
+        "required": [
+          "product_id"
+        ]
+      }
+    }
+  ],
+  "host": "qualitylogoproducts.com",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,449 @@
+{
+  "sponsio": 1,
+  "url": "https://skima.ai/",
+  "capturedAt": "2026-09-23T11:25:31.115Z",
+  "tools": [
+    {
+      "name": "book_demo",
+      "description": "Submit Skima demo lead form and reserve the chosen slot in one call. Requires explicit user consent for terms_and_condition.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "email",
+          "full_name",
+          "company_name",
+          "company_size",
+          "current_ats",
+          "hiring_challenge",
+          "requirement",
+          "terms_and_condition",
+          "slot"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "full_name": {
+            "type": "string"
+          },
+          "company_name": {
+            "type": "string"
+          },
+          "company_size": {
+            "type": "string"
+          },
+          "current_ats": {
+            "type": "string"
+          },
+          "hiring_challenge": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "sourcing",
+                "screening",
+                "interviewing",
+                "engagement",
+                "diversity",
+                "time_to_hire",
+                "cost_per_hire",
+                "quality_of_hire",
+                "other"
+              ]
+            }
+          },
+          "requirement": {
+            "type": "string"
+          },
+          "country_code": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "phone_no": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "terms_and_condition": {
+            "type": "boolean"
+          },
+          "from_page": {
+            "type": "string"
+          },
+          "slot": {
+            "type": "object",
+            "required": [
+              "available_slots",
+              "timezone",
+              "offset"
+            ],
+            "properties": {
+              "available_slots": {
+                "type": "string"
+              },
+              "timezone": {
+                "type": "string"
+              },
+              "offset": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "get_available_slots",
+      "description": "List bookable Skima demo slots for a date range and IANA timezone. Range must be < 7 days (Calendly cap).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "start_date",
+          "end_date",
+          "timezone"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "start_date": {
+            "type": "string",
+            "description": "YYYY-MM-DD"
+          },
+          "end_date": {
+            "type": "string",
+            "description": "YYYY-MM-DD"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "IANA timezone"
+          }
+        }
+      }
+    },
+    {
+      "name": "get_competitor_comparison",
+      "description": "Fetch Skima vs [competitor] comparison page. Pass full CMS slug (e.g. 'skima-ai-vs-greenhouse', 'skima-ai-vs-lever').",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "competitor"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "competitor": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "get_customer_story",
+      "description": "Fetch a single Skima customer story by slug.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "slug"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "slug": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "get_pricing",
+      "description": "Return Skima pricing guidance. Pricing is custom-quoted; tool returns canonical next steps + demo link.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "company_size": {
+            "type": "string"
+          },
+          "region": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "get_product_update",
+      "description": "Fetch a single Skima product release note by slug.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "slug"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "slug": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "list_blog",
+      "description": "List Skima blog posts. Optionally filter by category_slug or search.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "page": {
+            "type": "integer"
+          },
+          "page_size": {
+            "type": "integer"
+          },
+          "category_slug": {
+            "type": "string"
+          },
+          "search": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "list_customer_stories",
+      "description": "List Skima customer stories / case studies for social proof.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_evaluations",
+      "description": "List Skima evaluation articles. Paginated; optional search.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "page": {
+            "type": "integer"
+          },
+          "page_size": {
+            "type": "integer"
+          },
+          "search": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "list_glossary",
+      "description": "List Skima glossary entries. Optional title substring filter.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "title": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "list_integrations",
+      "description": "List Skima native integrations (130+ ATS/HRIS/CRM). Filter by name or type. Use to answer 'does Skima work with [system]?'.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "page": {
+            "type": "integer"
+          },
+          "per_page": {
+            "type": "integer"
+          },
+          "by_name": {
+            "type": "string"
+          },
+          "by_type": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "list_product_updates",
+      "description": "List Skima product release notes. Optional category, month, year filters.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "page": {
+            "type": "integer"
+          },
+          "page_size": {
+            "type": "integer"
+          },
+          "category": {
+            "type": "string"
+          },
+          "month": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "year": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    {
+      "name": "list_products",
+      "description": "List Skima products with slugs, URLs, and one-line summaries.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_solutions",
+      "description": "List Skima solutions by axis: 'industry' (finance, healthcare, ...) or 'size' (enterprise, ...).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "axis": {
+            "type": "string",
+            "enum": [
+              "industry",
+              "size"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "start_free_trial",
+      "description": "Start a 14-day Skima free trial. Returns the canonical signup URL and next steps.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "email": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "submit_pilot_lead",
+      "description": "Submit a 30-day Skima pilot lead. Requires explicit user consent.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "name",
+          "work_email",
+          "company",
+          "company_size",
+          "ats",
+          "top_priorities"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "work_email": {
+            "type": "string"
+          },
+          "company": {
+            "type": "string"
+          },
+          "company_size": {
+            "type": "string"
+          },
+          "ats": {
+            "type": "string"
+          },
+          "top_priorities": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "speed_of_hiring",
+                "candidate_quality",
+                "cost_reduction",
+                "ats_integration",
+                "diversity_hiring",
+                "recruiter_productivity",
+                "candidate_engagement",
+                "compliance",
+                "other"
+              ]
+            }
+          },
+          "number_of_recruiters": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "preferred_start_urgent": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "notes": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "subscribe_newsletter",
+      "description": "Subscribe an email to the Skima newsletter. Requires explicit user consent.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "email"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "email": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  ],
+  "host": "skima.ai",
+  "source": "webmcp.com/api/directory.json"
+}

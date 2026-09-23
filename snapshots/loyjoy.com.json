@@ -1,0 +1,155 @@
+{
+  "sponsio": 1,
+  "url": "https://www.loyjoy.com/de/",
+  "capturedAt": "2026-09-23T11:25:31.115Z",
+  "tools": [
+    {
+      "name": "ask_loyjoy",
+      "description": "Dialogorientierter Fallback für offene Fragen oder individuelle Beratung, die kein direktes Website-Tool abdeckt. Nicht für Tarifempfehlungen, Template- oder Website-Suchen und das Öffnen der Demo-Buchung verwenden. Öffnet den sichtbaren LoyJoy-Chat.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "question": {
+            "description": "Eine Frage zu Plattform, Funktionen, Preisen, Sicherheit oder Einsatzmöglichkeiten von LoyJoy.",
+            "maxLength": 500,
+            "minLength": 2,
+            "type": "string"
+          }
+        },
+        "required": [
+          "question"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "book_loyjoy_demo",
+      "description": "Öffnet die sichtbare Seite zur Demo-Buchung. Der Nutzer prüft und bestätigt alle Angaben vor der Buchung.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {},
+        "type": "object"
+      }
+    },
+    {
+      "name": "recommend_loyjoy_plan",
+      "description": "Empfiehlt den kleinsten passenden LoyJoy-Tarif für die angegebenen Volumen und Anforderungen. Erstellt keine Bestellung.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "agents": {
+            "description": "Benötigte Anzahl an Chat- oder Phone-AI-Agents.",
+            "minimum": 1,
+            "type": "integer"
+          },
+          "channels": {
+            "description": "Benötigte Kanäle für den Kundenkontakt.",
+            "items": {
+              "enum": [
+                "chat",
+                "phone",
+                "whatsapp",
+                "native-app"
+              ],
+              "type": "string"
+            },
+            "type": "array",
+            "uniqueItems": true
+          },
+          "customIntegrations": {
+            "description": "Ob individuelle API- oder Backend-Integrationen benötigt werden.",
+            "type": "boolean"
+          },
+          "domains": {
+            "description": "Benötigte Anzahl an Website-Domains.",
+            "minimum": 1,
+            "type": "integer"
+          },
+          "doraIncluded": {
+            "description": "Ob DORA-Leistungen im Tarif enthalten sein müssen.",
+            "type": "boolean"
+          },
+          "monthlyChatConversations": {
+            "description": "Erwartete Chat-Konversationen pro Monat.",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "monthlyPhoneMinutes": {
+            "description": "Erwartete Telefon-Minuten pro Monat.",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "premiumAi": {
+            "description": "Ob ein Premium-KI-Modell frei gewählt werden muss.",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "monthlyChatConversations",
+          "monthlyPhoneMinutes",
+          "channels"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "search_loyjoy_templates",
+      "description": "Durchsucht veröffentlichte LoyJoy-Templates nach Titel, Beschreibung, Inhalt oder Tags. Gibt bis zu fünf Links zurück.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "limit": {
+            "default": 5,
+            "description": "Maximale Anzahl der Ergebnisse zwischen 1 und 5.",
+            "maximum": 5,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "query": {
+            "description": "Use Case, Branche, Kanal, Integration oder andere Suchbegriffe.",
+            "maxLength": 120,
+            "minLength": 2,
+            "type": "string"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "search_loyjoy_website",
+      "description": "Durchsucht veröffentlichte Plattformseiten, Branchen, Kundenbeispiele, Vergleiche, Glossareinträge, Stellenangebote, Releases, Trust-Center-Inhalte und Blogbeiträge. Für Templates ist das eigene Template-Tool vorgesehen. Gibt strukturierte Direktlinks zurück, ohne den AI Agent der Website zu öffnen.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "limit": {
+            "default": 5,
+            "description": "Maximale Anzahl der Ergebnisse zwischen 1 und 8.",
+            "maximum": 8,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "query": {
+            "description": "Produkt, Funktion, Branche, Kunde, Compliance-Thema, Beitrag oder anderer Website-Inhalt.",
+            "maxLength": 160,
+            "minLength": 2,
+            "type": "string"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "type": "object"
+      }
+    }
+  ],
+  "host": "loyjoy.com",
+  "source": "webmcp.com/api/directory.json"
+}

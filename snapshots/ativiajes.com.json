@@ -1,0 +1,244 @@
+{
+  "sponsio": 1,
+  "url": "https://www.ativiajes.com/",
+  "capturedAt": "2026-09-23T11:25:31.115Z",
+  "tools": [
+    {
+      "name": "create_booking",
+      "description": "Prepara y solicita confirmación manual del usuario en pantalla para la reserva de vuelo en ATI Viajes. Valida que los datos estén completos y enfoca el botón de confirmación para que el usuario humano autorice personalmente la operación. No emite reservas ni genera PNRs de forma autónoma.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "offer_id": {
+            "type": "string",
+            "description": "Identificador único de la oferta de vuelo a reservar (opcional si ya estás en la pantalla de checkout)."
+          }
+        }
+      }
+    },
+    {
+      "name": "fill_passenger_details",
+      "description": "Autocompleta en pantalla los nombres y apellidos de los pasajeros y los datos de contacto (email y teléfono) de forma transparente.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "passengers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "passenger_index": {
+                  "type": "number",
+                  "description": "Índice del pasajero (0 para primer pasajero, 1 para el segundo, etc.)"
+                },
+                "first_name": {
+                  "type": "string",
+                  "description": "Nombre del pasajero según documento"
+                },
+                "last_name": {
+                  "type": "string",
+                  "description": "Apellido del pasajero según documento"
+                }
+              },
+              "required": [
+                "first_name",
+                "last_name"
+              ]
+            }
+          },
+          "contact": {
+            "type": "object",
+            "properties": {
+              "email": {
+                "type": "string",
+                "description": "Email de contacto del titular de la reserva"
+              },
+              "phone": {
+                "type": "string",
+                "description": "Teléfono de contacto"
+              }
+            }
+          }
+        },
+        "required": [
+          "passengers"
+        ]
+      }
+    },
+    {
+      "name": "get_checkout_summary",
+      "description": "Obtiene el resumen de la oferta seleccionada en checkout, desglose de tarifas, campos requeridos por pasajero y las 3 garantías de ATI Viajes ('Reservá sin pagar', 'Un experto revisa tu reserva', 'Cancelación sin costo').",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_flight_details",
+      "description": "Obtiene el detalle ampliado de una oferta de vuelo por offer_id, incluyendo desglose de equipaje (mano, cabina, bodega), políticas de reembolso, cabina y segmentos operados.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "offer_id": {
+            "type": "string",
+            "description": "Identificador único de la oferta de vuelo (offer_id)."
+          }
+        },
+        "required": [
+          "offer_id"
+        ]
+      }
+    },
+    {
+      "name": "get_flight_offers",
+      "description": "Obtiene el listado de ofertas de vuelos activas. Soporta 'wait: true' para esperar automáticamente a que finalice la carga de los resultados en pantalla.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "wait": {
+            "type": "boolean",
+            "description": "Recomendado: si es true, la herramienta esperará de forma asíncrona a que los vuelos terminen de cargarse en pantalla antes de responder."
+          },
+          "timeout_ms": {
+            "type": "number",
+            "description": "Tiempo máximo de espera en milisegundos cuando wait: true (por defecto 8000 ms)."
+          },
+          "max_results": {
+            "type": "number",
+            "description": "Límite opcional de ofertas a retornar (por defecto 50 ofertas, máximo 100)."
+          },
+          "max_stops": {
+            "type": "number",
+            "description": "Filtro para limitar la cantidad máxima de escalas (usar 0 para vuelos directos únicamente)."
+          },
+          "nonstop": {
+            "type": "boolean",
+            "description": "Alias opcional para max_stops: 0. Si es true, filtra solo vuelos sin escalas."
+          },
+          "sort_by": {
+            "type": "string",
+            "enum": [
+              "price_asc",
+              "duration_asc",
+              "recommended"
+            ],
+            "description": "Criterio de ordenamiento: 'price_asc' (más económico primero), 'duration_asc' (más rápido primero), 'recommended' (recomendado). Por defecto 'price_asc'."
+          }
+        }
+      }
+    },
+    {
+      "name": "navigate_to_flights_search",
+      "description": "Navega al buscador principal de vuelos de ATI Viajes.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "search_airports",
+      "description": "Busca códigos IATA de aeropuertos y ciudades por nombre (ej. 'Buenos Aires' -> 'BUE' / 'EZE' / 'AEP', 'Miami' -> 'MIA', 'Madrid' -> 'MAD'). Usar 'BUE' para buscar en todos los aeropuertos de Buenos Aires.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Nombre de la ciudad, país o código IATA parcial a buscar (ej. 'Buenos Aires', 'MIA', 'Madrid')."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "search_flights",
+      "description": "Inicia la búsqueda de vuelos en ATI Viajes especificando origen (IATA), destino (IATA), fechas y pasajeros. Si el usuario ingresó un nombre de ciudad en vez del código IATA, usa primero 'search_airports'. Redirige a los resultados. IMPORTANTE: Para leer las ofertas cargadas, ejecutar 'get_flight_offers' con 'wait: true'.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "origin": {
+            "type": "string",
+            "description": "Código IATA de origen (ej. 'BUE' para todo Buenos Aires, 'EZE', 'AEP', 'COR', 'MDZ')."
+          },
+          "destination": {
+            "type": "string",
+            "description": "Código IATA de destino (ej. 'MIA', 'MAD', 'BCN', 'PUJ', 'CUN')."
+          },
+          "departure_date": {
+            "type": "string",
+            "description": "Fecha de salida en formato ISO YYYY-MM-DD (ej. '2026-10-15')."
+          },
+          "return_date": {
+            "type": "string",
+            "description": "Fecha de regreso opcional en formato ISO YYYY-MM-DD (ej. '2026-10-25'). Búsqueda de ida y vuelta si se especifica."
+          },
+          "adults": {
+            "type": "number",
+            "description": "Cantidad de pasajeros adultos de 18 años o más (por defecto 1)."
+          },
+          "children_ages": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "description": "Lista de edades de todos los menores entre 0 y 17 años (ej. [0, 4, 10, 15]). El Hub de ATI Viajes clasificará automáticamente infantes en regazo (0-1 año) y menores (2-17 años)."
+          },
+          "cabin": {
+            "type": "string",
+            "enum": [
+              "Y",
+              "C",
+              "F"
+            ],
+            "description": "Clase de cabina deseada. 'Y' (Económica), 'C' (Ejecutiva/Business), 'F' (Primera). Por defecto 'Y'."
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "ARS",
+              "USD"
+            ],
+            "description": "Moneda de visualización para los precios ('ARS' o 'USD'). Por defecto 'ARS'."
+          },
+          "nonstop": {
+            "type": "boolean",
+            "description": "Alias para vuelos sin escala. Si es true, busca exclusivamente vuelos directos."
+          }
+        },
+        "required": [
+          "origin",
+          "destination",
+          "departure_date"
+        ]
+      }
+    },
+    {
+      "name": "select_flight_offer",
+      "description": "Selecciona una oferta de vuelo por su offer_id e inicia la reserva posicionando al usuario en el checkout. Acción con efecto en la interfaz.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "offer_id": {
+            "type": "string",
+            "description": "Identificador único de la oferta de vuelo a seleccionar."
+          }
+        },
+        "required": [
+          "offer_id"
+        ]
+      }
+    }
+  ],
+  "host": "ativiajes.com",
+  "source": "webmcp.com/api/directory.json"
+}

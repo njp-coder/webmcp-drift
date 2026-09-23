@@ -1,0 +1,334 @@
+{
+  "sponsio": 1,
+  "url": "https://conexa.app/",
+  "capturedAt": "2026-09-23T11:25:31.115Z",
+  "tools": [
+    {
+      "name": "contact_conversion",
+      "description": "Obtenha o URL de contato público. Esta ferramenta não envia formulários.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": []
+      }
+    },
+    {
+      "name": "get_site_context",
+      "description": "Obtenha contexto Conversion Agent Discovery público, URLs de descoberta e política de conteúdo para este site.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": []
+      }
+    },
+    {
+      "name": "list_recent_posts",
+      "description": "Liste postagens e páginas públicas recentes deste site WordPress.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "per_page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "description": "Resultados máximos para retornar."
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "description": "Página de resultados a ser retornada."
+          }
+        }
+      }
+    },
+    {
+      "name": "read_post",
+      "description": "Leia uma postagem ou página pública por ID, URL ou slug.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "ID da postagem do WordPress."
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "maxLength": 2048,
+            "description": "URL público canônico de mesma origem."
+          },
+          "slug": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "pattern": "^[a-z0-9][a-z0-9-]*$",
+            "description": "Slug de postagem ou página."
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "post",
+              "page"
+            ],
+            "description": "Tipo de postagem pública."
+          }
+        },
+        "anyOf": [
+          {
+            "required": [
+              "id"
+            ]
+          },
+          {
+            "required": [
+              "url"
+            ]
+          },
+          {
+            "required": [
+              "slug"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "search_posts",
+      "description": "Pesquise postagens e páginas públicas neste site WordPress.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 160,
+            "description": "Consulta de pesquisa."
+          },
+          "per_page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "description": "Resultados máximos para retornar."
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "description": "Página de resultados a ser retornada."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "wp_contact_handoff",
+      "description": "Retorne o URL de transferência de contato público sem enviar formulários ou mensagens.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": []
+      }
+    },
+    {
+      "name": "wp_get_discovery_context",
+      "description": "Obtenha contexto de descoberta pública, política e URLs legíveis pelo agente para este site WordPress.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": []
+      }
+    },
+    {
+      "name": "wp_list_latest_content",
+      "description": "Liste o conteúdo público mais recente do WordPress exposto por este site.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "per_page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "description": "Resultados máximos para retornar."
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "description": "Página de resultados a ser retornada."
+          }
+        }
+      }
+    },
+    {
+      "name": "wp_list_sitemap_urls",
+      "description": "Liste URLs públicos de mesma origem gerados a partir de conteúdo e termos expostos do WordPress.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "per_page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "description": "Resultados máximos para retornar."
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "description": "Página de resultados a ser retornada."
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "all",
+              "content",
+              "terms"
+            ],
+            "description": "Qual grupo de URLs públicos listar."
+          }
+        }
+      }
+    },
+    {
+      "name": "wp_list_terms",
+      "description": "Liste categorias ou tags públicas usadas pelo conteúdo exposto do WordPress.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "per_page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "description": "Resultados máximos para retornar."
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "description": "Página de resultados a ser retornada."
+          },
+          "taxonomy": {
+            "type": "string",
+            "enum": [
+              "category",
+              "post_tag"
+            ],
+            "description": "Taxonomia pública para listar."
+          },
+          "hide_empty": {
+            "type": "boolean",
+            "description": "Seja para ocultar termos sem conteúdo público."
+          }
+        }
+      }
+    },
+    {
+      "name": "wp_read_content",
+      "description": "Leia um item de conteúdo público do WordPress por ID, URL de mesma origem ou slug.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "ID da postagem do WordPress."
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "maxLength": 2048,
+            "description": "URL público canônico de mesma origem."
+          },
+          "slug": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "pattern": "^[a-z0-9][a-z0-9-]*$",
+            "description": "Slug de postagem ou página."
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "post",
+              "page"
+            ],
+            "description": "Tipo de postagem pública."
+          }
+        },
+        "anyOf": [
+          {
+            "required": [
+              "id"
+            ]
+          },
+          {
+            "required": [
+              "url"
+            ]
+          },
+          {
+            "required": [
+              "slug"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "wp_search_content",
+      "description": "Pesquise conteúdo público do WordPress exposto por este site.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 160,
+            "description": "Consulta de pesquisa."
+          },
+          "per_page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "description": "Resultados máximos para retornar."
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "description": "Página de resultados a ser retornada."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "conexa.app",
+  "source": "webmcp.com/api/directory.json"
+}

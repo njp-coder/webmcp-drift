@@ -1,0 +1,76 @@
+{
+  "sponsio": 1,
+  "url": "https://www.whatsupgold.com/",
+  "capturedAt": "2026-09-23T11:25:31.115Z",
+  "tools": [
+    {
+      "name": "answer_faq_from_site",
+      "description": "Answers frequently asked questions about WhatsUp Gold from the official FAQ page. Call without 'id' to list all available questions with their IDs. Call with a specific 'id' (1–16) to retrieve the full answer for that question.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Optional. The numeric ID (1–16) of the FAQ to retrieve. Omit to list all questions."
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "compare_pricing_editions",
+      "description": "Compare WhatsUp Gold pricing tiers and editions to help users choose the right plan. STEP 1 — Call without any parameters to get a side-by-side comparison table of all tiers (Business, Enterprise, Enterprise Plus, Enterprise Scale, Premium, Total Plus) with starting prices, device limits, support levels, and per-tier badges. STEP 2 — Once you know which tier the user is interested in, call again with the 'tier' parameter (e.g. tier='Enterprise Plus') to get the full feature list, what is not included, and the CTA link. Use 'licenseType' to scope to 'subscription' or 'perpetual' plans only when the user has expressed a preference.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tier": {
+            "type": "string",
+            "description": "Optional. A specific tier name to get details for (e.g. 'Enterprise', 'Premium'). Omit to see the full comparison overview."
+          },
+          "licenseType": {
+            "type": "string",
+            "enum": [
+              "subscription",
+              "perpetual",
+              "all"
+            ],
+            "description": "Optional. Filter by license type: 'subscription', 'perpetual', or 'all' (default)."
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "fill_form",
+      "description": "Discovers and fills form fields on the current WhatsUp Gold page. STEP 1 — Call without 'fieldValues' to discover the form and get a list of visible fields (name, type, label, placeholder, required flag, and select options). Use this to understand what data is needed before filling. STEP 2 — Call again with 'fieldValues' (an object mapping field names to values) to fill the fields. The form will NOT be submitted — the user must complete reCAPTCHA and click submit themselves. Works with any Sitefinity form on the site (contact, trial, quote, demo, etc.).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "formIndex": {
+            "type": "number",
+            "description": "Optional. Zero-based index of the form on the page if multiple forms exist. Defaults to 0 (first form)."
+          },
+          "fieldValues": {
+            "type": "object",
+            "description": "Optional. An object mapping field 'name' attributes to the values to fill. Omit to discover available fields without filling anything."
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "get_page_context",
+      "description": "Returns structured context about the current WhatsUp Gold page: URL, language, page type, headings, CTAs, hreflang alternates, Open Graph metadata, JSON-LD structured data, Sitefinity metadata (pre-parsed), and form summaries.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    }
+  ],
+  "host": "whatsupgold.com",
+  "source": "webmcp.com/api/directory.json"
+}

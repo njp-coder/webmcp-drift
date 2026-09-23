@@ -1,0 +1,145 @@
+{
+  "sponsio": 1,
+  "url": "https://boluda.com/",
+  "capturedAt": "2026-09-23T11:25:31.115Z",
+  "tools": [
+    {
+      "name": "boluda_buscar_cursos",
+      "description": "Busca cursos públicos de Boluda.com por título. Devuelve enlaces y datos breves; no devuelve contenido premium.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 100,
+            "description": "Texto que debe aparecer en el título del curso."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "default": 5,
+            "description": "Número máximo de resultados."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "boluda_buscar_podcasts",
+      "description": "Busca episodios públicos del podcast de Boluda.com por título o extracto público.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 100,
+            "description": "Texto que debe aparecer en el título o el extracto público del podcast."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "default": 5,
+            "description": "Número máximo de resultados."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "boluda_curso_actual",
+      "description": "Devuelve el curso que se está publicando actualmente en Boluda.com y sus clases ya publicadas.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "boluda_iniciar_suscripcion",
+      "description": "Inicia el checkout de la suscripción de Boluda.com. Prepara el carrito y abre el formulario de pago, pero no completa ni confirma el pago.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "boluda_suscribirse_avisos",
+      "description": "Suscribe un email a los avisos de productos, servicios, descuentos, eventos y novedades de Boluda.com. Requiere que la persona acepte expresamente la política de privacidad.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 254,
+            "description": "Email que se añadirá a la lista de avisos."
+          },
+          "acepta_privacidad": {
+            "type": "boolean",
+            "const": true,
+            "description": "Debe ser true únicamente después de aceptar https://boluda.com/politica-de-privacidad/"
+          }
+        },
+        "required": [
+          "email",
+          "acepta_privacidad"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "boluda_ultimas_clases",
+      "description": "Devuelve las clases públicas publicadas más recientemente en Boluda.com y el curso al que pertenecen.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "default": 5,
+            "description": "Número máximo de resultados."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "boluda_ultimos_podcasts",
+      "description": "Devuelve los episodios públicos publicados más recientemente en Boluda.com.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "default": 5,
+            "description": "Número máximo de resultados."
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "boluda.com",
+  "source": "webmcp.com/api/directory.json"
+}

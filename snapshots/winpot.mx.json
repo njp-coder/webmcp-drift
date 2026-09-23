@@ -1,0 +1,72 @@
+{
+  "sponsio": 1,
+  "url": "https://www.winpot.mx/",
+  "capturedAt": "2026-09-23T11:25:31.115Z",
+  "tools": [
+    {
+      "name": "login",
+      "description": "Opens Winpot's existing login modal, fills username/email and password when provided, and submits through the modal if the form becomes submittable.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "usernameOrEmail": {
+            "type": "string",
+            "description": "Username or email address, optional"
+          },
+          "password": {
+            "type": "string",
+            "description": "Password, optional"
+          },
+          "remember": {
+            "type": "boolean",
+            "description": "Whether to remember the user on this browser, optional"
+          },
+          "submit": {
+            "type": "boolean",
+            "description": "Whether to click the login button after filling credentials. Defaults to true only when both username/email and password are provided."
+          }
+        }
+      }
+    },
+    {
+      "name": "search_games",
+      "description": "Search Winpot's public casino game catalog by name. Read-only, no login required. Returns matching game names, ids, and types.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Text to search for in game names"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "view_info",
+      "description": "Returns links to Winpot's public help/info pages (terms and conditions, payment options, deposits, withdrawals). Read-only, no login required.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "topic": {
+            "type": "string",
+            "enum": [
+              "terms",
+              "payment-options",
+              "deposits",
+              "withdrawals"
+            ],
+            "description": "Which info page to return. Omit to get all of them."
+          }
+        }
+      }
+    }
+  ],
+  "host": "winpot.mx",
+  "source": "webmcp.com/api/directory.json"
+}

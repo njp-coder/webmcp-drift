@@ -1,0 +1,198 @@
+{
+  "sponsio": 1,
+  "url": "https://reservadirecto.com/",
+  "capturedAt": "2026-09-23T11:25:31.115Z",
+  "tools": [
+    {
+      "name": "buscar_alojamientos",
+      "description": "Busca alojamientos con reserva directa en América Latina por destino,\n\t                 fechas y cantidad de huéspedes, y devuelve la lista de resultados.\n\t                 Reserva Directo sólo busca y enlaza al motor oficial de cada\n\t                 alojamiento: no reserva, no cobra ni confirma disponibilidad.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "in": {
+            "type": "string",
+            "description": "Fecha de entrada (check-in) en formato YYYY-MM-DD."
+          },
+          "out": {
+            "type": "string",
+            "description": "Fecha de salida (check-out) en formato YYYY-MM-DD, posterior a la de entrada."
+          },
+          "a": {
+            "type": "string",
+            "description": "Cantidad de adultos, entre 1 y 12."
+          },
+          "c": {
+            "type": "string",
+            "description": "Cantidad de menores, entre 0 y 8."
+          },
+          "cur": {
+            "type": "string",
+            "description": "Moneda en la que mostrar los precios de referencia, código ISO 4217 de 3 letras (por ejemplo USD o ARS)."
+          },
+          "q": {
+            "type": "string",
+            "description": "Destino o nombre del alojamiento, en texto libre (por ejemplo\n\t\t\t\t                  «Bariloche», «Cartagena de Indias» o «Hotel Madero»). Vacío\n\t\t\t\t                  devuelve el listado de destinos."
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "inspect_image_c2pa",
+      "description": "Fetch a single image (by CSS selector or URL) and return its fully decoded C2PA manifest store: every manifest's claim, assertions (e.g. c2pa.actions edit history, schema.org authorship), and the COSE signature details (algorithm and signing-certificate identity). Provide exactly one of `selector` or `url`. Note: the signature is decoded but NOT cryptographically verified.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "selector": {
+            "type": "string",
+            "maxLength": 8192,
+            "description": "CSS selector for an <img> element on the page."
+          },
+          "url": {
+            "type": "string",
+            "maxLength": 8192,
+            "description": "Image URL (absolute, or relative to the current page) to fetch and inspect."
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "link_reserva",
+      "description": "Arma la URL de salida al motor de reservas oficial de un alojamiento, con fechas y huéspedes ya cargados. Devuelve dos URLs: `url` (la del sitio, /ir/<id>, que responde 302 y es la que hay que entregarle al usuario) y `url_motor` (el destino final, informativo). NO sigas el redirect para \"reservar\": esta herramienta no reserva, no bloquea inventario, no cobra y no verifica disponibilidad. La reserva se completa en el sitio del alojamiento, con sus propias condiciones y su propio pago.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "hotel_id numérico.",
+            "minimum": 1
+          },
+          "slug": {
+            "type": "string",
+            "description": "Slug de /h/<slug>. Alternativa a id."
+          },
+          "entrada": {
+            "type": "string",
+            "description": "Check-in YYYY-MM-DD.",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          },
+          "salida": {
+            "type": "string",
+            "description": "Check-out YYYY-MM-DD.",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          },
+          "adultos": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12,
+            "default": 2
+          },
+          "menores": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 8,
+            "default": 0
+          },
+          "moneda": {
+            "type": "string",
+            "description": "Código ISO 4217, p. ej. USD o ARS.",
+            "pattern": "^[A-Z]{3}$"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "listar_destinos",
+      "description": "Explora el árbol de destinos: sin argumentos devuelve los países con inventario y los totales del catálogo; con `padre` devuelve los hijos de ese destino (país → regiones, región → ciudades). Con `texto` busca destinos y alojamientos por nombre (autocomplete). Es el punto de partida para conseguir un slug válido para buscar_alojamientos.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "padre": {
+            "type": "string",
+            "description": "Slug del destino padre. Omitir para listar países."
+          },
+          "texto": {
+            "type": "string",
+            "description": "Búsqueda por nombre de destino o alojamiento (mínimo 2 caracteres). Devuelve candidatos con su slug; ignora `padre`.",
+            "maxLength": 80
+          },
+          "limite": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 40
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "scan_images_c2pa",
+      "description": "Scan every <img> on the current page for C2PA Content Credentials (content provenance metadata) and return a per-image summary: whether a manifest is present, the claim generator (the tool that produced or edited the image), the title, and the signer name. Use this to find which images on a page carry provenance data. Note: provenance is decoded but NOT cryptographically verified.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 25,
+            "description": "Maximum number of images to fetch and scan (default 25, max 100)."
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "ver_alojamiento",
+      "description": "Devuelve la ficha completa de un alojamiento: descripción, dirección, coordenadas, estrellas, reseñas, amenities, fotos, otros alojamientos del mismo destino y la URL de salida al motor. Se identifica por `id` numérico o por `slug` (el slug de la URL /h/<slug>, que termina en -<id>). Reserva Directo sólo busca y enlaza: no reserva, no cobra ni confirma disponibilidad.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "hotel_id numérico.",
+            "minimum": 1
+          },
+          "slug": {
+            "type": "string",
+            "description": "Slug de /h/<slug>. Alternativa a id."
+          },
+          "entrada": {
+            "type": "string",
+            "description": "Check-in YYYY-MM-DD para las URLs de salida.",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          },
+          "salida": {
+            "type": "string",
+            "description": "Check-out YYYY-MM-DD.",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          },
+          "adultos": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12,
+            "default": 2
+          },
+          "menores": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 8,
+            "default": 0
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "reservadirecto.com",
+  "source": "webmcp.com/api/directory.json"
+}

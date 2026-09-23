@@ -1,0 +1,301 @@
+{
+  "sponsio": 1,
+  "url": "https://ideausher.com/",
+  "capturedAt": "2026-09-23T11:25:31.115Z",
+  "tools": [
+    {
+      "name": "describe_form",
+      "description": "Return full details of a single Contact Form 7 or custom form by ID, including all fields, their types, purposes and result signals. Use this when list_cf7_forms or list_custom_forms does not include enough field detail.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Form ID to look up. For CF7 forms use the numeric ID as a string; for custom forms use the machine name."
+          },
+          "type": {
+            "type": "string",
+            "description": "Form type: \"cf7\" for Contact Form 7 or \"custom\" for admin-configured custom forms. Defaults to \"custom\"."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "fill_custom_form_on_page",
+      "description": "Fill a configured custom form on the current page using CSS selectors defined in WordPress admin. Use this when you have collected all required field values and want to populate the form before the user reviews and submits manually.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "form_id": {
+            "type": "string",
+            "description": "Machine name of the custom form to fill. Obtain it from list_page_forms or list_custom_forms."
+          },
+          "fields": {
+            "type": "object",
+            "description": "Key-value map of field names to values. Field names are defined in the WordPress admin custom form configuration."
+          }
+        },
+        "required": [
+          "form_id",
+          "fields"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_menu",
+      "description": "Return navigation menu items by menu location or menu slug. Use this to understand site structure and discover available pages before navigating or searching.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "location": {
+            "type": "string",
+            "description": "Registered menu location slug. Omit to return the default menu. Provide only if the user specified a particular location."
+          },
+          "menu": {
+            "type": "string",
+            "description": "Menu name or slug. Used as fallback when location is not provided."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_post",
+      "description": "Return the full Markdown content and metadata of a single WordPress post or page by ID or slug. Use this after search_posts to read a specific item in full.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Numeric post ID. Takes precedence over slug when both are provided."
+          },
+          "slug": {
+            "type": "string",
+            "description": "URL slug of the post or page, e.g. \"about-us\"."
+          },
+          "post_type": {
+            "type": "string",
+            "description": "Post type slug used when resolving by slug, e.g. \"post\" or \"page\". Defaults to \"post\"."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_site_info",
+      "description": "Return site name, description, URL, language and available WebMCP endpoints. Use this as the first call to understand what site you are on and which tools and endpoints are available.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_terms",
+      "description": "Return terms (categories, tags or custom taxonomy entries) from a taxonomy. Use this to discover filtering options before searching posts, or to understand site structure.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "taxonomy": {
+            "type": "string",
+            "description": "Taxonomy slug to query, e.g. \"category\" or \"post_tag\". Call list_taxonomies first to see valid slugs."
+          },
+          "search": {
+            "type": "string",
+            "description": "Optional keyword filter applied to term names."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum terms to return (max 50). Include only if the user explicitly requests a specific count; omit otherwise."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_cf7_forms",
+      "description": "List enabled Contact Form 7 forms with their field schemas, purposes and success/error selectors. Use this before submit_cf7_form to get correct field names and types.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_custom_forms",
+      "description": "List custom forms configured for browser-agent interaction, including selectors, field names and purposes. Use this before fill_custom_form_on_page or submit_custom_form_on_page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_page_forms",
+      "description": "List Contact Form 7 and configured custom forms available on the current page. Use this before fill_custom_form_on_page or submit_custom_form_on_page to discover which forms and field names are available here.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_post_types",
+      "description": "List the content type slugs published on this site (e.g. post, page, custom types). Use this when asked what kinds of content, post types, or content types are published or available, and before search_posts or get_post to know which type slugs are valid.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_taxonomies",
+      "description": "List public taxonomies available on the site. Use this before get_terms to discover valid taxonomy slugs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_media",
+      "description": "Search public media attachments and return direct URLs, titles, MIME types and alt text. Use this when you need an image URL or to verify available media before referencing it.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Keywords to search in attachment titles and descriptions. Omit this field to list recent media."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Number of attachments to return. Always include this parameter; default to 10 unless the user specifies a different count (max 20)."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_posts",
+      "description": "Search published WordPress posts, pages and configured custom post types and return titles, excerpts and URLs. Use this to find content by keyword before calling get_post for full details.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Keywords to search in post titles and content. Omit this field to list recent posts."
+          },
+          "post_type": {
+            "type": "string",
+            "description": "Post type slug to filter results, e.g. \"post\" or \"page\". Omit to search all exposed types."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Number of posts to return. Always include this parameter; default to 10 unless the user specifies a different count (max 20)."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "submit_cf7_form",
+      "description": "Submit a Contact Form 7 form using provided field values. Use this only after list_cf7_forms or describe_form to confirm field names. Requires authenticated REST nonce and triggers a real email send.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "form_id": {
+            "type": "integer",
+            "description": "Numeric ID of the Contact Form 7 form to submit. Obtain it from list_cf7_forms."
+          },
+          "fields": {
+            "type": "object",
+            "description": "Key-value map of field names to values. Field names and types are returned by list_cf7_forms or describe_form."
+          }
+        },
+        "required": [
+          "form_id",
+          "fields"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "submit_comment",
+      "description": "Submit a WordPress comment for a published post. Use this only after confirming the post accepts comments and the user has provided their name, email and comment text. Requires authenticated REST nonce.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "post_id": {
+            "type": "integer",
+            "description": "ID of the post to comment on. The post must have comments open."
+          },
+          "author_name": {
+            "type": "string",
+            "description": "Display name of the comment author."
+          },
+          "author_email": {
+            "type": "string",
+            "description": "Email address of the comment author."
+          },
+          "author_url": {
+            "type": "string",
+            "description": "Optional website URL of the comment author."
+          },
+          "comment_content": {
+            "type": "string",
+            "description": "Comment body text. HTML is stripped; plain text only."
+          }
+        },
+        "required": [
+          "post_id",
+          "author_name",
+          "author_email",
+          "comment_content"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "submit_custom_form_on_page",
+      "description": "Fill and submit a configured custom form on the current page. Use this only after confirming the user wants to submit - this triggers an actual form send.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "form_id": {
+            "type": "string",
+            "description": "Machine name of the custom form to fill and submit. Obtain it from list_page_forms or list_custom_forms."
+          },
+          "fields": {
+            "type": "object",
+            "description": "Key-value map of field names to values. All required fields must be provided or the tool will return ok: false without submitting."
+          }
+        },
+        "required": [
+          "form_id",
+          "fields"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "ideausher.com",
+  "source": "webmcp.com/api/directory.json"
+}

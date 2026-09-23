@@ -1,0 +1,488 @@
+{
+  "sponsio": 1,
+  "url": "https://alser.kz/",
+  "capturedAt": "2026-09-23T11:25:31.115Z",
+  "tools": [
+    {
+      "name": "get_catalog_filters",
+      "description": "Read public ALSER.kz catalog filters, price range, promotions, product types, and sort options for a category using the same mobapi-v3 catalog endpoint as the site category page. This tool is read-only and returns only public site data.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category_keyword": {
+            "type": "string",
+            "maxLength": 256,
+            "description": "Public category keyword from the catalog URL, for example smartfony."
+          },
+          "brand_keyword": {
+            "type": "string",
+            "maxLength": 256,
+            "description": "Optional public brand keyword."
+          },
+          "lang": {
+            "type": "string",
+            "enum": [
+              "ru",
+              "kk"
+            ],
+            "default": "ru",
+            "description": "Response language."
+          },
+          "location_id": {
+            "type": "string",
+            "maxLength": 64,
+            "default": "8",
+            "description": "ALSER city/location id. Defaults to Almaty if not provided."
+          },
+          "only_local": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether to calculate filters for local city availability only."
+          }
+        },
+        "required": [
+          "category_keyword"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_catalog_products",
+      "description": "Read public ALSER.kz catalog products for a category using the same mobapi-v3 catalog endpoint as the site category page. This tool is read-only and returns only public site data.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category_keyword": {
+            "type": "string",
+            "maxLength": 256,
+            "description": "Public category keyword from the catalog URL, for example smartfony."
+          },
+          "brand_keyword": {
+            "type": "string",
+            "maxLength": 256,
+            "description": "Optional public brand keyword."
+          },
+          "lang": {
+            "type": "string",
+            "enum": [
+              "ru",
+              "kk"
+            ],
+            "default": "ru",
+            "description": "Response language."
+          },
+          "location_id": {
+            "type": "string",
+            "maxLength": 64,
+            "default": "8",
+            "description": "ALSER city/location id. Defaults to Almaty if not provided."
+          },
+          "page": {
+            "type": "number",
+            "default": 1,
+            "description": "Catalog page number."
+          },
+          "limit": {
+            "type": "number",
+            "default": 12,
+            "maximum": 50,
+            "description": "Maximum number of products to return."
+          },
+          "sort": {
+            "type": "string",
+            "maxLength": 64,
+            "description": "Optional sort id supported by the catalog response."
+          },
+          "filters": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "maxLength": 128
+              },
+              "maxItems": 20
+            },
+            "description": "Optional filters in catalog URL form: { filter_keyword: [option_keyword] }."
+          },
+          "price": {
+            "type": "object",
+            "properties": {
+              "gte": {
+                "type": "number",
+                "description": "Minimum price."
+              },
+              "lte": {
+                "type": "number",
+                "description": "Maximum price."
+              }
+            },
+            "additionalProperties": false,
+            "description": "Optional price range."
+          },
+          "promos": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 128
+            },
+            "maxItems": 20,
+            "description": "Optional promotion keywords from get_catalog_filters.promos."
+          },
+          "types": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 128
+            },
+            "maxItems": 20,
+            "description": "Optional product type keywords from get_catalog_filters.types."
+          },
+          "only_local": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether to return only local city availability."
+          },
+          "with_specs": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether to request product specs in the catalog response."
+          }
+        },
+        "required": [
+          "category_keyword"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_catalog_tree",
+      "description": "Read the public ALSER.kz catalog category tree using the same catalog-full endpoint as the site header catalog. This tool is read-only and returns only public site data.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "lang": {
+            "type": "string",
+            "enum": [
+              "ru",
+              "kk"
+            ],
+            "default": "ru",
+            "description": "Response language."
+          },
+          "location_id": {
+            "type": "string",
+            "maxLength": 64,
+            "default": "8",
+            "description": "ALSER city/location id. Defaults to Almaty if not provided."
+          },
+          "max_depth": {
+            "type": "number",
+            "default": 3,
+            "maximum": 6,
+            "description": "Maximum category nesting depth to return."
+          },
+          "include_images": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether to include public category image URLs."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_cities",
+      "description": "Read the public list of ALSER.kz cities available for delivery and pickup, with the codes other tools expect (city_code for get_shops, location_id for get_product_detail/list_promos/get_catalog_products/etc). This tool is read-only and returns only public site data.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "number",
+            "default": 50,
+            "maximum": 200,
+            "description": "Maximum number of cities to return."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_homepage_blocks",
+      "description": "Read public ALSER.kz homepage blocks: product of the day, sale, best sellers, new products, popular products, popular categories, and articles. This tool is read-only and returns only public site data.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "lang": {
+            "type": "string",
+            "enum": [
+              "ru",
+              "kk"
+            ],
+            "default": "ru",
+            "description": "Response language."
+          },
+          "location_id": {
+            "type": "string",
+            "maxLength": 64,
+            "default": "8",
+            "description": "ALSER city/location id. Defaults to Almaty if not provided."
+          },
+          "limit": {
+            "type": "number",
+            "default": 6,
+            "maximum": 12,
+            "description": "Maximum number of items per homepage product/article block."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_product_detail",
+      "description": "Read public ALSER.kz product price, availability, delivery terms, specifications, and optional extended details by sku or product keyword. This tool is read-only and returns only public site data.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sku": {
+            "type": "string",
+            "maxLength": 64,
+            "description": "Product SKU. Either sku or keyword is required."
+          },
+          "keyword": {
+            "type": "string",
+            "maxLength": 256,
+            "description": "Product URL keyword. Either sku or keyword is required."
+          },
+          "lang": {
+            "type": "string",
+            "enum": [
+              "ru",
+              "kk"
+            ],
+            "default": "ru",
+            "description": "Response language."
+          },
+          "location_id": {
+            "type": "string",
+            "maxLength": 64,
+            "default": "8",
+            "description": "ALSER city/location id. Defaults to Almaty if not provided."
+          },
+          "include_images": {
+            "type": "boolean",
+            "default": true,
+            "description": "Whether to include public product images."
+          },
+          "include_description": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether to load the full public product description as HTML."
+          },
+          "include_reviews": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether to load public product reviews."
+          },
+          "reviews_limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "default": 5,
+            "description": "Maximum number of reviews to return when include_reviews is true."
+          },
+          "include_store_availability": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether to load product availability in stores."
+          },
+          "city_code": {
+            "type": "string",
+            "maxLength": 32,
+            "description": "Optional FO city code for store availability. If omitted, it is resolved from location_id."
+          }
+        },
+        "anyOf": [
+          {
+            "required": [
+              "sku"
+            ]
+          },
+          {
+            "required": [
+              "keyword"
+            ]
+          }
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_promo_products",
+      "description": "Read public ALSER.kz products attached to a promotion by promotion keyword. This tool is read-only and returns only public site data.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "promo_keyword": {
+            "type": "string",
+            "maxLength": 256,
+            "description": "Promotion URL keyword, for example noutbuki-asus-s-dopolnitelnoj-zasitoj-asus-perfect-warranty."
+          },
+          "lang": {
+            "type": "string",
+            "enum": [
+              "ru",
+              "kk"
+            ],
+            "default": "ru",
+            "description": "Response language."
+          },
+          "location_id": {
+            "type": "string",
+            "maxLength": 64,
+            "default": "8",
+            "description": "ALSER city/location id. Defaults to Almaty if not provided."
+          },
+          "category_id": {
+            "type": "string",
+            "maxLength": 64,
+            "description": "Optional public category id to limit promotion products."
+          },
+          "page": {
+            "type": "number",
+            "default": 1,
+            "description": "Promotion products page number."
+          },
+          "limit": {
+            "type": "number",
+            "default": 12,
+            "maximum": 50,
+            "description": "Maximum number of products to return."
+          }
+        },
+        "required": [
+          "promo_keyword"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_shops",
+      "description": "Read public ALSER.kz shop pickup points by city code. This tool is read-only and returns only public site data.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "city_code": {
+            "type": "string",
+            "maxLength": 32,
+            "default": "000000001",
+            "description": "FO city code. Defaults to Almaty."
+          },
+          "lang": {
+            "type": "string",
+            "enum": [
+              "ru",
+              "kk"
+            ],
+            "default": "ru",
+            "description": "Response language."
+          },
+          "limit": {
+            "type": "number",
+            "default": 20,
+            "maximum": 100,
+            "description": "Maximum number of shops to return."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_promos",
+      "description": "Read public ALSER.kz promotions for a city/location. This tool is read-only and returns only public site data.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "lang": {
+            "type": "string",
+            "enum": [
+              "ru",
+              "kk"
+            ],
+            "default": "ru",
+            "description": "Response language."
+          },
+          "location_id": {
+            "type": "string",
+            "maxLength": 64,
+            "default": "8",
+            "description": "ALSER city/location id. Defaults to Almaty if not provided."
+          },
+          "category": {
+            "type": "string",
+            "maxLength": 128,
+            "description": "Optional public promotion category name."
+          },
+          "limit": {
+            "type": "number",
+            "default": 20,
+            "maximum": 50,
+            "description": "Maximum number of promotions to return."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Search public ALSER.kz products by a text query. This tool is read-only and returns only public site data.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 256,
+            "description": "Search text, for example a product name, brand, SKU, or category phrase."
+          },
+          "lang": {
+            "type": "string",
+            "enum": [
+              "ru",
+              "kk"
+            ],
+            "default": "ru",
+            "description": "Response language."
+          },
+          "category_keyword": {
+            "type": "string",
+            "maxLength": 256,
+            "description": "Optional public category keyword to limit search context."
+          },
+          "limit": {
+            "type": "number",
+            "default": 5,
+            "maximum": 20,
+            "description": "Maximum number of products to return."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "alser.kz",
+  "source": "webmcp.com/api/directory.json"
+}

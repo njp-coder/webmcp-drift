@@ -1,0 +1,65 @@
+{
+  "sponsio": 1,
+  "url": "https://www.batterytrader.com/",
+  "capturedAt": "2026-09-23T11:25:31.115Z",
+  "tools": [
+    {
+      "name": "get_page_context",
+      "description": "Read the current Battery Trader page title, URL, heading, and public catalog discovery links. Use this to understand which product or category the user is viewing.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "open_catalog_index",
+      "description": "Open the public LLM catalog index (llms.txt) or the store homepage so an agent can start product discovery.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "target": {
+            "type": "string",
+            "enum": [
+              "llms",
+              "home",
+              "search"
+            ],
+            "description": "llms opens /llms.txt, home opens the storefront, search opens advanced search."
+          }
+        },
+        "required": [
+          "target"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_catalog",
+      "description": "Search the Battery Trader product catalog by keyword, model, SKU, or device name. Returns matching products and a results page URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "description": "Search keywords, product model, or device name."
+          },
+          "navigate": {
+            "type": "boolean",
+            "description": "If true, open the search results page in this browser tab."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "batterytrader.com",
+  "source": "webmcp.com/api/directory.json"
+}

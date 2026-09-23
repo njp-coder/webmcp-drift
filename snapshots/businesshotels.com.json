@@ -1,0 +1,52 @@
+{
+  "sponsio": 1,
+  "url": "https://www.businesshotels.com/",
+  "capturedAt": "2026-09-23T11:25:31.115Z",
+  "tools": [
+    {
+      "name": "get_live_hotel_rates",
+      "description": "Retrieve current availability and the all-in stay total for one named hotel from BusinessHotels.com, plus the secure BusinessHotels booking URL when available. Use one hotel per call.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "hotelName": {
+            "type": "string",
+            "description": "Full hotel name plus city and 2-letter country code when possible."
+          },
+          "checkinDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Future check-in date in YYYY-MM-DD."
+          },
+          "checkoutDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Future checkout date in YYYY-MM-DD and after check-in."
+          },
+          "adults": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 4,
+            "default": 2,
+            "description": "Number of adult guests."
+          },
+          "currency": {
+            "type": "string",
+            "pattern": "^[A-Z]{3}$",
+            "default": "USD",
+            "description": "ISO 4217 currency code such as USD, EUR, or GBP."
+          }
+        },
+        "required": [
+          "hotelName",
+          "checkinDate",
+          "checkoutDate"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "businesshotels.com",
+  "source": "webmcp.com/api/directory.json"
+}

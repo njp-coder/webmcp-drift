@@ -1,0 +1,98 @@
+{
+  "sponsio": 1,
+  "url": "https://www.businessballs.com/",
+  "capturedAt": "2026-09-23T11:25:31.115Z",
+  "tools": [
+    {
+      "name": "find_quizzes",
+      "description": "Find interactive quizzes on BusinessBalls. Returns the quiz title, URL, number of questions, time limit and categories. Returns quiz metadata only: question and answer content is deliberately not available through this or any other tool, so link the reader to the quiz URL rather than attempting to reproduce or answer it. Omit \"query\" to browse by category.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Optional words to match against quiz titles, e.g. \"body language\". Omit to list quizzes by category instead."
+          },
+          "category": {
+            "type": "string",
+            "description": "Optional quiz category, e.g. \"Film\", \"Music\", \"Sports\". Call list_topics for valid values (quizCategories). Note these are trivia categories, separate from the article topic categories."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "default": 5,
+            "description": "Maximum results to return."
+          }
+        }
+      }
+    },
+    {
+      "name": "get_article",
+      "description": "Retrieve the full text of one BusinessBalls article by its URL or path. Use a URL returned by search_content. Returns the article body as plain text, with navigation, adverts and promotional blocks excluded.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "Article URL or root-relative path, e.g. \"/leadership-styles/grow-model/\"."
+          }
+        },
+        "required": [
+          "url"
+        ]
+      }
+    },
+    {
+      "name": "list_topics",
+      "description": "List the categories available on BusinessBalls. Returns two separate taxonomies. \"topics\" are article subjects: each carries a \"name\" for display and a \"category\" value for filtering — pass the \"category\" value, never \"name\", to search_content. \"quizCategories\" are trivia subjects; pass their \"name\" to find_quizzes. The two taxonomies do not overlap — a value from one will match nothing in the other.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "search_content",
+      "description": "Search the BusinessBalls library of business, leadership and management training articles. Returns matching articles with their title, URL, category and a short excerpt. Use this to find material on a topic before answering, then call get_article for the full text of a result.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search terms, e.g. \"delegation\" or \"Tuckman team stages\"."
+          },
+          "category": {
+            "type": "string",
+            "description": "Optional category to restrict results to, e.g. \"Leadership Styles\" or \"Health And Wellbeing\". Use the \"category\" field from list_topics verbatim — not the \"name\" field, and note the capitalised \"And\". An unrecognised value matches nothing."
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "article",
+              "blog",
+              "category",
+              "quiz"
+            ],
+            "description": "Optional content type filter: \"article\" for library articles, \"blog\" for dated blog posts, \"category\" for topic index pages, \"quiz\" for interactive quizzes. Quizzes index their title and metadata only, so search them by title — their questions and answers are deliberately not in the index. Prefer find_quizzes."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "default": 5,
+            "description": "Maximum results to return."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "businessballs.com",
+  "source": "webmcp.com/api/directory.json"
+}

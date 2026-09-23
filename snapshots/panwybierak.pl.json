@@ -1,0 +1,164 @@
+{
+  "sponsio": 1,
+  "url": "https://panwybierak.pl/",
+  "capturedAt": "2026-09-23T11:25:31.115Z",
+  "tools": [
+    {
+      "name": "find_offers",
+      "description": "Zwraca oferty operatorów dostępne pod wskazanym adresem, z cenami i parametrami. Sama miejscowość daje oferty obecne gdziekolwiek w niej — podaj ulicę i numer budynku, jeśli użytkownik je zna, bo dopiero wtedy odpowiadasz na pytanie \"co dostanę u siebie\". serviceId zawęża do kategorii usług (list_services).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "citySym": {
+            "type": "string",
+            "description": "Identyfikator TERYT miejscowości (sym)."
+          },
+          "streetSymul": {
+            "type": "string",
+            "description": "Identyfikator TERYT ulicy (symul) z search_street."
+          },
+          "number": {
+            "type": "string",
+            "description": "Numer budynku, np. \"12A\"."
+          },
+          "serviceId": {
+            "type": "integer",
+            "description": "Id kategorii usług z list_services."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 20
+          }
+        },
+        "required": [
+          "citySym"
+        ]
+      }
+    },
+    {
+      "name": "get_offer",
+      "description": "Pełne dane pojedynczej oferty po jej id: cena miesięczna, opłata aktywacyjna, okres umowy, parametry, adres strony i formularza zamówienia.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "offerId": {
+            "type": "integer",
+            "description": "Id oferty z find_offers."
+          }
+        },
+        "required": [
+          "offerId"
+        ]
+      }
+    },
+    {
+      "name": "list_services",
+      "description": "Drzewo kategorii usług (internet, telewizja, telefon, pakiety) wraz z id do zawężania find_offers.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_vendors",
+      "description": "Lista operatorów obecnych w porównywarce wraz z adresami ich profili.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "read_current_page",
+      "description": "Zwraca treść oglądanej właśnie strony w markdownie — bez nawigacji, skryptów i reklam. Tańsze i czytelniejsze niż zbieranie tekstu z DOM-u. Używaj, gdy pytanie dotyczy tego, co użytkownik ma przed oczami; o dane ofertowe pytaj narzędziami adresowymi.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "search_articles",
+      "description": "Szuka na blogu poradników i artykułów po frazie — przydatne do pytań ogólnych (\"czym różni się światłowód od LTE\"), a nie o dostępność pod adresem.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 10
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "search_city",
+      "description": "Szuka polskiej miejscowości po fragmencie nazwy i zwraca jej identyfikator TERYT (sym). Zacznij tu — pozostałe narzędzia adresowe potrzebują sym. Nazwy się powtarzają, więc gdy wyników jest kilka, rozstrzygnij po nameWithCounty (nazwa z powiatem).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "description": "Fragment nazwy miejscowości, np. \"Warsz\"."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 10
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "search_street",
+      "description": "Szuka ulicy w konkretnej miejscowości i zwraca jej identyfikator TERYT (symul). Wymaga sym miejscowości z search_city.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "citySym": {
+            "type": "string",
+            "description": "Identyfikator TERYT miejscowości (sym) z search_city."
+          },
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "description": "Fragment nazwy ulicy."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 10
+          }
+        },
+        "required": [
+          "citySym",
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "panwybierak.pl",
+  "source": "webmcp.com/api/directory.json"
+}

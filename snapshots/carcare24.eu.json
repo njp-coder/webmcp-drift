@@ -1,0 +1,85 @@
+{
+  "sponsio": 1,
+  "url": "https://www.carcare24.eu/",
+  "capturedAt": "2026-09-23T11:25:31.115Z",
+  "tools": [
+    {
+      "name": "add_to_cart",
+      "description": "Add a CarCare24 product to the visitor's shopping cart. Use productId from search_products or get_product. If the product has required options, pass options as { optionId: valueId } (or a list of valueIds for checkbox/multiple options) from get_product. The visitor completes checkout themselves.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "integer",
+            "description": "Numeric productId from search_products or get_product"
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 99,
+            "description": "Quantity, default 1"
+          },
+          "options": {
+            "type": "object",
+            "description": "Selected custom options: { \"<optionId>\": <valueId> | [<valueId>, ...] }"
+          }
+        },
+        "required": [
+          "productId"
+        ]
+      }
+    },
+    {
+      "name": "get_cart",
+      "description": "Show the visitor's current CarCare24 shopping cart: every line with quantity, unit price and chosen options, the subtotal, and the cart URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_product",
+      "description": "Get one CarCare24 product by SKU: price, availability, product URL, productId, and its selectable options (colour, size, ...) with the valueIds needed for add_to_cart.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sku": {
+            "type": "string",
+            "description": "Product SKU from search_products"
+          }
+        },
+        "required": [
+          "sku"
+        ]
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Search the CarCare24 webshop (car care and detailing products). Returns matching products with price, product URL, productId for add_to_cart, and whether the product needs options chosen first (call get_product) or can only be ordered from its page (bundles).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Free-text search, e.g. 'snow foam' or 'microfibre towel'"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "description": "Maximum results, default 10"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "carcare24.eu",
+  "source": "webmcp.com/api/directory.json"
+}

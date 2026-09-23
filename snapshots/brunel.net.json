@@ -1,0 +1,211 @@
+{
+  "sponsio": 1,
+  "url": "https://www.brunel.net/en-us",
+  "capturedAt": "2026-09-23T11:25:31.115Z",
+  "tools": [
+    {
+      "name": "get_job_search_context",
+      "description": "Return the current Brunel jobs search state for this page: locale, keyword, location, distance, selected filters, total result count, page, and current search URL. Use before or after search_jobs to understand what is on screen.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "open_job_apply",
+      "description": "Open the Brunel apply page for a job found via search_jobs. Pass publicationId from search results. Navigates to /{locale}/apply?vacancyID=... (or the external ATS apply URL when required). Use after the user chooses a specific vacancy to apply for.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "publicationId": {
+            "type": "string",
+            "description": "Vacancy publicationId from search_jobs results (for example \"tr-282809\"). Required to open the apply page."
+          }
+        },
+        "required": [
+          "publicationId"
+        ]
+      }
+    },
+    {
+      "name": "search_jobs",
+      "description": "Search Brunel job vacancies on the current site locale. Use for finding jobs by keyword, location, sort, and filters. Updates the visible jobs search UI and URL. Locale is always taken from the current page. After choosing a job, call open_job_apply with its publicationId.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "description": "Search parameters for Brunel job vacancies. Locale is taken from the current page and must not be overridden.",
+        "properties": {
+          "keyword": {
+            "type": "string",
+            "description": "Job title or free-text search. Prefer at least 3 characters."
+          },
+          "location": {
+            "type": "string",
+            "description": "City, region, or place name. Prefer at least 3 characters."
+          },
+          "distance": {
+            "type": "number",
+            "description": "Search radius around location (numeric value only).",
+            "minimum": 0
+          },
+          "distanceUnit": {
+            "type": "string",
+            "enum": [
+              "km",
+              "mi"
+            ],
+            "description": "Distance unit. Defaults to the site search bar setting."
+          },
+          "sortOrder": {
+            "type": "number",
+            "enum": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "description": "Sort order used by the jobs search API (0-3)."
+          },
+          "page": {
+            "type": "number",
+            "description": "Results page number, starting at 1. Defaults to 1.",
+            "minimum": 1
+          },
+          "searchTitlesOnly": {
+            "type": "boolean",
+            "description": "When true, match job titles only."
+          },
+          "brancheFilter": {
+            "type": "array",
+            "description": "Industry / branche filter values (id or label).",
+            "items": {
+              "type": "string"
+            }
+          },
+          "areaOfExpertiseFilter": {
+            "type": "array",
+            "description": "Area of expertise filter values (id or label).",
+            "items": {
+              "type": "string"
+            }
+          },
+          "countryFilter": {
+            "type": "array",
+            "description": "Country filter values (id or label).",
+            "items": {
+              "type": "string"
+            }
+          },
+          "educationlevelFilter": {
+            "type": "array",
+            "description": "Education level filter values (id or label).",
+            "items": {
+              "type": "string"
+            }
+          },
+          "marketFilter": {
+            "type": "array",
+            "description": "Market filter values (id or label).",
+            "items": {
+              "type": "string"
+            }
+          },
+          "regionFilter": {
+            "type": "array",
+            "description": "Region filter values (id or label).",
+            "items": {
+              "type": "string"
+            }
+          },
+          "workLevelFilter": {
+            "type": "array",
+            "description": "Work level filter values (id or label).",
+            "items": {
+              "type": "string"
+            }
+          },
+          "totalYearsOfExperienceFilter": {
+            "type": "array",
+            "description": "Years of experience filter values (id or label).",
+            "items": {
+              "type": "string"
+            }
+          },
+          "businessUnitFilter": {
+            "type": "array",
+            "description": "Business unit filter values (id or label).",
+            "items": {
+              "type": "string"
+            }
+          },
+          "businessServiceFilter": {
+            "type": "array",
+            "description": "Business service filter values (id or label).",
+            "items": {
+              "type": "string"
+            }
+          },
+          "contactOfficeNumberFilter": {
+            "type": "array",
+            "description": "Contact office number filter values (id or label).",
+            "items": {
+              "type": "string"
+            }
+          },
+          "hoursPerWeekFilter": {
+            "type": "object",
+            "description": "Hours per week range filter.",
+            "properties": {
+              "minimum": {
+                "type": "number",
+                "description": "Minimum hours per week."
+              },
+              "maximum": {
+                "type": "number",
+                "description": "Maximum hours per week."
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "suggest_job_keywords",
+      "description": "Autocomplete job keyword suggestions for the current site language. Prefer at least 3 characters. Use to refine keyword before calling search_jobs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "keyword": {
+            "type": "string",
+            "description": "Partial job keyword to autocomplete. Prefer at least 3 characters."
+          }
+        },
+        "required": [
+          "keyword"
+        ]
+      }
+    },
+    {
+      "name": "suggest_locations",
+      "description": "Autocomplete location suggestions for the current site language. Prefer at least 3 characters. Use to refine location before calling search_jobs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "location": {
+            "type": "string",
+            "description": "Partial location to autocomplete. Prefer at least 3 characters."
+          }
+        },
+        "required": [
+          "location"
+        ]
+      }
+    }
+  ],
+  "host": "brunel.net",
+  "source": "webmcp.com/api/directory.json"
+}

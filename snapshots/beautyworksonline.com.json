@@ -1,0 +1,330 @@
+{
+  "sponsio": 1,
+  "url": "https://beautyworksonline.com/",
+  "capturedAt": "2026-09-23T11:25:31.115Z",
+  "tools": [
+    {
+      "name": "CreateAccount",
+      "description": "Create a new user account with personal information and sign-in information.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "firstname": {
+            "type": "string",
+            "description": "First Name"
+          },
+          "lastname": {
+            "type": "string",
+            "description": "Last Name"
+          },
+          "is_subscribed": {
+            "type": "boolean",
+            "description": "Sign Up for Newsletter"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email"
+          },
+          "password": {
+            "type": "string",
+            "description": "Password"
+          },
+          "password_confirmation": {
+            "type": "string",
+            "description": "Confirm Password"
+          },
+          "g-recaptcha-response": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "firstname",
+          "lastname",
+          "email",
+          "password",
+          "password_confirmation"
+        ]
+      }
+    },
+    {
+      "name": "GetBestsellers",
+      "description": "Get the top-selling products from the store.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "number",
+            "description": "Number of products to return (default: 10)."
+          }
+        }
+      }
+    },
+    {
+      "name": "GetCart",
+      "description": "Get current cart contents.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "GetCustomerAttributes",
+      "description": "Get extended customer attributes including custom fields.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "GetCustomerInfo",
+      "description": "Get current customer profile information.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "GetOrderHistory",
+      "description": "Get detailed order history with items and status.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "number",
+            "description": "Number of orders to return."
+          },
+          "status": {
+            "type": "string",
+            "description": "Filter by order status."
+          }
+        }
+      }
+    },
+    {
+      "name": "GetRecentViewed",
+      "description": "Get recently viewed products.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "number",
+            "description": "Number of products to return."
+          }
+        }
+      }
+    },
+    {
+      "name": "GetStoreInfo",
+      "description": "Get store configuration including currency, locale, and store name.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "GetSupportInfo",
+      "description": "Get customer support contact information including email, phone, and hours.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "GetWishlist",
+      "description": "Get wishlist items.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "GoToCheckout",
+      "description": "Go to/Navigate to the checkout page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "NavigateToCartPage",
+      "description": "Navigate to the shopping cart page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "NavigateToCategory",
+      "description": "Navigate to a category page (PLP) by name (case-insensitive, partial match). Omit the argument to list all available categories. Provide a category name to navigate to it (searches across all menu levels).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "description": "Category name to navigate to (e.g. \"Professional\", \"Styling Tools\") (case-insensitive, partial match)."
+          }
+        }
+      }
+    },
+    {
+      "name": "NavigateToHomePage",
+      "description": "Navigate to the store homepage to view current promotions, campaigns, and featured collections. This tool can also b used to reset the browsing session or start a new shopping journey.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "RemoveFromCart",
+      "description": "Remove a specific item from the cart using product SKU. If SKU is not known, first use GetCart to get the current cart items with their SKUs, then call this tool with the exact SKU.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sku": {
+            "type": "string",
+            "description": "Product SKU for exact matching. Get SKU from GetCart tool."
+          }
+        },
+        "required": [
+          "sku"
+        ]
+      }
+    },
+    {
+      "name": "SearchProducts",
+      "description": "Search for products in the catalog by keyword or product name. Use this when the user explicitly asks to search, or when a product the user wants to add to cart is not visible on the current page. Do NOT use this if the product is already visible on the current listing page — use AddProductToCartPLP instead.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string",
+            "description": "The keyword or product name to search for in the catalog."
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "SignIn",
+      "description": "Sign in to user account with your email address and password.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "login[username]": {
+            "type": "string",
+            "description": "Email"
+          },
+          "login[password]": {
+            "type": "string",
+            "description": "Password"
+          },
+          "g-recaptcha-response": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "login[username]",
+          "login[password]"
+        ]
+      }
+    },
+    {
+      "name": "SignInAtCheckout",
+      "description": "Sign in to your account during checkout using your email address and password.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "g-recaptcha-response": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string",
+            "description": "Email Address"
+          },
+          "password": {
+            "type": "string",
+            "description": "Password"
+          }
+        },
+        "required": [
+          "username",
+          "password"
+        ]
+      }
+    },
+    {
+      "name": "SubscribeToNewsletter",
+      "description": "Subscribe to the newsletter with your email address.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Email Address"
+          },
+          "subscribe-checkbox": {
+            "type": "boolean",
+            "description": "Sign Up Checkbox"
+          }
+        },
+        "required": [
+          "email",
+          "subscribe-checkbox"
+        ]
+      }
+    },
+    {
+      "name": "UpdateCartItemQty",
+      "description": "Update the quantity of a specific item in the cart using product SKU. If SKU is not known, first use GetCart to get the current cart items with their SKUs, then call this tool with the exact SKU and new quantity. To remove an item entirely use RemoveFromCart instead.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sku": {
+            "type": "string",
+            "description": "Product SKU for exact matching. Get SKU from GetCart or GetProductDetails tool."
+          },
+          "quantity": {
+            "type": "integer",
+            "description": "The new desired quantity. Must be 1 or more.",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "sku",
+          "quantity"
+        ]
+      }
+    },
+    {
+      "name": "ViewCart",
+      "description": "Show the user their cart in the cart drawer and get cart details.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    }
+  ],
+  "host": "beautyworksonline.com",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,86 @@
+{
+  "sponsio": 1,
+  "url": "https://www.mercax.com/",
+  "capturedAt": "2026-09-23T11:25:31.115Z",
+  "tools": [
+    {
+      "name": "buscar_productos_mercax",
+      "description": "Busca productos publicos de Mercax por texto, modelo, SKU, marca, categoria, precio y disponibilidad. Los precios son MXN con IVA incluido.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string",
+            "description": "Producto, modelo, SKU o palabras a buscar",
+            "maxLength": 200
+          },
+          "marca": {
+            "type": "string"
+          },
+          "categoria": {
+            "type": "string"
+          },
+          "disponibilidad": {
+            "type": "string",
+            "enum": [
+              "alta",
+              "disponible",
+              "verificar",
+              "agotado",
+              "descontinuado"
+            ]
+          },
+          "precio_min": {
+            "type": "number",
+            "minimum": 0
+          },
+          "precio_max": {
+            "type": "number",
+            "minimum": 0
+          },
+          "pagina": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "por_pagina": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "consultar_filtros_mercax",
+      "description": "Lista las marcas y categorias que actualmente existen en el catalogo publico de Mercax.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "consultar_producto_mercax",
+      "description": "Consulta precio, disponibilidad, especificaciones, envio y URL oficial de un producto por su SKU Mercax.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id_producto": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "id_producto"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "mercax.com",
+  "source": "webmcp.com/api/directory.json"
+}

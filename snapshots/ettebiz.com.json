@@ -1,0 +1,282 @@
+{
+  "sponsio": 1,
+  "url": "https://ettebiz.com/",
+  "capturedAt": "2026-09-23T11:25:31.115Z",
+  "tools": [
+    {
+      "name": "build_sales_brief",
+      "description": "Map a prospect's non-sensitive organization profile and stated needs to ETTE's documented plan, service lines, proof points, discovery questions, pricing guidance, and next step. This is a fit aid, not a quote or acceptance decision. Do not submit names, emails, phone numbers, or confidential details.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "organization_type": {
+            "type": "string",
+            "enum": [
+              "nonprofit",
+              "association",
+              "small_business",
+              "other",
+              "unknown"
+            ]
+          },
+          "needs": {
+            "minItems": 1,
+            "maxItems": 8,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "managed_it",
+                "help_desk",
+                "cybersecurity",
+                "compliance_and_evidence",
+                "cloud_and_backup",
+                "identity_and_access",
+                "microsoft_365_or_google_workspace",
+                "mixed_pc_and_mac",
+                "proactive_monitoring",
+                "technology_strategy",
+                "security_leadership",
+                "ai_strategy_and_governance",
+                "provider_transition"
+              ]
+            }
+          },
+          "support_model": {
+            "type": "string",
+            "enum": [
+              "no_internal_it",
+              "internal_it_team",
+              "current_provider",
+              "advisory_only",
+              "project_only",
+              "unknown"
+            ]
+          },
+          "workforce_model": {
+            "type": "string",
+            "enum": [
+              "distributed",
+              "hybrid",
+              "office_based",
+              "unknown"
+            ]
+          },
+          "user_count": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10000
+          },
+          "wants_onsite_support": {
+            "type": "boolean"
+          },
+          "onsite_location": {
+            "type": "string",
+            "enum": [
+              "dc_metro_within_10_miles",
+              "outside_dc_metro",
+              "unknown"
+            ]
+          }
+        },
+        "required": [
+          "organization_type",
+          "needs"
+        ]
+      }
+    },
+    {
+      "name": "get_case_studies",
+      "description": "List published ETTE case studies for buyer proof, or retrieve the complete published text of one case study by slug.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "slug": {
+            "description": "Optional case-study slug from the list response",
+            "type": "string",
+            "enum": [
+              "ai-champions",
+              "infrastructure-compliance",
+              "managed-it-transition",
+              "nonprofit-it-modernization",
+              "public-housing-wifi",
+              "sharepoint-migration",
+              "website-accessibility"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "get_company_overview",
+      "description": "Get a concise, source-backed overview of ETTE, its target customers, delivery model, service area, and differentiators. Use this first for general buyer questions.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_contact_info",
+      "description": "Get ETTE's published phone, office, business hours, advisor-booking link, and contact page. This tool does not submit a form or create a lead.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_pricing",
+      "description": "Return ETTE's published plan pricing and proposal caveats. Optionally calculate a non-binding monthly starting estimate from plan, active-user count, and listed advisory add-ons.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "plan": {
+            "type": "string",
+            "enum": [
+              "remote_only",
+              "fully_managed",
+              "co_managed"
+            ]
+          },
+          "user_count": {
+            "description": "Active people who need IT support",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10000
+          },
+          "advisory": {
+            "maxItems": 3,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "vcio",
+                "vciso",
+                "ai"
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "get_service",
+      "description": "Get the published detail for one ETTE service. Use a slug returned by list_services; do not infer unlisted commitments from the content.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "enum": [
+              "guardrail",
+              "ai",
+              "cloud-identity",
+              "cloud-solutions",
+              "comanaged",
+              "cybersecurity",
+              "email-security",
+              "helpdesk",
+              "m365",
+              "mac",
+              "monitoring",
+              "remote",
+              "vcio",
+              "vciso"
+            ],
+            "description": "A service slug returned by list_services"
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "inspect_image_c2pa",
+      "description": "Fetch a single image (by CSS selector or URL) and return its fully decoded C2PA manifest store: every manifest's claim, assertions (e.g. c2pa.actions edit history, schema.org authorship), and the COSE signature details (algorithm and signing-certificate identity). Provide exactly one of `selector` or `url`. Note: the signature is decoded but NOT cryptographically verified.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "selector": {
+            "type": "string",
+            "maxLength": 8192,
+            "description": "CSS selector for an <img> element on the page."
+          },
+          "url": {
+            "type": "string",
+            "maxLength": 8192,
+            "description": "Image URL (absolute, or relative to the current page) to fetch and inspect."
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "list_services",
+      "description": "List ETTE's published managed IT, security, cloud, and advisory service lines with stable slugs. Call get_service for the detail behind one service.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {}
+      }
+    },
+    {
+      "name": "scan_images_c2pa",
+      "description": "Scan every <img> on the current page for C2PA Content Credentials (content provenance metadata) and return a per-image summary: whether a manifest is present, the claim generator (the tool that produced or edited the image), the title, and the signer name. Use this to find which images on a page carry provenance data. Note: provenance is decoded but NOT cryptographically verified.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 25,
+            "description": "Maximum number of images to fetch and scan (default 25, max 100)."
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "search_ette",
+      "description": "Search the bundled ETTE website snapshot across services, buyer pages, FAQs, pricing, and case studies. Returns ranked excerpts, content type, and source URLs; use a specific content tool when one is available.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 160
+          },
+          "limit": {
+            "default": 5,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "ettebiz.com",
+  "source": "webmcp.com/api/directory.json"
+}

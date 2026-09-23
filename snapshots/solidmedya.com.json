@@ -1,0 +1,153 @@
+{
+  "sponsio": 1,
+  "url": "https://solidmedya.com/",
+  "capturedAt": "2026-09-23T11:25:31.115Z",
+  "tools": [
+    {
+      "name": "get-contact-info",
+      "description": "Solid Medya ofis telefonları, e-postaları, WhatsApp ve adres bilgilerini döndürür.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get-content-detail",
+      "description": "Belirtilen tür ve slug için içerik JSON özeti döndürür (service, news, faq vb.).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "service",
+              "news",
+              "faq",
+              "page",
+              "portfolio",
+              "video",
+              "experience"
+            ]
+          },
+          "slug": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "type",
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "get-faq-summary",
+      "description": "Solid Medya SSS (sık sorulan sorular) özetini veya tam listesini döndürür.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "full": {
+            "type": "boolean",
+            "description": "true ise tüm SSS bölümlerini getirir.",
+            "default": false
+          }
+        }
+      }
+    },
+    {
+      "name": "get-latest-news",
+      "description": "Solid Medya haber/blog yazılarının güncel listesini döndürür.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "default": 8
+          }
+        }
+      }
+    },
+    {
+      "name": "get-page-context",
+      "description": "Geçerli sayfanın başlık, URL ve dil bilgisini döndürür.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get-services-overview",
+      "description": "Solid Medya öne çıkan hizmet URL listesini döndürür.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "navigate-site",
+      "description": "Solid Medya sitesinde dahili bir sayfaya gider.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Site köküne göre yol; / ile başlamalı."
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    },
+    {
+      "name": "open-whatsapp",
+      "description": "Solid Medya WhatsApp hattını verilen mesajla açar.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Ön doldurulmuş mesaj.",
+            "maxLength": 500
+          }
+        }
+      }
+    },
+    {
+      "name": "search-site-content",
+      "description": "Site içeriğinde arama önerileri getirir.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Aranacak ifade.",
+            "minLength": 2
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12,
+            "default": 8
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "solidmedya.com",
+  "source": "webmcp.com/api/directory.json"
+}

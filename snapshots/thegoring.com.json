@@ -1,0 +1,126 @@
+{
+  "sponsio": 1,
+  "url": "https://www.thegoring.com/",
+  "capturedAt": "2026-09-23T11:25:31.115Z",
+  "tools": [
+    {
+      "name": "search_hotel_availability",
+      "description": "Generates a URL to the hotel's booking engine for the requested stay.  Use this when a guest wants to check room availability, view rates, or book a stay. Opening the returned URL displays live availability and rates. This tool does not itself confirm availability.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "arrivalDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Arrival date in YYYY-MM-DD format"
+          },
+          "departureDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Departure date in YYYY-MM-DD format"
+          },
+          "adults": {
+            "type": "integer",
+            "default": 2,
+            "minimum": 1
+          },
+          "children": {
+            "type": "integer",
+            "default": 0,
+            "minimum": 0
+          },
+          "promo": {
+            "type": "string",
+            "description": "Promo code for the booking",
+            "default": ""
+          }
+        },
+        "required": [
+          "arrivalDate",
+          "departureDate",
+          "adults"
+        ]
+      }
+    },
+    {
+      "name": "submit_room_availability_search",
+      "description": "Search for hotel room availability and rates",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "arrive": {
+            "type": "string",
+            "description": "Arrival date in YYYY-MM-DD format"
+          },
+          "depart": {
+            "type": "string",
+            "description": "Departure date in YYYY-MM-DD format"
+          },
+          "adult": {
+            "type": "string",
+            "anyOf": [
+              {
+                "type": "string",
+                "const": "1",
+                "title": "1"
+              },
+              {
+                "type": "string",
+                "const": "2",
+                "title": "2"
+              },
+              {
+                "type": "string",
+                "const": "3",
+                "title": "3"
+              },
+              {
+                "type": "string",
+                "const": "4",
+                "title": "4"
+              }
+            ],
+            "enum": [
+              "1",
+              "2",
+              "3",
+              "4"
+            ],
+            "description": "Number of adult guests for this booking"
+          },
+          "child": {
+            "type": "string",
+            "anyOf": [
+              {
+                "type": "string",
+                "const": "0",
+                "title": "0"
+              },
+              {
+                "type": "string",
+                "const": "1",
+                "title": "1"
+              },
+              {
+                "type": "string",
+                "const": "2",
+                "title": "2"
+              }
+            ],
+            "enum": [
+              "0",
+              "1",
+              "2"
+            ],
+            "description": "Number of child guests for this booking"
+          }
+        },
+        "required": []
+      }
+    }
+  ],
+  "host": "thegoring.com",
+  "source": "webmcp.com/api/directory.json"
+}

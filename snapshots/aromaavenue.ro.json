@@ -1,0 +1,151 @@
+{
+  "sponsio": 1,
+  "url": "https://www.aromaavenue.ro/",
+  "capturedAt": "2026-09-23T11:25:31.115Z",
+  "tools": [
+    {
+      "name": "add_to_cart",
+      "description": "Adauga un produs in cosul de cumparaturi dupa product ID / add product to cart",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "number",
+            "description": "ID-ul produsului de adaugat in cos",
+            "minimum": 1
+          },
+          "quantity": {
+            "type": "number",
+            "description": "Cantitate (implicit 1)",
+            "minimum": 1,
+            "maximum": 99
+          }
+        },
+        "required": [
+          "product_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "add_to_wishlist",
+      "description": "Salveaza produsul in lista de favorite / add product to favorites wishlist",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "number",
+            "description": "ID-ul produsului de adaugat la favorite",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "product_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "find_products",
+      "description": "Cauta produse in magazinul Aroma Avenue dupa cuvinte cheie / search the store",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "s": {
+            "type": "string",
+            "description": "Cuvinte cheie pentru cautarea produselor / search keywords"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "get_cart",
+      "description": "Returneaza continutul cosului de cumparaturi (produse si total) / get cart contents",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "format": {
+            "type": "string",
+            "enum": [
+              "summary",
+              "detailed"
+            ],
+            "description": "summary = nume + cantitate; detailed = include si pretul per produs"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_page_info",
+      "description": "Info despre pagina curenta WooCommerce (titlu, URL, tip pagina) / current page info",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "detail": {
+            "type": "string",
+            "enum": [
+              "basic",
+              "full"
+            ],
+            "description": "basic = titlu/url/tip pagina; full = include si clasele body"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Cauta produse in magazinul Aroma Avenue dupa cuvinte cheie / search products by keywords",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Termenul de cautare / search keywords",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "per_page": {
+            "type": "number",
+            "description": "Numar maxim rezultate (max 20)",
+            "minimum": 1,
+            "maximum": 20
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "share_product",
+      "description": "Partajeaza linkul paginii curente / share current page URL",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "type": "string",
+            "enum": [
+              "native",
+              "copy"
+            ],
+            "description": "native = dialogul de partajare al dispozitivului; copy = returneaza doar linkul"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "aromaavenue.ro",
+  "source": "webmcp.com/api/directory.json"
+}

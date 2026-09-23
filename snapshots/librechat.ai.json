@@ -1,0 +1,105 @@
+{
+  "sponsio": 1,
+  "url": "https://www.librechat.ai/",
+  "capturedAt": "2026-09-23T11:25:31.115Z",
+  "tools": [
+    {
+      "name": "get_librechat_doc",
+      "description": "Retrieve bounded Markdown from an English LibreChat documentation page. Localized documentation paths are resolved to their English source.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512,
+            "pattern": "^/(?:[A-Za-z-]+/)?docs(?:/|$)",
+            "description": "Documentation path returned by search."
+          },
+          "maxCharacters": {
+            "type": "integer",
+            "minimum": 1000,
+            "maximum": 20000,
+            "default": 12000,
+            "description": "Maximum number of Markdown characters to return."
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "navigate_librechat_site",
+      "description": "Navigate the current tab to an internal LibreChat documentation, blog, changelog, author, toolkit, project, or policy page. External URLs and API routes are rejected.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512,
+            "pattern": "^/",
+            "description": "Internal path returned by search, for example /docs/features/agents."
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_librechat_docs",
+      "description": "Search the LibreChat documentation in a supported language. Returns ranked page and section paths that can be passed to the navigation or documentation retrieval tools.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "description": "Keywords or a question to search for."
+          },
+          "language": {
+            "type": "string",
+            "enum": [
+              "en",
+              "zh",
+              "es",
+              "fr",
+              "de",
+              "ja",
+              "pt-BR",
+              "it",
+              "nl",
+              "pl",
+              "vi",
+              "ko",
+              "id",
+              "tr"
+            ],
+            "description": "Documentation language. Defaults to the language of the current page."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "default": 5,
+            "description": "Maximum number of results to return."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "librechat.ai",
+  "source": "webmcp.com/api/directory.json"
+}

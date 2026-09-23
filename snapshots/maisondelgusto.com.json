@@ -1,0 +1,130 @@
+{
+  "sponsio": 1,
+  "url": "https://www.maisondelgusto.com/en/",
+  "capturedAt": "2026-09-23T11:25:31.115Z",
+  "tools": [
+    {
+      "name": "mdg_add_to_cart",
+      "description": "Add a purchasable simple B2C product to the current visitor basket. This changes the basket but does not start checkout or place an order.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "quantity": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 9999,
+            "default": 1
+          }
+        },
+        "required": [
+          "productId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "mdg_get_cart",
+      "description": "Return the current visitor basket, including item keys and product IDs needed to update quantities. This does not change the basket.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "mdg_get_page_context",
+      "description": "Return the current Maison del Gusto page type, locale, URLs, and current product ID when on a product page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "mdg_get_product",
+      "description": "Return details for a B2C product ID. On a product page, productId may be omitted to use the visible product.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "mdg_open_checkout",
+      "description": "Open the normal Maison del Gusto checkout for the current non-empty basket. The customer must review checkout details and complete payment in the visible WooCommerce interface; this tool never places an order.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "mdg_search_products",
+      "description": "Search the public Maison del Gusto B2C catalogue. An empty query browses the first available products. Results include IDs, prices, availability, and product URLs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "maxLength": 120,
+            "description": "Product, ingredient, category, or supplier search text. May be empty to browse."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 8,
+            "default": 6
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "mdg_set_cart_item_quantity",
+      "description": "Set the quantity of an existing basket line. Use mdg_get_cart first for cartItemKey and productId. Set quantity to 0 to remove the line. This changes the basket but does not place an order.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "cartItemKey": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "productId": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "quantity": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 9999
+          }
+        },
+        "required": [
+          "cartItemKey",
+          "productId",
+          "quantity"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "maisondelgusto.com",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,239 @@
+{
+  "sponsio": 1,
+  "url": "https://vitateka.ee/",
+  "capturedAt": "2026-09-23T11:25:31.115Z",
+  "tools": [
+    {
+      "name": "get_product",
+      "description": "Retrieve a single product by SKU with full detail including selected default options. Prices are in minor currency units.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "description": "Optional UCP agent metadata. Required on /agent/ucp (phase 2); optional here.",
+            "properties": {
+              "ucp-agent": {
+                "type": "object",
+                "properties": {
+                  "profile": {
+                    "type": "string",
+                    "description": "Agent profile URL (HTTPS)."
+                  }
+                }
+              }
+            }
+          },
+          "catalog": {
+            "type": "object",
+            "description": "Product retrieval parameters.",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Product SKU or ID to retrieve."
+              },
+              "context": {
+                "type": "object",
+                "description": "Buyer context overrides. Falls back to store-view defaults when omitted.",
+                "properties": {
+                  "address_country": {
+                    "type": "string",
+                    "description": "ISO 3166-1 alpha-2 country code (e.g. \"US\")."
+                  },
+                  "currency": {
+                    "type": "string",
+                    "description": "ISO 4217 currency code (e.g. \"USD\")."
+                  },
+                  "language": {
+                    "type": "string",
+                    "description": "BCP 47 language tag (e.g. \"en_US\")."
+                  },
+                  "intent": {
+                    "type": "string",
+                    "description": "Buyer intent hint for ranking (e.g. \"gift\")."
+                  }
+                }
+              }
+            },
+            "required": [
+              "id"
+            ]
+          }
+        },
+        "required": [
+          "catalog"
+        ]
+      }
+    },
+    {
+      "name": "lookup_catalog",
+      "description": "Retrieve one or more products by SKU or ID. Returns full product data with prices in minor currency units.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "description": "Optional UCP agent metadata. Required on /agent/ucp (phase 2); optional here.",
+            "properties": {
+              "ucp-agent": {
+                "type": "object",
+                "properties": {
+                  "profile": {
+                    "type": "string",
+                    "description": "Agent profile URL (HTTPS)."
+                  }
+                }
+              }
+            }
+          },
+          "catalog": {
+            "type": "object",
+            "description": "Catalog lookup parameters.",
+            "properties": {
+              "ids": {
+                "type": "array",
+                "description": "List of product SKUs or IDs to retrieve.",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1,
+                "maxItems": 250
+              },
+              "context": {
+                "type": "object",
+                "description": "Buyer context overrides. Falls back to store-view defaults when omitted.",
+                "properties": {
+                  "address_country": {
+                    "type": "string",
+                    "description": "ISO 3166-1 alpha-2 country code (e.g. \"US\")."
+                  },
+                  "currency": {
+                    "type": "string",
+                    "description": "ISO 4217 currency code (e.g. \"USD\")."
+                  },
+                  "language": {
+                    "type": "string",
+                    "description": "BCP 47 language tag (e.g. \"en_US\")."
+                  },
+                  "intent": {
+                    "type": "string",
+                    "description": "Buyer intent hint for ranking (e.g. \"gift\")."
+                  }
+                }
+              }
+            },
+            "required": [
+              "ids"
+            ]
+          }
+        },
+        "required": [
+          "catalog"
+        ]
+      }
+    },
+    {
+      "name": "search_catalog",
+      "description": "Search the product catalog by query and/or filters. Returns matching products with prices in minor currency units and cursor pagination.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "description": "Optional UCP agent metadata. Required on /agent/ucp (phase 2); optional here.",
+            "properties": {
+              "ucp-agent": {
+                "type": "object",
+                "properties": {
+                  "profile": {
+                    "type": "string",
+                    "description": "Agent profile URL (HTTPS)."
+                  }
+                }
+              }
+            }
+          },
+          "catalog": {
+            "type": "object",
+            "description": "Catalog search parameters.",
+            "properties": {
+              "query": {
+                "type": "string",
+                "description": "Full-text search query. Required when filters are not provided."
+              },
+              "context": {
+                "type": "object",
+                "description": "Buyer context overrides. Falls back to store-view defaults when omitted.",
+                "properties": {
+                  "address_country": {
+                    "type": "string",
+                    "description": "ISO 3166-1 alpha-2 country code (e.g. \"US\")."
+                  },
+                  "currency": {
+                    "type": "string",
+                    "description": "ISO 4217 currency code (e.g. \"USD\")."
+                  },
+                  "language": {
+                    "type": "string",
+                    "description": "BCP 47 language tag (e.g. \"en_US\")."
+                  },
+                  "intent": {
+                    "type": "string",
+                    "description": "Buyer intent hint for ranking (e.g. \"gift\")."
+                  }
+                }
+              },
+              "filters": {
+                "type": "object",
+                "description": "Narrow results by category or price. Price values are in minor currency units (integers).",
+                "properties": {
+                  "categories": {
+                    "type": "array",
+                    "description": "Filter by category IDs.",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "price_min": {
+                    "type": "integer",
+                    "description": "Minimum price in minor currency units (e.g. 1000 = $10.00 USD)."
+                  },
+                  "price_max": {
+                    "type": "integer",
+                    "description": "Maximum price in minor currency units (e.g. 30000 = $300.00 USD)."
+                  }
+                }
+              },
+              "pagination": {
+                "type": "object",
+                "description": "Cursor-based pagination.",
+                "properties": {
+                  "cursor": {
+                    "type": "string",
+                    "description": "Opaque cursor from a previous response's pagination.cursor field."
+                  },
+                  "limit": {
+                    "type": "integer",
+                    "description": "Number of results per page. Default 10, max 250.",
+                    "default": 10,
+                    "minimum": 1,
+                    "maximum": 250
+                  }
+                }
+              }
+            },
+            "required": []
+          }
+        },
+        "required": [
+          "catalog"
+        ]
+      }
+    }
+  ],
+  "host": "vitateka.ee",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,176 @@
+{
+  "sponsio": 1,
+  "url": "https://www.tickadoo.com/",
+  "capturedAt": "2026-09-23T11:25:31.115Z",
+  "tools": [
+    {
+      "name": "get_availability",
+      "description": "Get live dates and prices for one product (Lion King: slug the-lion-king-tickets, city london). When that product or booking calendar is on screen, the date is highlighted or selected. Does not place an order or take payment. Checkout stays a human click.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "string",
+            "description": "Stable product_id from search_events / tickadoo_search. Preferred."
+          },
+          "productId": {
+            "type": "string",
+            "description": "Alias for product_id (www calendar naming)."
+          },
+          "slug": {
+            "type": "string",
+            "description": "Product slug. Use with city_slug when product_id is unavailable."
+          },
+          "city_slug": {
+            "type": "string",
+            "description": "City slug required when slug is used."
+          },
+          "date_from": {
+            "type": "string",
+            "description": "Start date YYYY-MM-DD. Defaults to today."
+          },
+          "date_to": {
+            "type": "string",
+            "description": "End date YYYY-MM-DD. Defaults to 14 days after date_from."
+          },
+          "date": {
+            "type": "string",
+            "description": "Alias for date_from when checking a single day."
+          },
+          "party_size": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Number of guests. Default 2."
+          }
+        }
+      }
+    },
+    {
+      "name": "get_experience_details",
+      "description": "Get richer product, venue and booking fields for one experience. Pass product_id from search_events. Does not book or take payment.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "string",
+            "description": "Stable product_id from search_events."
+          },
+          "productId": {
+            "type": "string",
+            "description": "Alias for product_id."
+          },
+          "slug": {
+            "type": "string",
+            "description": "Product slug when product_id is unavailable."
+          }
+        }
+      }
+    },
+    {
+      "name": "search_events",
+      "description": "Search tickadoo for theatre and experiences. West End / Lion King queries update the visible search or London listing when those pages are open. Returns product_id for get_availability. Does not book or take payment.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "query"
+        ],
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Free-text search. West End / Lion King buyer path: 'The Lion King', 'West End tonight', 'Lion King London'."
+          },
+          "city": {
+            "type": "string",
+            "description": "City slug (optional), e.g. london, new-york, paris"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 10
+          }
+        }
+      }
+    },
+    {
+      "name": "tickadoo_cities",
+      "description": "List the cities where tickadoo has bookable experiences.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "tickadoo_open_product",
+      "description": "Navigate the current tab to a tickadoo product, search, city listing, or booking-date page. Does not open checkout, cart, account, or payment. Checkout stays a human click.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "url"
+        ],
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "Absolute tickadoo.com product URL"
+          }
+        }
+      }
+    },
+    {
+      "name": "tickadoo_search",
+      "description": "Search tickadoo's catalogue of theatre, tours, attractions and experiences across 700+ cities.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "query"
+        ],
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Free-text search. West End / Lion King buyer path: 'The Lion King', 'West End tonight', 'Lion King London'."
+          },
+          "city": {
+            "type": "string",
+            "description": "City slug (optional), e.g. london, new-york, paris"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 10
+          }
+        }
+      }
+    },
+    {
+      "name": "whats_on_tonight",
+      "description": "What is on tonight. West End / Lion King infers London. On home, search or a London city listing, opens /london/today. Confirm with get_availability. Does not book or take payment.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "city": {
+            "type": "string",
+            "description": "City slug, e.g. london. Inferred from the page, or from West End / Lion King."
+          },
+          "query": {
+            "type": "string",
+            "description": "Optional hint such as West End or Lion King. Used to infer London when city is omitted."
+          },
+          "category": {
+            "type": "string",
+            "description": "Optional category slug to narrow results."
+          }
+        }
+      }
+    }
+  ],
+  "host": "tickadoo.com",
+  "source": "webmcp.com/api/directory.json"
+}

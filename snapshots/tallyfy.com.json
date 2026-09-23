@@ -1,0 +1,242 @@
+{
+  "sponsio": 1,
+  "url": "https://tallyfy.com/",
+  "capturedAt": "2026-09-23T11:25:31.115Z",
+  "tools": [
+    {
+      "name": "answer_question",
+      "description": "Answer a product, how-to, security or integration question about Tallyfy by pointing to the most relevant official product documentation. Use for specific product questions; use the other tools for pricing, templates, comparisons, compliance or starting a trial.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "question": {
+            "type": "string",
+            "description": "The product or how-to question."
+          }
+        },
+        "required": [
+          "question"
+        ]
+      }
+    },
+    {
+      "name": "book_demo",
+      "description": "Book a live Tallyfy demo/call. Pre-fills the visitor's name, email and topic on the scheduling page; the visitor picks a time themselves (no auto-booking). Returns the booking link.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The visitor's name (optional, pre-fills the form)."
+          },
+          "email": {
+            "type": "string",
+            "description": "The visitor's email (optional, pre-fills the form)."
+          },
+          "topic": {
+            "type": "string",
+            "description": "What they want to discuss (optional, pre-fills the form)."
+          }
+        }
+      }
+    },
+    {
+      "name": "calculate_roi",
+      "description": "Estimate what manual, repetitive busywork costs a company per week, per year and over five years. Provide the number of employees, the hours per person per week lost to busywork, and average hourly pay; returns the cost plus a link to start automating with Tallyfy.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "employees": {
+            "type": "number",
+            "description": "Number of employees affected."
+          },
+          "hours_per_week": {
+            "type": "number",
+            "description": "Hours per person per week lost to busywork."
+          },
+          "hourly_rate": {
+            "type": "number",
+            "description": "Average hourly pay in USD."
+          }
+        },
+        "required": [
+          "employees",
+          "hours_per_week",
+          "hourly_rate"
+        ]
+      }
+    },
+    {
+      "name": "check_compliance",
+      "description": "Report Tallyfy's compliance and security posture for a given standard (SOC 2 Type II, GDPR / EU-U.S. Data Privacy Framework, HIPAA, FDA 21 CFR Part 11, accessibility / VPAT, PCI). Returns an accurate status and a link, including honest detail about what Tallyfy does and does not hold.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "standard": {
+            "type": "string",
+            "description": "The standard to check, e.g. \"SOC 2\" or \"HIPAA\". Optional."
+          }
+        }
+      }
+    },
+    {
+      "name": "check_integration",
+      "description": "Check whether Tallyfy integrates with a specific tool (e.g. Zapier, Power Automate, Microsoft Teams, Slack, n8n) or via its REST API, webhooks or MCP server. Returns the integration status and a documentation link.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "The tool to check, e.g. \"Power Automate\"."
+          }
+        },
+        "required": [
+          "tool"
+        ]
+      }
+    },
+    {
+      "name": "compare_tallyfy",
+      "description": "Compare Tallyfy side-by-side against another workflow, project-management or BPM tool - Asana, Monday, ClickUp, Notion, Process Street and 70+ others. Returns the key feature differences plus links to explore Tallyfy as an alternative or to book a call.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "competitor": {
+            "type": "string",
+            "description": "The tool to compare against, e.g. \"Asana\". Optional on a competitor comparison page."
+          }
+        }
+      }
+    },
+    {
+      "name": "explain_pricing",
+      "description": "Explain how Tallyfy pricing works - the per-seat model with Full and Light members, free unlimited guests, and what is included free (SSO, support, migration) - and link to current rates. Does not quote specific dollar amounts because pricing can change.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "find_template",
+      "description": "Search Tallyfy's library of ready-made workflow templates by keyword (e.g. 'client onboarding', 'approval', 'employee onboarding'). Returns matching templates with a short summary, the template page, and a link to start a free Tallyfy trial pre-loaded with that template.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "What the workflow is about, e.g. \"client onboarding\" or \"approval\"."
+          },
+          "limit": {
+            "type": "number",
+            "description": "Max results (default 6, max 15)."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "generate_process",
+      "description": "Turn a plain-English description of any business process into a structured, step-by-step procedure (roles, deadlines, automation ideas) using Tallyfy's free AI SOP generator. Returns a link that runs the generator automatically and produces a downloadable Word document.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string",
+            "description": "Plain-English description of the process to document (at least 10 characters)."
+          },
+          "process_type": {
+            "type": "string",
+            "enum": [
+              "hr",
+              "sales",
+              "finance",
+              "it_ops",
+              "customer",
+              "operations",
+              "other"
+            ],
+            "description": "Optional category of the process."
+          }
+        },
+        "required": [
+          "description"
+        ]
+      }
+    },
+    {
+      "name": "get_case_study",
+      "description": "Return a real Tallyfy customer testimonial or case study, optionally matched to an industry or use case. Returns the quote, who said it, and a link to read more.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "industry": {
+            "type": "string",
+            "description": "Industry or use case to match (optional)."
+          }
+        }
+      }
+    },
+    {
+      "name": "search_content",
+      "description": "Search tallyfy.com's own pages: blog articles, solution pages and vendor comparisons. Use this for opinions, guides, industry topics and 'does Tallyfy have a page about X' questions. It does NOT cover the product documentation, which answer_question handles.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "What to look for, e.g. \"employee onboarding\", \"AI in operations\" or a vendor name."
+          },
+          "kind": {
+            "type": "string",
+            "description": "Optional filter: \"blog\", \"solution\" or \"alternative\".",
+            "enum": [
+              "blog",
+              "solution",
+              "alternative"
+            ]
+          },
+          "limit": {
+            "type": "number",
+            "description": "Max results (default 5, max 15)."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "start_trial",
+      "description": "Start a free 14-day Tallyfy trial. Returns a signup link, optionally pre-loaded with a specific template or use case. No credit card required.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "use_case": {
+            "type": "string",
+            "description": "What the user wants Tallyfy for (optional)."
+          },
+          "template_id": {
+            "type": "string",
+            "description": "A Tallyfy template id to pre-load (optional)."
+          }
+        }
+      }
+    }
+  ],
+  "host": "tallyfy.com",
+  "source": "webmcp.com/api/directory.json"
+}

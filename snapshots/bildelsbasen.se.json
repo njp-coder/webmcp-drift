@@ -1,0 +1,913 @@
+{
+  "sponsio": 1,
+  "url": "https://www.bildelsbasen.se/sv-se/",
+  "capturedAt": "2026-09-23T11:25:31.115Z",
+  "tools": [
+    {
+      "name": "cart_create",
+      "description": "Create a Bildelsbasen cart with one or more listings. Returns a resumable cart_url the user can open to review, add a delivery address, and pay. Call only after the user has settled on which listings to buy. Payment is a separate step (not part of this tool).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "email",
+          "items"
+        ],
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Buyer's email. Receives cart-reminder messages and the receipt at checkout."
+          },
+          "items": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 50,
+            "description": "1-50 listings. Each item's `id` is the numeric listing id from search results (e.g. 61450153, same number that appears as ID-61450153 in listing URLs).",
+            "items": {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "description": "Numeric listing id."
+                },
+                "quantity": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "default": 1
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "customer_type": {
+            "type": "string",
+            "enum": [
+              "private",
+              "business"
+            ],
+            "default": "private",
+            "description": "Buyer type. Affects upstream pricing/terms. Default: private."
+          },
+          "language": {
+            "type": "string",
+            "enum": [
+              "sv",
+              "en",
+              "da",
+              "no",
+              "fi",
+              "de",
+              "fr",
+              "es",
+              "it",
+              "is",
+              "et",
+              "ru",
+              "fa"
+            ],
+            "default": "sv"
+          },
+          "country": {
+            "type": "string",
+            "default": "SE",
+            "description": "ISO 3166-1 alpha-2 country code."
+          },
+          "currency": {
+            "type": "string",
+            "default": "SEK"
+          },
+          "expire": {
+            "type": "string",
+            "default": "3 days",
+            "description": "Interval expiry (e.g. '3 days', '12 hours')."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "cart_remove_item",
+      "description": "Remove one listing from an existing cart, identified by its cart_key (from cart_create) and the listing id you originally added. Returns no body on success — re-check the cart_url in a browser to verify. The upstream may report failures like RESTRICTED (cart expired, item not present); the message is passed through verbatim in the error payload.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "cart_key",
+          "item_id",
+          "email"
+        ],
+        "properties": {
+          "cart_key": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9]{2,32}$",
+            "description": "Short opaque cart identifier returned by cart_create."
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Buyer's email — MUST be the SAME email passed to cart_create. The upstream authorizes item removal by it."
+          },
+          "item_id": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "The listing id originally passed to cart_create. Same number space as search results (e.g. 61450153)."
+          },
+          "language": {
+            "type": "string",
+            "enum": [
+              "sv",
+              "en",
+              "da",
+              "no",
+              "fi",
+              "de",
+              "fr",
+              "es",
+              "it",
+              "is",
+              "et",
+              "ru",
+              "fa"
+            ],
+            "default": "sv"
+          },
+          "country": {
+            "type": "string",
+            "default": "SE"
+          },
+          "currency": {
+            "type": "string",
+            "default": "SEK"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "cart_set_customer",
+      "description": "Set/replace the customer block on a cart: buyer name, contact_sms, shipping address, and optional vehicle context. Returns a digested cart summary with valid + next_steps flags so you can see what's still needed (shipping provider, payment) before checkout. PUT semantics — a partial body replaces the whole customer block.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "cart_key",
+          "email",
+          "first_name",
+          "last_name",
+          "shipping_address",
+          "contact_sms",
+          "vehicle"
+        ],
+        "properties": {
+          "cart_key": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9]{2,32}$",
+            "description": "Short opaque cart identifier returned by cart_create."
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Buyer's email — MUST be the SAME email passed to cart_create. The upstream authorizes customer updates by it; a missing or mismatched email is rejected."
+          },
+          "first_name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "last_name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "contact_sms": {
+            "type": "string",
+            "description": "REQUIRED. Buyer's mobile (E.164 preferred). The seller uses it to arrange the used part. Ask the user if not given."
+          },
+          "shipping_address": {
+            "type": "object",
+            "required": [
+              "street",
+              "zip",
+              "postal_city",
+              "country"
+            ],
+            "properties": {
+              "street": {
+                "type": "string",
+                "minLength": 1
+              },
+              "street_co": {
+                "type": "string",
+                "description": "Care-of line."
+              },
+              "zip": {
+                "type": "string",
+                "minLength": 1
+              },
+              "postal_city": {
+                "type": "string",
+                "minLength": 1
+              },
+              "country": {
+                "type": "string",
+                "description": "ISO 3166-1 alpha-2 (e.g. 'SE', 'FI', 'NO'). Translated to upstream numeric + name internally."
+              }
+            },
+            "additionalProperties": false
+          },
+          "vehicle": {
+            "type": "object",
+            "description": "REQUIRED. The seller verifies the used part fits the buyer's car ('Kontrollera att delen passar'). Provide `regnr` (registration number) OR `vin`, plus `model_year`. Ask the user for their registration number if not given.",
+            "required": [
+              "model_year"
+            ],
+            "properties": {
+              "regnr": {
+                "type": "string",
+                "description": "Registration number. Provide this OR vin."
+              },
+              "regnr_country": {
+                "type": "string",
+                "description": "ISO 3166-1 alpha-2. Defaults to SE."
+              },
+              "vin": {
+                "type": "string",
+                "description": "Provide this OR regnr."
+              },
+              "model_year": {
+                "type": "integer",
+                "minimum": 1900,
+                "description": "REQUIRED. The car's model year."
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "discover_brands",
+      "description": "List vehicle brands available in Bildelsbasen's passenger-car catalog. Use this before discover_models.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "language": {
+            "type": "string",
+            "enum": [
+              "sv",
+              "en",
+              "da",
+              "no",
+              "fi",
+              "de",
+              "fr",
+              "es",
+              "it",
+              "is",
+              "et",
+              "ru",
+              "fa"
+            ],
+            "default": "sv"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "discover_models",
+      "description": "List models and year ranges for a vehicle brand. Use after discover_brands.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "brand"
+        ],
+        "properties": {
+          "brand": {
+            "type": "string",
+            "description": "Vehicle brand — one of the enum values (also listed by discover_brands). Resolves regardless of `language`.",
+            "enum": [
+              "AC-Cobra",
+              "AMC",
+              "Acura",
+              "Aiways",
+              "Aixam",
+              "Alfa",
+              "Alpine",
+              "Amica",
+              "Aston-Martin",
+              "Audi",
+              "Austin",
+              "BMC",
+              "BMW",
+              "BYD",
+              "Bedford",
+              "Bellier",
+              "Bentley",
+              "Buddy",
+              "Buick",
+              "Cadillac",
+              "Casalini",
+              "Chatenet",
+              "Chevrolet",
+              "Chrysler",
+              "Citroen",
+              "Cupra",
+              "DAF",
+              "DFSK",
+              "DKW",
+              "DS",
+              "Dacia",
+              "Daewoo",
+              "Daihatsu",
+              "Datsun",
+              "De-Soto",
+              "De-Tomaso",
+              "Dodge",
+              "Dongfeng",
+              "Ferrari",
+              "Fiat",
+              "Fisker",
+              "Ford",
+              "GM",
+              "GMC",
+              "GWM",
+              "Galloper",
+              "Garia",
+              "Ginetta",
+              "Grecav_EKE",
+              "Hanomag",
+              "Hillman",
+              "Honda",
+              "Hongqi",
+              "Hudson",
+              "Hummer",
+              "Hyundai",
+              "Infiniti",
+              "International",
+              "Isuzu",
+              "Iveco",
+              "JAC",
+              "JC",
+              "JDM",
+              "Jaguar",
+              "Jeep",
+              "Jiayuan",
+              "KGM",
+              "KIA",
+              "Kewet",
+              "Lada",
+              "Lamborghini",
+              "Lancia",
+              "LandRover",
+              "Lexus",
+              "Ligier",
+              "Lincoln",
+              "Lotus",
+              "Lynk-&-Co",
+              "MAN",
+              "MG",
+              "Maserati",
+              "Maxus",
+              "Mazda",
+              "McLaren",
+              "Melex",
+              "Mercedes",
+              "Mercury",
+              "Microcar",
+              "Mini",
+              "Mitsubishi",
+              "Morgan",
+              "Morris",
+              "NIO",
+              "Nissan",
+              "Oldsmobile",
+              "Opel",
+              "Ora",
+              "Peugeot",
+              "Piaggio",
+              "Plymouth",
+              "Polestar",
+              "Pontiac",
+              "Porsche",
+              "Renault",
+              "Reva",
+              "Rolls_Royce",
+              "Rover",
+              "Saab",
+              "Saturn",
+              "Seat",
+              "Simca",
+              "Skoda",
+              "Skywell",
+              "Smart",
+              "Spectre",
+              "Ssang-Yong",
+              "Studebaker",
+              "Subaru",
+              "Sunbeam",
+              "Suzuki",
+              "Talbot",
+              "Tasso",
+              "Tesla",
+              "Think",
+              "Toyota",
+              "Trabant",
+              "Triumph",
+              "VAZ",
+              "VW",
+              "Vauxhall",
+              "Volvo",
+              "Voyah",
+              "Wartburg",
+              "Wey",
+              "Xpeng",
+              "Zeekr",
+              "Övrigt"
+            ]
+          },
+          "language": {
+            "type": "string",
+            "enum": [
+              "sv",
+              "en",
+              "da",
+              "no",
+              "fi",
+              "de",
+              "fr",
+              "es",
+              "it",
+              "is",
+              "et",
+              "ru",
+              "fa"
+            ],
+            "default": "sv"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "discover_parts",
+      "description": "List the sub-parts inside a top-level category. Pass one of the `category` enum values, or omit `category` to list every category. There is no 'lighting' category. Feed the returned canonical part ids to search_parts.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "description": "Top-level category (pc1), in English — one of the enum. Omit to list all categories. The `language` param only changes the response labels, not which value you pass.",
+            "enum": [
+              "Air-conditioning-&-Heating",
+              "Airbag",
+              "Body",
+              "Brakes",
+              "Dismantling-object",
+              "Doors",
+              "Electric-&-Transmitter-&-Databox-&-Sensor",
+              "Engine",
+              "Exhaust&cleaning",
+              "Exterior-details",
+              "Front-details",
+              "Fuel",
+              "Gear-box-&-Drive-axle-&-Middle-axle",
+              "Hydraulic&Traction",
+              "Instruments-&-Electric-switches",
+              "Interior",
+              "Lock-&-Alarm",
+              "Other",
+              "Rearview-Mirror",
+              "Repair-sheet-metal-&-Consumables",
+              "Spoilers-&-Wipers",
+              "Steering-wheel-&-Axle-&-Lever-&-Pedal",
+              "Vehicle-exterior-&-Suspension",
+              "Vehicle-front-&-Springs-&-Steering",
+              "Wheels-&-Tires-&-Accessories",
+              "Windows"
+            ]
+          },
+          "language": {
+            "type": "string",
+            "enum": [
+              "sv",
+              "en",
+              "da",
+              "no",
+              "fi",
+              "de",
+              "fr",
+              "es",
+              "it",
+              "is",
+              "et",
+              "ru",
+              "fa"
+            ],
+            "default": "sv"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "lookup_by_plate_number",
+      "description": "Look up a vehicle by its registration plate. Returns vehicle metadata (VIN, engine code, body type, tyre sizes) plus a `matches[]` array. The first match is the primary canonical vehicle code; additional entries are code_alt variants. Each match includes resolved canonical brand/model/year you can feed straight into search_parts.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "q"
+        ],
+        "properties": {
+          "q": {
+            "type": "string",
+            "description": "Registration plate number, e.g. 'DOR123'."
+          },
+          "country": {
+            "type": "string",
+            "default": "SE",
+            "description": "ISO 3166-1 alpha-2 country code."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_by_oem",
+      "description": "Search active parts listings by OEM number, part number, or free-text query. Use this when the user has a part number rather than a brand/model. Returns the same listing shape as search_parts.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "q"
+        ],
+        "properties": {
+          "q": {
+            "type": "string",
+            "description": "OEM number, part number, or free-text query (e.g. '51162472237')."
+          },
+          "language": {
+            "type": "string",
+            "enum": [
+              "sv",
+              "en",
+              "da",
+              "no",
+              "fi",
+              "de",
+              "fr",
+              "es",
+              "it",
+              "is",
+              "et",
+              "ru",
+              "fa"
+            ],
+            "default": "sv"
+          },
+          "country": {
+            "type": "string",
+            "default": "SE"
+          },
+          "currency": {
+            "type": "string",
+            "default": "SEK"
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1
+          },
+          "page_size": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 5
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_by_stock_number",
+      "description": "Search active parts listings by seller stock number / item / lager-nr. Same response shape as search_parts. Use this when the user has a Bildelsbasen-specific stock or item number (typically displayed as 'Lagernr' on listings).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "q"
+        ],
+        "properties": {
+          "q": {
+            "type": "string",
+            "description": "Stock / item / lager number (e.g. 'W123456')."
+          },
+          "language": {
+            "type": "string",
+            "enum": [
+              "sv",
+              "en",
+              "da",
+              "no",
+              "fi",
+              "de",
+              "fr",
+              "es",
+              "it",
+              "is",
+              "et",
+              "ru",
+              "fa"
+            ],
+            "default": "sv"
+          },
+          "country": {
+            "type": "string",
+            "default": "SE"
+          },
+          "currency": {
+            "type": "string",
+            "default": "SEK"
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1
+          },
+          "page_size": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 5
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_parts",
+      "description": "Search active Bildelsbasen listings by vehicle, part, and quality. Returns listings with price, seller, mileage, OEM number, and listing URL. Omit `year` to auto-pick the generation built ~10 years ago.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "brand"
+        ],
+        "properties": {
+          "brand": {
+            "type": "string",
+            "description": "Vehicle brand — one of the enum values (from discover_brands). Resolves regardless of `language`.",
+            "enum": [
+              "AC-Cobra",
+              "AMC",
+              "Acura",
+              "Aiways",
+              "Aixam",
+              "Alfa",
+              "Alpine",
+              "Amica",
+              "Aston-Martin",
+              "Audi",
+              "Austin",
+              "BMC",
+              "BMW",
+              "BYD",
+              "Bedford",
+              "Bellier",
+              "Bentley",
+              "Buddy",
+              "Buick",
+              "Cadillac",
+              "Casalini",
+              "Chatenet",
+              "Chevrolet",
+              "Chrysler",
+              "Citroen",
+              "Cupra",
+              "DAF",
+              "DFSK",
+              "DKW",
+              "DS",
+              "Dacia",
+              "Daewoo",
+              "Daihatsu",
+              "Datsun",
+              "De-Soto",
+              "De-Tomaso",
+              "Dodge",
+              "Dongfeng",
+              "Ferrari",
+              "Fiat",
+              "Fisker",
+              "Ford",
+              "GM",
+              "GMC",
+              "GWM",
+              "Galloper",
+              "Garia",
+              "Ginetta",
+              "Grecav_EKE",
+              "Hanomag",
+              "Hillman",
+              "Honda",
+              "Hongqi",
+              "Hudson",
+              "Hummer",
+              "Hyundai",
+              "Infiniti",
+              "International",
+              "Isuzu",
+              "Iveco",
+              "JAC",
+              "JC",
+              "JDM",
+              "Jaguar",
+              "Jeep",
+              "Jiayuan",
+              "KGM",
+              "KIA",
+              "Kewet",
+              "Lada",
+              "Lamborghini",
+              "Lancia",
+              "LandRover",
+              "Lexus",
+              "Ligier",
+              "Lincoln",
+              "Lotus",
+              "Lynk-&-Co",
+              "MAN",
+              "MG",
+              "Maserati",
+              "Maxus",
+              "Mazda",
+              "McLaren",
+              "Melex",
+              "Mercedes",
+              "Mercury",
+              "Microcar",
+              "Mini",
+              "Mitsubishi",
+              "Morgan",
+              "Morris",
+              "NIO",
+              "Nissan",
+              "Oldsmobile",
+              "Opel",
+              "Ora",
+              "Peugeot",
+              "Piaggio",
+              "Plymouth",
+              "Polestar",
+              "Pontiac",
+              "Porsche",
+              "Renault",
+              "Reva",
+              "Rolls_Royce",
+              "Rover",
+              "Saab",
+              "Saturn",
+              "Seat",
+              "Simca",
+              "Skoda",
+              "Skywell",
+              "Smart",
+              "Spectre",
+              "Ssang-Yong",
+              "Studebaker",
+              "Subaru",
+              "Sunbeam",
+              "Suzuki",
+              "Talbot",
+              "Tasso",
+              "Tesla",
+              "Think",
+              "Toyota",
+              "Trabant",
+              "Triumph",
+              "VAZ",
+              "VW",
+              "Vauxhall",
+              "Volvo",
+              "Voyah",
+              "Wartburg",
+              "Wey",
+              "Xpeng",
+              "Zeekr",
+              "Övrigt"
+            ]
+          },
+          "model": {
+            "type": "string",
+            "description": "Canonical model identifier from discover_models, e.g. 'VOLVO-V70'."
+          },
+          "year": {
+            "type": "string",
+            "description": "Underscore range 'YYYY_YYYY', a single year, or 'all'."
+          },
+          "category": {
+            "type": "string",
+            "description": "Top-level category (pc1), in English — one of the enum. There is no lighting category; if unsure, omit and pass `part` (e.g. 'Strålkastare'), which auto-resolves it.",
+            "enum": [
+              "Air-conditioning-&-Heating",
+              "Airbag",
+              "Body",
+              "Brakes",
+              "Dismantling-object",
+              "Doors",
+              "Electric-&-Transmitter-&-Databox-&-Sensor",
+              "Engine",
+              "Exhaust&cleaning",
+              "Exterior-details",
+              "Front-details",
+              "Fuel",
+              "Gear-box-&-Drive-axle-&-Middle-axle",
+              "Hydraulic&Traction",
+              "Instruments-&-Electric-switches",
+              "Interior",
+              "Lock-&-Alarm",
+              "Other",
+              "Rearview-Mirror",
+              "Repair-sheet-metal-&-Consumables",
+              "Spoilers-&-Wipers",
+              "Steering-wheel-&-Axle-&-Lever-&-Pedal",
+              "Vehicle-exterior-&-Suspension",
+              "Vehicle-front-&-Springs-&-Steering",
+              "Wheels-&-Tires-&-Accessories",
+              "Windows"
+            ]
+          },
+          "part": {
+            "type": "string",
+            "description": "Canonical part identifier from discover_parts."
+          },
+          "position": {
+            "type": "string",
+            "default": "Alla",
+            "description": "Right, left, or 'Alla' for any-position."
+          },
+          "quality_codes": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "A+",
+                "A",
+                "A*",
+                "M"
+              ]
+            }
+          },
+          "language": {
+            "type": "string",
+            "enum": [
+              "sv",
+              "en",
+              "da",
+              "no",
+              "fi",
+              "de",
+              "fr",
+              "es",
+              "it",
+              "is",
+              "et",
+              "ru",
+              "fa"
+            ],
+            "default": "sv"
+          },
+          "country": {
+            "type": "string",
+            "default": "SE"
+          },
+          "currency": {
+            "type": "string",
+            "default": "SEK"
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1
+          },
+          "page_size": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 10
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "bildelsbasen.se",
+  "source": "webmcp.com/api/directory.json"
+}

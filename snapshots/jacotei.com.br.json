@@ -1,0 +1,175 @@
+{
+  "sponsio": 1,
+  "url": "https://jacotei.com.br/",
+  "capturedAt": "2026-09-23T11:25:31.115Z",
+  "tools": [
+    {
+      "name": "compare_products",
+      "description": "Compare up to 4 products side-by-side by id: each returns its full detail (offers, priceRange, ratings) plus curated technical attributes for a spec table. Unresolvable ids come back in `missingIds`. Read-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "ids": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "maxItems": 4,
+            "description": "Product ids to compare (max 4). A comma-separated string is also accepted."
+          }
+        },
+        "required": [
+          "ids"
+        ]
+      }
+    },
+    {
+      "name": "get_offers",
+      "description": "Fetch current offers plus daily price history for a numeric product id: each offer (store, priceCents, discountPct, stock, tracked click-out URL) and the cross-store min-per-day series over the window — useful to judge whether today's price is a good deal. Read-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Numeric product id (from search/get_product)."
+          },
+          "days": {
+            "type": "integer",
+            "minimum": 7,
+            "maximum": 365,
+            "description": "Price-history window in days (7–365, default 90)."
+          }
+        },
+        "required": [
+          "productId"
+        ]
+      }
+    },
+    {
+      "name": "get_product",
+      "description": "Fetch one product page by slug: name, brand, description, aggregate lowest price, 90-day min/max price, images, and EVERY external offer (store, numeric priceCents, list price, discountPct, stock status, and a tracked click-out URL). Includes offerCount, availability and a priceRange across offers. The slug comes from a search result `url`/`slug`. Read-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "maxLength": 200,
+            "description": "Product slug from a search result URL."
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "get_store_info",
+      "description": "Return this store's context for an agent: display name, canonical URL, kind (price-comparison), locale, a best-effort currency hint (authoritative currency is the per-offer currencyCode), a short description, and the catalog of available agent tools/endpoints. Call this first to orient before searching. Read-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_categories",
+      "description": "List the store's top-level departments/categories for navigation: name, product count, and the category page URL, ordered as shown in the menu. Use it to discover what the store sells before searching. Read-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "description": "Max departments (1–100, default 50)."
+          }
+        }
+      }
+    },
+    {
+      "name": "open_search_results",
+      "description": "Busca no catálogo de produtos da loja e abre a página de resultados",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string",
+            "description": "Termo de busca: produto, marca ou categoria"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Search this price-comparison store's catalog by keyword. Returns lean product cards — id, name, brand, lowest price (as a display string AND numeric priceFromCents), currency, offer count, availability, rating, image, and the product page URL — ranked by the chosen sort. Use priceFromCents for numeric ranking; follow `url` or call get_product(slug) to drill in. Read-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 80,
+            "description": "Search terms (2–80 chars)."
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "top",
+              "menor",
+              "maior",
+              "desconto",
+              "vendidos",
+              "nota"
+            ],
+            "description": "Ranking: top (relevance), menor (price asc), maior (price desc), desconto (biggest discount), vendidos (best-selling), nota (rating). Default: top."
+          },
+          "priceMin": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Minimum price floor, in CENTS (integer)."
+          },
+          "priceMax": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Maximum price ceiling, in CENTS (integer)."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 48,
+            "description": "Max results (1–48, default 24)."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "search_store_header",
+      "description": "Busca no catálogo da loja pelo cabeçalho e abre a página de resultados",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string",
+            "description": "Termo de busca: produto, marca ou categoria"
+          }
+        },
+        "required": []
+      }
+    }
+  ],
+  "host": "jacotei.com.br",
+  "source": "webmcp.com/api/directory.json"
+}
