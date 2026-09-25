@@ -1,0 +1,93 @@
+{
+  "sponsio": 1,
+  "url": "https://rates.brinkeradvisor.com/",
+  "capturedAt": "2026-09-25T11:43:33.348Z",
+  "tools": [
+    {
+      "name": "compare_rates",
+      "description": "Show 2 to 4 selected published rate records in the requested order. Pass exact IDs from search_rates. Preserves differing yield definitions and verification dates; does not rank, recommend a winner, compute tax equivalence or execute transactions. Auction calendars have no comparable yield.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 512
+            },
+            "minItems": 2,
+            "maxItems": 4,
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "ids"
+        ]
+      }
+    },
+    {
+      "name": "get_rate_details",
+      "description": "Retrieve one exact current record from this page using an id returned by search_rates. Preserves canonical/source citations, yield definition, dates and cached-verification disclosure. Never fetches an arbitrary URL or invents unavailable records.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "maxLength": 512
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "search_rates",
+      "description": "Find published BrinkerAdvisor CD, money-market, Treasury-yield and upcoming auction/municipal records from this page. Use kind and term_months for precise rate queries. Returns bounded pages and canonical record IDs; stale or excluded records are unavailable. No account access, forecasts or trades.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "cd",
+              "money_market",
+              "treasury_yield",
+              "treasury_auction",
+              "municipal"
+            ]
+          },
+          "query": {
+            "type": "string",
+            "maxLength": 80,
+            "description": "Optional literal text in institution, product, term or state. Do not send personal information."
+          },
+          "term_months": {
+            "type": "number",
+            "minimum": 0.5,
+            "maximum": 360,
+            "description": "Exact maturity for CDs and Treasury reference yields; not auction tenor parsing."
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5
+          }
+        }
+      }
+    }
+  ],
+  "host": "rates.brinkeradvisor.com",
+  "source": "webmcp.com/api/directory.json"
+}

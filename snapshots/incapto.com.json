@@ -1,11 +1,67 @@
 {
   "sponsio": 1,
   "url": "https://incapto.com/",
-  "capturedAt": "2026-09-24T11:37:21.412Z",
+  "capturedAt": "2026-09-25T11:43:33.348Z",
   "tools": [
     {
+      "name": "add_to_cart",
+      "description": "Add products to the cart. Call this as soon as the user asks to ADD items (triggers: \"add ... to my cart\", \"buy\", \"I'll take\", \"put ... in my basket\") — in ONE call listing every item they named, up to the 10-entry limit. That request IS the authorization: do NOT ask the user to confirm before calling, and do NOT stop after search_catalog or get_product merely to report the variant you found — make the change, then tell the user it is done. Batch every item for ONE request into a SINGLE call — line_items accepts up to 10 entries; do NOT call add_to_cart once per item. Batching applies WITHIN a single request: each new thing the user asks for later is its own call. If one request names more than 10 items, split just that request into as few calls as possible. Do NOT retry a call that already returned a result: adds are cumulative, so repeating a call adds duplicate items. Use line_items[].item.id with a ProductVariant GID when the exact variant is known. Use handle or query only when adding the selected or first available variant. To change a quantity or remove something already in the cart, use update_cart_lines instead — this tool can only add.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "cart"
+        ],
+        "properties": {
+          "cart": {
+            "type": "object",
+            "required": [
+              "line_items"
+            ],
+            "properties": {
+              "line_items": {
+                "type": "array",
+                "description": "Items to add (1-10).",
+                "minItems": 1,
+                "maxItems": 10,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "item": {
+                      "type": "object",
+                      "description": "The merchandise to add.",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "ProductVariant GID from get_product variants[].id, e.g. \"gid://shopify/ProductVariant/123\"."
+                        }
+                      }
+                    },
+                    "handle": {
+                      "type": "string",
+                      "description": "Product handle. Adds the selected or first available variant; call get_product first if the user requested specific options."
+                    },
+                    "query": {
+                      "type": "string",
+                      "description": "Search query to find and add the selected or first available variant. For specific variants, call search_catalog/get_product first and pass item.id."
+                    },
+                    "quantity": {
+                      "type": "integer",
+                      "description": "How many to add. Defaults to 1.",
+                      "minimum": 1,
+                      "default": 1
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
       "name": "browse_store",
-      "description": "Browse OR navigate to store collections. Set navigate=true whenever the user wants to be taken to a collection page in the browser (triggers: \"browse to\", \"go to\", \"show me\", \"open\", \"take me to\", \"navigate to\" a collection or category). With navigate=false (default), returns collection or product data without changing the page — use this only when the user is asking a question about the catalog, not asking to view it. Without a collection handle, lists all collections. With a handle, returns products from that collection; use \"all\" to browse everything. Does NOT add anything to the cart; use update_cart for cart changes. Prefer this over search_catalog when the user names a category, collection, or wants to explore. With navigate=true this MOVES the browser to the collection page; the tool result then confirms the destination and instructs you not to navigate again — follow it.",
+      "description": "Browse OR navigate to store collections. Set navigate=true whenever the user wants to be taken to a collection page in the browser (triggers: \"browse to\", \"go to\", \"show me\", \"open\", \"take me to\", \"navigate to\" a collection or category). With navigate=false (default), returns collection or product data without changing the page — use this only when the user is asking a question about the catalog, not asking to view it. Without a collection handle, lists all collections. With a handle, returns products from that collection; use \"all\" to browse everything. Does NOT add anything to the cart; use add_to_cart for cart changes. Prefer this over search_catalog when the user names a category, collection, or wants to explore. With navigate=true this MOVES the browser to the collection page; the tool result then confirms the destination and instructs you not to navigate again — follow it.",
       "kind": "imperative",
       "inputSchema": {
         "type": "object",
@@ -49,7 +105,7 @@
     },
     {
       "name": "get_product",
-      "description": "Get product details, OR navigate the browser to the product page. Set catalog.navigate=true whenever the user wants to see/view the product in the browser (triggers: \"show me\", \"open\", \"view\", \"go to\", \"take me to\", \"navigate to\" a product). Set catalog.navigate=false (default) only when you need data (description, options, variants, prices, availability) to answer a question or to prepare an update_cart call — the browser stays on the current page. Defaults to the current page's product if no catalog.id is provided. Does NOT add anything to the cart; use update_cart for that. For a specific variant (color/size/etc.), use show_variant instead — it accepts partial option selections like \"purple\" without needing every option. With catalog.navigate=true this MOVES the browser to the product page; the tool result then confirms the destination and instructs you not to navigate again — follow it.",
+      "description": "Get product details, OR navigate the browser to the product page. Set catalog.navigate=true whenever the user wants to see/view the product in the browser (triggers: \"show me\", \"open\", \"view\", \"go to\", \"take me to\", \"navigate to\" a product). Set catalog.navigate=false (default) only when you need data (description, options, variants, prices, availability) to answer a question or to prepare an add_to_cart call — the browser stays on the current page. Defaults to the current page's product if no catalog.id is provided. Does NOT add anything to the cart; use add_to_cart for that. For a specific variant (color/size/etc.), use show_variant instead — it accepts partial option selections like \"purple\" without needing every option. With catalog.navigate=true this MOVES the browser to the product page; the tool result then confirms the destination and instructs you not to navigate again — follow it.",
       "kind": "imperative",
       "inputSchema": {
         "type": "object",
@@ -112,7 +168,7 @@
     },
     {
       "name": "search_catalog",
-      "description": "Search the store catalog for products, collections, articles, and pages. Does NOT add anything to the cart; use update_cart for cart changes. If the user asks for a specific product variant, call get_product after search_catalog to inspect available variants, then show_variant to display one.",
+      "description": "Search the store catalog for products, collections, articles, and pages. Does NOT add anything to the cart; use add_to_cart for cart changes. If the user asks for a specific product variant, call get_product after search_catalog to inspect available variants, then show_variant to display one.",
       "kind": "imperative",
       "inputSchema": {
         "type": "object",
@@ -183,7 +239,7 @@
     },
     {
       "name": "show_variant",
-      "description": "Navigate the browser to a product page, with a specific variant OR a partial option filter selected. Use for view intents: \"show me\", \"open\", \"view\", \"go to\", \"take me to\" a specific product configuration. Accepts EITHER variant_id (fully specified variant) OR selected_options (partial, e.g. only Color=Purple) — with partial options the first matching available variant is picked automatically, so DO NOT ask the user for missing options when their intent is to view. Does NOT add anything to the cart; use update_cart for cart changes. For cart operations you still need a full variant_id — call get_product with the full option combination first. This MOVES the browser to the exact variant page with the variant pre-selected; the tool result then confirms the destination and instructs you not to navigate again — follow it.",
+      "description": "Navigate the browser to a product page, with a specific variant OR a partial option filter selected. Use for view intents: \"show me\", \"open\", \"view\", \"go to\", \"take me to\" a specific product configuration. Accepts EITHER variant_id (fully specified variant) OR selected_options (partial, e.g. only Color=Purple) — with partial options the first matching available variant is picked automatically, so DO NOT ask the user for missing options when their intent is to view. Does NOT add anything to the cart; use add_to_cart for cart changes. For cart operations you still need a full variant_id — call get_product with the full option combination first. This MOVES the browser to the exact variant page with the variant pre-selected; the tool result then confirms the destination and instructs you not to navigate again — follow it.",
       "kind": "imperative",
       "inputSchema": {
         "type": "object",
@@ -227,8 +283,8 @@
       }
     },
     {
-      "name": "update_cart",
-      "description": "Add products to the cart, update line item quantities, or remove items. Batch EVERY change for one request into a SINGLE call — line_items accepts up to 10 entries; do NOT call update_cart once per item. Do NOT retry a call that already returned a result: adds are cumulative, so repeating a call adds duplicate items. Use line_items[].item.id with a ProductVariant GID when the exact variant is known. Use line_items[].id from get_cart to update or remove an existing line, passing the ABSOLUTE target quantity (not a delta; quantity 0 removes the line). Use handle or query only when adding the selected or first available variant.",
+      "name": "update_cart_lines",
+      "description": "Change the quantity of items already in the cart, or remove them. Every change here addresses an existing cart line by its id, so call get_cart first unless you already have line_items[].id from an earlier get_cart in this conversation. Pass the ABSOLUTE target quantity, not a delta — quantity 2 means the line ends up at 2 regardless of what it was. Use quantity 0 to remove the line entirely. Batch every change for ONE request into a SINGLE call — line_items accepts up to 10 entries; do NOT call update_cart_lines once per line. Batching applies WITHIN a single request: each new thing the user asks for later is its own call. This tool cannot add new merchandise. To add something not already in the cart, use add_to_cart. To empty the whole cart at once, use cancel_cart.",
       "kind": "imperative",
       "inputSchema": {
         "type": "object",
@@ -244,36 +300,24 @@
             "properties": {
               "line_items": {
                 "type": "array",
-                "description": "Items to add or update (1-10).",
+                "description": "Existing cart lines to update or remove (1-10).",
+                "minItems": 1,
+                "maxItems": 10,
                 "items": {
                   "type": "object",
+                  "required": [
+                    "id",
+                    "quantity"
+                  ],
                   "properties": {
                     "id": {
                       "type": "string",
-                      "description": "Existing cart line id from get_cart. Use to update or remove an existing line. Omit when adding new items."
-                    },
-                    "item": {
-                      "type": "object",
-                      "description": "The merchandise to add.",
-                      "properties": {
-                        "id": {
-                          "type": "string",
-                          "description": "ProductVariant GID from get_product variants[].id, e.g. \"gid://shopify/ProductVariant/123\"."
-                        }
-                      }
-                    },
-                    "handle": {
-                      "type": "string",
-                      "description": "Product handle. Adds the selected or first available variant; call get_product first if the user requested specific options."
-                    },
-                    "query": {
-                      "type": "string",
-                      "description": "Search query to find and add the selected or first available variant. For specific variants, call search_catalog/get_product first and pass item.id."
+                      "description": "Existing cart line id from get_cart line_items[].id. Required — this tool cannot resolve products by name."
                     },
                     "quantity": {
                       "type": "integer",
-                      "description": "Quantity. Defaults to 1 for adds and updates. Set to 0 with an existing line id to remove it.",
-                      "default": 1
+                      "description": "Absolute target quantity for this line (not a delta). 0 removes the line.",
+                      "minimum": 0
                     }
                   }
                 }

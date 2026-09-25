@@ -1,0 +1,308 @@
+{
+  "sponsio": 1,
+  "url": "https://postor.com.mx/",
+  "capturedAt": "2026-09-25T11:43:33.348Z",
+  "tools": [
+    {
+      "name": "abrirResultado",
+      "description": "Abre en esta pestaña una ficha o búsqueda pública de Postor para que la persona vea el resultado. Devuelve {destino, navegacion: 'iniciada'} con la URL solicitada; no confirma que la página terminó de cargar. Una URL no permitida o una cancelación devuelve {isError:true,content,structuredContent:{error:{code,message}}}. Usa la URL HTML de Postor devuelta por una consulta; las URLs oficiales son referencias externas.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "format": "uri-reference",
+            "minLength": 1,
+            "maxLength": 4096,
+            "pattern": "^(?!.*[\\\\\\u0000-\\u0020])(?:(?:https://postor\\.com\\.mx))?(?:\\/(?:abierto|buscar|licitaciones|proveedores|dependencias|unidades|categorias|partidas|mercados|datos|api-docs|comprasmx|compranet|glosario|guias)\\/?|\\/(?:licitacion|invitacion|adjudicacion|acuerdo-marco)(?:\\/[a-z0-9-]+)?\\/?|\\/(?:p|mercado|ramo|glosario|guias)\\/[a-z0-9-]+\\/?|\\/(?:proveedor|dependencia|unidad|categoria|partida)\\/[a-z0-9-]+(?:\\/procedimientos(?:\\/\\d{4})?)?\\/?|\\/(?:dependencia|estado)\\/[a-z0-9-]+\\/vigentes\\/?|\\/categoria\\/[a-z0-9-]+\\/precios\\/?|\\/estado\\/[a-z0-9-]+\\/?|\\/licitaciones\\/(?:\\d{4}|vigentes|cierran-esta-semana|seccion\\/(?:vigente|seguimiento|concluido)|estatus\\/[a-z0-9-]+)\\/?|\\/licitaciones-estatales(?:\\/(?:mexico|ciudad-de-mexico|nuevo-leon|jalisco|chihuahua|puebla|guanajuato|sinaloa|oaxaca|baja-california-sur|baja-california|campeche|nayarit|zacatecas)(?:\\/(?:[0-9a-f-]{36}|vigente|archivo\\/\\d{4}))?)?\\/?|\\/datos\\/descargas\\/?|/licitaciones-cfe(?:/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})?/?|/licitaciones-pemex(?:/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})?/?)(?:\\?(?:(?:q|tipo|coleccion|cursor|anio|estatus|seccion|siglas|cucop|state|status|year|buyer|type|page|sort)(?:=[^\\s#\\\\&]*)?(?:&(?:q|tipo|coleccion|cursor|anio|estatus|seccion|siglas|cucop|state|status|year|buyer|type|page|sort)(?:=[^\\s#\\\\&]*)?)*)?)?(?:#[a-zA-Z0-9_-]+)?$",
+            "description": "URL HTML del origen actual o canónico de Postor, o ruta pública desde /. Acepta fichas y búsquedas públicas; no acepta el panel, guardados, formularios ni URLs oficiales externas."
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "buscarProcedimientos",
+      "description": "Busca procedimientos federales por texto, dependencia (siglas), año, etapa, estado, estatus, tipo o clave CUCOP. Todos los filtros son opcionales: {} devuelve los procedimientos públicos más recientes. Devuelve 20 por defecto y hasta 50 por página, ordenados por fecha de publicación; conserva los mismos filtros al continuar con cursor. No admite número de página. Consulta la ficha para verificar adjudicaciones. Devuelve un objeto MCP: content contiene texto y structuredContent contiene los datos públicos descritos por el servidor. Si isError es true, revisa content y structuredContent.error cuando exista; un error no equivale a cero resultados.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 200,
+            "description": "Texto a buscar en el índice público; puede omitirse para explorar por filtros o consultar publicaciones recientes."
+          },
+          "siglas": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "description": "Siglas exactas publicadas de la dependencia, por ejemplo IMSS."
+          },
+          "anio": {
+            "type": "integer",
+            "minimum": 1900,
+            "maximum": 2200,
+            "description": "Año del ejercicio, no necesariamente el año de publicación."
+          },
+          "estatus": {
+            "description": "Estatus exacto publicado; conserva mayúsculas y acentos. Usa section para la etapa vigente/seguimiento/concluido.",
+            "type": "string",
+            "enum": [
+              "VIGENTE JA",
+              "VIGENTE PAP",
+              "EN ACLARACIONES",
+              "VIGENTE SA",
+              "EN REPREGUNTAS",
+              "EN ATENCIÓN DE PREGUNTAS",
+              "VIGENTE SIN ACTA",
+              "VIGENTE",
+              "PENDIENTE DE APERTURA",
+              "POR EVALUAR",
+              "BLOQUEADO PARA APERTURA",
+              "EN DECISIÓN DE FALLO",
+              "EN APERTURA",
+              "EN EVALUACIÓN",
+              "SUSPENDIDO",
+              "ACTA EN AUTORIZACIÓN",
+              "ACTA RECHAZADA",
+              "EN OSD",
+              "ADJUDICADO",
+              "ADJUDICADO PARCIAL",
+              "DESIERTO",
+              "CANCELADO",
+              "CERRADO",
+              "CONFIRMADO"
+            ]
+          },
+          "cucop": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 20,
+            "description": "Clave CUCOP exacta publicada en las partidas."
+          },
+          "section": {
+            "type": "string",
+            "enum": [
+              "vigente",
+              "seguimiento",
+              "concluido"
+            ],
+            "description": "Etapa de seguimiento del procedimiento."
+          },
+          "state_id": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 32,
+            "description": "Identificador del catálogo estatal de Postor/ComprasMX (1–32); Ciudad de México es 7, no es la numeración INEGI."
+          },
+          "tipo": {
+            "description": "Tipo exacto publicado; conserva mayúsculas y acentos. No uses el prefijo LA/AA como tipo.",
+            "type": "string",
+            "enum": [
+              "LICITACIÓN PÚBLICA",
+              "INVITACIÓN A CUANDO MENOS TRES PERSONAS",
+              "ADJUDICACIÓN DIRECTA",
+              "CONTRATO ESPECÍFICO DERIVADO DE ACUERDO MARCO",
+              "ASIGNACIÓN DIRECTA DE CONTRATO ESPECÍFICO DERIVADO DE ACUERDO MARCO",
+              "ADJUDICACIÓN DIRECTA CONTRATO MARCO",
+              "CONCURSO ASOCIACIONES PÚBLICO PRIVADAS",
+              "ADJUDICACIÓN DIRECTA SIN SOLICITUD DE COTIZACIÓN"
+            ]
+          },
+          "limite": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "description": "Máximo de resultados; si se omite se devuelven hasta 20."
+          },
+          "cursor": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000,
+            "description": "Copia siguiente_cursor de la respuesta anterior y conserva los mismos filtros. Omítelo en la primera consulta."
+          }
+        },
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "buscarProveedores",
+      "description": "Busca proveedores publicados por nombre parcial. Devuelve slugs para consultar su perfil o adjudicaciones. El límite es una muestra de búsqueda; no representa el total del universo. Devuelve un objeto MCP: content contiene texto y structuredContent contiene los datos públicos descritos por el servidor. Si isError es true, revisa content y structuredContent.error cuando exista; un error no equivale a cero resultados.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 200
+          },
+          "limite": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "description": "Máximo de resultados; si se omite se devuelven hasta 20."
+          }
+        },
+        "required": [
+          "q"
+        ],
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "estadisticasContratacion",
+      "description": "Consulta los agregados públicos federales generales o de un año/estado. general no admite clave; anio requiere clave de cuatro dígitos entre 1900 y 2200; estado requiere clave entre 1 y 32. Cuenta procedimientos; los montos adjudicados van en pesos, con otras monedas al tipo de cambio de Banxico y sin contratos por verificar. Las fuentes estatales no se mezclan con estos datos. Devuelve un objeto MCP: content contiene texto y structuredContent contiene los datos públicos descritos por el servidor. Si isError es true, revisa content y structuredContent.error cuando exista; un error no equivale a cero resultados.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "dimension": {
+            "type": "string",
+            "enum": [
+              "general",
+              "anio",
+              "estado"
+            ],
+            "description": "general devuelve los agregados públicos; anio y estado seleccionan una dimensión con clave obligatoria."
+          },
+          "clave": {
+            "type": "string",
+            "pattern": "^\\d{1,4}$",
+            "description": "Omite clave para general. Para anio usa un año de cuatro dígitos (1900–2200), por ejemplo \"2025\". Para estado usa el ID Postor/ComprasMX (1–32), por ejemplo \"7\" para Ciudad de México; no es INEGI."
+          }
+        },
+        "required": [
+          "dimension"
+        ],
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "dimension": {
+                "type": "string",
+                "const": "general"
+              },
+              "clave": {
+                "not": {}
+              }
+            },
+            "required": [
+              "dimension"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "dimension": {
+                "type": "string",
+                "const": "anio"
+              },
+              "clave": {
+                "type": "string",
+                "pattern": "^(?:19\\d{2}|20\\d{2}|21\\d{2}|2200)$"
+              }
+            },
+            "required": [
+              "dimension",
+              "clave"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "dimension": {
+                "type": "string",
+                "const": "estado"
+              },
+              "clave": {
+                "type": "string",
+                "maxLength": 4,
+                "pattern": "^0{0,3}(?:[1-9]|[12]\\d|3[0-2])$"
+              }
+            },
+            "required": [
+              "dimension",
+              "clave"
+            ],
+            "additionalProperties": false
+          }
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "listarAdjudicacionesProveedor",
+      "description": "Lista adjudicaciones publicadas de un proveedor por slug, con importes originales, moneda y enlace oficial. Sólo procedimientos ADJUDICADO o ADJUDICADO PARCIAL; pagina contratos con cursor, no fechas de fallo programadas. Devuelve un objeto MCP: content contiene texto y structuredContent contiene los datos públicos descritos por el servidor. Si isError es true, revisa content y structuredContent.error cuando exista; un error no equivale a cero resultados.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "pattern": "^[a-z0-9][a-z0-9-]*$"
+          },
+          "anio": {
+            "type": "integer",
+            "minimum": 1900,
+            "maximum": 2200
+          },
+          "limite": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "description": "Máximo de resultados; si se omite se devuelven hasta 20."
+          },
+          "cursor": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000,
+            "description": "Copia siguiente_cursor de la respuesta anterior y conserva los mismos filtros. Omítelo en la primera consulta."
+          }
+        },
+        "required": [
+          "slug"
+        ],
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "obtenerProcedimiento",
+      "description": "Devuelve la ficha pública de un procedimiento federal por su número: comprador, adjudicaciones publicadas, importes, partidas y anexos. Usa el número exacto devuelto por buscarProcedimientos, incluidos formatos históricos. Incluye los enlaces de Postor y ComprasMX para verificarlo. Devuelve un objeto MCP: content contiene texto y structuredContent contiene los datos públicos descritos por el servidor. Si isError es true, revisa content y structuredContent.error cuando exista; un error no equivale a cero resultados.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "numero": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "pattern": "^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)+$",
+            "description": "Número exacto devuelto como numero_procedimiento por buscarProcedimientos; no es un UUID ni una URL. Conserva los separadores del identificador publicado."
+          }
+        },
+        "required": [
+          "numero"
+        ],
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "postor.com.mx",
+  "source": "webmcp.com/api/directory.json"
+}

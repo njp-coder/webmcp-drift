@@ -1,0 +1,231 @@
+{
+  "sponsio": 1,
+  "url": "https://signgo.com.br/",
+  "capturedAt": "2026-09-25T11:43:33.348Z",
+  "tools": [
+    {
+      "name": "signgo_get_account",
+      "description": "Retorna os dados básicos e o plano da conta autenticada, sem retornar token, senha ou dados de MFA.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "signgo_get_context",
+      "description": "Informa a área atual, a sessão e as capacidades disponíveis no SignGo sem retornar tokens ou segredos.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "signgo_get_document",
+      "description": "Retorna dados e assinadores de um documento acessível pela conta, sem hashes, IP, geolocalização ou trilhas técnicas.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "uuid": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID do documento."
+          }
+        },
+        "required": [
+          "uuid"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "signgo_get_document_overview",
+      "description": "Retorna os totais de documentos e assinaturas da conta autenticada.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "signgo_get_security_status",
+      "description": "Informa a política de senha e se o MFA está ativo ou pendente, sem retornar segredo, QR Code, senha ou código.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "signgo_list_documents",
+      "description": "Lista ou pesquisa documentos da conta autenticada, com paginação e sem retornar hashes, geolocalização ou trilhas técnicas.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "maxLength": 200,
+            "description": "Texto opcional para pesquisar."
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1
+          },
+          "perPage": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 20
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "signgo_navigate",
+      "description": "Navega pela interface do SignGo. Operações sensíveis continuam exigindo interação e confirmação humana na tela.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "destination": {
+            "type": "string",
+            "enum": [
+              "site",
+              "login",
+              "register",
+              "validator",
+              "home",
+              "documents",
+              "new_document",
+              "account",
+              "security",
+              "terms",
+              "privacy",
+              "document"
+            ],
+            "description": "Área do SignGo que deve ser aberta."
+          },
+          "documentUuid": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Obrigatório quando destination for document."
+          }
+        },
+        "required": [
+          "destination"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "signgo_open_sign_dialog",
+      "description": "Abre o diálogo de assinatura de um documento pendente. Não informa senha, MFA, geolocalização ou aceite e não registra uma assinatura.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "uuid": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID do documento."
+          }
+        },
+        "required": [
+          "uuid"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "signgo_prepare_document",
+      "description": "Abre a criação de documento com nome, prazo, mensagem e assinadores preenchidos. O usuário escolhe o PDF e confirma o envio na interface.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255,
+            "description": "Nome do documento."
+          },
+          "expirationDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Prazo opcional no formato AAAA-MM-DD."
+          },
+          "additionalInformation": {
+            "type": "string",
+            "maxLength": 5000,
+            "description": "Mensagem opcional aos assinadores."
+          },
+          "signers": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 50,
+            "items": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "requiredFactors": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "email_otp",
+                      "totp"
+                    ]
+                  },
+                  "uniqueItems": true
+                }
+              },
+              "required": [
+                "email"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "name",
+          "signers"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "signgo_validate_document",
+      "description": "Consulta publicamente um documento pelo número ou código e retorna identidades mascaradas e o estado das assinaturas.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "reference": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "description": "Número ou código do documento."
+          }
+        },
+        "required": [
+          "reference"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "signgo.com.br",
+  "source": "webmcp.com/api/directory.json"
+}

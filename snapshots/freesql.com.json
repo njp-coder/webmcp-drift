@@ -1,0 +1,388 @@
+{
+  "sponsio": 1,
+  "url": "https://freesql.com/?webmcp=true",
+  "capturedAt": "2026-09-25T11:43:33.348Z",
+  "tools": [
+    {
+      "name": "draft_sql",
+      "description": "Prepare SQL for review without inserting it into the editor or executing it.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sql": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 20000
+          }
+        },
+        "required": [
+          "sql"
+        ]
+      }
+    },
+    {
+      "name": "find_database_objects",
+      "description": "Search bounded database objects such as tables, views, packages, procedures, and indexes in an authorized schema.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "schema": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "objectType": {
+            "type": "string",
+            "enum": [
+              "ALL",
+              "TABLE",
+              "VIEW",
+              "FUNCTION",
+              "PACKAGE",
+              "PACKAGE BODY",
+              "INDEX",
+              "MLE MODULE",
+              "MLE ENVIRONMENT",
+              "MATERIALIZED VIEW LOGS",
+              "TYPE",
+              "SYNONYM",
+              "PUBLIC_SYNONYM",
+              "TRIGGER",
+              "SEQUENCE",
+              "PROCEDURE",
+              "MATERIALIZED VIEW"
+            ]
+          },
+          "search": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50
+          }
+        }
+      }
+    },
+    {
+      "name": "find_scripts",
+      "description": "Search public FreeSQL scripts by title, description, or tags and return bounded metadata.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "search": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50
+          }
+        }
+      }
+    },
+    {
+      "name": "find_tutorials",
+      "description": "Search public FreeSQL tutorials by title, description, or tags and return bounded metadata.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "search": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50
+          }
+        }
+      }
+    },
+    {
+      "name": "get_connection_context",
+      "description": "Return non-secret database and schema context. Credentials, access tokens, hosts, ports, and connection strings are never returned.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_editor_content",
+      "description": "Read the visible SQL worksheet content and selected text without executing or changing it.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "maxChars": {
+            "type": "integer",
+            "minimum": 100,
+            "maximum": 20000
+          }
+        }
+      }
+    },
+    {
+      "name": "get_execution_plan",
+      "description": "Generate an execution plan for one read-only SELECT statement and update the visible explain-plan pane.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sql": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 10000
+          }
+        },
+        "required": [
+          "sql"
+        ]
+      }
+    },
+    {
+      "name": "get_object_arguments",
+      "description": "Return bounded arguments for an authorized procedure, function, or package object.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "owner": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "name"
+        ]
+      }
+    },
+    {
+      "name": "get_object_ddl",
+      "description": "Read the generated DDL for an authorized database object without executing it.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "owner": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "ALL",
+              "TABLE",
+              "VIEW",
+              "FUNCTION",
+              "PACKAGE",
+              "PACKAGE BODY",
+              "INDEX",
+              "MLE MODULE",
+              "MLE ENVIRONMENT",
+              "MATERIALIZED VIEW LOGS",
+              "TYPE",
+              "SYNONYM",
+              "PUBLIC_SYNONYM",
+              "TRIGGER",
+              "SEQUENCE",
+              "PROCEDURE",
+              "MATERIALIZED VIEW"
+            ]
+          }
+        },
+        "required": [
+          "name",
+          "type"
+        ]
+      }
+    },
+    {
+      "name": "get_script",
+      "description": "Read public or currently authorized script metadata by slug.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 300
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "get_script_statements",
+      "description": "Read bounded script statements by slug for explanation or comparison.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 300
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "get_table_columns",
+      "description": "Return bounded column metadata for an authorized table or view.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "owner": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "name"
+        ]
+      }
+    },
+    {
+      "name": "get_tutorial",
+      "description": "Read public or currently authorized tutorial metadata by slug.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 300
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "get_tutorial_steps",
+      "description": "Read bounded tutorial steps by slug for explanation or worksheet guidance.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 300
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "get_workspace_context",
+      "description": "Return the current FreeSQL page, content, authentication mode, database version, schema mode, and available agent capabilities.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_owned_schemas",
+      "description": "List safe metadata for schemas owned by the signed-in FreeSQL user.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_sample_schemas",
+      "description": "List sample-schema names currently available to the selected FreeSQL environment.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "run_readonly_sql",
+      "description": "Execute one bounded SELECT statement in the current authorized FreeSQL schema, update the visible query-result pane, and return a compact result summary.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sql": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 10000
+          },
+          "maxRows": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          }
+        },
+        "required": [
+          "sql"
+        ]
+      }
+    }
+  ],
+  "host": "freesql.com",
+  "source": "webmcp.com/api/directory.json"
+}

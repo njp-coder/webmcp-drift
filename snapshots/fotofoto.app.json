@@ -1,0 +1,50 @@
+{
+  "sponsio": 1,
+  "url": "https://fotofoto.app/",
+  "capturedAt": "2026-09-25T11:43:33.348Z",
+  "tools": [
+    {
+      "name": "create_photo_book",
+      "description": "Makes a photo book from public image URLs, or from a public iCloud Shared Album link, in the given order, and opens it in this tab. Returns JSON with bookId, previewUrl, claimUrl and photoCount. Making and viewing the book is free and needs no account; claimUrl saves it with an email address.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Title printed on the cover"
+          },
+          "photoUrls": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "maxItems": 100,
+            "description": "Public https image URLs, in book order"
+          },
+          "sharedAlbumUrl": {
+            "type": "string",
+            "description": "Public iCloud Shared Album link (https://www.icloud.com/sharedalbum/#TOKEN), used instead of photoUrls"
+          }
+        },
+        "required": [
+          "title"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_catalog",
+      "description": "Lists the photo book types foto foto prints, the countries it ships to and the photo limits. Returns JSON with products (id, name, price), shippingCountries and limits. Free, changes nothing.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "fotofoto.app",
+  "source": "webmcp.com/api/directory.json"
+}

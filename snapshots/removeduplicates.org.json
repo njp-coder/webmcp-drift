@@ -1,0 +1,100 @@
+{
+  "sponsio": 1,
+  "url": "https://removeduplicates.org/",
+  "capturedAt": "2026-09-25T11:43:33.348Z",
+  "tools": [
+    {
+      "name": "remove_duplicates",
+      "description": "Remove duplicate lines from a text list, or duplicate rows from CSV/TSV text such as rows copied from Excel or Google Sheets. Uses the same engine as removeduplicates.org and returns the cleaned text with counts. Stateless: the text is processed in memory for this call only and is never stored.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "The list or table text: one item per line, or CSV/tab-separated rows. Up to 131072 UTF-8 bytes."
+          },
+          "format": {
+            "type": "string",
+            "enum": [
+              "auto",
+              "lines",
+              "table"
+            ],
+            "default": "auto",
+            "description": "auto detects CSV/TSV tables; lines compares whole lines; table forces CSV/TSV parsing."
+          },
+          "ignoreCase": {
+            "type": "boolean",
+            "default": false,
+            "description": "Treat values such as Apple and apple as duplicates."
+          },
+          "trim": {
+            "type": "boolean",
+            "default": false,
+            "description": "Ignore surrounding spaces when comparing and return trimmed values."
+          },
+          "removeEmpty": {
+            "type": "boolean",
+            "default": true,
+            "description": "Drop blank lines or all-blank rows."
+          },
+          "keep": {
+            "type": "string",
+            "enum": [
+              "first",
+              "last"
+            ],
+            "default": "first",
+            "description": "Which occurrence of a duplicate survives."
+          },
+          "order": {
+            "type": "string",
+            "enum": [
+              "preserve",
+              "sort"
+            ],
+            "default": "preserve",
+            "description": "preserve keeps the original order; sort returns a natural (numeric-aware) sort."
+          },
+          "compare": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "row"
+                ]
+              },
+              {
+                "type": "integer",
+                "minimum": 0
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "minItems": 1,
+                "uniqueItems": true
+              }
+            ],
+            "default": "row",
+            "description": "Tables only: \"row\" compares entire rows; a zero-based column index or an array of indices compares only those columns."
+          },
+          "header": {
+            "type": "boolean",
+            "default": false,
+            "description": "Tables only: keep the first row as a header outside duplicate checks and counts."
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "removeduplicates.org",
+  "source": "webmcp.com/api/directory.json"
+}

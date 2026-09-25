@@ -1,7 +1,7 @@
 {
   "sponsio": 1,
   "url": "https://nixuracingteam.net/wp/shop/",
-  "capturedAt": "2026-09-24T11:37:21.412Z",
+  "capturedAt": "2026-09-25T11:43:33.348Z",
   "tools": [
     {
       "name": "get_categories",
@@ -56,23 +56,6 @@
       "inputSchema": {
         "type": "object",
         "properties": {}
-      }
-    },
-    {
-      "name": "my_custom_tool",
-      "description": "Does something useful.",
-      "kind": "imperative",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "description": "A name."
-          }
-        },
-        "required": [
-          "name"
-        ]
       }
     },
     {
@@ -183,6 +166,15 @@
       }
     },
     {
+      "name": "woo_get_payment_methods",
+      "description": "List the payment gateways currently available for checkout.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
       "name": "woo_get_product",
       "description": "Get full details for a single WooCommerce product.",
       "kind": "imperative",
@@ -207,6 +199,44 @@
       "inputSchema": {
         "type": "object",
         "properties": {}
+      }
+    },
+    {
+      "name": "woo_get_shipping_methods",
+      "description": "List available shipping rates for the cart, based on the address set via woo_set_checkout_details.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "woo_place_order",
+      "description": "Place a real WooCommerce order from the current cart and saved checkout details. Requires confirm:true.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "confirm": {
+            "type": "boolean",
+            "description": "Must be true to actually place the order."
+          },
+          "fields": {
+            "type": "object",
+            "description": "Optional checkout fields to set/override before placing the order."
+          },
+          "payment_method": {
+            "type": "string",
+            "description": "Payment gateway id from woo_get_payment_methods. Auto-selected if only one is available."
+          },
+          "shipping_method": {
+            "type": "string",
+            "description": "Shipping rate id from woo_get_shipping_methods. Auto-selected if only one is available."
+          }
+        },
+        "required": [
+          "confirm"
+        ]
       }
     },
     {
@@ -258,6 +288,23 @@
             "description": "price | popularity | rating | date (default: relevance)."
           }
         }
+      }
+    },
+    {
+      "name": "woo_set_checkout_details",
+      "description": "Fill in billing/shipping details and order notes ahead of placing an order. Field keys match woo_get_checkout_fields.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "fields": {
+            "type": "object",
+            "description": "Key-value pairs, e.g. billing_first_name, billing_email, shipping_address_1, order_comments."
+          }
+        },
+        "required": [
+          "fields"
+        ]
       }
     }
   ],

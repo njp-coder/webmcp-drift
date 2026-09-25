@@ -1,11 +1,11 @@
 {
   "sponsio": 1,
   "url": "https://www.bestprice.gr/",
-  "capturedAt": "2026-09-24T11:37:21.412Z",
+  "capturedAt": "2026-09-25T11:43:33.348Z",
   "tools": [
     {
       "name": "apply_listing_filter",
-      "description": "Apply one exact visible filter value using the same in-page navigation as a shopper.",
+      "description": "Narrow this BestPrice listing by one filter value (e.g. filter «Κατασκευαστής», value «Samsung»), as the shopper would click it. Use exact labels from get_listing_filters; one unambiguous partial label also works. Returns the filter and value applied and whether the page confirmed it (outcome). Reloads the listing in this tab; buys nothing.",
       "kind": "imperative",
       "inputSchema": {
         "type": "object",
@@ -20,7 +20,7 @@
             "type": "string",
             "minLength": 1,
             "maxLength": 72,
-            "description": "Exact visible filter value."
+            "description": "Visible filter value or unique partial label."
           }
         },
         "required": [
@@ -32,7 +32,7 @@
     },
     {
       "name": "apply_listing_sort",
-      "description": "Apply one exact sorting option currently rendered on this BestPrice listing page.",
+      "description": "Reorder this BestPrice listing by one of its sorting options, named by its full label or one unambiguous partial label from get_listing_sort_options. Use it when the shopper wants, say, the cheapest first. Returns the option applied and whether the page confirmed it (outcome). Reloads the listing in this tab.",
       "kind": "imperative",
       "inputSchema": {
         "type": "object",
@@ -41,7 +41,7 @@
             "type": "string",
             "minLength": 1,
             "maxLength": 72,
-            "description": "Exact visible sorting option."
+            "description": "Visible sorting option or unique partial label."
           }
         },
         "required": [
@@ -52,7 +52,7 @@
     },
     {
       "name": "clear_listing_filters",
-      "description": "Clear the filters currently applied to this BestPrice search or category page.",
+      "description": "Remove every filter applied to this BestPrice listing and return to its unfiltered results. Use it when the filters left too few or the wrong products. Returns whether the page confirmed the change (outcome), or filters_already_clear when there was nothing to clear. Reloads the listing in this tab.",
       "kind": "imperative",
       "inputSchema": {
         "type": "object",
@@ -62,7 +62,7 @@
     },
     {
       "name": "compare_page_offers",
-      "description": "Compare up to four currently rendered offers by item price, shipping, delivered price, availability, and merchant rating.",
+      "description": "Compare the store offers on this BestPrice item page. Use it when the shopper asks where to buy or what it costs delivered. Returns up to four offers, known delivered price (item + shipping) first, with variant title, prices, availability, store rating and an offer_ref for show_offer; excluded_unknown_shipping names the cheapest unknown-shipping offer left out; include_all_stores loads the stores behind «Όλες οι τιμές». Read-only; opens no store link.",
       "kind": "imperative",
       "inputSchema": {
         "type": "object",
@@ -71,7 +71,16 @@
             "type": "integer",
             "minimum": 1,
             "maximum": 4,
-            "description": "Number of lowest-delivered-price offers to return, from 1 to 4."
+            "description": "Number of offers to return, from 1 to 4: lowest known delivered price first, then offers with unknown shipping by item price."
+          },
+          "include_all_stores": {
+            "type": "boolean",
+            "description": "First load the stores this page keeps behind «Όλες οι τιμές», as when the shopper presses it. Defaults to false."
+          },
+          "product_id": {
+            "type": "string",
+            "pattern": "^(?:bp_)?(\\d{1,20})$",
+            "description": "Optional: the product on this page, as bp_<id> (as the BestPrice MCP server names it) or its numeric id. Another product is refused with where to find it."
           }
         },
         "additionalProperties": false
@@ -79,17 +88,30 @@
     },
     {
       "name": "get_listing_filters",
-      "description": "Return the selected and available values from filters currently rendered on this listing page.",
+      "description": "Read the filters of this BestPrice listing (brand, price range, features…) with their selected and available values, including values behind «Εμφάνιση όλων». Use it before apply_listing_filter to get exact labels. Returns up to 8 filters with 5 values each; pass group to read one filter in full and next_offset to continue. Read-only.",
       "kind": "imperative",
       "inputSchema": {
         "type": "object",
-        "properties": {},
+        "properties": {
+          "group": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64,
+            "description": "A filter key or name a previous call returned; returns that filter with all of its values."
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Use next_offset from the previous result with the same group, or none. Defaults to 0."
+          }
+        },
         "additionalProperties": false
       }
     },
     {
       "name": "get_listing_sort_options",
-      "description": "Return the sorting options currently rendered on this BestPrice listing page.",
+      "description": "List the sorting options this BestPrice listing offers (e.g. most popular, cheapest first). Use it before apply_listing_sort to get exact labels. Returns each option’s name and whether it is the active one. Read-only.",
       "kind": "imperative",
       "inputSchema": {
         "type": "object",
@@ -99,7 +121,7 @@
     },
     {
       "name": "get_page_product",
-      "description": "Return the product, current minimum price, rating, and offer count shown on this BestPrice item page.",
+      "description": "Read the product on this BestPrice item page. Use it first on a product page to know what the shopper is viewing. Returns product_id, title, category, the lowest current item price (before shipping; compare_page_offers gives delivered prices), number of store offers, rating and the BestPrice URL. Read-only.",
       "kind": "imperative",
       "inputSchema": {
         "type": "object",
@@ -108,41 +130,101 @@
       }
     },
     {
+      "name": "get_product_details",
+      "description": "Read one product you already have a product_id for (from a search, a product list or a recommendation; bp_<id> works too). Use it to check a product before opening it. Returns its facts, lowest price before shipping, rating, up to four store offers ranked by delivered price, key specifications and price-history summary. Not for finding products by name (use search_bestprice) or choosing one (use get_shopping_decision). Read-only; the tab does not move.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "string",
+            "pattern": "^(?:bp_)?(\\d{1,20})$",
+            "description": "The product’s id, as BestPrice search results, product lists and recommendations give it (numeric; bp_<id> also works)."
+          },
+          "include": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 3,
+            "items": {
+              "type": "string",
+              "enum": [
+                "offers",
+                "specifications",
+                "price_history"
+              ]
+            },
+            "description": "Sections to read: offers, specifications, price_history. Defaults to all three."
+          }
+        },
+        "required": [
+          "product_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
       "name": "get_product_specifications",
-      "description": "Return structured specifications for the product on this BestPrice item page, optionally focused on one specification section.",
+      "description": "Read the technical specifications of the product on this BestPrice item page, optionally one section (e.g. Οθόνη) or one fact by name, Greek or common English (e.g. refresh rate). Use it to check a feature or compare models. Returns section, name and value rows, up to 16 per call; follow next_offset for more, and ask for a fact by name to read a shortened value in full. Read-only.",
       "kind": "imperative",
       "inputSchema": {
         "type": "object",
         "properties": {
           "section": {
             "type": "string",
-            "enum": [
-              "all",
-              "display",
-              "processor",
-              "memory",
-              "storage",
-              "battery",
-              "camera",
-              "connectivity",
-              "dimensions",
-              "general"
-            ],
-            "description": "Specification section to return. Use all for a concise overview."
+            "minLength": 1,
+            "maxLength": 48,
+            "description": "Use all or a section name shown on this product, such as Οθόνη, Ισχύς, or Διαστάσεις."
           },
           "limit": {
             "type": "integer",
             "minimum": 1,
             "maximum": 16,
             "description": "Maximum number of specification facts to return, from 1 to 16."
+          },
+          "fact": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 72,
+            "description": "A specification fact name, such as one a previous call returned, or a common English name (refresh rate, screen size, weight, energy class…) matched to the product’s own Greek one. Returns that fact in full, from whichever section lists it; pass its section too when the name appears in more than one section."
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Use next_offset from the previous result, keeping the same product and section. Defaults to 0. Do not combine with fact."
           }
         },
         "additionalProperties": false
       }
     },
     {
+      "name": "get_shopping_decision",
+      "description": "Ask the BestPrice Shopping Brain what to buy. Use it when the shopper describes needs, a budget or a comparison and wants a pick: pass their words as written (Greek or English), optionally a Greek postcode. Returns the pick (product_id, price before shipping, link), up to three alternatives, reasons, tradeoffs, unknowns, or a clarifying question. Not for finding products by name (use search_bestprice) or one known product (use get_product_details). Read-only; asks mcp.bestprice.gr.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000,
+            "description": "The shopper’s question as they asked it, with budget and required features, e.g. «κινητό έως 400€ με NFC»."
+          },
+          "postal_code": {
+            "type": "string",
+            "pattern": "^(?:[1-7][0-9]{4}|8[0-5][0-9]{3})$",
+            "description": "Optional five-digit Greek delivery postcode the shopper gave (10000–85999); adds shipping and delivered totals."
+          }
+        },
+        "required": [
+          "message"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
       "name": "get_visible_products",
-      "description": "Return up to eight products currently rendered on this BestPrice search or category page.",
+      "description": "Read the products shown on this BestPrice listing or home page. Use it to see what the shopper is looking at before comparing or opening one. Returns up to 8 per call — product_id, title, lowest price before shipping, store count, and on the home page the section; follow next_offset for the rest, and when more_pages is true pass load_more to load the next result page as the shopper’s scroll does. Read-only, except that load_more adds that page to the listing.",
       "kind": "imperative",
       "inputSchema": {
         "type": "object",
@@ -152,14 +234,43 @@
             "minimum": 1,
             "maximum": 8,
             "description": "Maximum products to return."
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Use next_offset from the previous result on the same page. Defaults to 0, or with load_more to the first newly loaded product."
+          },
+          "load_more": {
+            "type": "boolean",
+            "description": "Listing pages: first load the next result page into this listing, as the shopper’s scroll does, then read from its first new product. Use it when more_pages is true."
           }
         },
         "additionalProperties": false
       }
     },
     {
+      "name": "open_visible_product",
+      "description": "Open one product shown on this BestPrice listing or home page, by the product_id get_visible_products returned, to reach its store offers, specifications and price history. Returns the product, its BestPrice URL and whether the page confirmed the navigation (outcome). Moves this tab to the product page; opens no store site and buys nothing.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "string",
+            "pattern": "^\\d{1,20}$",
+            "description": "Numeric product ID returned by get_visible_products."
+          }
+        },
+        "required": [
+          "product_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
       "name": "search_bestprice",
-      "description": "Start a BestPrice product search and navigate this browser tab to the results.",
+      "description": "Find BestPrice products by name, brand, model or category words. Use it when the shopper names what they want. Returns a list — product_id, title, lowest price before shipping and store count for each — and the results page. Not for advice on what to buy (use get_shopping_decision) or one product you already have a product_id for (use get_product_details). Unless navigate is false it then moves this tab to the results. Buys nothing.",
       "kind": "imperative",
       "inputSchema": {
         "type": "object",
@@ -168,7 +279,17 @@
             "type": "string",
             "minLength": 2,
             "maxLength": 120,
-            "description": "Product, brand, model, or shopping need to search for."
+            "description": "Product, brand, model, or shopping need to search for, in Greek or English."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 8,
+            "description": "Maximum results to return, from 1 to 8. Defaults to 6."
+          },
+          "navigate": {
+            "type": "boolean",
+            "description": "Move this tab to the results page after reading it. Defaults to true; false only reads."
           }
         },
         "required": [
@@ -178,8 +299,36 @@
       }
     },
     {
+      "name": "show_offer",
+      "description": "Scroll this BestPrice item page to one store offer and highlight it for the shopper, using the offer_ref from compare_page_offers (or a merchant_name that matches exactly one shown offer). Use it when the shopper wants to see or choose that store. Returns the offer and whether it ended in view. Changes only what the shopper sees; never opens the store’s site or exposes its URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "offer_ref": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 40,
+            "description": "Page-local offer reference from compare_page_offers. Exact, and the only selector that can separate two stores with the same displayed name. A reference names one quote: it is refused once the page state, the merchant, the variant or any price or shipping amount changes; read the offers again."
+          },
+          "merchant_id": {
+            "type": "string",
+            "pattern": "^\\d{1,20}$",
+            "description": "Numeric merchant id as the page markup shows it (data-mid); compare_page_offers does not return it, so prefer offer_ref."
+          },
+          "merchant_name": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 68,
+            "description": "Merchant name exactly as compare_page_offers returned it."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
       "name": "show_price_history",
-      "description": "Open or focus the price-history chart for the product currently shown on the BestPrice item page.",
+      "description": "Open or scroll to the price-history chart on this BestPrice item page so the shopper sees it. Use it after summarize_price_history when the shopper wants the chart. Returns which of the two happened. Changes only what the shopper sees.",
       "kind": "imperative",
       "inputSchema": {
         "type": "object",
@@ -189,7 +338,7 @@
     },
     {
       "name": "summarize_price_history",
-      "description": "Return the current, lowest, and highest recorded prices plus recent and overall price direction for this BestPrice product.",
+      "description": "Summarize this product’s BestPrice price history. Use it when the shopper asks whether now is a good time to buy. Returns the current, lowest and highest recorded prices, the period observed, and the overall and latest price direction with dates. Read-only; it makes no prediction.",
       "kind": "imperative",
       "inputSchema": {
         "type": "object",
