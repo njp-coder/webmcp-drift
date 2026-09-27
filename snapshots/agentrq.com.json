@@ -1,0 +1,61 @@
+{
+  "sponsio": 1,
+  "url": "https://agentrq.com/",
+  "capturedAt": "2026-09-27T11:55:13.146Z",
+  "tools": [
+    {
+      "name": "listPages",
+      "description": "List the pages of agentrq.com with their title, description and URL, 50 at a time. Filter by category — \"pages\" (home, contact, legal), \"docs\", \"features\", \"blog\" or \"glossary\" — or leave it empty for every page. Pass pagination.nextStartIndex back as startIndex for the next batch.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "description": "A category to list, or empty for all pages."
+          },
+          "startIndex": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Position of the first page to return. Defaults to 0."
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "lookupPage",
+      "description": "Read an agentrq.com page as Markdown, with every link and image as an absolute URL. Leave url empty to read the page the user is on.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "An agentrq.com page: an absolute URL such as \"https://agentrq.com/docs/tasks\" or a path such as \"/docs/tasks\"."
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "navigate",
+      "description": "Take the user to an agentrq.com page. Only pages that listPages returns can be opened; a \"#section\" on the URL is kept.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "An agentrq.com page: an absolute URL such as \"https://agentrq.com/docs/tasks\" or a path such as \"/docs/tasks\"."
+          }
+        },
+        "required": [
+          "url"
+        ]
+      }
+    }
+  ],
+  "host": "agentrq.com",
+  "source": "webmcp.com/api/directory.json"
+}

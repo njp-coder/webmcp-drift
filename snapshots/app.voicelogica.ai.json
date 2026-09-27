@@ -1,11 +1,29 @@
 {
   "sponsio": 1,
   "url": "https://app.voicelogica.ai/",
-  "capturedAt": "2026-09-26T11:16:25.264Z",
+  "capturedAt": "2026-09-27T11:55:13.146Z",
   "tools": [
     {
-      "name": "getCurrentPage",
-      "description": "Read the current URL and matched Voice Logica page, plus the signed-in user.",
+      "name": "ask_voicelogica",
+      "description": "Ask a plain-language question about Voice Logica: what the product does, how a workspace runs, telephony and SIP, agents, campaigns, workflows, integrations, or the server MCP. Answers from the public product map, so it works with no account. Use it before anything else when the question is about the product rather than about workspace data.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "question"
+        ],
+        "properties": {
+          "question": {
+            "type": "string",
+            "description": "The question, in plain language."
+          }
+        }
+      }
+    },
+    {
+      "name": "get_current_page",
+      "description": "Read where this tab currently is: the URL, the matched Voice Logica page, and the signed-in user. Use it to orient yourself before navigating.",
       "kind": "imperative",
       "inputSchema": {
         "type": "object",
@@ -14,8 +32,8 @@
       }
     },
     {
-      "name": "getSession",
-      "description": "Who is signed in to this Voice Logica tab (user, role, company). Start here to understand the current session.",
+      "name": "get_docs_index",
+      "description": "Get the llms.txt index of Voice Logica documentation as Markdown: the product map, the readable guide, and the OAuth MCP endpoints for production and staging. Works with no account.",
       "kind": "imperative",
       "inputSchema": {
         "type": "object",
@@ -24,23 +42,8 @@
       }
     },
     {
-      "name": "listAgents",
-      "description": "List AI agents. Optional name filter.",
-      "kind": "imperative",
-      "inputSchema": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "query": {
-            "type": "string",
-            "description": "Optional name / text filter."
-          }
-        }
-      }
-    },
-    {
-      "name": "listAppPages",
-      "description": "List every Voice Logica page this user can open (dashboard, calls, agents, billing, admin, …). Use the returned key or path with openPage.",
+      "name": "get_password_reset_steps",
+      "description": "How a Voice Logica password is reset, end to end, and what to do when the account was created with Google or Microsoft instead. No account needed to ask.",
       "kind": "imperative",
       "inputSchema": {
         "type": "object",
@@ -49,23 +52,23 @@
       }
     },
     {
-      "name": "listCampaigns",
-      "description": "List outbound campaigns. Optional name filter.",
+      "name": "get_product_map",
+      "description": "Read the Voice Logica product map a section at a time: how a workspace runs, telephony and agent concepts, the integration catalogue, the server MCP tool names, and the page catalog. Call it with no argument for the list of sections, then name one to read it. ask_voicelogica searches the same map when you have a question rather than a section in mind.",
       "kind": "imperative",
       "inputSchema": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "query": {
+          "section": {
             "type": "string",
-            "description": "Optional name / text filter."
+            "description": "Heading of the section to read, as returned by this tool with no argument. Matched loosely, so a few words of it are enough."
           }
         }
       }
     },
     {
-      "name": "listMailboxes",
-      "description": "List connected email mailboxes.",
+      "name": "get_session",
+      "description": "Who is signed in to this Voice Logica tab: user, access level, and the company every other tool is scoped to. Call this first — if `signedIn` is false the user must log in before anything else will return data.",
       "kind": "imperative",
       "inputSchema": {
         "type": "object",
@@ -74,8 +77,67 @@
       }
     },
     {
-      "name": "listTasks",
-      "description": "List upcoming tasks (or search by subject).",
+      "name": "get_setup_guide",
+      "description": "Read one setup journey as ordered steps. Each step names the page to open, what to do there, the tool to use when a page alone is not enough, and whether this user is allowed on it. Walk it with open_guide_step.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "guideKey"
+        ],
+        "properties": {
+          "guideKey": {
+            "type": "string",
+            "enum": [
+              "connect_telephony",
+              "add_team_member",
+              "add_user_sip_extension",
+              "create_first_agent",
+              "put_agent_on_a_number",
+              "launch_outbound_campaign",
+              "connect_integration",
+              "connect_mailbox",
+              "connect_pbx_edge_device",
+              "review_call_quality",
+              "book_appointments_on_calls",
+              "answer_eshop_order_questions",
+              "transfer_calls_to_a_person",
+              "add_knowledge_to_an_agent",
+              "send_sms_during_calls",
+              "put_an_agent_on_the_website",
+              "automate_after_a_call",
+              "connect_claude_or_chatgpt",
+              "manage_minutes_and_billing"
+            ],
+            "description": "The journey to read. One of the keys from list_setup_guides."
+          }
+        }
+      }
+    },
+    {
+      "name": "get_sign_in_options",
+      "description": "How to get into this Voice Logica workspace: which sign-in methods this page offers, and where to sign up or reset a password. Answers with no account, so an agent that hits the login wall can tell the user what to do next.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_sign_up_requirements",
+      "description": "What creating a Voice Logica account needs: the fields on this form, the password rule, the social options, and what happens straight after. No account needed to ask.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_agents",
+      "description": "List the AI phone agents of this company. Filter by agent name, or omit the filter for the full list.",
       "kind": "imperative",
       "inputSchema": {
         "type": "object",
@@ -83,14 +145,35 @@
         "properties": {
           "query": {
             "type": "string",
-            "description": "Optional name / text filter."
+            "description": "Part of an agent name. Omit to list every agent."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 50,
+            "description": "How many rows to return, 1-50. Defaults to 50."
+          },
+          "cursor": {
+            "type": "string",
+            "description": "Cursor for the next page: pass the `nextCursor` from the previous reply. Omit for the first page."
           }
         }
       }
     },
     {
-      "name": "listVoipPhones",
-      "description": "List SIP / VoIP phones. Optional name filter.",
+      "name": "list_app_pages",
+      "description": "List every Voice Logica page this user is allowed to open — dashboard, calls, agents, campaigns, billing, admin, and so on. Returns the keys and paths that open_page accepts; pages the user has no permission for are left out. Signed out the list is nearly empty and `signInRequired` is true: open the \"signIn\" page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_campaigns",
+      "description": "List outbound calling campaigns. Filter by campaign name, or omit the filter for the full list.",
       "kind": "imperative",
       "inputSchema": {
         "type": "object",
@@ -98,14 +181,94 @@
         "properties": {
           "query": {
             "type": "string",
-            "description": "Optional name / text filter."
+            "description": "Part of a campaign name. Omit to list every campaign."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 50,
+            "description": "How many rows to return, 1-50. Defaults to 50."
+          },
+          "cursor": {
+            "type": "string",
+            "description": "Cursor for the next page: pass the `nextCursor` from the previous reply. Omit for the first page."
           }
         }
       }
     },
     {
-      "name": "listWorkflows",
-      "description": "List workflows. Optional name filter.",
+      "name": "list_mailboxes",
+      "description": "List the email accounts connected to this company, with the mailbox ids used by open_email_thread.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 50,
+            "description": "How many rows to return, 1-50. Defaults to 50."
+          }
+        }
+      }
+    },
+    {
+      "name": "list_setup_guides",
+      "description": "List the setup journeys this workspace is configured through, grouped by area: telephony and SIP, agents and knowledge, appointments, channels such as SMS and the web widget, integrations including e-shops and connecting Claude or ChatGPT, outbound campaigns, call review and automation, team access, and billing. Use this when the user asks how to set something up rather than where a page is.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_supported_integrations",
+      "description": "Which business systems a Voice Logica agent can use during a call: CRMs, ERPs, e-shops, helpdesks, hospitality systems, couriers, Google and Microsoft, payments. Pass a name to check one, such as \"shopify\" or \"SAP\". Answers with no account, so use it for \"do you integrate with X\" questions.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "match": {
+            "type": "string",
+            "description": "Optional filter: a product name, a provider id, or a category such as \"ERP\" or \"courier\". Omit for the whole catalogue."
+          }
+        }
+      }
+    },
+    {
+      "name": "list_tasks",
+      "description": "List tasks and callbacks. Filter by task subject, or omit the filter to get what is due over the next 60 days.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "subject": {
+            "type": "string",
+            "description": "Part of a task subject. Omit for upcoming tasks."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 50,
+            "description": "How many rows to return, 1-50. Defaults to 50."
+          },
+          "cursor": {
+            "type": "string",
+            "description": "Cursor for the next page: pass the `nextCursor` from the previous reply. Omit for the first page."
+          }
+        }
+      }
+    },
+    {
+      "name": "list_voip_phones",
+      "description": "List the SIP / VoIP phone lines of this company and whether each one is verified. Filter by line name.",
       "kind": "imperative",
       "inputSchema": {
         "type": "object",
@@ -113,14 +276,51 @@
         "properties": {
           "query": {
             "type": "string",
-            "description": "Optional name / text filter."
+            "description": "Part of a phone line name. Omit to list every line."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 50,
+            "description": "How many rows to return, 1-50. Defaults to 50."
+          },
+          "cursor": {
+            "type": "string",
+            "description": "Cursor for the next page: pass the `nextCursor` from the previous reply. Omit for the first page."
           }
         }
       }
     },
     {
-      "name": "openAgent",
-      "description": "Open an agent editor (flow editor for node-based agents).",
+      "name": "list_workflows",
+      "description": "List the workflows of this company. Filter by workflow name, or omit the filter for the full list.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Part of a workflow name. Omit to list every workflow."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 50,
+            "description": "How many rows to return, 1-50. Defaults to 50."
+          },
+          "cursor": {
+            "type": "string",
+            "description": "Cursor for the next page: pass the `nextCursor` from the previous reply. Omit for the first page."
+          }
+        }
+      }
+    },
+    {
+      "name": "open_agent",
+      "description": "Open an agent in the tabbed editor. Node-based agents switch to the flow canvas from there.",
       "kind": "imperative",
       "inputSchema": {
         "type": "object",
@@ -131,14 +331,15 @@
         "properties": {
           "agentId": {
             "type": "string",
-            "description": "Agent id."
+            "pattern": "^[a-fA-F0-9]{24}$",
+            "description": "Agent id — the 24-character hex `id` field returned by list_agents."
           }
         }
       }
     },
     {
-      "name": "openCall",
-      "description": "Open a call detail page.",
+      "name": "open_call",
+      "description": "Open a call in this tab, with its recording, transcript, and analysis.",
       "kind": "imperative",
       "inputSchema": {
         "type": "object",
@@ -149,14 +350,15 @@
         "properties": {
           "callId": {
             "type": "string",
-            "description": "Call id."
+            "pattern": "^[a-fA-F0-9]{24}$",
+            "description": "Call id — the 24-character hex `id` field returned by search_calls."
           }
         }
       }
     },
     {
-      "name": "openCampaign",
-      "description": "Open a campaign edit drawer on the campaigns list.",
+      "name": "open_campaign",
+      "description": "Open a campaign for editing, as the edit drawer over the campaigns list.",
       "kind": "imperative",
       "inputSchema": {
         "type": "object",
@@ -167,14 +369,15 @@
         "properties": {
           "campaignId": {
             "type": "string",
-            "description": "Campaign id."
+            "pattern": "^[a-fA-F0-9]{24}$",
+            "description": "Campaign id — the 24-character hex `id` field returned by list_campaigns."
           }
         }
       }
     },
     {
-      "name": "openContact",
-      "description": "Open a contact's detail page.",
+      "name": "open_contact",
+      "description": "Open a contact's detail page in this tab, showing their calls, tasks, and activity.",
       "kind": "imperative",
       "inputSchema": {
         "type": "object",
@@ -185,50 +388,25 @@
         "properties": {
           "contactId": {
             "type": "string",
-            "description": "Contact id."
+            "pattern": "^[a-fA-F0-9]{24}$",
+            "description": "Contact id — the 24-character hex `id` field returned by search_contacts."
           }
         }
       }
     },
     {
-      "name": "openPage",
-      "description": "Navigate this tab to a Voice Logica page. Pass a key from listAppPages (e.g. \"campaigns\") or a path (e.g. \"/campaigns\").",
+      "name": "open_demo",
+      "description": "Open the public demo: a live Voice Logica agent the person can chat with or actually speak to right now in this tab, with no account and nothing to install. Use it when someone asks whether it works, what it sounds like, or wants to see it rather than read about it.",
       "kind": "imperative",
       "inputSchema": {
         "type": "object",
         "additionalProperties": false,
-        "required": [
-          "page"
-        ],
-        "properties": {
-          "page": {
-            "type": "string",
-            "description": "Page key (campaigns, callHistory, billing, …) or a path starting with /."
-          }
-        }
+        "properties": {}
       }
     },
     {
-      "name": "openTask",
-      "description": "Load a task and open the tasks page. Returns the task fields.",
-      "kind": "imperative",
-      "inputSchema": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": [
-          "taskId"
-        ],
-        "properties": {
-          "taskId": {
-            "type": "string",
-            "description": "Task id."
-          }
-        }
-      }
-    },
-    {
-      "name": "openThread",
-      "description": "Open an email thread in the inbox.",
+      "name": "open_email_thread",
+      "description": "Open an email conversation in the inbox. Pass the mailbox id from the same search result so the right inbox is opened.",
       "kind": "imperative",
       "inputSchema": {
         "type": "object",
@@ -239,17 +417,101 @@
         "properties": {
           "threadId": {
             "type": "string",
-            "description": "Thread id."
+            "pattern": "^[a-fA-F0-9]{24}$",
+            "description": "Thread id — the 24-character hex `id` field returned by search_email_threads."
           },
           "mailboxId": {
             "type": "string",
-            "description": "Optional mailbox id (opens the right inbox)."
+            "pattern": "^[a-fA-F0-9]{24}$",
+            "description": "Mailbox id — the 24-character hex `id` field returned by search_email_threads or list_mailboxes."
           }
         }
       }
     },
     {
-      "name": "openWorkflow",
+      "name": "open_guide_step",
+      "description": "Walk a setup journey: open the page for a given step and return it plus the steps after it. Use it to take the user through a guide one step at a time after get_setup_guide, instead of working out which page each step lives on.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "guideKey",
+          "step"
+        ],
+        "properties": {
+          "guideKey": {
+            "type": "string",
+            "enum": [
+              "connect_telephony",
+              "add_team_member",
+              "add_user_sip_extension",
+              "create_first_agent",
+              "put_agent_on_a_number",
+              "launch_outbound_campaign",
+              "connect_integration",
+              "connect_mailbox",
+              "connect_pbx_edge_device",
+              "review_call_quality",
+              "book_appointments_on_calls",
+              "answer_eshop_order_questions",
+              "transfer_calls_to_a_person",
+              "add_knowledge_to_an_agent",
+              "send_sms_during_calls",
+              "put_an_agent_on_the_website",
+              "automate_after_a_call",
+              "connect_claude_or_chatgpt",
+              "manage_minutes_and_billing"
+            ],
+            "description": "The journey being walked. One of the keys from list_setup_guides."
+          },
+          "step": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Which step to open, 1-based, as numbered by get_setup_guide."
+          }
+        }
+      }
+    },
+    {
+      "name": "open_page",
+      "description": "Navigate this tab to a Voice Logica page. Only pages from list_app_pages can be opened; anything else is refused rather than followed. If nobody is signed in the tab goes to sign-in instead, carrying the page as returnUrl, and the reply says so.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "page"
+        ],
+        "properties": {
+          "page": {
+            "type": "string",
+            "description": "A key from list_app_pages (e.g. \"campaigns\") or its path (e.g. \"/campaigns\")."
+          }
+        }
+      }
+    },
+    {
+      "name": "open_task",
+      "description": "Load one task and open the tasks page. Returns the task fields so they can be read without a second call.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "taskId"
+        ],
+        "properties": {
+          "taskId": {
+            "type": "string",
+            "pattern": "^[a-fA-F0-9]{24}$",
+            "description": "Task id — the 24-character hex `id` field returned by list_tasks."
+          }
+        }
+      }
+    },
+    {
+      "name": "open_workflow",
       "description": "Open a workflow in the visual builder.",
       "kind": "imperative",
       "inputSchema": {
@@ -261,29 +523,41 @@
         "properties": {
           "workflowId": {
             "type": "string",
-            "description": "Workflow id."
+            "pattern": "^[a-fA-F0-9]{24}$",
+            "description": "Workflow id — the 24-character hex `id` field returned by list_workflows."
           }
         }
       }
     },
     {
-      "name": "searchCalls",
-      "description": "Search call history by phone number (empty query = recent calls).",
+      "name": "search_calls",
+      "description": "Search call history by the phone number on the call. Omit the number to get the most recent calls instead.",
       "kind": "imperative",
       "inputSchema": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "query": {
+          "phoneNumber": {
             "type": "string",
-            "description": "Optional name / text filter."
+            "description": "Part of the phone number on the call. Omit for recent calls."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "default": 20,
+            "description": "How many rows to return, 1-20. Defaults to 20."
+          },
+          "cursor": {
+            "type": "string",
+            "description": "Cursor for the next page: pass the `nextCursor` from the previous reply. Omit for the first page."
           }
         }
       }
     },
     {
-      "name": "searchContacts",
-      "description": "Search contacts by name, email, or phone. Prefer this over clicking the contacts search box.",
+      "name": "search_contacts",
+      "description": "Find CRM contacts by name, email address, or phone number. Returns the contact id needed by open_contact.",
       "kind": "imperative",
       "inputSchema": {
         "type": "object",
@@ -294,14 +568,47 @@
         "properties": {
           "query": {
             "type": "string",
-            "description": "Name, email, or phone."
+            "description": "Part of a contact name, email address, or phone number. Required."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "default": 20,
+            "description": "How many rows to return, 1-20. Defaults to 20."
           }
         }
       }
     },
     {
-      "name": "searchThreads",
-      "description": "Search email inbox threads by subject.",
+      "name": "search_email_threads",
+      "description": "Search inbox conversations by subject line. Omit the subject to get the most recent threads.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "subject": {
+            "type": "string",
+            "description": "Part of an email subject line. Omit for recent threads."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "default": 20,
+            "description": "How many rows to return, 1-20. Defaults to 20."
+          },
+          "cursor": {
+            "type": "string",
+            "description": "Cursor for the next page: pass the `nextCursor` from the previous reply. Omit for the first page."
+          }
+        }
+      }
+    },
+    {
+      "name": "search_users",
+      "description": "Search the people on this company account by name or email address. Omit the query for the first page of the team.",
       "kind": "imperative",
       "inputSchema": {
         "type": "object",
@@ -309,22 +616,83 @@
         "properties": {
           "query": {
             "type": "string",
-            "description": "Optional name / text filter."
+            "description": "Part of a team member name or email address. Omit for the whole team."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 50,
+            "description": "How many rows to return, 1-50. Defaults to 50."
+          },
+          "cursor": {
+            "type": "string",
+            "description": "Cursor for the next page: pass the `nextCursor` from the previous reply. Omit for the first page."
           }
         }
       }
     },
     {
-      "name": "searchUsers",
-      "description": "Search team users by name or email (empty query = first page).",
+      "name": "site_info",
+      "description": "Basic facts about this site with no account needed: what Voice Logica is, the app and marketing URLs, where the machine-readable docs live, the server MCP endpoint, and which tools here need a signed-in workspace.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    },
+    {
+      "name": "start_setup_guide",
+      "description": "Begin a setup journey: navigate this tab to its first page and return that step plus every step after it, so the whole journey can be explained from one call. If nobody is signed in the tab goes to sign-in first and returns to the step afterwards. Refused only when a signed-in user lacks permission for the opening page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "guideKey"
+        ],
+        "properties": {
+          "guideKey": {
+            "type": "string",
+            "enum": [
+              "connect_telephony",
+              "add_team_member",
+              "add_user_sip_extension",
+              "create_first_agent",
+              "put_agent_on_a_number",
+              "launch_outbound_campaign",
+              "connect_integration",
+              "connect_mailbox",
+              "connect_pbx_edge_device",
+              "review_call_quality",
+              "book_appointments_on_calls",
+              "answer_eshop_order_questions",
+              "transfer_calls_to_a_person",
+              "add_knowledge_to_an_agent",
+              "send_sms_during_calls",
+              "put_an_agent_on_the_website",
+              "automate_after_a_call",
+              "connect_claude_or_chatgpt",
+              "manage_minutes_and_billing"
+            ],
+            "description": "The journey to start. One of the keys from list_setup_guides."
+          }
+        }
+      }
+    },
+    {
+      "name": "start_sign_up",
+      "description": "Begin creating a Voice Logica account: put this tab on the sign-up form, with the email filled in when one is given. It only opens and prefills the form — the person still types their own password and submits, so no credentials pass through this tool.",
       "kind": "imperative",
       "inputSchema": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "query": {
+          "email": {
             "type": "string",
-            "description": "Optional name / text filter."
+            "format": "email",
+            "description": "Email to prefill. Omit to open the empty form."
           }
         }
       }

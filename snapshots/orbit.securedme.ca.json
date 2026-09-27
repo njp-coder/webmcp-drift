@@ -1,0 +1,199 @@
+{
+  "sponsio": 1,
+  "url": "https://orbit.securedme.ca/",
+  "capturedAt": "2026-09-27T11:55:13.146Z",
+  "tools": [
+    {
+      "name": "orbit_get_mission_summary",
+      "description": "Read one local Orbit Companion mission and its bounded checkpoint list from the associated extension or explicitly shared browser workspace.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "missionId": {
+            "type": "string",
+            "pattern": "^mission_[A-Za-z0-9_-]+$",
+            "maxLength": 128
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "orbit_get_physics_snapshot",
+      "description": "Read the visible experiment controls and displayed telemetry, sampled at invocation time. Educational simulation, not flight data. No network call is made.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "orbit_get_research_request",
+      "description": "Start here. Read the human question, selected context and requestId only after explicit sharing. Ask clarifying questions; propose nine research axes, collect up to thirty real source URLs and present a cited report. Uses no paid API.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "orbit_list_research_points",
+      "description": "Read a bounded page of local research points from the associated extension or explicitly shared browser workspace.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 25,
+            "default": 10
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "orbit_present_research",
+      "description": "Show an answer in the holographic companion and optionally read it aloud if the human enabled voice. Requires current requestId and sharing. Use empty axes and sources for a clarification. Sources and claims remain external-agent-reported. Does not publish or invoke providers.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "requestId": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "report": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 40000
+          },
+          "axes": {
+            "type": "array",
+            "maxItems": 9,
+            "items": {
+              "type": "string",
+              "maxLength": 300
+            }
+          },
+          "sources": {
+            "type": "array",
+            "maxItems": 30,
+            "items": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string",
+                  "maxLength": 500
+                },
+                "url": {
+                  "type": "string",
+                  "maxLength": 2000
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "discovered",
+                    "excerpt-read",
+                    "read"
+                  ]
+                }
+              },
+              "required": [
+                "title",
+                "url",
+                "status"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "requestId",
+          "report",
+          "axes",
+          "sources"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "orbit_read_source_record",
+      "description": "Read one stored source record by local identifier without fetching its URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sourceId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "sourceId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "orbit_search_sources",
+      "description": "Search saved local source records in the associated mission. Saved records are not necessarily verified. It never fetches the web.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 25,
+            "default": 10
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "orbit_search_web",
+      "description": "Run one bounded Exa search using the associated extension and its mission budget. Requires the human research consent checkbox and workspace sharing. Uses Exa credits. On the public site without association it returns UNAVAILABLE; use your own authorized search tools instead.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "orbit.securedme.ca",
+  "source": "webmcp.com/api/directory.json"
+}
