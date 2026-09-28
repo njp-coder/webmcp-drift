@@ -1,0 +1,152 @@
+{
+  "sponsio": 1,
+  "url": "https://maximem.ai/",
+  "capturedAt": "2026-09-28T13:44:04.127Z",
+  "tools": [
+    {
+      "name": "estimate_maximem_synap_cost",
+      "description": "Estimate the total cost of agent memory over 12 to 36 months: what Maximem Synap would cost, what building the same thing in-house would cost in engineering time and infrastructure, and what a competing vendor (Mem0, Zep, Letta, Supermemory, Cognee, Evermind) would cost. Returns both sides with the difference, plus a link to the same calculation on this site. Use for 'should we build or buy?', 'what would this cost us?', or 'is Synap cheaper than Mem0?'.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "comparison": {
+            "type": "string",
+            "enum": [
+              "build_in_house",
+              "switch_from_vendor"
+            ],
+            "description": "Compare Synap against building it yourself, or against a vendor you already pay. Defaults to build_in_house."
+          },
+          "vendor": {
+            "type": "string",
+            "enum": [
+              "mem0_starter",
+              "mem0_pro",
+              "zep_flex",
+              "zep_flex_plus",
+              "letta_pro",
+              "supermemory_pro",
+              "cognee_self",
+              "evermind_self"
+            ],
+            "description": "The vendor and tier to compare against. Only used when comparison is switch_from_vendor."
+          },
+          "engineerRate": {
+            "type": "number",
+            "description": "Fully-loaded engineer cost in USD per hour, used to price build and ops time. Defaults to 80. Clamped to 10-500."
+          },
+          "monthlyLlmSpend": {
+            "type": "number",
+            "description": "Current LLM API spend in USD per month, used to estimate token savings from smaller context. Defaults to 5000."
+          },
+          "months": {
+            "type": "integer",
+            "enum": [
+              12,
+              24,
+              36
+            ],
+            "description": "Length of the comparison window in months. Defaults to 24."
+          },
+          "synapPlan": {
+            "type": "string",
+            "enum": [
+              "starter",
+              "pro",
+              "scale"
+            ],
+            "description": "Which Synap plan to price. Omit to let the tool match the compared vendor's tier."
+          },
+          "haveVectorDb": {
+            "type": "boolean",
+            "description": "True if you already run a vector database, which shortens an in-house build. Defaults to false."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_product_details",
+      "description": "Get the detail for one Maximem product: what it does, who it suits, how many integrations it has, what it costs, the pages on this site that go deeper, and the links that actually start an install or signup. Use after list_maximem_products, or directly when the person already named Maximem Vity or Maximem Synap.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product": {
+            "type": "string",
+            "enum": [
+              "vity",
+              "synap"
+            ],
+            "description": "Which product. 'vity' is the personal browser extension; 'synap' is the developer memory API."
+          }
+        },
+        "required": [
+          "product"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_integrations",
+      "description": "Check which tools, frameworks and apps Maximem already integrates with, optionally filtered by name. Use for 'does Maximem work with LangChain / OpenClaw / CrewAI?' or 'what frameworks does Synap support?'. Covers Maximem Synap's framework SDKs and the surfaces Maximem Vity plugs into. An empty result means no shipped integration, not that it is impossible.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Tool or framework name to filter by, e.g. 'langchain'. Omit to list everything."
+          },
+          "product": {
+            "type": "string",
+            "enum": [
+              "vity",
+              "synap",
+              "any"
+            ],
+            "description": "Restrict to one product's integrations. Defaults to 'any'."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_maximem_products",
+      "description": "List the products Maximem makes, each with a one-line summary, who it suits, and its page on this site. Start here when someone asks what Maximem offers or which Maximem product fits a need, before reaching for a product-specific tool. Returns two: Maximem Vity, a browser extension for individuals, and Maximem Synap, a memory API for developers.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "look_up_memory_term",
+      "description": "Look up a term from Maximem's AI memory and context-engineering glossary, such as 'context window', 'RAG', 'vector store' or 'agentic memory'. Returns a short definition, why it matters, and a link to the full entry. Use when someone asks what a memory or agent term means. This is Maximem's own glossary, not a general dictionary — unrelated terms return no match.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "The term to look up, or words to search for, e.g. 'context window'."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 8,
+            "description": "Maximum number of matches to return. Defaults to 5, capped at 8."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "maximem.ai",
+  "source": "webmcp.com/api/directory.json"
+}

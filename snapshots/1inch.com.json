@@ -1,0 +1,127 @@
+{
+  "sponsio": 1,
+  "url": "https://1inch.com/",
+  "capturedAt": "2026-09-28T13:44:04.127Z",
+  "tools": [
+    {
+      "name": "connect_wallet",
+      "description": "Opens the wallet-connection panel so the user can connect a wallet. The user completes the connection manually; this tool never selects a wallet or signs anything. Calling it again while the panel is already open (or a wallet is already connected) is a no-op.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_wallet_status",
+      "description": "Returns the connected EVM and Solana wallet addresses (null when not connected) and the currently selected chain.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "open_page",
+      "description": "Navigates to a 1inch.com page. Page-scoped tools (swap, limit orders, Aqua) become available after opening their page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "string",
+            "enum": [
+              "swap",
+              "trade",
+              "pro",
+              "aqua_overview",
+              "aqua_create"
+            ],
+            "description": "Target page: simple swap, advanced trade, pro trading, Aqua overview, or Aqua create."
+          }
+        },
+        "required": [
+          "page"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_tokens",
+      "description": "Searches the curated 1inch token list by symbol, name, or address and returns candidates with their exact addresses and decimals. Use the returned address in other tools.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Token symbol, name, or address."
+          },
+          "chainId": {
+            "type": "number",
+            "description": "Chain id to search on. Defaults to the selected chain."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "swap_configure",
+      "description": "Updates the visible swap form: source/destination token (symbol or address), human-readable amount, and optionally the chain. Waits for the refreshed quote and returns the resulting form state.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "srcToken": {
+            "type": "string",
+            "description": "Source token symbol or address."
+          },
+          "dstToken": {
+            "type": "string",
+            "description": "Destination token symbol or address."
+          },
+          "amount": {
+            "type": "string",
+            "description": "Source amount in human-readable units, e.g. \"1.5\"."
+          },
+          "chainId": {
+            "type": "number",
+            "description": "Chain id to swap on (switches the form when supported)."
+          },
+          "dstChainId": {
+            "type": "number",
+            "description": "Destination chain id for a cross-chain swap."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "swap_execute",
+      "description": "Submits the currently configured swap through the standard flow. The user must confirm every transaction in their wallet; this tool can never move funds silently.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "swap_get_quote",
+      "description": "Returns the current swap quote for the visible form: tokens, amounts, swap type, quote errors, and whether the swap is ready to execute.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "1inch.com",
+  "source": "webmcp.com/api/directory.json"
+}

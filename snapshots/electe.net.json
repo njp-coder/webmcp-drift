@@ -1,0 +1,248 @@
+{
+  "sponsio": 1,
+  "url": "https://electe.net/",
+  "capturedAt": "2026-09-28T13:44:04.127Z",
+  "tools": [
+    {
+      "name": "inspect_image_c2pa",
+      "description": "Fetch a single image (by CSS selector or URL) and return its fully decoded C2PA manifest store: every manifest's claim, assertions (e.g. c2pa.actions edit history, schema.org authorship), and the COSE signature details (algorithm and signing-certificate identity). Provide exactly one of `selector` or `url`. Note: the signature is decoded but NOT cryptographically verified.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "selector": {
+            "type": "string",
+            "maxLength": 8192,
+            "description": "CSS selector for an <img> element on the page."
+          },
+          "url": {
+            "type": "string",
+            "maxLength": 8192,
+            "description": "Image URL (absolute, or relative to the current page) to fetch and inspect."
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "scan_images_c2pa",
+      "description": "Scan every <img> on the current page for C2PA Content Credentials (content provenance metadata) and return a per-image summary: whether a manifest is present, the claim generator (the tool that produced or edited the image), the title, and the signer name. Use this to find which images on a page carry provenance data. Note: provenance is decoded but NOT cryptographically verified.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 25,
+            "description": "Maximum number of images to fetch and scan (default 25, max 100)."
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "search",
+      "description": "Search electe.net — product documentation, help articles and blog posts about ELECTE's AI-powered data analytics and financial forecasting platform for European SMEs. Returns relevant passages with source URLs. Use for any question about ELECTE's features, pricing, security and compliance, integrations, or company background. Content is available in 21 languages; results match the query language.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "The input query."
+          },
+          "ai_search_options": {
+            "description": "Options for customizing the AI search behavior.",
+            "type": "object",
+            "properties": {
+              "retrieval": {
+                "type": "object",
+                "properties": {
+                  "retrieval_type": {
+                    "type": "string",
+                    "enum": [
+                      "vector",
+                      "keyword",
+                      "hybrid"
+                    ]
+                  },
+                  "fusion_method": {
+                    "type": "string",
+                    "enum": [
+                      "max",
+                      "rrf"
+                    ]
+                  },
+                  "match_threshold": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  "max_num_results": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 50
+                  },
+                  "filters": {
+                    "type": "object",
+                    "propertyNames": {
+                      "type": "string"
+                    },
+                    "additionalProperties": {
+                      "anyOf": [
+                        {
+                          "type": [
+                            "string",
+                            "number",
+                            "boolean",
+                            "null"
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "$eq": {
+                              "type": [
+                                "string",
+                                "number",
+                                "boolean",
+                                "null"
+                              ]
+                            },
+                            "$ne": {
+                              "type": [
+                                "string",
+                                "number",
+                                "boolean",
+                                "null"
+                              ]
+                            },
+                            "$in": {
+                              "type": "array",
+                              "items": {
+                                "type": [
+                                  "string",
+                                  "number",
+                                  "boolean",
+                                  "null"
+                                ]
+                              }
+                            },
+                            "$nin": {
+                              "type": "array",
+                              "items": {
+                                "type": [
+                                  "string",
+                                  "number",
+                                  "boolean",
+                                  "null"
+                                ]
+                              }
+                            },
+                            "$lt": {
+                              "type": [
+                                "string",
+                                "number"
+                              ]
+                            },
+                            "$lte": {
+                              "type": [
+                                "string",
+                                "number"
+                              ]
+                            },
+                            "$gt": {
+                              "type": [
+                                "string",
+                                "number"
+                              ]
+                            },
+                            "$gte": {
+                              "type": [
+                                "string",
+                                "number"
+                              ]
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "context_expansion": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 3
+                  },
+                  "metadata_only": {
+                    "type": "boolean"
+                  },
+                  "return_on_failure": {
+                    "type": "boolean"
+                  }
+                }
+              },
+              "query_rewrite": {
+                "type": "object",
+                "properties": {
+                  "enabled": {
+                    "type": "boolean",
+                    "const": false
+                  },
+                  "rewrite_prompt": {
+                    "type": "string"
+                  }
+                }
+              },
+              "reranking": {
+                "type": "object",
+                "properties": {
+                  "enabled": {
+                    "type": "boolean",
+                    "const": false
+                  },
+                  "match_threshold": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  }
+                }
+              },
+              "cache": {
+                "type": "object",
+                "properties": {
+                  "enabled": {
+                    "type": "boolean"
+                  },
+                  "cache_threshold": {
+                    "type": "string"
+                  }
+                }
+              },
+              "custom_metadata": {
+                "type": "object",
+                "propertyNames": {
+                  "type": "string"
+                },
+                "additionalProperties": {
+                  "type": [
+                    "string",
+                    "number",
+                    "boolean"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "electe.net",
+  "source": "webmcp.com/api/directory.json"
+}

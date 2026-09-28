@@ -1,0 +1,77 @@
+{
+  "sponsio": 1,
+  "url": "https://laratranslate.com/",
+  "capturedAt": "2026-09-28T13:44:04.127Z",
+  "tools": [
+    {
+      "name": "get_mcp_server_config",
+      "description": "Return a ready-to-paste MCP client configuration for the Lara Translate MCP server, so an agent can gain real translation tools (text, documents, translation memories, glossaries). Choose the hosted remote server or the local stdio package.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "transport": {
+            "type": "string",
+            "enum": [
+              "remote",
+              "local"
+            ],
+            "description": "remote = hosted streamable-http endpoint; local = npx stdio package."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_page_content",
+      "description": "Return the current Lara Translate page as markdown — the same content a reader sees, without navigation chrome or scripts. Use this to answer questions about what this page says.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_supported_file_formats",
+      "description": "List the file formats Lara Translate can translate — documents, spreadsheets, slides, subtitles, localization files, images and audio — grouped by category.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "enum": [
+              "office",
+              "interchange",
+              "desktopPublishing",
+              "programming",
+              "localization",
+              "images",
+              "audio"
+            ],
+            "description": "Restrict the answer to one category. Omit to get every category."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_supported_languages",
+      "description": "List the languages Lara Translate supports, with their language codes. Optionally filter by a name or code fragment. Use this to check whether a language is available before recommending Lara.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Case-insensitive fragment of a language name or code, e.g. \"port\" or \"pt\"."
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "laratranslate.com",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,269 @@
+{
+  "sponsio": 1,
+  "url": "https://nationaldigital.com.au/",
+  "capturedAt": "2026-09-28T13:44:04.127Z",
+  "tools": [
+    {
+      "name": "estimate_project",
+      "description": "Estimate the cost range for a specific software project. Uses the same calculation as the estimator on the website, so the answer matches what a person would be shown.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "type": "object",
+        "properties": {
+          "projectType": {
+            "type": "string",
+            "description": "What are you building?",
+            "enum": [
+              "booking",
+              "portal",
+              "webApp",
+              "aiAutomation",
+              "headlessCms",
+              "platform",
+              "notSure"
+            ]
+          },
+          "newOrReplacement": {
+            "type": "string",
+            "description": "Is this new, or replacing something?",
+            "enum": [
+              "new",
+              "replacing",
+              "rescue"
+            ]
+          },
+          "audience": {
+            "type": "string",
+            "description": "Who will use it?",
+            "enum": [
+              "staff",
+              "customers",
+              "both"
+            ]
+          },
+          "scale": {
+            "type": "string",
+            "description": "Roughly how many people will use it?",
+            "enum": [
+              "small",
+              "medium",
+              "large",
+              "veryLarge"
+            ]
+          },
+          "integrations": {
+            "type": "array",
+            "description": "What does it need to talk to?",
+            "items": {
+              "type": "string",
+              "enum": [
+                "payments",
+                "accounting",
+                "crm",
+                "calendar",
+                "identity",
+                "legacy",
+                "none"
+              ]
+            }
+          },
+          "timeline": {
+            "type": "string",
+            "description": "When does it need to be live?",
+            "enum": [
+              "exploring",
+              "sixMonths",
+              "threeMonths",
+              "urgent"
+            ]
+          }
+        },
+        "required": [
+          "projectType"
+        ]
+      }
+    },
+    {
+      "name": "fill_enquiry_form",
+      "description": "Fill the enquiry form the person is looking at, without sending it. They read what you wrote and press send. Use this when they are on the page; use submit_enquiry when they have asked you to make contact for them and are not watching.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "lead_source": {
+            "type": "string"
+          },
+          "form_id": {
+            "type": "string"
+          },
+          "marketing_consent": {
+            "type": "string"
+          },
+          "_gotcha": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "company": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "email",
+          "message"
+        ]
+      }
+    },
+    {
+      "name": "get_pricing_and_services",
+      "description": "What National Digital builds and supports, and what each kind of project typically costs, in AUD. Includes the Product Support retainer for ongoing engineering on production platforms, including platforms built by other teams. Ranges are indicative and come from delivered work; they are not quotes. Returns an empty list when no pricing has been published, rather than an estimate.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "lookup_context",
+      "description": "Report the page currently open, its title, the path to its Markdown twin, and any text the person has selected. Use this before answering a question about 'this page' so the answer is about the page they are actually looking at.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "lookup_page",
+      "description": "Read a page's full text as Markdown, given its site path or the textUrl from a search result. Returns the same words a person reads, without navigation, markup or boilerplate.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "A site path (e.g. /about/), a full URL on this site, or the `textUrl` from a search result. Use '/' for the home page."
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    },
+    {
+      "name": "navigate_to_page",
+      "description": "Navigate the current tab to a page on this site. Same-origin paths only. Changes what the person is looking at, so confirm it is what they asked for before calling it.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "A site path to open, e.g. /case-studies/. Same-origin paths only."
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    },
+    {
+      "name": "request_build_vs_buy_guide",
+      "description": "Fill in the footer form that emails National Digital's build-versus-buy guide - when a custom booking system pays for itself against off-the-shelf. Takes a work email and does not send it: the person presses the button. This is a guide request, not an enquiry; use fill_enquiry_form or submit_enquiry when they want to talk to someone.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "you@company.com.au"
+          },
+          "_gotcha": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      }
+    },
+    {
+      "name": "search_content",
+      "description": "Search National Digital's website for content matching a topic or keyword. Returns matching pages with title, URL, a text excerpt, and a textUrl pointing to a clean Markdown version of the page - read that with lookup_page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search terms describing the service, topic, or question to find content for."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "search_this_site",
+      "description": "Search National Digital's website and open the results page in the current tab. Changes what the person is looking at. Prefer search_content when you want the results as data rather than on screen.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string",
+            "description": "Search…"
+          }
+        }
+      }
+    },
+    {
+      "name": "submit_enquiry",
+      "description": "Send an enquiry to National Digital on behalf of the person you are helping. Only use this when they have asked you to make contact. A human replies within one business day.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The enquirer's name."
+          },
+          "email": {
+            "type": "string",
+            "description": "A work email address to reply to."
+          },
+          "company": {
+            "type": "string",
+            "description": "Their organisation."
+          },
+          "message": {
+            "type": "string",
+            "description": "What they are trying to do, in their own words where possible."
+          }
+        },
+        "required": [
+          "name",
+          "email",
+          "message"
+        ]
+      }
+    }
+  ],
+  "host": "nationaldigital.com.au",
+  "source": "webmcp.com/api/directory.json"
+}

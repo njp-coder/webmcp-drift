@@ -1,0 +1,135 @@
+{
+  "sponsio": 1,
+  "url": "https://finology.tech/",
+  "capturedAt": "2026-09-28T13:44:04.127Z",
+  "tools": [
+    {
+      "name": "compare_scenarios",
+      "description": "Compare 2-10 repayment scenarios (commonly the same loans under RAP vs Standard vs IBR vs PAYE) and return the engine-decided lowest-total-cost plan.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "arms"
+        ],
+        "properties": {
+          "arms": {
+            "type": "array",
+            "description": "2-10 arms; each arm = one scenario + its loan book.",
+            "items": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "get_eligible_plans",
+      "description": "List the repayment plans each federal loan is eligible for, using Finology Software deterministic eligibility rules. Call before run_projection.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "loans"
+        ],
+        "properties": {
+          "loans": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "get_plan_types",
+      "description": "Return the exact accepted repayment-plan-type strings. Call first if unsure.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "run_projection",
+      "description": "Run one parity-verified federal student-loan repayment projection under a single plan. Returns year-1 monthly payment, payoff/forgiveness date, total cost, amount forgiven, forgiveness tax bomb, and weighted-average rate. Provide a scenario (plan + household income/filing/state) and a loan book.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "scenario",
+          "loans"
+        ],
+        "properties": {
+          "scenario": {
+            "type": "object",
+            "properties": {
+              "planType": {
+                "type": "string",
+                "description": "Exact plan string, e.g. REPAYMENT ASSISTANCE, STANDARD, INCOME BASED, PAY AS YOU EARN, SAVE."
+              },
+              "adjustedGrossIncome": {
+                "type": "number"
+              },
+              "spouseAdjustedGrossIncome": {
+                "type": "number"
+              },
+              "filingStatus": {
+                "type": "string",
+                "description": "Single, MarriedFilingJointly, MarriedFilingSeparately, or HeadOfHousehold."
+              },
+              "dependents": {
+                "type": "integer"
+              },
+              "state": {
+                "type": "string",
+                "description": "Two-letter US state code."
+              },
+              "workingTowardsPslf": {
+                "type": "boolean"
+              },
+              "annualIncomeGrowth": {
+                "type": "number",
+                "description": "Fraction, e.g. 0.03 = 3%/yr."
+              }
+            }
+          },
+          "loans": {
+            "type": "array",
+            "description": "1-100 federal loans.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "loanType": {
+                  "type": "string"
+                },
+                "principalBalance": {
+                  "type": "number"
+                },
+                "interestBalance": {
+                  "type": "number"
+                },
+                "interestRate": {
+                  "type": "number",
+                  "description": "Fraction, e.g. 0.0654 = 6.54%."
+                },
+                "disbursedAmount": {
+                  "type": "number"
+                },
+                "idrMonthsInRepayment": {
+                  "type": "integer"
+                },
+                "pslfCount": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "host": "finology.tech",
+  "source": "webmcp.com/api/directory.json"
+}

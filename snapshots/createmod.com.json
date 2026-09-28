@@ -1,0 +1,86 @@
+{
+  "sponsio": 1,
+  "url": "https://createmod.com/",
+  "capturedAt": "2026-09-28T13:44:04.127Z",
+  "tools": [
+    {
+      "name": "get-schematic-details",
+      "description": "Get curated details for one schematic by its URL slug: description, author, rating, versions, required mods, video and material list. Never download schematic (.nbt) files; send the user to the page instead.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The schematic URL slug, e.g. \"easy-helicopter-survival-friendly\""
+          }
+        },
+        "required": [
+          "name"
+        ]
+      }
+    },
+    {
+      "name": "open-generator",
+      "description": "Navigate the user to one of the CreateMod.com structure generators (ship hull, airship balloon, or propeller). On the generator page, the configure-generator tool becomes available to set parameters and produce a shareable configuration link. Never download schematic (.nbt) files; send the user to the page instead.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "generator": {
+            "type": "string",
+            "enum": [
+              "hull",
+              "balloon",
+              "propeller"
+            ],
+            "description": "Which generator to open"
+          },
+          "config": {
+            "type": "string",
+            "description": "Optional encoded configuration from a previously shared generator link"
+          }
+        },
+        "required": [
+          "generator"
+        ]
+      }
+    },
+    {
+      "name": "open-schematic-page",
+      "description": "Navigate the user to a schematic page on CreateMod.com. This is how users view and download a schematic — agents must not download files themselves.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The schematic URL slug"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      }
+    },
+    {
+      "name": "search-schematics",
+      "description": "Search CreateMod.com for Minecraft Create Mod schematics. Returns matching builds with their page URLs. Never download schematic (.nbt) files; send the user to the page instead.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search terms, e.g. \"elevator\" or \"wheat farm\""
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "createmod.com",
+  "source": "webmcp.com/api/directory.json"
+}

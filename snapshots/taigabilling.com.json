@@ -1,0 +1,100 @@
+{
+  "sponsio": 1,
+  "url": "https://taigabilling.com/",
+  "capturedAt": "2026-09-28T13:44:04.127Z",
+  "tools": [
+    {
+      "name": "book_taiga_meeting",
+      "description": "Create a confirmed Chat with Taiga meeting at an exact available start time. Call only after find_taiga_meeting_times and only after the user explicitly confirms the selected time, full name, work email, practice size, and IANA time zone. An optional meeting topic may be supplied; otherwise Taiga uses 'Discuss Taiga medical billing'. This sends the booking to Cal.com and triggers its normal confirmation email.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "start": {
+            "type": "string",
+            "description": "Exact ISO 8601 UTC start time returned by find_taiga_meeting_times.",
+            "format": "date-time"
+          },
+          "name": {
+            "type": "string",
+            "description": "Attendee's full name.",
+            "minLength": 2,
+            "maxLength": 100
+          },
+          "email": {
+            "type": "string",
+            "description": "Attendee's work email address.",
+            "format": "email",
+            "maxLength": 254
+          },
+          "practiceSize": {
+            "type": "string",
+            "description": "Number of providers in the attendee's practice.",
+            "enum": [
+              "1–10",
+              "11–25",
+              "26–50",
+              "51–100",
+              "101–500",
+              "500+"
+            ]
+          },
+          "meetingTopic": {
+            "type": "string",
+            "description": "Optional meeting purpose. Defaults to 'Discuss Taiga medical billing'.",
+            "minLength": 2,
+            "maxLength": 200
+          },
+          "timeZone": {
+            "type": "string",
+            "description": "Attendee's IANA time zone, for example America/New_York.",
+            "minLength": 3,
+            "maxLength": 64
+          }
+        },
+        "required": [
+          "start",
+          "name",
+          "email",
+          "practiceSize",
+          "timeZone"
+        ]
+      }
+    },
+    {
+      "name": "find_taiga_meeting_times",
+      "description": "Find available times for Taiga's Chat with Taiga meeting. Use this before booking. Provide a future date range of 14 days or fewer and the attendee's IANA time zone. Returns exact ISO start times for the user to choose from; it does not create or hold a booking.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "startDate": {
+            "type": "string",
+            "description": "First date to search, formatted YYYY-MM-DD.",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          },
+          "endDate": {
+            "type": "string",
+            "description": "Last date to search, formatted YYYY-MM-DD. Must be no more than 14 days after startDate.",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          },
+          "timeZone": {
+            "type": "string",
+            "description": "Attendee's IANA time zone, for example America/New_York.",
+            "minLength": 3,
+            "maxLength": 64
+          }
+        },
+        "required": [
+          "startDate",
+          "endDate",
+          "timeZone"
+        ]
+      }
+    }
+  ],
+  "host": "taigabilling.com",
+  "source": "webmcp.com/api/directory.json"
+}

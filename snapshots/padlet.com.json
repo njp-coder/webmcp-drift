@@ -1,0 +1,28 @@
+{
+  "sponsio": 1,
+  "url": "https://padlet.com/",
+  "capturedAt": "2026-09-28T13:44:04.127Z",
+  "tools": [
+    {
+      "name": "get_public_padlet_content",
+      "description": "Get the content of a padlet from its URL, including its posts, comments, sections, and settings.\n\n- Purpose: read the padlet the visitor is currently looking at, or one they have pasted a link to.\n- What this tool returns: { success: true, wall_url: \"...\", padlet: {...} } with the padlet's title,\n  description, format, sections, and posts.\n\nInput:\n- `wall_url`: the URL of the padlet, e.g. https://padlet.com/foo/bar-a1b2c3. Required.\n  On a padlet page this is the address of the page itself.\n\nGuidance for use:\n- There is no id-based lookup and no listing. If you do not have a padlet's URL, you cannot read it.\n- Only padlets readable without signing in are returned. Anything else comes back as\n  { success: false, message: \"Unauthorized\" } — sign in for access to your own padlets.\n",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "wall_url": {
+            "type": "string",
+            "maxLength": 2048,
+            "description": "The URL of the padlet to read (e.g. https://padlet.com/foo/bar-a1b2c3)."
+          }
+        },
+        "required": [
+          "wall_url"
+        ]
+      }
+    }
+  ],
+  "host": "padlet.com",
+  "source": "webmcp.com/api/directory.json"
+}

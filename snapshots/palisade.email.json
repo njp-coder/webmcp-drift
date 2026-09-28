@@ -1,0 +1,79 @@
+{
+  "sponsio": 1,
+  "url": "https://palisade.email/",
+  "capturedAt": "2026-09-28T13:44:04.127Z",
+  "tools": [
+    {
+      "name": "get_palisade_agent_resources",
+      "description": "Where to connect programmatically: the MCP server and its discovery document, the OpenAPI document, the authentication walkthrough, agent instructions and llms.txt.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_palisade_pricing",
+      "description": "Palisade's published plans and prices: the Free plan's limits, every IT-teams tier by monthly email volume with monthly and annual prices, how MSP and Enterprise pricing works, and where the full table lives.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "lookup_email_auth_records",
+      "description": "Read the live DMARC, SPF, DKIM, MX, BIMI, NS or A records of any public domain from DNS, parsed. Use to check whether a domain publishes DMARC and at what policy, or what its SPF record authorizes. DKIM needs a selector.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "domain": {
+            "type": "string",
+            "description": "The domain to look up, for example example.com"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "dmarc",
+              "spf",
+              "dkim",
+              "mx",
+              "bimi",
+              "ns",
+              "a",
+              "all"
+            ],
+            "description": "Which records to read. Defaults to all."
+          },
+          "selector": {
+            "type": "string",
+            "description": "DKIM selector, required when type is dkim"
+          }
+        },
+        "required": [
+          "domain"
+        ]
+      }
+    },
+    {
+      "name": "search_palisade_site",
+      "description": "Find Palisade guides, tools, comparisons and product pages by keyword. Returns up to 10 pages with their URL and a one-line description; append .md to a URL for its Markdown twin.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Words to look for, for example spf permerror"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "palisade.email",
+  "source": "webmcp.com/api/directory.json"
+}

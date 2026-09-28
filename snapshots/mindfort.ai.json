@@ -1,0 +1,99 @@
+{
+  "sponsio": 1,
+  "url": "https://mindfort.ai/",
+  "capturedAt": "2026-09-28T13:44:04.127Z",
+  "tools": [
+    {
+      "name": "get_pricing",
+      "description": "Returns MindFort's pricing: subscription plans (Starter, Scale, Enterprise) and per-assessment credit costs for each testing depth (Balanced, Deep, Ultra), plus task-agent credit cost. Use this to answer any question about cost, plans, credits, or how much an assessment uses. Returns structured JSON; no scraping needed.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "plan": {
+            "type": "string",
+            "description": "Optional. Filter to a single subscription plan. One of: Free, Starter, Scale, Enterprise. Omit to return all plans.",
+            "enum": [
+              "Free",
+              "Starter",
+              "Scale",
+              "Enterprise"
+            ]
+          },
+          "mode": {
+            "type": "string",
+            "description": "Optional. Filter to a single assessment depth / credit tier. One of: Balanced, Deep, Ultra. Omit to return all assessment modes.",
+            "enum": [
+              "Balanced",
+              "Deep",
+              "Ultra"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "get_solution",
+      "description": "Returns the full detail for a single MindFort solution given its slug (e.g. 'fintech', 'soc2', 'startups'). Use list_solutions first if you do not know the slug. Returns a structured not-found result for unknown slugs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "The solution slug to look up, e.g. 'fintech', 'healthcare', 'soc2', 'startups'.",
+            "enum": [
+              "enterprise",
+              "startups",
+              "legacy-it",
+              "fintech",
+              "banks",
+              "manufacturing",
+              "healthcare",
+              "legaltech",
+              "telecom",
+              "hipaa",
+              "soc2",
+              "iso-27001"
+            ]
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "list_solutions",
+      "description": "Lists every MindFort solution page (by company stage, industry, and compliance framework) with its slug, title, and a short summary. Use this to discover which solutions exist before fetching details with get_solution. Takes no parameters.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "search_blog",
+      "description": "Searches the MindFort blog by keyword across post titles, tags, and excerpts, returning ranked matches with slug, title, excerpt, and URL. Use this to find articles on a topic (e.g. 'SOC 2', 'Claude', 'pen testing'). Returns structured JSON.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "The search keyword or phrase to match against post titles, tags, and excerpts (case-insensitive)."
+          },
+          "limit": {
+            "type": "number",
+            "description": "Optional. Maximum number of results to return. Defaults to 5."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "mindfort.ai",
+  "source": "webmcp.com/api/directory.json"
+}

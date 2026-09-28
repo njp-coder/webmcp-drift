@@ -1,0 +1,172 @@
+{
+  "sponsio": 1,
+  "url": "https://visioforge.com/",
+  "capturedAt": "2026-09-28T13:44:04.127Z",
+  "tools": [
+    {
+      "name": "copy_code_example",
+      "description": "Copy the text of a <pre><code> block on the current page to the clipboard. Use index 0 (default) for the first code block, 1 for the second, etc. Returns the inferred language and the number of characters copied.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "index": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_current_page_info",
+      "description": "Return information about the page currently open in this tab: URL, pathname, title, meta description, and active locale. No input required.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_page_outline",
+      "description": "Return the heading outline (h1, h2, h3) of the page currently open in this tab as an ordered list with anchor IDs. Useful to understand what sections the page has before reading or scrolling.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_pricing",
+      "description": "Return the pricing tiers (annual and lifetime, EUR) for a VisioForge product by slug. Use list_products to discover slugs. Some products do not publish per-tier pricing — for those, the response says so and points to the product page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "productSlug": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "productSlug"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_visible_main_content",
+      "description": "Return the main textual content of the page currently open in this tab — useful when an agent wants to answer a question about what the page says without re-fetching it. Whitespace is normalised. Default 2000 chars; max 8000.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "maxChars": {
+            "type": "integer",
+            "minimum": 100,
+            "maximum": 8000,
+            "default": 2000
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_products",
+      "description": "List VisioForge products. Optional category filter: \"sdk\" for SDK products (Video Capture, Video Edit, Media Player, Media Blocks, etc.) or \"standalone\" for tools (Virtual Camera, Encryption, Fingerprinting, filter packs).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "enum": [
+              "sdk",
+              "standalone"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "navigate_to",
+      "description": "Navigate the current tab to a path on visioforge.com. Path must start with \"/\" and be a same-site path; external URLs and query/fragment strings are rejected. Locale prefix is added automatically.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Site-relative path, e.g. \"/video-capture-sdk-net\""
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "open_uninstall_feedback_form",
+      "description": "Navigate to the SDK uninstall-feedback survey so the user can tell VisioForge why they uninstalled the SDK. This is a post-uninstall survey, not a general support or contact form — VisioForge does not currently expose a general feedback form via WebMCP.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "scroll_to_section",
+      "description": "Scroll the current page to a section. Provide either an explicit anchor ID (preferred) or a substring of a heading text — case-insensitive, first match wins.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "anchor": {
+            "type": "string",
+            "description": "Element id, with or without leading \"#\""
+          },
+          "headingText": {
+            "type": "string",
+            "description": "Substring of an h1/h2/h3 to find"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "switch_locale",
+      "description": "Switch the page to a different language. The current path is preserved. Supported locale codes: en, de, es, fr, it, ja, ko, pl, zh.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "locale": {
+            "type": "string",
+            "enum": [
+              "en",
+              "de",
+              "es",
+              "fr",
+              "it",
+              "ja",
+              "ko",
+              "pl",
+              "zh"
+            ]
+          }
+        },
+        "required": [
+          "locale"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "visioforge.com",
+  "source": "webmcp.com/api/directory.json"
+}

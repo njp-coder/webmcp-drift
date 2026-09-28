@@ -1,0 +1,379 @@
+{
+  "sponsio": 1,
+  "url": "https://smartaisolutions.co.za/",
+  "capturedAt": "2026-09-28T13:44:04.127Z",
+  "tools": [
+    {
+      "name": "collect_lead",
+      "description": "Collect lead info when visitor shows buying interest or asks for the official brochure. Opens appropriate form pre-filled.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "intent": {
+            "type": "string",
+            "description": "Interest area: website, ai, general",
+            "enum": [
+              "website",
+              "ai",
+              "general"
+            ]
+          },
+          "name": {
+            "type": "string",
+            "description": "Lead name if known"
+          },
+          "first_name": {
+            "type": "string",
+            "description": "Lead first name if known"
+          },
+          "last_name": {
+            "type": "string",
+            "description": "Lead last name if known"
+          },
+          "company": {
+            "type": "string",
+            "description": "Company name if known"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email if known"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Phone if known"
+          },
+          "whatsapp": {
+            "type": "string",
+            "description": "WhatsApp number if known"
+          },
+          "brochure_requested": {
+            "type": "boolean",
+            "description": "True when brochure was requested"
+          },
+          "brochure_delivery_preference": {
+            "type": "string",
+            "description": "email, whatsapp, or both",
+            "enum": [
+              "email",
+              "whatsapp",
+              "both"
+            ]
+          }
+        },
+        "required": [
+          "intent"
+        ]
+      }
+    },
+    {
+      "name": "fill_form_field",
+      "description": "Fill a single field in the currently open form by voice command.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "field_name": {
+            "type": "string",
+            "description": "The field name to fill (e.g. first_name, email, company)"
+          },
+          "value": {
+            "type": "string",
+            "description": "The value to set for the field"
+          }
+        },
+        "required": [
+          "field_name",
+          "value"
+        ]
+      }
+    },
+    {
+      "name": "fill_form_fields",
+      "description": "Fill multiple form fields at once from voice input. Pass fields as a JSON string mapping field names to values, e.g. '{\"first_name\":\"John\",\"email\":\"john@example.com\"}'. More efficient than filling one at a time.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "fields": {
+            "type": "string",
+            "description": "JSON string mapping field names to values, e.g. {\"first_name\":\"John\",\"email\":\"john@example.com\"}"
+          }
+        },
+        "required": [
+          "fields"
+        ]
+      }
+    },
+    {
+      "name": "get_booking_availability",
+      "description": "Get open discovery-call slots including available_by_day (weekday + open times). Check this before saying whether a specific day/time is available.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_current_page",
+      "description": "Get the current page path, route key, title, and description. Use to orient yourself when the user asks about what page they are on.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_form_state",
+      "description": "Read the current state of the open form including field values, current step, and total steps. Returns null if no form is open.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_page_summary",
+      "description": "Get a summary of the current page including available sections and agent actions.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "navigate_back",
+      "description": "Return the visitor to the previous page they were on in this session.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "navigate_form_step",
+      "description": "Move between steps in the multi-step form. Use direction \"next\", \"prev\", or \"goto\" with a step number.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "direction": {
+            "type": "string",
+            "description": "Direction: \"next\", \"prev\", or \"goto\"",
+            "enum": [
+              "next",
+              "prev",
+              "goto"
+            ]
+          },
+          "step": {
+            "type": "number",
+            "description": "Step number when direction is \"goto\" (1-based)"
+          }
+        },
+        "required": [
+          "direction"
+        ]
+      }
+    },
+    {
+      "name": "navigate_to",
+      "description": "Navigate to a page on Smart AI Solutions. Routes: home (Homepage with overview of our Business AI Partnership approach, client outcomes, and partnership tiers), about (About Smart AI Solutions - team, mission, and our investigation-first partnership story), contact (Contact form and company details), services (Full list of AI partnership services - investigation-first, embedded implementation), locations (Service areas across South Africa), pricing (Partnership tiers - Foundation Partner, Growth Partner, and Enterprise Partner), blog (AI partnership articles, industry insights, and operational case studies), privacy (Privacy policy), terms (Terms of service), ai_assessment (Free AI readiness assessment tool - find out where your business stands), ai_calculator (AI savings calculator - estimate your ROI from becoming AI-ready), referral (Referral program - earn rewards), ai_dev_rental_guide (Guide to embedding an AI partner in your team), website_offer (Limited R4,999 website promotion (normally R24,500+): R500 refundable deposit, remaining R4,499 due only on approval, 10 spots available)",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "route": {
+            "type": "string",
+            "description": "Route key"
+          },
+          "slug": {
+            "type": "string",
+            "description": "Optional slug for parameterized routes"
+          }
+        },
+        "required": [
+          "route"
+        ]
+      }
+    },
+    {
+      "name": "open_booking",
+      "description": "Open the booking form / calendar so the visitor can schedule their free discovery call.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "open_brochure",
+      "description": "Open the official Smart AI Solutions services brochure PDF for email or WhatsApp follow-up.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "delivery_preference": {
+            "type": "string",
+            "description": "email, whatsapp, or both",
+            "enum": [
+              "email",
+              "whatsapp",
+              "both"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "press_button",
+      "description": "Press a website button or interactive control. Use a known action, or action \"click_label\" with a label to click any visible button, link, menu item, tab, or expand a section by name.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "description": "Website action to perform, or \"click_label\" to click any control by name",
+            "enum": [
+              "book_consultation",
+              "apply_website_offer",
+              "open_contact_form",
+              "open_pricing",
+              "open_brochure",
+              "download_brochure",
+              "next_form_step",
+              "previous_form_step",
+              "submit_form",
+              "click_label"
+            ]
+          },
+          "label": {
+            "type": "string",
+            "description": "Visible label/aria-label/title of the control (required for click_label)"
+          }
+        },
+        "required": [
+          "action"
+        ]
+      }
+    },
+    {
+      "name": "pricing_compare_tiers",
+      "description": "Compare two pricing tiers side by side",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tier_a": {
+            "type": "string",
+            "description": "First tier: starter, professional, enterprise"
+          },
+          "tier_b": {
+            "type": "string",
+            "description": "Second tier: starter, professional, enterprise"
+          }
+        },
+        "required": [
+          "tier_a",
+          "tier_b"
+        ]
+      }
+    },
+    {
+      "name": "pricing_get_tiers",
+      "description": "Get all pricing tiers with prices, features, and billing details",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "read_form_fields",
+      "description": "Get the field definitions and current values for the active form step. Use this before filling fields to know what is available.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "scroll_to",
+      "description": "Scroll to a section on the current page. Sections vary per page; on failure the result lists the sections available here. Possible sections: process, testimonials, pricing, faq, cta, solutions",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "section": {
+            "type": "string",
+            "description": "Section ID key"
+          }
+        },
+        "required": [
+          "section"
+        ]
+      }
+    },
+    {
+      "name": "show_form",
+      "description": "Open a contact or inquiry form. Types: website-build, ai-readiness, general",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "form_type": {
+            "type": "string",
+            "description": "Form type",
+            "enum": [
+              "website-build",
+              "ai-readiness",
+              "general"
+            ]
+          }
+        },
+        "required": [
+          "form_type"
+        ]
+      }
+    },
+    {
+      "name": "site_get_company_info",
+      "description": "Get Smart AI Solutions company information - HQ, contact details, founding team",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "site_get_locations",
+      "description": "List all service locations across South Africa",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "site_get_services_overview",
+      "description": "List all 10 AI partnership services with categories",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "submit_form",
+      "description": "Submit the currently open form programmatically. Only call this when the user explicitly asks to submit.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    }
+  ],
+  "host": "smartaisolutions.co.za",
+  "source": "webmcp.com/api/directory.json"
+}

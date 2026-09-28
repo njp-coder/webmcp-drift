@@ -1,0 +1,164 @@
+{
+  "sponsio": 1,
+  "url": "https://ngrok.com/",
+  "capturedAt": "2026-09-28T13:44:04.127Z",
+  "tools": [
+    {
+      "name": "get_agent_setup_prompt",
+      "description": "Read the setup guide for an AI coding agent that puts a developer's local app online with the ngrok agent and verifies the endpoint.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_agent_skill",
+      "description": "Read one of ngrok's agent skills (a SKILL.md) by name. The index at /.well-known/agent-skills/index.json lists the names and descriptions.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The skill name from the index, such as expose-localhost."
+          }
+        },
+        "required": [
+          "name"
+        ]
+      }
+    },
+    {
+      "name": "get_auth_instructions",
+      "description": "Read how an agent gets and uses ngrok credentials: API keys for api.ngrok.com, authtokens for the ngrok agent, and AI Gateway keys.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_blog_index",
+      "description": "Read the blog's llms.txt: what the ngrok blog covers and where its feeds and indexes are.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_changelog_feed",
+      "description": "Read the ngrok changelog as an RSS feed: each entry's title, summary, date, products, and URL, newest first.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_docs_page",
+      "description": "Read one page of the ngrok documentation as markdown. Pass the path after /docs/ with no extension, for example gateway/traffic-policy, api, or agent/cli. The page index is at /docs/llms.txt.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "The docs path after /docs/, such as gateway/traffic-policy."
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    },
+    {
+      "name": "get_pricing",
+      "description": "Read ngrok's plans, limits, and prices as markdown, with dollar amounts served live from billing.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_site_overview",
+      "description": "Read ngrok's llms.txt: what ngrok is, its products, and links to the docs, the API, and its agent-facing documents.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "open_blog_post",
+      "description": "Open one blog post in this tab by its slug. search_blog_posts returns the slugs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "The post slug, such as probes."
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "open_page",
+      "description": "Open a page on ngrok.com in this tab. Use the get_* tools instead when you only need a document's content.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "enum": [
+              "/",
+              "/pricing",
+              "/download",
+              "/gateway",
+              "/use-cases/share-localhost",
+              "/use-cases/api-gateway",
+              "/use-cases/ai-agent-connectivity",
+              "/customers",
+              "/contact",
+              "/support",
+              "/docs"
+            ],
+            "description": "/: Home; /pricing: Pricing; /download: Download the ngrok agent; /gateway: Universal Gateway; /use-cases/share-localhost: Share localhost; /use-cases/api-gateway: API gateway; /use-cases/ai-agent-connectivity: AI agent connectivity; /customers: Customers; /contact: Contact sales; /support: Support; /docs: Documentation"
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    },
+    {
+      "name": "search_blog_posts",
+      "description": "Search the ngrok blog by words in a post's title, description, author, or tags. Omit the query for the newest posts. Returns each post's slug, title, description, date, author, tags, and URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Words to match. Every word must appear somewhere in the post's metadata."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 10
+          }
+        }
+      }
+    }
+  ],
+  "host": "ngrok.com",
+  "source": "webmcp.com/api/directory.json"
+}

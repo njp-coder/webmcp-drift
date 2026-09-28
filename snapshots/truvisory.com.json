@@ -1,0 +1,263 @@
+{
+  "sponsio": 1,
+  "url": "https://truvisory.com/",
+  "capturedAt": "2026-09-28T13:44:04.127Z",
+  "tools": [
+    {
+      "name": "ask_truvisory_agent",
+      "description": "Ask Truvisory's AI agent a question about the company, services, scheduling, or capabilities. Returns a free-form text reply. Pass an existing sessionId on follow-ups to keep conversation memory; otherwise one is generated and returned.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          },
+          "sessionId": {
+            "type": "string",
+            "description": "Optional UUID v4 to continue a prior conversation."
+          }
+        }
+      }
+    },
+    {
+      "name": "generate_roadmap_sample",
+      "description": "Generate a free sample slice of the paid AI Audit & Roadmap for one described workflow: 3 automation hypotheses, a suggested stack, and a scope band. Optionally pass the score/band from run_readiness_scorecard to sharpen the sample. Rate-limited; may return an error object (e.g. on 429/503) instead of a sample.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "workflow"
+        ],
+        "properties": {
+          "workflow": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 500,
+            "description": "Plain-language description of the manual workflow to analyze (10–500 characters)."
+          },
+          "score": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100,
+            "description": "Optional 0–100 readiness score from run_readiness_scorecard."
+          },
+          "band": {
+            "type": "string",
+            "description": "Optional readiness band key from run_readiness_scorecard (e.g. 'foundations', 'pilot-ready', 'scale-ready')."
+          }
+        }
+      }
+    },
+    {
+      "name": "get_capability_statement",
+      "description": "Return the absolute URL of Truvisory's printable SDVOSB capability statement (PDF). Use this when a federal contracting officer or evaluator asks for the capability statement.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "run_readiness_scorecard",
+      "description": "Score a business's AI readiness with Truvisory's deterministic 7-question rubric (the same one the on-page scorecard at /ai-readiness/ uses). Returns a 0–100 score, a readiness band (Foundations / Pilot-ready / Scale-ready), the top 3 opportunities, and the recommended engagement. All 7 answers are required; 'vertical' and 'revenue' are unscored context (revenue has an 'undisclosed' opt-out). Nothing is stored — no email or PII needed.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "vertical",
+          "revenue",
+          "maturity",
+          "process",
+          "data",
+          "team",
+          "timeline"
+        ],
+        "properties": {
+          "vertical": {
+            "type": "string",
+            "enum": [
+              "franchising",
+              "real-estate",
+              "healthcare",
+              "logistics",
+              "financial",
+              "professional",
+              "manufacturing",
+              "other"
+            ],
+            "description": "What kind of operation are you?"
+          },
+          "revenue": {
+            "type": "string",
+            "enum": [
+              "lt-1m",
+              "1-10m",
+              "10-50m",
+              "50-250m",
+              "gt-250m",
+              "undisclosed"
+            ],
+            "description": "Roughly what is annual revenue? (Context only — does not affect the score; use \"undisclosed\" to skip.)"
+          },
+          "maturity": {
+            "type": "string",
+            "enum": [
+              "none",
+              "experimenting",
+              "piloting",
+              "production"
+            ],
+            "description": "Where are you with AI today?"
+          },
+          "process": {
+            "type": "string",
+            "enum": [
+              "sales-ops",
+              "cx-support",
+              "document",
+              "reporting",
+              "scheduling",
+              "data-entry",
+              "not-sure"
+            ],
+            "description": "What is the top manual process you would automate?"
+          },
+          "data": {
+            "type": "string",
+            "enum": [
+              "siloed",
+              "some-structured",
+              "centralized",
+              "api-accessible"
+            ],
+            "description": "How accessible is the data AI would need?"
+          },
+          "team": {
+            "type": "string",
+            "enum": [
+              "none",
+              "generalists",
+              "eng-no-ai",
+              "senior-ai"
+            ],
+            "description": "What engineering talent do you have in-house?"
+          },
+          "timeline": {
+            "type": "string",
+            "enum": [
+              "exploring",
+              "lt-25k",
+              "25-120k",
+              "gt-120k",
+              "ongoing"
+            ],
+            "description": "What is the budget & timeline shape?"
+          }
+        }
+      }
+    },
+    {
+      "name": "schedule_meeting",
+      "description": "Book a 30-minute discovery meeting with Truvisory's founder. Returns the confirmed start time and a Google Meet link. Requires a slot ISO-8601 start (use ask_truvisory_agent or GET /api/availability to discover open slots), plus the attendee's name and email.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "slotStart",
+          "name",
+          "email"
+        ],
+        "properties": {
+          "slotStart": {
+            "type": "string",
+            "format": "date-time",
+            "description": "ISO-8601 start time of an open slot (e.g. \"2026-05-22T15:00:00-06:00\")."
+          },
+          "name": {
+            "type": "string",
+            "description": "Attendee's full name."
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Optional phone number."
+          }
+        }
+      }
+    },
+    {
+      "name": "send_contact_inquiry",
+      "description": "Submit a contact inquiry to Truvisory. Use door='federal' for contracting/agency intake (CO, prime, evaluator) or door='commercial' for AI-audit / consulting requests. Message must be at least 10 characters.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "door",
+          "name",
+          "email",
+          "message"
+        ],
+        "properties": {
+          "door": {
+            "type": "string",
+            "enum": [
+              "federal",
+              "commercial"
+            ]
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "company": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string"
+          },
+          "agency": {
+            "type": "string",
+            "description": "Federal door only."
+          },
+          "naics": {
+            "type": "string",
+            "description": "Federal door only."
+          },
+          "vehicle": {
+            "type": "string",
+            "description": "Federal door only."
+          },
+          "budget": {
+            "type": "string",
+            "description": "Commercial door only."
+          },
+          "timeline": {
+            "type": "string",
+            "description": "Commercial door only."
+          },
+          "message": {
+            "type": "string",
+            "minLength": 10
+          }
+        }
+      }
+    }
+  ],
+  "host": "truvisory.com",
+  "source": "webmcp.com/api/directory.json"
+}

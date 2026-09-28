@@ -1,0 +1,190 @@
+{
+  "sponsio": 1,
+  "url": "https://aniagotuje.pl/",
+  "capturedAt": "2026-09-28T13:44:04.127Z",
+  "tools": [
+    {
+      "name": "get_page_context",
+      "description": "Describe the selected tab and readiness. Return recipe selection facts or listing filters and pagination. Nutrition uses its recorded basis. Enriched descriptions and active time are AI estimates. Null facts are unknown. No instructions or ingredient lists.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_search_options",
+      "description": "List accepted filter values from the site catalog. Use parentCategory for subcategories. Paginated. Diet labels are recorded data, not allergen guarantees.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "categories",
+              "subCategories",
+              "diets",
+              "occasions",
+              "ideas",
+              "appliances",
+              "tags"
+            ]
+          },
+          "parentCategory": {
+            "type": "string"
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10000,
+            "default": 1
+          },
+          "pageSize": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 20
+          }
+        },
+        "required": [
+          "type"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "open_recipe",
+      "description": "Open a recipe or article from its slug. Confirm the loaded identity and URL. Reopening the same page is harmless. If a tool handle becomes stale after navigation, rediscover tools and read get_page_context with a fresh handle before navigating again. Do not automatically retry navigation after an ambiguous error.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]+$",
+            "maxLength": 200
+          }
+        },
+        "required": [
+          "slug"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_recipes",
+      "description": "Show the normal search page. Supply complete criteria; omitted filters are cleared. Keep relevance order. Return up to 12 summaries with nutrition and selection facts. Nutrition uses its recorded basis. Enriched descriptions and active time are AI estimates. Null means unknown, including spiciness. Times and diet labels are not guarantees. Returned facts do not add filters. If a tool handle becomes stale after navigation, rediscover tools and read get_page_context with a fresh handle before navigating again. Do not automatically retry navigation after an ambiguous error.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "categories": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "maxItems": 20
+          },
+          "subCategories": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "maxItems": 20
+          },
+          "diets": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "maxItems": 20
+          },
+          "occasions": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "maxItems": 20
+          },
+          "ideas": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "maxItems": 20
+          },
+          "appliances": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "maxItems": 20
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "maxItems": 20
+          },
+          "ing": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "maxItems": 20
+          },
+          "exIng": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "maxItems": 20
+          },
+          "maxTime": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10080,
+            "description": "Maximum recorded time in minutes, using the existing search filter."
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10000,
+            "default": 1
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "aniagotuje.pl",
+  "source": "webmcp.com/api/directory.json"
+}

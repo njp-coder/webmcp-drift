@@ -1,0 +1,142 @@
+{
+  "sponsio": 1,
+  "url": "https://dimhour.com/",
+  "capturedAt": "2026-09-28T13:44:04.127Z",
+  "tools": [
+    {
+      "name": "build_itinerary",
+      "description": "Draft a night out in one city as an ordered list of stops, each with why it is there and how to book it. READ-ONLY: this returns a plan, it does not save anything. To keep it, the user saves it themselves at /trip.html.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "city": {
+            "type": "string",
+            "description": "City key, e.g. dallas."
+          },
+          "stops": {
+            "type": "array",
+            "description": "Ordered venue ids from search_venues. 2-5 works best.",
+            "items": {
+              "type": "number"
+            }
+          },
+          "occasion": {
+            "type": "string",
+            "description": "Optional, e.g. \"anniversary\", \"first date\"."
+          }
+        },
+        "required": [
+          "city",
+          "stops"
+        ]
+      }
+    },
+    {
+      "name": "find_open_tonight",
+      "description": "Find venues worth going to TONIGHT in a city — the ones with a happy hour or a late kitchen, best score first. This is the same definition the site's own \"tonight\" strip uses, so the agent and the page agree.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "city": {
+            "type": "string",
+            "description": "City key, e.g. dallas."
+          },
+          "query": {
+            "type": "string",
+            "description": "Optional single keyword to narrow the candidates."
+          },
+          "limit": {
+            "type": "number",
+            "description": "How many to return. Default 5, capped at 25."
+          }
+        },
+        "required": [
+          "city"
+        ]
+      }
+    },
+    {
+      "name": "get_booking_link",
+      "description": "Get the reservation platform (Resy, OpenTable, SevenRooms, Tock, walk-in) and, where available, the direct booking URL for one venue — so you can present it to the user. Returns the link; it does not open it and it never books anything.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "city": {
+            "type": "string"
+          },
+          "id": {
+            "type": "number",
+            "description": "Numeric venue id from search_venues."
+          }
+        },
+        "required": [
+          "city",
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "get_venue",
+      "description": "Get the full Dim Hour record for one venue: hours, phone, address, cuisine, neighborhood, score, awards, and how to book it. Takes the numeric id from search_venues.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "city": {
+            "type": "string",
+            "description": "City key the venue belongs to."
+          },
+          "id": {
+            "type": "number",
+            "description": "Numeric venue id from search_venues."
+          }
+        },
+        "required": [
+          "city",
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "search_venues",
+      "description": "Search Dim Hour's curated catalog of restaurants and bars across 24 cities. Query terms are matched individually, so ONE strong keyword (\"omakase\", \"patio\", \"natural wine\") works far better than a sentence. Omit city to search everywhere. Returns venues with their numeric id, which get_venue and get_booking_link take.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "One strong keyword. Not a sentence."
+          },
+          "city": {
+            "type": "string",
+            "description": "City key, e.g. dallas, nyc, sf. Omit to search all cities."
+          },
+          "neighborhood": {
+            "type": "string"
+          },
+          "cuisine": {
+            "type": "string"
+          },
+          "min_score": {
+            "type": "number",
+            "description": "Dim Hour score floor, 0-100."
+          },
+          "max_price": {
+            "type": "number",
+            "description": "Price tier ceiling, 1-4."
+          },
+          "limit": {
+            "type": "number",
+            "description": "Max rows, capped at 25."
+          }
+        }
+      }
+    }
+  ],
+  "host": "dimhour.com",
+  "source": "webmcp.com/api/directory.json"
+}

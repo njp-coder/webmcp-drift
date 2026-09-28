@@ -1,0 +1,93 @@
+{
+  "sponsio": 1,
+  "url": "https://wmcp.ai/",
+  "capturedAt": "2026-09-28T13:44:04.127Z",
+  "tools": [
+    {
+      "name": "get_site",
+      "description": "Check whether a website exposes WebMCP tools. A listed site comes back with every tool: its name, description, input schema, annotations and the page it was found on. A site we checked that has none comes back with listed false and what the check found.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "domain": {
+            "type": "string",
+            "description": "A domain, like \"render.com\"."
+          }
+        },
+        "required": [
+          "domain"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_submission",
+      "description": "Check on a site sent with submit_site: whether the check is still running, each page loaded so far (up to 3 submitted pages plus the ones we find) and the tools found. Poll until status is no longer \"running\".",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The scan id that submit_site returned."
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_sites",
+      "description": "Search the registry of websites that expose WebMCP tools. Matches domains, site names, and tool names and descriptions. Returns up to 50 sites with their tool counts, and nextCursor when there are more.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "maxLength": 200,
+            "description": "Words to match, like \"flights\" or \"render.com\". Leave out to list every site."
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "popular",
+              "newest",
+              "tools"
+            ],
+            "default": "popular",
+            "description": "popular (by web traffic rank), newest (recently listed) or tools (most tools)."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "submit_site",
+      "description": "Submit a website to the registry. We load it in a real browser, look for WebMCP tools, and list it if we find any. Returns the scan id to check with get_submission.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "yoursite.com"
+          },
+          "pages": {
+            "type": "string",
+            "description": "yoursite.com/app\nyoursite.com/search"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      }
+    }
+  ],
+  "host": "wmcp.ai",
+  "source": "webmcp.com/api/directory.json"
+}

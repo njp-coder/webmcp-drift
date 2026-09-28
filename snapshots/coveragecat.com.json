@@ -1,0 +1,298 @@
+{
+  "sponsio": 1,
+  "url": "https://coveragecat.com/",
+  "capturedAt": "2026-09-28T13:44:04.127Z",
+  "tools": [
+    {
+      "name": "coveragecat-consumer-intake-issues",
+      "description": "Continue a Coverage Cat consumer-prefill umbrella handoff with the current uid and intake_access_token. Use this to read the staged review, remaining items, quotes, and post-choose states without switching to delegated tools. If Coverage Cat says it reused a recent in-progress umbrella draft for the same email address, tell the shopper the reviewed values may come from that earlier unfinished Coverage Cat application. Do not call those reused values historical_mode unless the matching field_estimates row actually says source historical_mode.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "intake_access_token": {
+            "description": "Short-lived bearer returned by a consumer prefill response. Always reuse the freshest token from the latest follow-up response.",
+            "type": "string"
+          },
+          "uid": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "uid",
+          "intake_access_token"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "coveragecat-consumer-intake-patch",
+      "description": "Patch a Coverage Cat consumer-prefill umbrella handoff in chat. Use this for the final staged review turn, bundled shopper-owned details, and the one real submit confirmation.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "confirm_submission": {
+            "description": "Set true only on the single final review turn.",
+            "type": "boolean"
+          },
+          "field_estimates": {
+            "description": "Estimate metadata for inferred values included in the same patch.",
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "intake": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "intake_access_token": {
+            "description": "Short-lived bearer returned by a consumer prefill response. Always reuse the freshest token from the latest follow-up response.",
+            "type": "string"
+          },
+          "uid": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "uid",
+          "intake_access_token"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "coveragecat-umbrella-consumer-attach",
+      "description": "Upload declarations or auto declarations during Coverage Cat's consumer umbrella post-choose flow when Coverage Cat says documents are needed. If both files are already available, prefer one attach call with attachments so the shopper only approves one upload turn.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "oneOf": [
+          {
+            "required": [
+              "uid",
+              "intake_access_token",
+              "type",
+              "filename",
+              "content"
+            ]
+          },
+          {
+            "required": [
+              "uid",
+              "intake_access_token",
+              "attachments"
+            ]
+          }
+        ],
+        "properties": {
+          "attachments": {
+            "description": "Upload multiple declarations in one call when both files are already available.",
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "content": {
+                  "description": "Base64-encoded file bytes.",
+                  "type": "string"
+                },
+                "filename": {
+                  "type": "string"
+                },
+                "type": {
+                  "enum": [
+                    "declarations",
+                    "auto_declarations"
+                  ],
+                  "type": "string"
+                }
+              },
+              "required": [
+                "type",
+                "filename",
+                "content"
+              ],
+              "type": "object"
+            },
+            "minItems": 1,
+            "type": "array"
+          },
+          "content": {
+            "description": "Base64-encoded file bytes.",
+            "type": "string"
+          },
+          "filename": {
+            "type": "string"
+          },
+          "intake_access_token": {
+            "type": "string"
+          },
+          "type": {
+            "enum": [
+              "declarations",
+              "auto_declarations"
+            ],
+            "type": "string"
+          },
+          "uid": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "uid",
+          "intake_access_token"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "coveragecat-umbrella-consumer-bind",
+      "description": "Continue the Coverage Cat consumer umbrella bind flow only after selection reaches a bind-stage next question or ready-to-finalize state.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "intake": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "intake_access_token": {
+            "type": "string"
+          },
+          "uid": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "uid",
+          "intake_access_token"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "coveragecat-umbrella-consumer-payment",
+      "description": "Prepare secure Stripe payment collection for Coverage Cat's consumer umbrella post-choose flow, or submit the resulting reusable payment method once the shopper completes the secure form. Use this only after Coverage Cat returns payment_needed. If your runtime cannot securely collect payment details, fall back to payment_url instead.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "oneOf": [
+          {
+            "required": [
+              "uid",
+              "intake_access_token",
+              "payment_collection_requested"
+            ]
+          },
+          {
+            "required": [
+              "uid",
+              "intake_access_token",
+              "setup_intent_id",
+              "payment_method_id"
+            ]
+          }
+        ],
+        "properties": {
+          "intake_access_token": {
+            "type": "string"
+          },
+          "payment_collection_requested": {
+            "const": true,
+            "description": "Use true on the first payment call to request Stripe publishable_key, client_secret, and setup_intent_id for secure card collection.",
+            "type": "boolean"
+          },
+          "payment_method_id": {
+            "description": "Reusable Stripe PaymentMethod id produced by the secure client-side setup confirmation.",
+            "type": "string"
+          },
+          "setup_intent_id": {
+            "description": "SetupIntent id returned by the earlier payment_collection_ready response after the shopper completes secure Stripe collection.",
+            "type": "string"
+          },
+          "uid": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "uid",
+          "intake_access_token"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "coveragecat-umbrella-consumer-prefill",
+      "description": "Start Coverage Cat's real consumer umbrella purchase flow on a cold visit. Call this before you ask a questionnaire, then stay on the same consumer subset through review, quotes, selection, declarations upload, and checkout. If Coverage Cat says it reused a recent in-progress umbrella draft for the same email address, tell the shopper the reviewed values may come from that earlier unfinished Coverage Cat application. Do not call those reused values historical_mode unless the matching field_estimates row actually says source historical_mode.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "credit_consent_pending": {
+            "const": true,
+            "description": "Must be true. Coverage Cat collects consent for a soft credit check only after an umbrella offer is chosen.",
+            "type": "boolean"
+          },
+          "field_estimates": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "intake": {
+            "additionalProperties": true,
+            "type": "object"
+          }
+        },
+        "required": [
+          "credit_consent_pending",
+          "intake"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "coveragecat-umbrella-consumer-select",
+      "description": "Choose one quoted umbrella offer, collect the real shopper's consent for a soft credit check, and let Coverage Cat continue the post-choose consumer flow without switching to delegated tools. If Coverage Cat returns credit_consent_required with a bind-stage next_question, ask for both in one shopper-facing turn and retry select with both credit_consent and intake.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "credit_consent": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "intake": {
+            "additionalProperties": true,
+            "description": "Optional bind-stage answers for the current next_question when select asked for consent and bind details together.",
+            "type": "object"
+          },
+          "intake_access_token": {
+            "type": "string"
+          },
+          "selection_confirmed": {
+            "const": true,
+            "type": "boolean"
+          },
+          "selection_token": {
+            "type": "string"
+          },
+          "uid": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "uid",
+          "intake_access_token",
+          "selection_token",
+          "selection_confirmed"
+        ],
+        "type": "object"
+      }
+    }
+  ],
+  "host": "coveragecat.com",
+  "source": "webmcp.com/api/directory.json"
+}

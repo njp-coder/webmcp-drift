@@ -1,0 +1,200 @@
+{
+  "sponsio": 1,
+  "url": "https://customware.ai/",
+  "capturedAt": "2026-09-28T13:44:04.127Z",
+  "tools": [
+    {
+      "name": "book_demo",
+      "description": "Schedule a 30-minute call with David Uram (founder). Returns the Google Calendar booking URL. Use this when a user wants to talk to a human.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_blog_post",
+      "description": "Fetch a specific blog post by slug. Returns metadata and a text summary.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string"
+          },
+          "full": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "get_pricing_summary",
+      "description": "Return the canonical Customware pricing in structured form (three tiers, no Year-2 renewal).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_scn_page",
+      "description": "Fetch the full content of a specific SCN / territory page by slug. Returns title, description, category, tags, and a plain-text summary of the body. Use list_scn_pages or search_content to find slugs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Page slug, e.g. 'salesforce-cpq-end-of-sale'."
+          },
+          "full": {
+            "type": "boolean",
+            "description": "If true, returns the full body text instead of a summary."
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "list_blog_posts",
+      "description": "List Customware blog posts (slug, path, title, description, publishedAt).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    {
+      "name": "list_pages",
+      "description": "List the main top-level pages on customware.ai (home, pricing, AI Enterprise, demo, surveys, blog, resources, schedule).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_resources",
+      "description": "List long-form resource articles (slug, path, title, description, category).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_scn_pages",
+      "description": "List all SCN / SEO landing pages (the deep cluster at root URLs like /salesforce-cpq-end-of-sale, /ai-cpq-software, etc.). Returns slug, path, title, description, category and tags for each. Useful for an agent that wants to recommend a specific deep page to a user.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "description": "Optional category filter (e.g. 'salesforce-cpq')."
+          },
+          "limit": {
+            "type": "number",
+            "description": "Max number of results (default 100)."
+          }
+        }
+      }
+    },
+    {
+      "name": "navigate_to",
+      "description": "Navigate the Customware site to a specific in-app path (e.g. '/pricing', '/aienterprise', '/blog/some-slug', or any SCN page slug like '/salesforce-cpq-end-of-sale'). Use list_pages or search_content first to discover valid paths.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "In-app path beginning with '/'."
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    },
+    {
+      "name": "open_pricing",
+      "description": "Open the pricing page. Optionally jump to a specific tier section: 'start' (Use Case Starter), 'cpq' (CPQ Build Foundation), or 'enterprise' (AI Enterprise Adoption).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "section": {
+            "type": "string",
+            "enum": [
+              "start",
+              "cpq",
+              "enterprise"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "request_demo",
+      "description": "Open the AI Enterprise Adoption Platform page where a user can request a demo via the lead form.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "search_content",
+      "description": "Full-text search across every Customware page (SCN landing pages, blog posts, resource articles). Returns the top matches with kind, path, title, description, and a snippet.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search query."
+          },
+          "limit": {
+            "type": "number",
+            "description": "Max results (default 10)."
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "scn",
+              "blog",
+              "resource",
+              "any"
+            ],
+            "description": "Restrict results to a content kind."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "start_cpq_survey",
+      "description": "Start the 2-minute, 7-question CPQ readiness survey. Best for users who want to see if Customware is a fit for their CPQ / quoting workflow.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    }
+  ],
+  "host": "customware.ai",
+  "source": "webmcp.com/api/directory.json"
+}

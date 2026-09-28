@@ -1,0 +1,184 @@
+{
+  "sponsio": 1,
+  "url": "https://bizkardolab.eu/",
+  "capturedAt": "2026-09-28T13:44:04.127Z",
+  "tools": [
+    {
+      "name": "get_brand_assets",
+      "description": "List published brand assets available from the site.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_contact_options",
+      "description": "Read the published contact form path and field definitions in the requested language. Returns only the form path and fields.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "language": {
+            "type": "string",
+            "enum": [
+              "en",
+              "es",
+              "eu",
+              "ca",
+              "gl"
+            ],
+            "default": "en",
+            "description": "Language for the published contact form field labels."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_page",
+      "description": "Read published site content at an exact public catalog path, such as /learn/foo. Use the published path returned by the site catalog or search_site.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 300,
+            "description": "Exact public catalog path, for example /learn/foo."
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_video",
+      "description": "Read a published learning video by its exact slug. Supply only the final segment of its /learn/ path: use foo for /learn/foo.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120,
+            "description": "Exact final slug of a published /learn/ video path, for example foo."
+          }
+        },
+        "required": [
+          "slug"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_projects",
+      "description": "List published projects matching an optional search query. Returns all matching projects up to a maximum of 100.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "description": "Search text to match against published projects."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_videos",
+      "description": "List published learning videos, optionally filtered by category or search text. Returns up to 20 matching videos, with a default limit of 8.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "enum": [
+              "ai",
+              "payments",
+              "product",
+              "healthcare"
+            ],
+            "description": "Restrict published videos to this category."
+          },
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "description": "Search text to match against published videos."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "default": 8,
+            "description": "Maximum number of matching videos to return."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_site",
+      "description": "Search published site content by query, with optional content kind and category filters. Returns up to 20 matching results, with a default limit of 8.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "description": "Search text to match against published site content."
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "home",
+              "page",
+              "profile",
+              "video",
+              "projects",
+              "learning",
+              "brand",
+              "contact"
+            ],
+            "description": "Restrict results to this kind of published content."
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "ai",
+              "payments",
+              "product",
+              "healthcare"
+            ],
+            "description": "Restrict results to this category."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "default": 8,
+            "description": "Maximum number of matching results to return."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "bizkardolab.eu",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,122 @@
+{
+  "sponsio": 1,
+  "url": "https://polymarketscan.org/",
+  "capturedAt": "2026-09-28T13:44:04.127Z",
+  "tools": [
+    {
+      "name": "get_leaderboard",
+      "description": "Top Polymarket traders ranked by PnL, volume, or ROI.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sort": {
+            "type": "string",
+            "enum": [
+              "pnl",
+              "volume",
+              "roi"
+            ],
+            "description": "Sort metric"
+          },
+          "limit": {
+            "type": "number",
+            "description": "Max rows (default 25)",
+            "minimum": 1,
+            "maximum": 100
+          }
+        }
+      }
+    },
+    {
+      "name": "get_site_stats",
+      "description": "Aggregate PolymarketScan platform statistics (markets tracked, volume, active traders).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_trader_profile",
+      "description": "Performance stats, PnL, and badges for a Polymarket trader by wallet address.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "wallet": {
+            "type": "string",
+            "description": "EOA or Polymarket proxy address (0x...)",
+            "pattern": "^0x[a-fA-F0-9]{40}$"
+          }
+        },
+        "required": [
+          "wallet"
+        ]
+      }
+    },
+    {
+      "name": "get_whale_trades",
+      "description": "Recent large trades on Polymarket above a USD threshold.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "min_usd": {
+            "type": "number",
+            "description": "Minimum trade size in USD (default 10000)"
+          },
+          "limit": {
+            "type": "number",
+            "description": "Max trades (default 25)",
+            "minimum": 1,
+            "maximum": 100
+          }
+        }
+      }
+    },
+    {
+      "name": "navigate_to",
+      "description": "Navigate the current PolymarketScan tab to a path on polymarketscan.org (e.g. \"/markets/<slug>\", \"/address/<wallet>\", \"/leaderboard\").",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Path starting with \"/\"",
+            "pattern": "^/.*"
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    },
+    {
+      "name": "search_markets",
+      "description": "Full-text search across Polymarket prediction markets. Returns matching markets with current odds, volume, and links.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search query (e.g. \"2028 election\")"
+          },
+          "limit": {
+            "type": "number",
+            "description": "Max results (default 10)",
+            "minimum": 1,
+            "maximum": 50
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "polymarketscan.org",
+  "source": "webmcp.com/api/directory.json"
+}

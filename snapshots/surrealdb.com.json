@@ -1,0 +1,216 @@
+{
+  "sponsio": 1,
+  "url": "https://surrealdb.com/",
+  "capturedAt": "2026-09-28T13:44:04.127Z",
+  "tools": [
+    {
+      "name": "compare_plans",
+      "description": "Compare what each SurrealDB plan includes, as a structured feature matrix. Covers SurrealDB Cloud, self-hosted, Agent Memory and support plans. Each row gives a feature and its value per plan: true (included), false (not included), or a string such as 'Optional add-on' or a response time. Optionally filter to features matching a search term.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tab": {
+            "type": "string",
+            "enum": [
+              "surrealdb-cloud",
+              "surrealdb-self-hosted",
+              "agentMemory",
+              "support"
+            ],
+            "description": "Which set of plans to compare. Defaults to 'surrealdb-cloud'."
+          },
+          "feature": {
+            "type": "string",
+            "description": "Case-insensitive search term. Only features whose name or tooltip contains it are returned - use this to answer 'does plan X support Y?' without pulling the whole matrix."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "estimate_cloud_cost",
+      "description": "Estimate the monthly cost of a SurrealDB Cloud instance in USD, using the same pricing model as the calculator on this page. Returns a compute / storage / network / backup breakdown, the assumptions used, and a shareable link that reproduces the estimate in the on-page calculator. Call with no arguments to get the instance catalogue for both plans.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "plan": {
+            "type": "string",
+            "enum": [
+              "start",
+              "scale"
+            ],
+            "description": "'start' is a single-node instance for development and smaller production workloads. 'scale' is a distributed multi-node cluster with high availability. Omit to list the instance types available on both plans without estimating."
+          },
+          "instance": {
+            "type": "string",
+            "description": "Instance type slug, e.g. 'small-dev' on start or 'medium-scale' on scale. Omit for the smallest instance on the plan. An unknown slug returns the valid list."
+          },
+          "storageGb": {
+            "type": "number",
+            "description": "Storage in GB. On the scale plan this is storage per node. Clamped to the plan's supported range."
+          },
+          "nodeCount": {
+            "type": "integer",
+            "description": "Number of nodes. Scale plan only - the start plan is always a single node."
+          },
+          "internetEgressGb": {
+            "type": "number",
+            "description": "Outbound internet data transfer per month in GB."
+          },
+          "interNodeIngressGb": {
+            "type": "number",
+            "description": "Inbound inter-node transfer per month in GB. Scale plan only."
+          },
+          "interNodeEgressGb": {
+            "type": "number",
+            "description": "Outbound inter-node transfer per month in GB. Scale plan only."
+          },
+          "backupGb": {
+            "type": "number",
+            "description": "Managed backup storage in GB. Scale plan only."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_install_command",
+      "description": "Get the shell command to install or run SurrealDB on a given platform (macOS, Linux, Windows or Docker). Returns every supported method for that platform - Homebrew, the install script, PowerShell, Chocolatey, Scoop, or a Docker run command. Omit the platform to get all of them.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "platform": {
+            "type": "string",
+            "enum": [
+              "macos",
+              "linux",
+              "windows",
+              "docker"
+            ],
+            "description": "Target platform. Omit to return the commands for every platform."
+          },
+          "method": {
+            "type": "string",
+            "description": "Preferred install method, e.g. 'Homebrew', 'PowerShell', 'Chocolatey', 'Scoop', 'Docker' or 'Install script'. Case-insensitive. Omitted or unmatched returns every method for the platform."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_events",
+      "description": "List SurrealDB events - conferences, meetups, hackathons, webinars and livestreams. Returns the title, date, categories, description and registration or recording link for each. Use it to answer what is coming up, where the team will be, or what on-demand recordings exist.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "when": {
+            "type": "string",
+            "enum": [
+              "upcoming",
+              "past",
+              "on-demand",
+              "all"
+            ],
+            "description": "'upcoming' (default) for events that have not happened yet, 'past' for those that have, 'on-demand' for past webinars and livestreams available to watch back, 'all' for everything."
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "conferences",
+              "meetups",
+              "hackathons",
+              "webinars",
+              "livestreams"
+            ],
+            "description": "Restrict to a single event category."
+          },
+          "search": {
+            "type": "string",
+            "description": "Case-insensitive search term matched against the event title and description."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "description": "Maximum number of events to return. Defaults to 10."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "navigate_site",
+      "description": "Move the visitor's current tab to another page on surrealdb.com. Use it to show someone the page that backs up an answer - for example the pricing calculator after estimating a cost, or the install page after giving a command. Call with no arguments to list the available destinations.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "destination": {
+            "type": "string",
+            "enum": [
+              "home",
+              "pricing",
+              "cloud",
+              "database",
+              "features",
+              "install",
+              "deepDive",
+              "agentMemory",
+              "agentMemoryGetStarted",
+              "mcp",
+              "studio",
+              "benchmarks",
+              "comparePostgres",
+              "compareMongodb",
+              "compareNeo4j",
+              "compareElasticsearch",
+              "useCaseAiAgents",
+              "useCaseKnowledgeGraphs",
+              "useCaseRealTime",
+              "useCaseDigitalTwins",
+              "useCaseEmbeddedEdge",
+              "solutions",
+              "whyVsTraditional",
+              "whyVsVector",
+              "whyVsAgentDatabases",
+              "whyVsMemoryMiddleware",
+              "whyVsDataPlatforms",
+              "enterprise",
+              "caseStudies",
+              "integrations",
+              "openSource",
+              "learn",
+              "blog",
+              "releases",
+              "roadmap",
+              "events",
+              "whitepapers",
+              "about",
+              "careers",
+              "contact"
+            ],
+            "description": "Which page to open. Omit to list every destination with a description of what it covers."
+          },
+          "query": {
+            "type": "object",
+            "description": "Optional query-string parameters, e.g. the plan/config/storage values from estimate_cloud_cost's shareUrl so the calculator opens pre-filled.",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "hash": {
+            "type": "string",
+            "description": "Optional fragment to scroll to, without the '#', e.g. 'estimate' for the pricing calculator."
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "surrealdb.com",
+  "source": "webmcp.com/api/directory.json"
+}
