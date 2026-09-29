@@ -1,0 +1,396 @@
+{
+  "sponsio": 1,
+  "url": "https://gyfts.io/",
+  "capturedAt": "2026-09-29T12:42:16.735Z",
+  "tools": [
+    {
+      "name": "check_availability",
+      "description": "A practitioner's open time windows over up to 14 days, optionally for one service (only windows long enough for it). Read-only: nothing is held or booked. Returns JSON {result: {practitioner, url, service?, from, to, times_are: \"UTC\", open_windows: [{start, end}], book_url, how_to_book}, note}. To book, call open_booking; the person picks the time and pays.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]{0,119}$",
+            "description": "The practitioner: the last part of its Gyfts URL."
+          },
+          "service": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F-]{36}$",
+            "description": "A service id from get_practitioner."
+          },
+          "from": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+            "description": "First day to check (YYYY-MM-DD). Default today."
+          },
+          "days": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 14,
+            "description": "How many days to check. Default 7."
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "find_offerings",
+      "description": "List published courses, workshops, programs, retreats, classes, 1:1 sessions and events on Gyfts, optionally by format, price, country and date range. Returns JSON {results: [{name, url, by, format, price, starts?, where?}], page, next_page?, note}, 6 per page, soonest first unless sorted by price (prices compared as listed, not converted). Call get_offering with a url for details. Read-only: it does not book anything; the person books on the page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "courses",
+              "workshops",
+              "programs",
+              "retreats",
+              "classes",
+              "sessions",
+              "group-sessions",
+              "circles",
+              "talks",
+              "community-events",
+              "conferences"
+            ],
+            "description": "Which kind of offering to list."
+          },
+          "query": {
+            "type": "string",
+            "maxLength": 120,
+            "description": "Optional words to match in the title or host name."
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "online",
+              "onsite",
+              "blended"
+            ],
+            "description": "online, in person (onsite) or both (blended)."
+          },
+          "price": {
+            "type": "string",
+            "enum": [
+              "free",
+              "paid"
+            ]
+          },
+          "country": {
+            "type": "string",
+            "pattern": "^[A-Za-z]{2}$",
+            "description": "Two-letter country code, e.g. IE or US."
+          },
+          "from": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+            "description": "Only items starting on or after this date (YYYY-MM-DD). Excludes undated items."
+          },
+          "to": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+            "description": "Only items starting on or before this date (YYYY-MM-DD). Excludes undated items."
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "soonest",
+              "price_low",
+              "price_high"
+            ],
+            "description": "Default soonest."
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "description": "Page of results, from 1. Use next_page from the previous answer."
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "find_practitioners",
+      "description": "List published Gyfts practitioners who offer a practice or modality, e.g. \"reiki\" or \"acupuncture\", optionally in a country or city. Returns JSON {matched: {name, url}, results: [{name, url, where?, verified?}], page, next_page?, note}, 6 per page, verified practitioners first unless sort is \"name\". Call get_practitioner with the last part of a url for services, prices and formats. Read-only. Directory information only, not medical advice.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "practice": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 120,
+            "description": "The practice or modality name, e.g. \"reiki\"."
+          },
+          "country": {
+            "type": "string",
+            "pattern": "^[A-Za-z]{2}$",
+            "description": "Two-letter country code, e.g. IE or US."
+          },
+          "city": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 60,
+            "description": "City name, e.g. \"Dublin\"."
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "verified",
+              "name"
+            ],
+            "description": "verified: verified first, then A–Z (default). name: A–Z."
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "description": "Page of results, from 1. Use next_page from the previous answer."
+          }
+        },
+        "required": [
+          "practice"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get_offering",
+      "description": "Details of one event, course, workshop, retreat, organization offering or practitioner session, from a url returned by find_offerings. Returns JSON {result: {type, name, url, host?, starts?, ends?, timezone?, format?, where?, price?, minutes?, tickets?: [{name, price}], about?, how_to_book}, note}. Read-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "maxLength": 300,
+            "description": "The offering url from find_offerings, e.g. /events/sound-bath-dublin."
+          }
+        },
+        "required": [
+          "url"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get_practitioner",
+      "description": "A published Gyfts practitioner's public profile summary. Returns JSON {result: {name, url, where?, verified?, practices?, specialties?, languages?, years_experience?, formats?, about?, services?: [{id, name, price, minutes?, format?}], book_url?}, note}. No contact details. Use a service id with check_availability and open_booking.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]{0,119}$",
+            "description": "The practitioner, e.g. \"jane-doe\" from /ie/jane-doe: the last part of its Gyfts URL."
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get_this_page",
+      "description": "Details of the practitioner, topic or offering shown on the current Gyfts page, in the same shape get_practitioner, get_topic or get_offering return. Returns JSON {result: {...} | null, error?, note}; result is null on pages that are not about one of those (e.g. the homepage or a listing).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get_topic",
+      "description": "Details of one condition, symptom, practice, treatment, specialty or journey on Gyfts: its reviewed short summary and page URL, and for a condition the practices its page lists. Returns JSON {result: {type, name, url, summary?, related_practices?: [{name, url}], next_step?}, note}. A listed practice is not a recommendation. Not medical advice, a diagnosis or a treatment plan.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "condition",
+              "symptom",
+              "practice",
+              "treatment",
+              "specialty",
+              "journey"
+            ],
+            "description": "practice = a modality (/modalities/…); journey = a pathway (/journey/…)."
+          },
+          "slug": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]{0,119}$",
+            "description": "The topic, e.g. \"anxiety\" from /conditions/anxiety: the last part of its Gyfts URL."
+          }
+        },
+        "required": [
+          "type",
+          "slug"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "open_booking",
+      "description": "Open a practitioner's Gyfts booking page, optionally with one service chosen, so the person can pick a time and pay. The agent does not book or pay: the person signs in and completes it themselves. Returns JSON {opened} or {error}.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]{0,119}$",
+            "description": "The practitioner: the last part of its Gyfts URL."
+          },
+          "service": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F-]{36}$",
+            "description": "A service id from get_practitioner."
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "open_gyfts_search",
+      "description": "Open the Gyfts search results page for a search term. Results cover conditions, symptoms, practices (modalities), treatments, specialties, journeys, practitioners, organizations, events and articles. Navigates this tab to the public results page; nothing is booked or changed. Gyfts is a directory: results are not medical advice, a diagnosis or a treatment recommendation.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string",
+            "description": "Tell us what you’re experiencing…"
+          }
+        },
+        "required": [
+          "q"
+        ]
+      }
+    },
+    {
+      "name": "open_page",
+      "description": "Navigate this tab to a public Gyfts page, e.g. a url from any other tool. Only Gyfts pages; account, admin, sign-in and booking pages are refused (use open_booking to book). Returns JSON {opened} or {error}.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "maxLength": 300,
+            "description": "A Gyfts path such as /modalities/reiki, or a full gyfts.io URL."
+          }
+        },
+        "required": [
+          "url"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "search_gyfts",
+      "description": "Search the Gyfts holistic health directory by name: conditions, symptoms, practices (modalities), treatments, specialties, journeys (pathways), practitioners, organizations, events and articles. Returns JSON {results: [{type, name, detail?, url}], page, next_page?, note}, 6 per page. For details of one result call get_topic, get_practitioner or get_offering. To find practitioners who offer a practice (e.g. reiki), use find_practitioners. Directory information only, not medical advice.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 120,
+            "description": "What to look for, e.g. \"reiki\", \"anxiety\", or a practitioner name."
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "condition",
+              "symptom",
+              "modality",
+              "specialty",
+              "treatment",
+              "pathway",
+              "practitioner",
+              "organization",
+              "event",
+              "article"
+            ],
+            "description": "Only return results of this type. \"modality\" is a practice; \"pathway\" is a journey."
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "description": "Page of results, from 1. Use next_page from the previous answer."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    }
+  ],
+  "host": "gyfts.io",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,133 @@
+{
+  "sponsio": 1,
+  "url": "https://radar.cloudflare.com/",
+  "capturedAt": "2026-09-29T12:42:16.735Z",
+  "tools": [
+    {
+      "name": "get-current-view",
+      "description": "Read the current on-page context: active section, location filter, and date window.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "navigate-to",
+      "description": "Jump to a Radar section by its key (e.g. 'traffic', 'dns', 'routing') or an internal path, optionally with a widget anchor (e.g. '/traffic#http-version'). Use the search tool to find sections and their deep links.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "section": {
+            "type": "string",
+            "description": "A Radar section key or internal path (may include #anchor)."
+          }
+        },
+        "required": [
+          "section"
+        ]
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "search",
+      "description": "Search Radar for pages, sections, events, and entities (domains, TLDs, ASNs, IPs, IP prefixes, bots, certificate authorities/logs, cloud origins, URL scans). Mirrors the site search bar. Returns matching titles and their internal Radar paths; use 'navigate-to' to open one.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search text (e.g. 'quantum', 'cloudflare.com', 'AS13335', '1.1.1.1', '.dev')."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "set-date-range",
+      "description": "Change the date window. Provide a relative 'dateRange' (e.g. '7d', '28d', '12w', '52w') or an explicit 'dateStart' and 'dateEnd' (YYYY-MM-DD).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "dateRange": {
+            "type": "string",
+            "description": "Relative range like '7d', '28d', '12w', '52w'."
+          },
+          "dateStart": {
+            "type": "string",
+            "description": "Start date (YYYY-MM-DD)."
+          },
+          "dateEnd": {
+            "type": "string",
+            "description": "End date (YYYY-MM-DD)."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "set-location",
+      "description": "Filter Radar to a country, region, continent, or ASN (e.g. 'US', 'europe', 'AS13335'). Pages that can't be filtered by that location redirect to one that can.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "location": {
+            "type": "string",
+            "description": "Country code, region/continent slug, or ASN."
+          }
+        },
+        "required": [
+          "location"
+        ]
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "set-theme",
+      "description": "Set the color theme: 'light', 'dark', or 'system'.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "theme": {
+            "type": "string",
+            "enum": [
+              "light",
+              "dark",
+              "system"
+            ],
+            "description": "The theme preference."
+          }
+        },
+        "required": [
+          "theme"
+        ]
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    }
+  ],
+  "host": "radar.cloudflare.com",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,127 @@
+{
+  "sponsio": 1,
+  "url": "https://confined-space.com/",
+  "capturedAt": "2026-09-29T12:42:16.735Z",
+  "tools": [
+    {
+      "name": "get_certificate_verification_info",
+      "description": "Explain how an employer can verify a confined-space.com certificate of completion, and where to do it.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_price_quote",
+      "description": "Calculate the price for a number of seats in one confined-space.com course, including the automatic bulk seat discount.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "course": {
+            "type": "string",
+            "enum": [
+              "awareness",
+              "entry",
+              "supervisor",
+              "competent"
+            ],
+            "description": "Course code."
+          },
+          "seats": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000,
+            "description": "Number of seats (1-1000)."
+          }
+        },
+        "required": [
+          "course",
+          "seats"
+        ]
+      }
+    },
+    {
+      "name": "list_courses",
+      "description": "List all training courses offered on confined-space.com with length, price per seat, audience, topics covered, and page URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "recommend_course",
+      "description": "Recommend the right confined space course for a person based on what they do on the job. Use this when someone asks which course they need.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "string",
+            "enum": [
+              "works_near",
+              "entrant",
+              "attendant",
+              "entry_supervisor",
+              "program_manager"
+            ],
+            "description": "works_near = works near confined spaces but never enters; entrant = physically enters permit spaces; attendant = stays outside monitoring the entrant; entry_supervisor = authorizes/cancels entry permits; program_manager = oversees the confined space program (safety manager, EHS, competent person)."
+          }
+        },
+        "required": [
+          "role"
+        ]
+      }
+    },
+    {
+      "name": "search_site_content",
+      "description": "Search confined-space.com content (FAQ answers, course curriculum, credential details, employer responsibilities, policies) and return the most relevant sections.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "What to look for, e.g. \"atmospheric testing\" or \"refund policy\"."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "start_checkout",
+      "description": "Open the confined-space.com checkout page with a course and seat count selected. The person must enter their own billing and card details and click Pay; this tool never submits a payment.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "course": {
+            "type": "string",
+            "enum": [
+              "awareness",
+              "entry",
+              "supervisor",
+              "competent"
+            ],
+            "description": "Course code."
+          },
+          "seats": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000,
+            "description": "Number of seats (default 1)."
+          }
+        },
+        "required": [
+          "course"
+        ]
+      }
+    }
+  ],
+  "host": "confined-space.com",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,430 @@
+{
+  "sponsio": 1,
+  "url": "https://esim-global.vip/",
+  "capturedAt": "2026-09-29T12:42:16.735Z",
+  "tools": [
+    {
+      "name": "get_consent_state",
+      "description": "Read the visitor's current cookie-consent state on this site. Necessary cookies are always on. Reports whether the visitor has decided yet and the on/off state of analytics, ads and personalized ads. By design there is no tool to grant consent: consent is given by a human on the banner.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get_current_plan",
+      "description": "Read the plan on the product page the user is viewing right now: the same facts as get_plan_details for that product, priced as shown on the page. Use when the user asks about \"this plan\" or the page they are on. No input. Present only the returned fields; never invent carrier, speed or coverage details that are not in the result. Read price with price_basis: \"total\" is the full plan price, \"per_day\" is one day - quote price_max for the full period, never multiply. Follow plan_note when present.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get_locale_state",
+      "description": "Read the current site locale: UI language, region and the active /esimshop/{language-region}/ bucket of the page the user is on.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get_plan_details",
+      "description": "Full details for one eSIM-Global.VIP plan by product id: data, validity, network, top-up support, transparency, reviews and link. Present only the returned fields; never invent carrier, speed or coverage details that are not in the result. Read price with price_basis: \"total\" is the full plan price, \"per_day\" is one day - quote price_max for the full period, never multiply. Follow plan_note when present.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "integer",
+            "description": "WooCommerce product id from search_esim_plans."
+          },
+          "language": {
+            "type": "string",
+            "description": "ISO language of the conversation, e.g. en, de, ja. Defaults to the language of the page the user is on."
+          }
+        },
+        "required": [
+          "product_id"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "reject_non_essential_cookies",
+      "description": "Opt the visitor out of all non-essential cookies (analytics, ads, personalized ads) and close the consent banner. Necessary cookies remain. Records a refusal only; it can never grant consent - that is a human decision by design. Use when the user wants to decline tracking.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": false,
+        "consequential": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "search_esim_plans",
+      "description": "Find eSIM-Global.VIP eSIM plans for a destination (country or region). Returns the best-value plans sorted by eSIM-Global.VIP Data Rating, with prices and a direct link. Use when a user wants mobile data abroad. Present only returned facts. Read price with price_basis: \"total\" is the full plan price; \"per_day\" is the price of ONE day - say \"from X per day\", quote price_max for the full period, never multiply. Never per GB. Follow plan_note when present. Use url and all_plans_url exactly.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "destination": {
+            "type": "string",
+            "description": "Country or region in English, e.g. \"Thailand\", \"Japan\", \"Europe\", or a 2-letter ISO code. If the user names a city (e.g. \"Tokyo\"), pass its country (\"Japan\")."
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "data_pack",
+              "daily_pack",
+              "unlimited_flex",
+              "any"
+            ],
+            "description": "Plan type. Default any."
+          },
+          "currency": {
+            "type": "string",
+            "description": "Optional ISO 4217 override. Defaults to the currency shown on the page the user is on."
+          },
+          "language": {
+            "type": "string",
+            "description": "ISO language of the conversation, e.g. en, de, ja. Defaults to the language of the page the user is on."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "description": "How many plans to return, best value first. Default 10; all_plans_url always lists everything."
+          }
+        },
+        "required": [
+          "destination"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "set_currency",
+      "description": "Switch the displayed currency by ISO 4217 code such as \"EUR\", \"USD\" or \"GBP\". Currency follows the region, so the site navigates to the matching region in the user's current language.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "ISO 4217 currency code, e.g. \"EUR\", \"USD\", \"GBP\".",
+            "enum": [
+              "GBP",
+              "EUR",
+              "CHF",
+              "PLN",
+              "CZK",
+              "TRY",
+              "SEK",
+              "NOK",
+              "DKK",
+              "RON",
+              "MDL",
+              "HUF",
+              "UAH",
+              "RSD",
+              "BAM",
+              "ISK",
+              "USD",
+              "CAD",
+              "JMD",
+              "TTD",
+              "BZD",
+              "MXN",
+              "CRC",
+              "COP",
+              "PEN",
+              "CLP",
+              "UYU",
+              "ARS",
+              "BRL",
+              "BOB",
+              "PYG",
+              "HNL",
+              "GTQ",
+              "DOP",
+              "AUD",
+              "NZD",
+              "ZAR",
+              "KES",
+              "RUB",
+              "BYN",
+              "KZT",
+              "UZS",
+              "INR",
+              "PHP",
+              "MYR",
+              "PKR",
+              "CNY",
+              "SGD",
+              "TWD",
+              "HKD",
+              "MOP",
+              "JPY",
+              "KRW",
+              "TZS",
+              "UGX",
+              "BWP",
+              "NAD",
+              "ZMW",
+              "LRD",
+              "GMD",
+              "RWF",
+              "XCD",
+              "BSD",
+              "BBD",
+              "GYD",
+              "XOF",
+              "XAF",
+              "DJF",
+              "MGA",
+              "GNF",
+              "HTG",
+              "BIF",
+              "AOA",
+              "MZN",
+              "SBD",
+              "XPF",
+              "VUV",
+              "FKP",
+              "BND",
+              "CVE",
+              "KGS",
+              "TJS",
+              "VND",
+              "IDR",
+              "THB",
+              "KHR",
+              "LAK",
+              "NPR",
+              "BDT"
+            ]
+          }
+        },
+        "required": [
+          "code"
+        ]
+      },
+      "annotations": {
+        "readOnly": false,
+        "consequential": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "set_language",
+      "description": "Switch the site to a supported language-region bucket such as \"de-de\" or \"en-gb\" and navigate to that locale; prices then show in that region's currency. Call get_locale_state first to see the current bucket.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "bucket": {
+            "type": "string",
+            "description": "Lowercase language-region bucket, e.g. \"de-de\", \"en-us\", \"ja-jp\".",
+            "enum": [
+              "en-gb",
+              "en-ie",
+              "de-de",
+              "de-at",
+              "de-ch",
+              "nl-nl",
+              "fr-fr",
+              "fr-be",
+              "es-es",
+              "it-it",
+              "pt-pt",
+              "pl-pl",
+              "cs-cz",
+              "fr-lu",
+              "de-li",
+              "fr-mc",
+              "it-sm",
+              "it-va",
+              "en-mt",
+              "el-cy",
+              "el-gr",
+              "tr-tr",
+              "sv-se",
+              "nb-no",
+              "da-dk",
+              "fi-fi",
+              "sk-sk",
+              "hr-hr",
+              "bg-bg",
+              "lt-lt",
+              "lv-lv",
+              "et-ee",
+              "sl-si",
+              "ro-ro",
+              "ro-md",
+              "hu-hu",
+              "uk-ua",
+              "sr-rs",
+              "sr-me",
+              "hr-ba",
+              "is-is",
+              "en-us",
+              "en-ca",
+              "fr-ca",
+              "en-jm",
+              "en-tt",
+              "en-bz",
+              "es-mx",
+              "es-cr",
+              "es-co",
+              "es-pe",
+              "es-cl",
+              "es-uy",
+              "es-ar",
+              "pt-br",
+              "es-ec",
+              "es-sv",
+              "es-pa",
+              "es-bo",
+              "es-py",
+              "es-hn",
+              "es-gt",
+              "es-do",
+              "en-au",
+              "en-nz",
+              "en-za",
+              "en-ke",
+              "en-zw",
+              "ru-ru",
+              "ru-by",
+              "ru-kz",
+              "ru-uz",
+              "en-in",
+              "en-ph",
+              "en-my",
+              "en-pk",
+              "zh-cn",
+              "zh-sg",
+              "zht-tw",
+              "zht-hk",
+              "zht-mo",
+              "ja-jp",
+              "ko-kr",
+              "en-tz",
+              "en-ug",
+              "en-bw",
+              "en-na",
+              "en-zm",
+              "en-lr",
+              "en-gm",
+              "en-rw",
+              "en-ag",
+              "en-bs",
+              "en-bb",
+              "en-gd",
+              "en-gy",
+              "fr-sn",
+              "fr-ci",
+              "fr-cm",
+              "fr-cg",
+              "fr-ml",
+              "fr-bf",
+              "fr-ne",
+              "fr-td",
+              "fr-tg",
+              "fr-bj",
+              "fr-ga",
+              "fr-dj",
+              "fr-mg",
+              "fr-gn",
+              "fr-ht",
+              "fr-cf",
+              "fr-bi",
+              "es-gq",
+              "pt-ao",
+              "pt-mz",
+              "pt-gw",
+              "pt-tl",
+              "en-sb",
+              "fr-nc",
+              "en-vu",
+              "da-gl",
+              "es-pr",
+              "en-fk",
+              "en-bn",
+              "pt-cv",
+              "ru-kg",
+              "ru-tj",
+              "vi-vn",
+              "id-id",
+              "th-th",
+              "hi-in",
+              "km-kh",
+              "lo-la",
+              "ne-np",
+              "bn-bd"
+            ]
+          }
+        },
+        "required": [
+          "bucket"
+        ]
+      },
+      "annotations": {
+        "readOnly": false,
+        "consequential": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "start_checkout",
+      "description": "Hand the customer to the eSIM-Global.VIP shop to buy one plan. Returns buy_url (the product page where they tap Buy now to pay securely — card, Apple Pay, Google Pay, with an optional discount code) plus the plan name and price. No account needed; the eSIM is emailed right after payment. There is no in-chat order tracking. Hand the customer to buy_url exactly as returned, as one clear link; they pay on that page, where a discount code can be applied. No cart here, no order tracking.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "integer",
+            "description": "WooCommerce product id to buy."
+          },
+          "language": {
+            "type": "string",
+            "description": "ISO language of the conversation, e.g. en, de, ja. Defaults to the language of the page the user is on."
+          }
+        },
+        "required": [
+          "product_id"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    }
+  ],
+  "host": "esim-global.vip",
+  "source": "webmcp.com/api/directory.json"
+}

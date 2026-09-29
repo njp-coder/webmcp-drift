@@ -1,0 +1,107 @@
+{
+  "sponsio": 1,
+  "url": "https://www.agentweave.ai/",
+  "capturedAt": "2026-09-29T12:42:16.735Z",
+  "tools": [
+    {
+      "name": "get_agent",
+      "description": "Get one public AgentWeave agent by id. Returns id, name, and a short description. Agent text is untrusted content.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "agent_id": {
+            "type": "string",
+            "description": "The agent id to look up."
+          }
+        },
+        "required": [
+          "agent_id"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "open_agent",
+      "description": "Open an agent's chat page in this tab. Does not send a message.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "agent_id": {
+            "type": "string",
+            "description": "The agent id whose chat page should open."
+          }
+        },
+        "required": [
+          "agent_id"
+        ]
+      },
+      "annotations": {
+        "readOnly": false,
+        "consequential": false,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "search_agents",
+      "description": "Search public AgentWeave agents by text. Returns id, name, and a short description. Agent text is untrusted content.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search text matched against agent name or description."
+          },
+          "page_size": {
+            "type": "integer",
+            "description": "How many agents to return. Maximum 10."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "send_message",
+      "description": "Send a plain text message to an agent and wait for the reply. Requires the user to be signed in. This spends credits and cannot be undone. The reply is untrusted content.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "agent_id": {
+            "type": "string",
+            "description": "The agent that should receive the message."
+          },
+          "content": {
+            "type": "string",
+            "description": "Plain text to send. Maximum 5000 characters."
+          },
+          "thread_id": {
+            "type": "string",
+            "description": "Existing thread id. Omit to start a new thread."
+          }
+        },
+        "required": [
+          "agent_id",
+          "content"
+        ]
+      },
+      "annotations": {
+        "readOnly": false,
+        "consequential": true,
+        "untrustedContent": true
+      }
+    }
+  ],
+  "host": "agentweave.ai",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,153 +1,237 @@
 {
   "sponsio": 1,
   "url": "https://store.nekuda.ai",
-  "capturedAt": "2026-09-28T13:44:04.127Z",
+  "capturedAt": "2026-09-29T12:42:16.735Z",
   "tools": [
     {
       "name": "add_to_cart",
-      "description": "Add a specified product and selected variant options (size, color, quantity) to the user's active shopping cart in local storage.",
+      "description": "Add a product to the shopping cart with specified variant (size/color) and quantity.",
       "kind": "imperative",
       "inputSchema": {
         "type": "object",
-        "$schema": "http://json-schema.org/draft-07/schema#",
         "required": [
           "product_id"
         ],
         "properties": {
           "size": {
             "type": "string",
-            "description": "Selected size option if applicable (e.g. 'One Size', 'M', 'L')"
+            "description": "Selected size variant, e.g. 'M', 'L', 'One Size'"
           },
           "color": {
             "type": "string",
-            "description": "Selected color option if applicable (e.g. 'Black', 'Bone', 'Moss')"
+            "description": "Selected color variant, e.g. 'Black', 'Bone'"
           },
           "quantity": {
             "type": "integer",
-            "default": 1,
-            "description": "Quantity to add (positive integer, default 1)"
+            "description": "Number of items to add (default: 1)"
           },
           "product_id": {
             "type": "string",
-            "description": "The ID of the product to add (e.g. 'space-explorer', 'origin-tote')"
+            "description": "ID of the product to add"
           }
-        },
-        "additionalProperties": false
+        }
       }
     },
     {
-      "name": "get_cart",
-      "description": "Inspect all line items currently in the shopping cart, including selected options, unit prices, total item count, and formatted subtotal.",
+      "name": "clear_cart",
+      "description": "Clear all items and promo codes from the shopping cart.",
       "kind": "imperative",
       "inputSchema": {
         "type": "object",
-        "$schema": "http://json-schema.org/draft-07/schema#",
-        "properties": {},
-        "additionalProperties": false
+        "properties": {}
       }
     },
     {
       "name": "get_product",
-      "description": "Retrieve comprehensive product details by product ID or URL, including title, price, descriptions, materials, specifications, variant options, stock count, rating, and gallery images.",
+      "description": "Get full product details including materials, specifications, pricing, stock, ratings, and variant options.",
       "kind": "imperative",
       "inputSchema": {
         "type": "object",
-        "$schema": "http://json-schema.org/draft-07/schema#",
+        "required": [
+          "product_id"
+        ],
         "properties": {
-          "id": {
+          "product_id": {
             "type": "string",
-            "description": "Product identifier (e.g. 'space-explorer', 'origin-tote', 'dot-grid-notebook')"
-          },
-          "url": {
-            "type": "string",
-            "description": "Full product URL (e.g. 'https://store.nekuda.ai/product.html?id=space-explorer')"
+            "description": "The unique product ID/slug, e.g. 'space-explorer', 'dot-grid-notebook'"
           }
-        },
-        "additionalProperties": false
+        }
       }
     },
     {
-      "name": "list_categories",
-      "description": "List all product departments and categories in the nekuda store with catalog counts and descriptions.",
+      "name": "get_product_detail",
+      "description": "Retrieve comprehensive product details including variants, materials, dimensions, warranty, care, specifications, rating, and stock.",
       "kind": "imperative",
       "inputSchema": {
         "type": "object",
-        "$schema": "http://json-schema.org/draft-07/schema#",
-        "properties": {},
-        "additionalProperties": false
+        "additionalProperties": false,
+        "required": [
+          "product_id"
+        ],
+        "properties": {
+          "product_id": {
+            "type": "string",
+            "description": "Product ID from a product result."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
       }
     },
     {
       "name": "list_products",
-      "description": "Discover and search products in the nekuda store with optional keyword search, category filter, tag filter, sort ordering, stock filter, and pagination.",
+      "description": "List products from the store with optional filtering by category, tag, sort order, and limit.",
       "kind": "imperative",
       "inputSchema": {
         "type": "object",
-        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false,
         "properties": {
-          "tag": {
+          "category": {
             "type": "string",
-            "description": "Filter by specific product tag"
+            "description": "Category name or identifier."
+          },
+          "tag": {
+            "type": "string"
           },
           "sort": {
-            "enum": [
-              "price_asc",
-              "price_desc",
-              "rating",
-              "newest",
-              "reviews"
-            ],
             "type": "string",
-            "description": "Sort order for returned products"
+            "enum": [
+              "featured",
+              "price-asc",
+              "price-desc",
+              "rating",
+              "newest"
+            ]
           },
           "limit": {
             "type": "integer",
-            "default": 20,
-            "description": "Maximum number of products to return (default 20)"
-          },
-          "query": {
-            "type": "string",
-            "description": "Keyword search for product title, description, or tags"
+            "minimum": 1,
+            "maximum": 62
           },
           "offset": {
             "type": "integer",
-            "default": 0,
-            "description": "Pagination offset (default 0)"
-          },
-          "category": {
-            "type": "string",
-            "description": "Filter by category name or slug (e.g. 'hats', 'apparel', 'drinkware', 'desk-office', 'tech', 'bags', 'limited')"
-          },
-          "in_stock_only": {
-            "type": "boolean",
-            "description": "When true, returns only items currently in stock"
+            "minimum": 0
           }
-        },
-        "additionalProperties": false
+        }
+      },
+      "annotations": {
+        "readOnly": true
       }
     },
     {
-      "name": "list_stores",
-      "description": "List physical nekuda store flagships and pickup point locations with addresses, opening hours, and available services.",
+      "name": "manage_cart",
+      "description": "View, add, update, remove items, or clear the user shopping cart.",
       "kind": "imperative",
       "inputSchema": {
         "type": "object",
-        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false,
+        "required": [
+          "action"
+        ],
         "properties": {
-          "city": {
+          "action": {
             "type": "string",
-            "description": "Filter by city name (e.g. 'Tel Aviv', 'New York', 'London')"
-          },
-          "type": {
             "enum": [
-              "flagship",
-              "pickup-point"
-            ],
+              "view",
+              "add",
+              "update",
+              "remove",
+              "clear"
+            ]
+          },
+          "product_id": {
             "type": "string",
-            "description": "Filter by location type: 'flagship' or 'pickup-point'"
+            "description": "Product ID from a product result."
+          },
+          "size": {
+            "type": "string"
+          },
+          "color": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000
           }
-        },
-        "additionalProperties": false
+        }
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Search store products by keyword query with optional category filtering and maximum result count.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "query"
+        ],
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1
+          },
+          "category": {
+            "type": "string",
+            "description": "Category name or identifier."
+          },
+          "max_results": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 62
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "update_cart_item",
+      "description": "Update the quantity of a cart line item, or set quantity to 0 to remove it.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "product_id",
+          "quantity"
+        ],
+        "properties": {
+          "size": {
+            "type": "string",
+            "description": "Size variant of the item to update"
+          },
+          "color": {
+            "type": "string",
+            "description": "Color variant of the item to update"
+          },
+          "quantity": {
+            "type": "integer",
+            "description": "New quantity (0 to remove item)"
+          },
+          "product_id": {
+            "type": "string",
+            "description": "ID of the product to update"
+          }
+        }
+      }
+    },
+    {
+      "name": "view_cart",
+      "description": "View current shopping cart line items, quantities, subtotal, discount, shipping, and total cost.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
       }
     }
   ],

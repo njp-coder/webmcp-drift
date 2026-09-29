@@ -1,0 +1,198 @@
+{
+  "sponsio": 1,
+  "url": "https://postfa.st/",
+  "capturedAt": "2026-09-29T12:42:16.735Z",
+  "tools": [
+    {
+      "name": "build_utm_link",
+      "description": "Add UTM parameters to a URL for Google Analytics 4 campaign tracking and get back the tagged link and the GA4 channel its visits will count under. Follows the UTM builder at postfa.st/tools/utm-builder: values are lowercased and spaces become hyphens. For a social platform source such as linkedin or tiktok, or newsletter, medium can be left out.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 800,
+            "description": "The page the link opens, starting with https:// or http://."
+          },
+          "source": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "description": "Where the click comes from, e.g. linkedin, instagram, newsletter."
+          },
+          "medium": {
+            "type": "string",
+            "maxLength": 100,
+            "description": "Channel type, e.g. social, paid_social, email, cpc. Can be left out when source is a social platform or newsletter; the builder's preset fills it."
+          },
+          "campaign": {
+            "type": "string",
+            "maxLength": 100,
+            "description": "Campaign name, e.g. spring-launch."
+          },
+          "term": {
+            "type": "string",
+            "maxLength": 100,
+            "description": "Paid search keyword or test variant."
+          },
+          "content": {
+            "type": "string",
+            "maxLength": 100,
+            "description": "Tells links in one campaign apart, e.g. reel or bio-link."
+          }
+        },
+        "required": [
+          "url",
+          "source"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "get_media_specs",
+      "description": "Get the recommended dimensions, aspect ratios, maximum file size, formats and length limits for images or video in one placement on a social platform, such as Instagram Reels or a YouTube thumbnail, from the size guides on postfa.st/sizes. Omit placement to list a platform's placements with their main size.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "platform": {
+            "type": "string",
+            "enum": [
+              "instagram",
+              "facebook",
+              "tiktok",
+              "youtube",
+              "x",
+              "linkedin",
+              "threads",
+              "bluesky",
+              "pinterest",
+              "google-business-profile"
+            ],
+            "description": "Social platform."
+          },
+          "placement": {
+            "type": "string",
+            "enum": [
+              "feed",
+              "posts",
+              "reels",
+              "stories",
+              "video",
+              "shorts",
+              "carousel",
+              "pin",
+              "profile",
+              "cover",
+              "group-cover",
+              "event-cover",
+              "header",
+              "banner",
+              "thumbnail",
+              "logo"
+            ],
+            "description": "Where the media appears, e.g. reels, stories, feed, cover. Omit it to list the placements the platform has."
+          }
+        },
+        "required": [
+          "platform"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "get_pricing",
+      "description": "Get PostFast's plan prices in EUR for both monthly and yearly billing, with each plan's social account, user and workspace limits, as published on postfa.st/pricing. Pass plan for that plan's full limits and features. get_signup_link returns the link that starts a trial on a plan.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "plan": {
+            "type": "string",
+            "enum": [
+              "starter",
+              "creator",
+              "growth",
+              "pro",
+              "enterprise"
+            ],
+            "description": "One plan to describe in full. Omit it to compare every plan."
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "get_signup_link",
+      "description": "Get the link that starts a PostFast free trial, for the person to open. It returns a URL only; the account is created when the person completes signup on app.postfa.st. get_pricing has the plans and prices.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "plan": {
+            "type": "string",
+            "enum": [
+              "starter",
+              "creator",
+              "growth",
+              "pro",
+              "enterprise"
+            ],
+            "description": "The plan the person wants. It is recorded with the signup; the plan itself is chosen during onboarding in the app."
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "search_api_docs",
+      "description": "Search the PostFast REST API reference (postfa.st/docs) and the per-platform API guides (postfa.st/api-guides). Returns matching pages, most relevant first, each with a one-line summary; API reference results also have rate limits and a markdownUrl with the whole page as Markdown.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "description": "What to find, e.g. \"upload a video\", \"schedule Instagram reels\", \"reply to comments\" or \"create posts\"."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 8,
+            "description": "Most results to return. Defaults to 5."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": false
+      }
+    }
+  ],
+  "host": "postfa.st",
+  "source": "webmcp.com/api/directory.json"
+}

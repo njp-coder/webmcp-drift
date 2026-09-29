@@ -1,0 +1,90 @@
+{
+  "sponsio": 1,
+  "url": "https://milometry.com/",
+  "capturedAt": "2026-09-29T12:42:16.735Z",
+  "tools": [
+    {
+      "name": "calculate_mileage_claim",
+      "description": "What a distance of business travel comes to at a country’s published mileage rate, band by band, with any yearly cap applied. The distance is in that country’s own unit: miles for uk and us, kilometres everywhere else. The result is an estimate, not tax advice.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "country": {
+            "type": "string",
+            "enum": [
+              "uk",
+              "ie",
+              "us",
+              "ca",
+              "au",
+              "nz",
+              "de",
+              "at",
+              "be",
+              "es",
+              "nl",
+              "fr",
+              "jp"
+            ],
+            "description": "The country, by its code: uk, us, ca (Canada), au (Australia), nz (New Zealand), ie (Ireland), de (Germany), at (Austria), be (Belgium), es (Spain), nl (Netherlands), fr (France), jp (Japan)."
+          },
+          "distance": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Business distance in the period, in miles for uk and us and in kilometres for every other country."
+          },
+          "ownRate": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "description": "Only for ie, fr and jp, which publish no single rate: the rate per kilometre that applies to this driver, in the country’s currency. Ignored for every other country."
+          }
+        },
+        "required": [
+          "country",
+          "distance"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_mileage_rate",
+      "description": "The business mileage rate a country’s tax authority publishes: the bands, any yearly cap, the authority, the official sources and the date the figures were last checked. Ireland, France and Japan publish no single rate, and the result says so without giving a number.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "country": {
+            "type": "string",
+            "enum": [
+              "uk",
+              "ie",
+              "us",
+              "ca",
+              "au",
+              "nz",
+              "de",
+              "at",
+              "be",
+              "es",
+              "nl",
+              "fr",
+              "jp"
+            ],
+            "description": "The country, by its code: uk, us, ca (Canada), au (Australia), nz (New Zealand), ie (Ireland), de (Germany), at (Austria), be (Belgium), es (Spain), nl (Netherlands), fr (France), jp (Japan)."
+          }
+        },
+        "required": [
+          "country"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "milometry.com",
+  "source": "webmcp.com/api/directory.json"
+}
