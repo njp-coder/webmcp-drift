@@ -1,8 +1,34 @@
 {
   "sponsio": 1,
   "url": "https://gyfts.io/",
-  "capturedAt": "2026-09-29T12:42:16.735Z",
+  "capturedAt": "2026-09-30T12:26:55.026Z",
   "tools": [
+    {
+      "name": "about_gyfts",
+      "description": "How Gyfts works: what it is, booking and payment, cancellations and refunds, what Verified means, safety, and how to get in touch. Returns JSON {result: {topic, answer, read_more: [path]}, other_topics?}. Without a topic it answers what_is_gyfts and lists the others.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "topic": {
+            "type": "string",
+            "enum": [
+              "what_is_gyfts",
+              "booking_and_payment",
+              "cancellations",
+              "verification",
+              "safety",
+              "contact"
+            ]
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": false
+      }
+    },
     {
       "name": "check_availability",
       "description": "A practitioner's open time windows over up to 14 days, optionally for one service (only windows long enough for it). Read-only: nothing is held or booked. Returns JSON {result: {practitioner, url, service?, from, to, times_are: \"UTC\", open_windows: [{start, end}], book_url, how_to_book}, note}. To book, call open_booking; the person picks the time and pays.",
@@ -181,6 +207,26 @@
       }
     },
     {
+      "name": "get_crisis_resources",
+      "description": "Emergency number and free crisis helplines for a country. Use at once if the person mentions suicide, self-harm, or not being safe, or if any tool returns crisis: true. Returns JSON {crisis: true, message, country?, emergency, lines: [{name, contact, hours?}], elsewhere: {emergency, find_a_helpline}, note}.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "country": {
+            "type": "string",
+            "pattern": "^[A-Za-z]{2}$",
+            "description": "Two-letter country code, e.g. IE, GB or US. Default: where the person is browsing from."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": false
+      }
+    },
+    {
       "name": "get_offering",
       "description": "Details of one event, course, workshop, retreat, organization offering or practitioner session, from a url returned by find_offerings. Returns JSON {result: {type, name, url, host?, starts?, ends?, timezone?, format?, where?, price?, minutes?, tickets?: [{name, price}], about?, how_to_book}, note}. Read-only.",
       "kind": "imperative",
@@ -313,7 +359,7 @@
         "properties": {
           "q": {
             "type": "string",
-            "description": "Tell us what you’re experiencing…"
+            "description": "Search a feeling, symptom, practice or practitioner…"
           }
         },
         "required": [
@@ -382,6 +428,35 @@
         },
         "required": [
           "query"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "start_here",
+      "description": "Best first call when a person describes what they are looking for in their own words, e.g. \"trouble sleeping, interested in acupuncture in Dublin\". Returns JSON {path, practitioners_for?: {name, url}, topics: [{type, name, url}], practitioners: [{name, url, where?, verified?}], events: [{name, url}], next_steps: [string], note}. If the words suggest a crisis it returns {crisis: true, emergency, lines, ...} instead: show that to the person first. Matching pages are not a diagnosis. Read-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "need": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 300,
+            "description": "What the person is looking for, in their words."
+          },
+          "country": {
+            "type": "string",
+            "pattern": "^[A-Za-z]{2}$",
+            "description": "Two-letter country code, e.g. IE or US."
+          }
+        },
+        "required": [
+          "need"
         ]
       },
       "annotations": {

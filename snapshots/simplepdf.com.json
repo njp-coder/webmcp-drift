@@ -1,0 +1,124 @@
+{
+  "sponsio": 1,
+  "url": "https://simplepdf.com/editor",
+  "capturedAt": "2026-09-30T12:26:55.026Z",
+  "tools": [
+    {
+      "name": "simplepdf_embed_detect_fields",
+      "description": "Automatically detect fillable fields in the loaded document and add them as editable fields. Returns { detected_count }. Requires editing to be enabled.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "simplepdf_embed_focus_field",
+      "description": "Scroll an existing field into view and focus it, addressed by its id (from the field list). Returns a hint describing the user action expected next.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "field_id": {
+            "description": "ID of the field to focus and scroll into view.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "field_id"
+        ]
+      }
+    },
+    {
+      "name": "simplepdf_embed_get_document_content",
+      "description": "Extract the document's content page by page as Markdown (pass extraction_mode 'ocr' to force optical recognition, which returns plain text). Use it to read what the document says. Returns { name, pages: [{ page, content }] }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "extraction_mode": {
+            "description": "Extraction strategy: 'auto' (default) or 'ocr' to force optical recognition.",
+            "enum": [
+              "auto",
+              "ocr"
+            ],
+            "type": "string"
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "simplepdf_embed_get_fields",
+      "description": "List every fillable field in the loaded document, including native dropdown and radio AcroFields. Each field reports its id, name, type, page, and current value. Call this first to discover field ids before reading or setting values. To SEE where each field sits on the printed page, call get_annotated_page. Returns { fields }.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "simplepdf_embed_load_document",
+      "description": "Replace the document in the editor with one supplied as a base64 data URL or an http(s) URL the editor fetches. Destructive: the current document and every edit in it are discarded. Returns no data.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "data_url": {
+            "description": "The document to load: a data URL, or an http(s) URL the editor fetches.",
+            "type": "string"
+          },
+          "name": {
+            "description": "Optional display name for the document.",
+            "type": "string"
+          },
+          "page": {
+            "description": "Optional 1-based page to open the document on.",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "data_url"
+        ]
+      }
+    },
+    {
+      "name": "simplepdf_embed_set_field_value",
+      "description": "Set the value of an existing field addressed by its id (from the field list), or clear it with null. If the field has options (see the field list), value must be one of them; otherwise value is a string (text or checkbox value) or a data URL or http(s) URL the editor fetches (signature, picture). Returns no data.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "field_id": {
+            "description": "ID of the field to update.",
+            "type": "string"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "New value for the field, or null to clear it. If the field has options (see the field list), it must be one of them; otherwise a string (text/checkbox) or a data URL or http(s) URL, fetched by the editor (signature/picture)."
+          }
+        },
+        "required": [
+          "field_id",
+          "value"
+        ]
+      }
+    }
+  ],
+  "host": "simplepdf.com",
+  "source": "webmcp.com/api/directory.json"
+}

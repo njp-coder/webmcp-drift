@@ -1,0 +1,125 @@
+{
+  "sponsio": 1,
+  "url": "https://lilydiajewellery.com/engagement-rings/customise/hailey-4-claw-round-solitaire-engagement-ring",
+  "capturedAt": "2026-09-30T12:26:55.026Z",
+  "tools": [
+    {
+      "name": "get_ring_configuration",
+      "description": "Read this ring configuration, available choices, stone slots and displayed prices. Incomplete and unchecked prices are provisional. Prices being checked or from an earlier country are withheld; read again when checking finishes. This does not navigate, add to bag or purchase. Engraving text is private; the customer supplies it through the existing controls.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false
+      }
+    },
+    {
+      "name": "review_ring",
+      "description": "Open the existing confirmation and wait for the current ring and country to pass server price and availability validation. Returns checked components and total for customer review. If prices changed, the customer must review the updated price. Missing input or unavailable stones are failures with an edit target. Does not create a cart, add to bag, reserve stock, choose a deposit, share a design or purchase. The customer uses the existing Add to bag and checkout controls. Cancellation does not undo navigation; read the configuration before retrying.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "expectedRevision": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "expectedRevision"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "consequential": false
+      }
+    },
+    {
+      "name": "set_ring_option",
+      "description": "Set one supported setting choice. Use exact fields and values from get_ring_configuration. Add-ons require enabled or disabled. Repeating the selected value makes no change. Pavé conflicts are rejected without removing it. Engraving cannot be edited. Returns committed selections and provisional displayed prices. Does not add to bag or purchase.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string",
+            "enum": [
+              "precious metal type",
+              "band width",
+              "setting style",
+              "prongNumber",
+              "prongType",
+              "settingHeight",
+              "bandType",
+              "ringSize",
+              "pave-band",
+              "hidden-halo"
+            ]
+          },
+          "value": {
+            "type": "string",
+            "description": "An exact value from this field in get_ring_configuration. Side stone choices use variant IDs."
+          },
+          "expectedRevision": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "field",
+          "value",
+          "expectedRevision"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "consequential": false
+      }
+    },
+    {
+      "name": "show_builder_step",
+      "description": "Open an available setting block, stone slot, stone source or confirmation on this ring. Use a target from get_ring_configuration. Stone entry requires ring size, a setting variant and any customer engraving input. Opening a picker registers get_stone_options, filter_diamonds and select_stone for its source. Call get_ring_configuration again after navigation before continuing with the newly available picker tools. Confirmation also requires every centre stone. Does not change product or purchase.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "target": {
+            "type": "string",
+            "enum": [
+              "metal",
+              "band_options",
+              "prong_options",
+              "ring_size",
+              "enhancements",
+              "primary",
+              "lab_diamond",
+              "moissanite",
+              "confirmation"
+            ]
+          },
+          "expectedRevision": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "target",
+          "expectedRevision"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "consequential": false
+      }
+    }
+  ],
+  "host": "lilydiajewellery.com",
+  "source": "webmcp.com/api/directory.json"
+}

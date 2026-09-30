@@ -1,7 +1,7 @@
 {
   "sponsio": 1,
   "url": "https://esim-global.vip/",
-  "capturedAt": "2026-09-29T12:42:16.735Z",
+  "capturedAt": "2026-09-30T12:26:55.026Z",
   "tools": [
     {
       "name": "get_consent_state",
@@ -44,22 +44,107 @@
     },
     {
       "name": "get_plan_details",
-      "description": "Full details for one eSIM-Global.VIP plan by product id: data, validity, network, top-up support, transparency, reviews and link. Present only the returned fields; never invent carrier, speed or coverage details that are not in the result. Read price with price_basis: \"total\" is the full plan price, \"per_day\" is one day - quote price_max for the full period, never multiply. Follow plan_note when present.",
+      "description": "Full facts for one eSIM-Global.VIP plan by product id: coverage with networks per country, data and speed rules, activation and validity rules, hotspot / APN / registration facts, top-up, refund rule, price with basis, reviews and link — quoted in the customer's bucket or currency when given. Present only the returned fields; never invent carrier, speed or coverage details that are not in the result. Read price with price_basis: \"total\" is the full plan price, \"per_day\" is one day - quote price_max for the full period, never multiply. Follow plan_note when present.",
       "kind": "imperative",
       "inputSchema": {
         "type": "object",
         "properties": {
           "product_id": {
             "type": "integer",
-            "description": "WooCommerce product id from search_esim_plans."
+            "description": "Product id from search_esim_plans or recommend_plan."
           },
           "language": {
             "type": "string",
             "description": "ISO language of the conversation, e.g. en, de, ja. Defaults to the language of the page the user is on."
+          },
+          "bucket": {
+            "type": "string",
+            "description": "Optional language-region bucket the customer shops in, e.g. \"en-gb\", \"de-de\". Wins over language; prices and links are quoted in it."
+          },
+          "currency": {
+            "type": "string",
+            "description": "Optional ISO 4217 override. Defaults to the currency shown on the page the user is on."
           }
         },
         "required": [
           "product_id"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get_shop_facts",
+      "description": "How eSIM-Global.VIP works, in the shop's own words: delivery and installation, device requirements, payment methods, money-back guarantee, top-up, hotspot, support and company details. Use for any \"how / when / what if\" question that is not about one specific plan.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "recommend_plan",
+      "description": "Turn a trip into up to three plan recommendations: countries (1-5, any language), number of days and how much data the traveller uses. Each fit carries the full plan facts, the total price for the whole trip and a one-sentence reason built only from catalogue facts. Use this first whenever the user describes a trip rather than asks for a list.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "countries": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "maxItems": 5,
+            "description": "Countries or regions of the trip, any language."
+          },
+          "days": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 365,
+            "description": "Trip length in days."
+          },
+          "usage": {
+            "type": "string",
+            "enum": [
+              "light",
+              "normal",
+              "heavy"
+            ],
+            "description": "light ≈ 0.5 GB/day (maps, messaging), normal ≈ 1.5 GB/day (social, some video), heavy ≈ 4 GB/day (video, hotspot). Default normal."
+          },
+          "gb_per_day": {
+            "type": "number",
+            "minimum": 0.1,
+            "description": "Overrides usage with an explicit daily need in GB."
+          },
+          "budget": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Optional maximum total for the trip, in the result currency."
+          },
+          "language": {
+            "type": "string",
+            "description": "ISO language of the conversation, e.g. en, de, ja. Defaults to the language of the page the user is on."
+          },
+          "bucket": {
+            "type": "string",
+            "description": "Optional language-region bucket the customer shops in, e.g. \"en-gb\", \"de-de\". Wins over language; prices and links are quoted in it."
+          },
+          "currency": {
+            "type": "string",
+            "description": "Optional ISO 4217 override. Defaults to the currency shown on the page the user is on."
+          }
+        },
+        "required": [
+          "countries",
+          "days"
         ]
       },
       "annotations": {
@@ -83,14 +168,22 @@
     },
     {
       "name": "search_esim_plans",
-      "description": "Find eSIM-Global.VIP eSIM plans for a destination (country or region). Returns the best-value plans sorted by eSIM-Global.VIP Data Rating, with prices and a direct link. Use when a user wants mobile data abroad. Present only returned facts. Read price with price_basis: \"total\" is the full plan price; \"per_day\" is the price of ONE day - say \"from X per day\", quote price_max for the full period, never multiply. Never per GB. Follow plan_note when present. Use url and all_plans_url exactly.",
+      "description": "Find eSIM-Global.VIP eSIM plans for one destination or several (countries or regions, any language). Returns the best-value plans first with full facts, coverage lists and a direct link; multi-country plans that include the destination are returned too and marked covers_via. Use when a user wants mobile data abroad; use recommend_plan when they describe a whole trip. Present only returned facts. Read price with price_basis: \"total\" is the full plan price; \"per_day\" is the price of ONE day - say \"from X per day\", quote price_max for the full period, never multiply. Never per GB. Follow plan_note when present. Use url and all_plans_url exactly.",
       "kind": "imperative",
       "inputSchema": {
         "type": "object",
         "properties": {
           "destination": {
             "type": "string",
-            "description": "Country or region in English, e.g. \"Thailand\", \"Japan\", \"Europe\", or a 2-letter ISO code. If the user names a city (e.g. \"Tokyo\"), pass its country (\"Japan\")."
+            "description": "Country or region in any language, e.g. \"Thailand\", \"Japon\", \"Europa\", or a 2-letter ISO code. For a city, pass its country."
+          },
+          "destinations": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 5,
+            "description": "Several countries for one trip; only plans covering ALL of them are returned. Overrides destination."
           },
           "type": {
             "type": "string",
@@ -102,24 +195,40 @@
             ],
             "description": "Plan type. Default any."
           },
-          "currency": {
-            "type": "string",
-            "description": "Optional ISO 4217 override. Defaults to the currency shown on the page the user is on."
-          },
-          "language": {
-            "type": "string",
-            "description": "ISO language of the conversation, e.g. en, de, ja. Defaults to the language of the page the user is on."
+          "min_days": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Only plans valid for at least this many days (Unlimited Flex counts when days_range allows it)."
           },
           "limit": {
             "type": "integer",
             "minimum": 1,
             "maximum": 50,
             "description": "How many plans to return, best value first. Default 10; all_plans_url always lists everything."
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "value",
+              "price",
+              "data"
+            ],
+            "description": "value = best price per GB / cheapest Flex first (default); price = cheapest first; data = most data first."
+          },
+          "language": {
+            "type": "string",
+            "description": "ISO language of the conversation, e.g. en, de, ja. Defaults to the language of the page the user is on."
+          },
+          "bucket": {
+            "type": "string",
+            "description": "Optional language-region bucket the customer shops in, e.g. \"en-gb\", \"de-de\". Wins over language; prices and links are quoted in it."
+          },
+          "currency": {
+            "type": "string",
+            "description": "Optional ISO 4217 override. Defaults to the currency shown on the page the user is on."
           }
         },
-        "required": [
-          "destination"
-        ]
+        "required": []
       },
       "annotations": {
         "readOnly": true,
@@ -401,18 +510,31 @@
     },
     {
       "name": "start_checkout",
-      "description": "Hand the customer to the eSIM-Global.VIP shop to buy one plan. Returns buy_url (the product page where they tap Buy now to pay securely — card, Apple Pay, Google Pay, with an optional discount code) plus the plan name and price. No account needed; the eSIM is emailed right after payment. There is no in-chat order tracking. Hand the customer to buy_url exactly as returned, as one clear link; they pay on that page, where a discount code can be applied. No cart here, no order tracking.",
+      "description": "Hand the customer to the eSIM-Global.VIP shop to buy one plan. Returns buy_url (the product page where they tap Buy now and pay securely — card, Apple Pay, Google Pay, PayPal, with an optional discount code) plus the plan name and price in the customer's bucket or currency. No account needed; the eSIM is emailed right after payment. There is no in-chat order tracking. Hand the customer to buy_url exactly as returned, as one clear link; they pay on that page, where a discount code can be applied. No cart here, no order tracking.",
       "kind": "imperative",
       "inputSchema": {
         "type": "object",
         "properties": {
           "product_id": {
             "type": "integer",
-            "description": "WooCommerce product id to buy."
+            "description": "Product id to buy."
+          },
+          "days": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Unlimited Flex only: the duration the customer wants; the returned total_for_days is the checkout total for it."
           },
           "language": {
             "type": "string",
             "description": "ISO language of the conversation, e.g. en, de, ja. Defaults to the language of the page the user is on."
+          },
+          "bucket": {
+            "type": "string",
+            "description": "Optional language-region bucket the customer shops in, e.g. \"en-gb\", \"de-de\". Wins over language; prices and links are quoted in it."
+          },
+          "currency": {
+            "type": "string",
+            "description": "Optional ISO 4217 override. Defaults to the currency shown on the page the user is on."
           }
         },
         "required": [
