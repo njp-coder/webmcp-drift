@@ -1,8 +1,25 @@
 {
   "sponsio": 1,
   "url": "https://www.relvato.com/",
-  "capturedAt": "2026-09-30T12:26:55.026Z",
+  "capturedAt": "2026-10-01T13:02:46.038Z",
   "tools": [
+    {
+      "name": "check_site_for_webmcp",
+      "description": "Check a web page for WebMCP tools (registered and form tools), their schemas, and the site's AI catalog (ai-catalog.json) and llms.txt. Returns every tool found and every issue, the way Lighthouse's Agentic browsing audits see them.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "https://www.example.com"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      }
+    },
     {
       "name": "find_relvato_checks",
       "description": "Find which of Relvato's website checks watch for a given problem or risk. Returns each matching check with what it verifies, the platforms it works on, and its page. Use it to answer whether Relvato can monitor something.",
@@ -18,6 +35,9 @@
         "required": [
           "need"
         ]
+      },
+      "annotations": {
+        "readOnly": true
       }
     },
     {
@@ -27,6 +47,9 @@
       "inputSchema": {
         "type": "object",
         "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
       }
     },
     {
@@ -63,6 +86,53 @@
         },
         "required": [
           "query"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "send_contact_message",
+      "description": "Write a message to the Relvato team (support, sales, integrations, feedback or anything else). The person reviews the filled form and sends it themselves.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "topic": {
+            "type": "string",
+            "enum": [
+              "general",
+              "support",
+              "sales",
+              "integrations",
+              "feedback"
+            ]
+          },
+          "name": {
+            "type": "string",
+            "description": "Your name"
+          },
+          "email": {
+            "type": "string",
+            "description": "you@company.com"
+          },
+          "subject": {
+            "type": "string",
+            "description": "What's this about?"
+          },
+          "message": {
+            "type": "string",
+            "description": "Tell us what you need…"
+          },
+          "company": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "email",
+          "message"
         ]
       }
     }

@@ -1,7 +1,7 @@
 {
   "sponsio": 1,
   "url": "https://gyfts.io/",
-  "capturedAt": "2026-09-30T12:26:55.026Z",
+  "capturedAt": "2026-10-01T13:02:46.038Z",
   "tools": [
     {
       "name": "about_gyfts",
@@ -71,7 +71,7 @@
     },
     {
       "name": "find_offerings",
-      "description": "List published courses, workshops, programs, retreats, classes, 1:1 sessions and events on Gyfts, optionally by format, price, country and date range. Returns JSON {results: [{name, url, by, format, price, starts?, where?}], page, next_page?, note}, 6 per page, soonest first unless sorted by price (prices compared as listed, not converted). Call get_offering with a url for details. Read-only: it does not book anything; the person books on the page.",
+      "description": "List published courses, workshops, programs, retreats, classes, 1:1 sessions and events on Gyfts, optionally by format, price, country, city and date range. Returns JSON {results: [{name, url, by, format, price, starts?, where?}], page, next_page?, note}, 6 per page, soonest first unless sorted by price (prices compared as listed, not converted). Call get_offering with a url for details. Read-only: it does not book anything; the person books on the page.",
       "kind": "imperative",
       "inputSchema": {
         "type": "object",
@@ -119,6 +119,12 @@
             "pattern": "^[A-Za-z]{2}$",
             "description": "Two-letter country code, e.g. IE or US."
           },
+          "city": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 60,
+            "description": "Only items held in this city, e.g. \"Cork\". Online-only items drop out."
+          },
           "from": {
             "type": "string",
             "format": "date",
@@ -150,6 +156,57 @@
         "required": [
           "kind"
         ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "find_organizations",
+      "description": "List published Gyfts organizations: clinics, wellness centers, retreat centers, training schools, associations, practices. Filter by type, practice (e.g. \"yoga\"), country and city; give at least one. Returns JSON {matched?: {name, url}, results: [{name, url, type, where?}], page, next_page?, note}, 6 per page, A–Z. Call get_organization with the last part of a url for details. Read-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "practice",
+              "clinic",
+              "wellness_center",
+              "retreat_center",
+              "corporate_wellness",
+              "association",
+              "training_school"
+            ],
+            "description": "training_school = a school or academy; association = a professional body."
+          },
+          "practice": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 120,
+            "description": "A practice the organization offers, e.g. \"yoga\" or \"acupuncture\"."
+          },
+          "country": {
+            "type": "string",
+            "pattern": "^[A-Za-z]{2}$",
+            "description": "Two-letter country code, e.g. IE or US."
+          },
+          "city": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 60,
+            "description": "City name, e.g. \"Galway\". Also matches an organization's other sites."
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "description": "Page of results, from 1. Use next_page from the previous answer."
+          }
+        }
       },
       "annotations": {
         "readOnly": true,
@@ -250,6 +307,29 @@
       }
     },
     {
+      "name": "get_organization",
+      "description": "A published Gyfts organization's public summary. Returns JSON {result: {type, name, url, org_type, where?, about?, practices?: [{name, url}], locations?: [{name, city?}], next_step}, note}. No contact details. For its courses, classes and events, call find_offerings with its name as the query.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]{0,119}$",
+            "description": "The organization, e.g. \"bright-cove\" from /ie/organizations/bright-cove: the last part of its Gyfts URL."
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    },
+    {
       "name": "get_practitioner",
       "description": "A published Gyfts practitioner's public profile summary. Returns JSON {result: {name, url, where?, verified?, practices?, specialties?, languages?, years_experience?, formats?, about?, services?: [{id, name, price, minutes?, format?}], book_url?}, note}. No contact details. Use a service id with check_availability and open_booking.",
       "kind": "imperative",
@@ -274,7 +354,7 @@
     },
     {
       "name": "get_this_page",
-      "description": "Details of the practitioner, topic or offering shown on the current Gyfts page, in the same shape get_practitioner, get_topic or get_offering return. Returns JSON {result: {...} | null, error?, note}; result is null on pages that are not about one of those (e.g. the homepage or a listing).",
+      "description": "Details of the practitioner, organization, topic or offering shown on the current Gyfts page, in the same shape get_practitioner, get_organization, get_topic or get_offering return. Returns JSON {result: {...} | null, error?, note}; result is null on pages that are not about one of those (e.g. the homepage or a listing).",
       "kind": "imperative",
       "inputSchema": {
         "type": "object",
