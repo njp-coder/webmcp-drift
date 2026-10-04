@@ -1,0 +1,110 @@
+{
+  "sponsio": 1,
+  "url": "https://real-decreto-vivienda-2026.vercel.app/",
+  "capturedAt": "2026-10-04T12:14:56.179Z",
+  "tools": [
+    {
+      "name": "ask_site",
+      "description": "Answers a question from the site’s public analysis pages. Returns the best-matching sections with their page names, quoted excerpts, paths and links when available; returns an empty list with a message when the site does not cover the question. Does not change the visitor’s page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "query"
+        ],
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "The reader’s question in their own words, for example: “¿Qué deducciones del IRPF hay para alquiler de vivienda habitual?”"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "buscar_en_el_sitio",
+      "description": "Busca en el análisis de los reales decretos-ley 26/2026 y 27/2026 de vivienda. Devuelve título, enlace, sección y extracto de las coincidencias.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "consulta": {
+            "type": "string",
+            "description": "Lo que se quiere encontrar: una medida, una cifra, una pregunta o un tema del sitio."
+          }
+        },
+        "required": [
+          "consulta"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "leer_pagina",
+      "description": "Devuelve el texto principal de una página del análisis, sin navegación ni menús. Solo acepta las seis rutas del sitio.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "ruta": {
+            "type": "string",
+            "description": "Ruta de la página a leer, una de: /, /desahucios-y-alquiler/, /fiscal/, /financiacion/, /estado/, /normas/."
+          }
+        },
+        "required": [
+          "ruta"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "read_section",
+      "description": "Reads the full visible main content of the selected analysis section, including its headings and citations, without changing the visitor’s page. Returns the section’s title, body, stable path and URL, and its last-reviewed date when shown.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "enum": [
+              "desahucios y alquiler",
+              "fiscalidad",
+              "financiación y cuenta",
+              "estado y advertencias",
+              "normas citadas"
+            ],
+            "type": "string",
+            "description": "Which analysis section to read; choose one of the navigation labels, for example “desahucios y alquiler”."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_analysis",
+      "description": "Search the site's analysis for a topic and leave the search results visible. Returns matching pages or passages with their title, link, and any visible snippet; if nothing matches, returns an empty list with a no-match message.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "query"
+        ],
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "The topic or words to search for, as a reader would phrase them; for example, \"desahucios\"."
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "real-decreto-vivienda-2026.vercel.app",
+  "source": "webmcp.com/api/directory.json"
+}

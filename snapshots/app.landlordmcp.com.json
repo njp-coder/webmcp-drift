@@ -1,0 +1,97 @@
+{
+  "sponsio": 1,
+  "url": "https://app.landlordmcp.com/start",
+  "capturedAt": "2026-10-04T12:14:56.179Z",
+  "tools": [
+    {
+      "name": "landlord_get_connection_guide",
+      "description": "Read public setup instructions for Landlord MCP. Returns connection details only; does not install a connector, sign in, grant access, or buy a plan.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "client": {
+            "type": "string",
+            "enum": [
+              "claude",
+              "chatgpt",
+              "codex",
+              "cursor",
+              "claude-code",
+              "openclaw",
+              "hermes",
+              "grok"
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "landlord_get_signup_link",
+      "description": "Return a Google- or email-preferred account page for the person to open. Does not start sign-in, verify email, authorize an AI or purchase a subscription.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "method": {
+            "type": "string",
+            "enum": [
+              "google",
+              "email"
+            ]
+          },
+          "plan": {
+            "type": "string",
+            "enum": [
+              "ledger",
+              "operator",
+              "portfolio"
+            ]
+          },
+          "billingInterval": {
+            "type": "string",
+            "enum": [
+              "monthly",
+              "annual"
+            ]
+          }
+        },
+        "required": [
+          "method"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "landlord_get_signup_options",
+      "description": "Read public signup methods, current email readiness and plan options. No message, account, checkout or AI authorization is created.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    }
+  ],
+  "host": "app.landlordmcp.com",
+  "source": "webmcp.com/api/directory.json"
+}

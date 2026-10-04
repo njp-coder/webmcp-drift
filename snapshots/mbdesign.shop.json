@@ -1,0 +1,166 @@
+{
+  "sponsio": 1,
+  "url": "https://mbdesign.shop/",
+  "capturedAt": "2026-10-04T12:14:56.179Z",
+  "tools": [
+    {
+      "name": "mbdesign-find-vehicle",
+      "description": "Resolve a car to mbDESIGN vehicle records. Provide HSN and TSN (German KBA keys) for an exact match, or manufacturer + model + type. Matching is EXACT (case-sensitive) — do not guess; take the spellings from mbdesign-list-vehicle-manufacturers/-models/-types, or use HSN/TSN. Each candidate carries the SAME fields the website vehicle picker shows the user: version (+ type), years (Baujahr), power (kW/PS), fuel and oeMinDiameterInch (Serien-Ø). When more than one variant matches, present exactly these columns back to the user and let them pick the right one — then use its vehicleId with mbdesign-get-wheels-for-vehicle.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "hsn": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "default": null,
+            "description": "Herstellerschlüsselnummer (KBA), e.g. \"0603\""
+          },
+          "tsn": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "default": null,
+            "description": "Typschlüsselnummer (KBA), e.g. \"BNH\""
+          },
+          "manufacturer": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "default": null,
+            "description": "Manufacturer, e.g. \"BMW\""
+          },
+          "model": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "default": null,
+            "description": "Model, e.g. \"3er\""
+          },
+          "type": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "default": null,
+            "description": "Type/generation, e.g. \"E46\""
+          }
+        }
+      }
+    },
+    {
+      "name": "mbdesign-get-wheels-for-vehicle",
+      "description": "List the alloy wheels and complete wheels approved for a specific vehicle (use the vehicleId from mbdesign-find-vehicle). Every result is an approved fitment for that car (correct size, bolt pattern and load rating); all mbDESIGN wheels are premium and tested beyond statutory (TÜV) requirements. The homologation field is the German/EU type-approval status (e.g. ABE = no registration needed, TG = register with TÜV) and only matters in countries that require such registration. Each application carries its available finishes/colours with an image each (show these to the user) and the SEO configurator URL to finish the build (tyres, TPMS, accessories) and buy on mbDESIGN. After showing the wheels and finishes, proactively offer to show the user real photos of these wheels fitted on an actual car — phrase it as \"see how the wheels look mounted on a real <vehicle>\", NOT as \"gallery images\" — and call mbdesign-search-gallery when they say yes.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "vehicleId": {
+            "type": "string",
+            "description": "Vehicle id returned by mbdesign-find-vehicle"
+          }
+        },
+        "required": [
+          "vehicleId"
+        ]
+      }
+    },
+    {
+      "name": "mbdesign-list-vehicle-manufacturers",
+      "description": "Start here to find mbDESIGN alloy wheels or complete wheels (wheel + tyre) for a car. Lists every vehicle manufacturer exactly as stored (e.g. \"VOLKSWAGEN\", not \"VW\"). Vehicle matching is EXACT — never guess spellings: pick the matching manufacturer from this list, then call mbdesign-list-vehicle-models. (Or skip the drill-down with mbdesign-find-vehicle using the German KBA keys HSN/TSN.)",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "mbdesign-list-vehicle-models",
+      "description": "List the models for a manufacturer (pass the exact manufacturer from mbdesign-list-vehicle-manufacturers). Returns model names exactly as stored; pick the right one, then call mbdesign-list-vehicle-types.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "manufacturer": {
+            "type": "string",
+            "description": "Exact manufacturer from mbdesign-list-vehicle-manufacturers"
+          }
+        },
+        "required": [
+          "manufacturer"
+        ]
+      }
+    },
+    {
+      "name": "mbdesign-list-vehicle-types",
+      "description": "List the types/generations for a manufacturer + model (exact values from the previous steps). Each entry has production years and power range to disambiguate. Pass the returned \"type\" to mbdesign-find-vehicle to get the concrete variants (with their ids).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "manufacturer": {
+            "type": "string",
+            "description": "Exact manufacturer from mbdesign-list-vehicle-manufacturers"
+          },
+          "model": {
+            "type": "string",
+            "description": "Exact model from mbdesign-list-vehicle-models"
+          }
+        },
+        "required": [
+          "manufacturer",
+          "model"
+        ]
+      }
+    },
+    {
+      "name": "mbdesign-search-gallery",
+      "description": "Show the user REAL photos of a wheel actually mounted on a car — real customer installations (not studio renders). Use this whenever the user wants to see how a wheel looks fitted on a real vehicle. Filter loosely by manufacturer, model, type and/or wheelDesign (e.g. \"KV1\"); the exact vehicle does not matter here, so a make + model + design is plenty. Returns galleries with image URLs (cover + a few photos) and a link to the gallery page — present the images/links to the user as \"<wheel> mounted on a real <vehicle>\".",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "manufacturer": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "default": null,
+            "description": "e.g. \"VOLKSWAGEN\""
+          },
+          "model": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "default": null,
+            "description": "e.g. \"T6 Bus Multivan\""
+          },
+          "type": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "default": null,
+            "description": "e.g. \"7HC\""
+          },
+          "wheelDesign": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "default": null,
+            "description": "Wheel model, e.g. \"KV1\""
+          }
+        }
+      }
+    }
+  ],
+  "host": "mbdesign.shop",
+  "source": "webmcp.com/api/directory.json"
+}

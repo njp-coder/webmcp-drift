@@ -1,0 +1,128 @@
+{
+  "sponsio": 1,
+  "url": "https://www.machvive.com/docs/",
+  "capturedAt": "2026-10-04T12:14:56.179Z",
+  "tools": [
+    {
+      "name": "get_install_command",
+      "description": "Return the npm install command and buildless CDN import for the MachVive package (@machfivetechchicago/machvive-webmcp-ai).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "manager": {
+            "type": "string",
+            "enum": [
+              "npm",
+              "yarn",
+              "pnpm",
+              "cdn"
+            ],
+            "description": "Package manager, or \"cdn\" for a no-build module script"
+          }
+        }
+      }
+    },
+    {
+      "name": "list_components",
+      "description": "List the MachVive web components with their tag, import subpath, and purpose.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "magnet_describe",
+      "description": "Describe the \"MachVive\" enquiry form: what it asks, what it collects, and whether it can schedule a meeting. Call this first.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "magnet_options",
+      "description": "List the allowed choices for one of the form's multiple-choice fields.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string",
+            "description": "Field name",
+            "enum": [
+              "product_interest"
+            ]
+          }
+        },
+        "required": [
+          "field"
+        ]
+      }
+    },
+    {
+      "name": "magnet_start",
+      "description": "Open the enquiry form with answers filled in, so the visitor can review and submit. Known fields: product_interest, name, email. This does NOT submit — the visitor confirms. Fields you leave out are asked of the visitor. Extra keys beyond the known fields are allowed and travel with the lead, which is how context like a campaign or source id is passed through.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_interest": {
+            "type": "string",
+            "description": "What brings you here?",
+            "enum": [
+              "Evaluating MachVive",
+              "Building with it and need help",
+              "Enterprise support or consulting",
+              "Contributing to the project"
+            ]
+          },
+          "name": {
+            "type": "string",
+            "description": "Who are we talking with? First and last name."
+          },
+          "email": {
+            "type": "string",
+            "description": "Best email to reach you?",
+            "format": "email"
+          }
+        }
+      }
+    },
+    {
+      "name": "magnet_status",
+      "description": "Check how far the visitor has got with the enquiry form: whether it has been opened, engaged with, which step they are on, and whether they submitted.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "search_docs",
+      "description": "Search the MachVive documentation on machvive.com and return matching sections with a URL, heading, and excerpt.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Words to look for"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "description": "Maximum sections to return (default 5)"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "machvive.com",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,152 @@
+{
+  "sponsio": 1,
+  "url": "https://fortwaynefloorcoating.com/compare-quotes/",
+  "capturedAt": "2026-10-04T12:14:56.179Z",
+  "tools": [
+    {
+      "name": "compare_project_quote_scope",
+      "description": "Compare scope statuses for two or three written proposals labelled A, B or C. First read the exact scope IDs from read_quote_comparison_checklist. Mark only confirmed written scope; omitted IDs become not_stated. Returns missing terms, differences and questions. Does not rank contractors, confirm suitability or submit data.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "quotes"
+        ],
+        "properties": {
+          "quotes": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 3,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "label",
+                "scope"
+              ],
+              "properties": {
+                "label": {
+                  "type": "string",
+                  "enum": [
+                    "A",
+                    "B",
+                    "C"
+                  ]
+                },
+                "scope": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "s1": {
+                      "type": "string",
+                      "enum": [
+                        "included",
+                        "excluded",
+                        "not_stated",
+                        "not_applicable"
+                      ]
+                    },
+                    "s2": {
+                      "type": "string",
+                      "enum": [
+                        "included",
+                        "excluded",
+                        "not_stated",
+                        "not_applicable"
+                      ]
+                    },
+                    "s3": {
+                      "type": "string",
+                      "enum": [
+                        "included",
+                        "excluded",
+                        "not_stated",
+                        "not_applicable"
+                      ]
+                    },
+                    "s4": {
+                      "type": "string",
+                      "enum": [
+                        "included",
+                        "excluded",
+                        "not_stated",
+                        "not_applicable"
+                      ]
+                    },
+                    "s5": {
+                      "type": "string",
+                      "enum": [
+                        "included",
+                        "excluded",
+                        "not_stated",
+                        "not_applicable"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get_project_inquiry_requirements",
+      "description": "Read the fields, consent requirements and browser URL for a project inquiry. Optionally select an exact inquiry topic. This tool only reads instructions; it never submits information or grants consent.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "service": {
+            "type": "string",
+            "description": "An exact inquiry topic returned by read_local_service_site."
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "read_local_service_site",
+      "description": "Read this website’s public identity, inquiry topics, page links, official resources and service limits. This independent inquiry site does not confirm a contractor, booking, price or dispatch. Content is website-provided information.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "read_quote_comparison_checklist",
+      "description": "Read five local project-scope questions, their exact IDs and allowed statuses, the comparison worksheet URL and primary public sources. Use this before comparing proposals. No personal information is accepted.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    }
+  ],
+  "host": "fortwaynefloorcoating.com",
+  "source": "webmcp.com/api/directory.json"
+}

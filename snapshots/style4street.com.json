@@ -1,0 +1,230 @@
+{
+  "sponsio": 1,
+  "url": "https://style4street.com/",
+  "capturedAt": "2026-10-04T12:14:56.179Z",
+  "tools": [
+    {
+      "name": "add_to_cart",
+      "description": "Add a product to the shopper's cart. For products with sizes/colors, pass the variation_id from get_product (not the parent product id). Returns the updated cart.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "integer",
+            "description": "variation_id from get_product, or the product id for products without options."
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "description": "Default 1."
+          }
+        },
+        "required": [
+          "product_id"
+        ]
+      }
+    },
+    {
+      "name": "apply_coupon",
+      "description": "Apply a discount code the shopper gave you to the cart.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "code"
+        ]
+      }
+    },
+    {
+      "name": "get_product",
+      "description": "Get full details for one product: description, material, images and, for products with sizes/colors, every option with its variation_id, price and stock.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "integer",
+            "description": "Product ID from search_products."
+          }
+        },
+        "required": [
+          "product_id"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_shop_filters",
+      "description": "List the product categories, sizes and colors available on style4street (a Romanian women's fashion shop; names are in Romanian, prices in lei). Use the returned slugs with search_products.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "inspect_image_c2pa",
+      "description": "Fetch a single image (by CSS selector or URL) and return its fully decoded C2PA manifest store: every manifest's claim, assertions (e.g. c2pa.actions edit history, schema.org authorship), and the COSE signature details (algorithm and signing-certificate identity). Provide exactly one of `selector` or `url`. Note: the signature is decoded but NOT cryptographically verified.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "selector": {
+            "type": "string",
+            "maxLength": 8192,
+            "description": "CSS selector for an <img> element on the page."
+          },
+          "url": {
+            "type": "string",
+            "maxLength": 8192,
+            "description": "Image URL (absolute, or relative to the current page) to fetch and inspect."
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "open_checkout",
+      "description": "Navigate this tab to the checkout page so the shopper can review the order, enter delivery details and pay themselves. The agent cannot place the order.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "scan_images_c2pa",
+      "description": "Scan every <img> on the current page for C2PA Content Credentials (content provenance metadata) and return a per-image summary: whether a manifest is present, the claim generator (the tool that produced or edited the image), the title, and the signer name. Use this to find which images on a page carry provenance data. Note: provenance is decoded but NOT cryptographically verified.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 25,
+            "description": "Maximum number of images to fetch and scan (default 25, max 100)."
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Search the style4street catalog. All filters are optional. Returns products with price, stock, sizes and colors; use get_product for details and the variation IDs needed to add a specific size/color to the cart.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search words, e.g. \"rochie neagra\" or \"trench\". Romanian terms match best."
+          },
+          "category": {
+            "type": "string",
+            "description": "Category slug from get_shop_filters, e.g. \"rochii\", \"geci\", \"topuri\"."
+          },
+          "size": {
+            "type": "string",
+            "description": "Size slug, e.g. \"s\", \"m\", \"l\", \"xl\", \"38\"."
+          },
+          "color": {
+            "type": "string",
+            "description": "Color slug, e.g. \"negru\"."
+          },
+          "min_price": {
+            "type": "number",
+            "description": "Minimum price in lei."
+          },
+          "max_price": {
+            "type": "number",
+            "description": "Maximum price in lei."
+          },
+          "on_sale": {
+            "type": "boolean",
+            "description": "Only discounted products."
+          },
+          "include_out_of_stock": {
+            "type": "boolean",
+            "description": "Also return sold-out products. Default false."
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "relevance",
+              "newest",
+              "price_low",
+              "price_high",
+              "popularity"
+            ],
+            "description": "Default: relevance when a query is given, otherwise the shop order."
+          },
+          "per_page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 24,
+            "description": "Default 10."
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Default 1."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "update_cart_item",
+      "description": "Change the quantity of a cart item, or remove it with quantity 0. Use the item key from view_cart.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "description": "Cart item key from view_cart."
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 10
+          }
+        },
+        "required": [
+          "key",
+          "quantity"
+        ]
+      }
+    },
+    {
+      "name": "view_cart",
+      "description": "Show the current cart: items (with their cart item keys), applied coupons, shipping and total.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "style4street.com",
+  "source": "webmcp.com/api/directory.json"
+}
