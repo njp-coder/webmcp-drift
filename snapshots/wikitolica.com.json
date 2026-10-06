@@ -1,0 +1,64 @@
+{
+  "sponsio": 1,
+  "url": "https://www.wikitolica.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_current_page",
+      "description": "Devuelve el contenido textual completo del artículo que el usuario está viendo (filtrado: sin TOC, infobox, notas al pie, figuras ni referencias). Tercer paso del flujo: search_articles → navigate_to → get_current_page. Enciclopedia Católica Wikitólica (CC BY-SA 4.0).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "navigate_to",
+      "description": "Navega el navegador a un artículo de Wikitólica usando el slug obtenido de search_articles (ej: \"trinidad\"). También acepta rutas relativas (ej: \"/a/trinidad/\"). Solo permite navegación dentro de wikitolica.com. No se permiten URLs externas ni path traversal. Enciclopedia Católica Wikitólica (CC BY-SA 4.0).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Slug o ruta relativa de destino (máx 200 caracteres)",
+            "maxLength": 200
+          }
+        },
+        "required": [
+          "path"
+        ]
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "search_articles",
+      "description": "Busca artículos en la Enciclopedia Wikitólica (español). Acepta palabras o frases (ej: \"Trinidad\", \"Santo Tomás de Aquino\", \"virgen maria\"). Devuelve títulos, slugs, URLs y extractos. Insensible a acentos y mayúsculas. Múltiples palabras: todos los términos deben aparecer en el título. Resultados ordenados por relevancia (coincidencia exacta > prefijo > substring). Máximo 20 resultados. Usa el slug obtenido para navegar con navigate_to y extraer el contenido completo con get_current_page. Enciclopedia Católica Wikitólica (CC BY-SA 4.0).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Término de búsqueda en español (máx 200 caracteres)",
+            "maxLength": 200
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "wikitolica.com",
+  "source": "webmcp.com/api/directory.json"
+}

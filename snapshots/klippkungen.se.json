@@ -1,0 +1,126 @@
+{
+  "sponsio": 1,
+  "url": "https://klippkungen.se/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "add_to_cart",
+      "description": "Add a product variant to the cart by its priceLookUpNumber (from search_products or get_product_details). Returns the updated cart.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "priceLookUpNumber": {
+            "type": "string",
+            "description": "The variant's priceLookUpNumber."
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "How many to add. Defaults to 1."
+          }
+        },
+        "required": [
+          "priceLookUpNumber"
+        ]
+      }
+    },
+    {
+      "name": "apply_offer_code",
+      "description": "Apply a discount/offer code to the cart, or remove the current one by omitting offerCode. Returns the updated cart.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "offerCode": {
+            "type": "string",
+            "description": "The offer code to apply. Omit to remove the applied code."
+          }
+        }
+      }
+    },
+    {
+      "name": "get_cart",
+      "description": "Get the current shopping cart: rows with quantities and prices, totals, fees, discounts and any applied offer code.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_product_details",
+      "description": "Get the details of one product by its productNumber: description, variants (sizes/colors) with prices, stock status and the priceLookUpNumber needed by add_to_cart.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "productNumber": {
+            "type": "string",
+            "description": "The product's productNumber, as returned by search_products."
+          }
+        },
+        "required": [
+          "productNumber"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Search the store's product catalogue with a free-text query (product name, brand, category or keywords). Returns matching products with price, stock status, URL and the productNumber to pass to get_product_details for variants and the priceLookUpNumber needed by add_to_cart.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "maxLength": 100,
+            "description": "Free-text search phrase."
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "1-based result page, 10 products per page."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "update_cart_item",
+      "description": "Set the quantity of a cart row (rowId from get_cart). A quantity of 0 removes the row. Returns the updated cart.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "rowId": {
+            "type": "integer",
+            "description": "The cart row to update, as returned by get_cart."
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "The new quantity for the row. 0 removes the row."
+          }
+        },
+        "required": [
+          "rowId",
+          "quantity"
+        ]
+      }
+    }
+  ],
+  "host": "klippkungen.se",
+  "source": "webmcp.com/api/directory.json"
+}

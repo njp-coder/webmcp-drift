@@ -1,0 +1,103 @@
+{
+  "sponsio": 1,
+  "url": "https://app.licitei.com.br/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "listarEmpresas",
+      "description": "Lista os CNPJs da conta e diz qual está selecionado no seletor do topo. Use sempre que o usuário disser que um dado 'sumiu' ou que não encontra algo que salvou — cadastro na empresa errada é a causa mais comum.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "navegarPara",
+      "description": "Leva o usuário até uma tela da plataforma. Use quando ensinar um caminho for mais lento que mostrar — o usuário chega na tela já aberta. Depois de navegar, diga o que ele deve fazer ali.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "caminho": {
+            "type": "string",
+            "enum": [
+              "/dashboard",
+              "/dashboard/pesquisar-licitacoes",
+              "/dashboard/radar-de-licitacoes",
+              "/dashboard/minhas-licitacoes",
+              "/dashboard/agenda",
+              "/dashboard/empenhos-e-atas",
+              "/dashboard/minhas-participacoes",
+              "/dashboard/notebooks",
+              "/dashboard/disputa-de-lances",
+              "/dashboard/monitoramento/convocacoes",
+              "/dashboard/monitoramento",
+              "/dashboard/pesquisa-precos",
+              "/dashboard/analise-estrategica",
+              "/dashboard/relatorios",
+              "/dashboard/pca",
+              "/dashboard/minha-empresa",
+              "/dashboard/minha-conta/documentos",
+              "/dashboard/minha-conta/portais",
+              "/dashboard/minha-conta/assinaturas",
+              "/dashboard/organizacao",
+              "/dashboard/treinamentos"
+            ],
+            "description": "Caminho da tela de destino."
+          }
+        },
+        "required": [
+          "caminho"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "trocarEmpresaSelecionada",
+      "description": "Troca o CNPJ ativo no seletor do topo, que define o escopo de quase toda a plataforma. Use depois de confirmar com listarEmpresas que o dado que o usuário procura está em outra empresa.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "empresaId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "description": "O id da empresa, como veio de listarEmpresas."
+          }
+        },
+        "required": [
+          "empresaId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "verTelaDoUsuario",
+      "description": "Captura o que o usuário está vendo agora: a página atual, os filtros aplicados na URL e o texto visível na tela (mensagens de erro, estados vazios, dados carregados). Use quando ele relatar um problema em uma tela ou quando você precisar saber onde ele está.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "app.licitei.com.br",
+  "source": "webmcp.com/api/directory.json"
+}

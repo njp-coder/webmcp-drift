@@ -1,0 +1,173 @@
+{
+  "sponsio": 1,
+  "url": "https://radardetrenes.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "buscar_tren",
+      "description": "Localiza un tren español en circulación por número (AVE 03192, MD 17131, etc.) y lo selecciona en el mapa en vivo.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "numero_tren": {
+            "type": "string",
+            "description": "Número del tren tal como aparece en Renfe (p. ej. 03192).",
+            "pattern": "^[A-Z]{0,4}\\s?\\d{2,5}$",
+            "maxLength": 12
+          }
+        },
+        "required": [
+          "numero_tren"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "centrar_mapa",
+      "description": "Mueve el mapa en vivo sobre una estación o una ciudad con estación (Madrid, Barcelona Sants, Atocha…).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "lugar": {
+            "type": "string",
+            "description": "Nombre de la estación o de la ciudad sobre la que centrar el mapa.",
+            "pattern": "^[A-Za-z0-9ÁÉÍÓÚÜÑáéíóúüñ \\-\\.]{2,60}$",
+            "maxLength": 60
+          }
+        },
+        "required": [
+          "lugar"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "filtrar_trenes",
+      "description": "Aplica los filtros de tipo de tren y de puntualidad al mapa en vivo, e indica cuántos trenes quedan. Hay que pasar al menos uno de los dos.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tipo": {
+            "type": "string",
+            "description": "Tipo de servicio que dejar visible.",
+            "enum": [
+              "todos",
+              "larga_distancia",
+              "cercanias"
+            ]
+          },
+          "retraso": {
+            "type": "string",
+            "description": "Estado de puntualidad que dejar visible (con retraso = más de 5 minutos).",
+            "enum": [
+              "todos",
+              "puntuales",
+              "con_retraso"
+            ]
+          }
+        },
+        "minProperties": 1,
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "limpiar_filtros",
+      "description": "Quita todos los filtros activos (tipo, retraso, producto, línea, serie y accesibilidad) y devuelve el mapa a la flota completa.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "ver_flota_actual",
+      "description": "Resumen del estado actual de la flota en circulación: total de trenes activos y cuántos llevan retraso significativo (más de 5 min).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "ver_linea_cercanias",
+      "description": "Deja en el mapa solo los trenes de una línea de Cercanías (C3, C4a, R2…). Los códigos se repiten entre núcleos, así que añade la ciudad si la conoces.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "linea": {
+            "type": "string",
+            "description": "Código de la línea tal como lo publica Renfe (p. ej. C3).",
+            "pattern": "^[A-Za-z0-9\\-]{1,8}$",
+            "maxLength": 8
+          },
+          "ciudad": {
+            "type": "string",
+            "description": "Núcleo de Cercanías al que pertenece la línea (p. ej. Madrid).",
+            "pattern": "^[A-Za-z0-9ÁÉÍÓÚÜÑáéíóúüñ \\-\\./]{2,40}$",
+            "maxLength": 40
+          }
+        },
+        "required": [
+          "linea"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "ver_tablero",
+      "description": "Abre el tablero de salidas y llegadas de una estación. Acepta nombre (Madrid Atocha) o código numérico (60000).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "estacion": {
+            "type": "string",
+            "description": "Nombre o código de la estación.",
+            "pattern": "^[A-Za-z0-9ÁÉÍÓÚÜÑáéíóúüñ \\-\\.]{2,60}$",
+            "maxLength": 60
+          }
+        },
+        "required": [
+          "estacion"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": true
+      }
+    }
+  ],
+  "host": "radardetrenes.com",
+  "source": "webmcp.com/api/directory.json"
+}

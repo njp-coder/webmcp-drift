@@ -1,0 +1,311 @@
+{
+  "sponsio": 1,
+  "url": "https://dns.ninja/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "dns_differential",
+      "description": "Resolve a domain through filtered public DNS resolvers and their unfiltered controls to detect provider threat-feed blocks.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "domain": {
+            "type": "string",
+            "description": "Domain to check"
+          }
+        },
+        "required": [
+          "domain"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "domain_rdap",
+      "description": "Queries the authoritative RDAP registry for a domain. Returns availability status (HTTP 404 = available), and for registered domains: registrar name, registration/expiration dates, nameservers, DNSSEC status, and domain status flags. Uses IANA bootstrap to find the correct RDAP server per TLD. Covers 590+ TLDs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "domain": {
+            "type": "string",
+            "description": "Domain name to look up (e.g., example.com)"
+          }
+        },
+        "required": [
+          "domain"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "historic_reverse_lookup_ip",
+      "description": "Find hostnames that *previously* pointed to a specific IP address but no longer do. Tracks hosting migrations and past IP relationships. Searches both A and AAAA records.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "ip": {
+            "type": "string",
+            "description": "The IP address to search for (IPv4 or IPv6)"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum number of hostnames to return",
+            "default": 100,
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "offset": {
+            "type": "integer",
+            "description": "Offset for pagination",
+            "default": 0,
+            "minimum": 0
+          }
+        },
+        "required": [
+          "ip"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "historic_reverse_lookup_mx",
+      "description": "Find hostnames that *previously* used a specific mail server but no longer do. Tracks email provider migrations and past MX relationships.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "mx_server": {
+            "type": "string",
+            "description": "The mail server hostname to search for (e.g., aspmx.l.google.com, mx1.example.com)"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum number of hostnames to return",
+            "default": 100,
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "offset": {
+            "type": "integer",
+            "description": "Offset for pagination",
+            "default": 0,
+            "minimum": 0
+          }
+        },
+        "required": [
+          "mx_server"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "historic_reverse_lookup_ns",
+      "description": "Find hostnames that *previously* used a specific nameserver but no longer do. Tracks infrastructure migrations and past delegation relationships.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "nameserver": {
+            "type": "string",
+            "description": "The nameserver hostname to search for (e.g., chris.ns.cloudflare.com, ns1.example.com)"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum number of hostnames to return",
+            "default": 100,
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "offset": {
+            "type": "integer",
+            "description": "Offset for pagination",
+            "default": 0,
+            "minimum": 0
+          }
+        },
+        "required": [
+          "nameserver"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "ip_reputation",
+      "description": "Check an IP address reputation against 100+ real-time blocklists (DNSBLs). Returns listing status, threat categories, AS info, and blocklist details.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "ip": {
+            "type": "string",
+            "description": "IPv4 or IPv6 address to check (e.g., 8.8.8.8, 2001:4860:4860::8888)"
+          }
+        },
+        "required": [
+          "ip"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "lookup_dns",
+      "description": "Lookup DNS records (A, AAAA, MX, NS, TXT, CNAME, SOA) for a given hostname. Also returns domain reputation info (Majestic, Tranco rankings, blocklist status).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "hostname": {
+            "type": "string",
+            "description": "Hostname or domain to lookup (e.g., example.com, www.example.com)"
+          }
+        },
+        "required": [
+          "hostname"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "reverse_lookup_dns_records",
+      "description": "Find hostnames that use a specific DNS record value. Query which hostnames point to an IP address, use a particular nameserver, or reference any DNS value. For example: 'which hostnames point to 1.2.3.4?' or 'which hostnames use chris.ns.cloudflare.com as their nameserver?'",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "description": "The DNS record value to search for (e.g., IP address, nameserver hostname, mail server, CNAME target)"
+          },
+          "record_type": {
+            "type": "string",
+            "description": "Type of DNS record to search (A, AAAA, NS, MX, CNAME, TXT)",
+            "default": "A",
+            "enum": [
+              "A",
+              "AAAA",
+              "NS",
+              "MX",
+              "CNAME",
+              "TXT"
+            ]
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum number of hostnames to return",
+            "default": 100,
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "offset": {
+            "type": "integer",
+            "description": "Offset for pagination",
+            "default": 0,
+            "minimum": 0
+          }
+        },
+        "required": [
+          "value"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "reverse_lookup_ip",
+      "description": "Find hostnames that point to a specific IP address (IPv4 or IPv6). Searches both A and AAAA records. For example: which hostnames point to 1.2.3.4?",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "ip": {
+            "type": "string",
+            "description": "The IP address to search for (IPv4 or IPv6)"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum number of hostnames to return",
+            "default": 100,
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "offset": {
+            "type": "integer",
+            "description": "Offset for pagination",
+            "default": 0,
+            "minimum": 0
+          }
+        },
+        "required": [
+          "ip"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "reverse_lookup_mx",
+      "description": "Find hostnames that use a specific mail server. For example: which hostnames use aspmx.l.google.com as their mail server?",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "mx_server": {
+            "type": "string",
+            "description": "The mail server hostname to search for (e.g., aspmx.l.google.com, mx1.example.com)"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum number of hostnames to return",
+            "default": 100,
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "offset": {
+            "type": "integer",
+            "description": "Offset for pagination",
+            "default": 0,
+            "minimum": 0
+          }
+        },
+        "required": [
+          "mx_server"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "reverse_lookup_ns",
+      "description": "Find hostnames that use a specific nameserver. For example: which hostnames use chris.ns.cloudflare.com as their nameserver?",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "nameserver": {
+            "type": "string",
+            "description": "The nameserver hostname to search for (e.g., chris.ns.cloudflare.com, ns1.example.com)"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum number of hostnames to return",
+            "default": 100,
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "offset": {
+            "type": "integer",
+            "description": "Offset for pagination",
+            "default": 0,
+            "minimum": 0
+          }
+        },
+        "required": [
+          "nameserver"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "dns.ninja",
+  "source": "webmcp.com/api/directory.json"
+}

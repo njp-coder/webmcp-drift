@@ -1,0 +1,126 @@
+{
+  "sponsio": 1,
+  "url": "https://www.mertpazarlama.com.tr/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "addToCart",
+      "description": "Aktif urun sayfasindaki urunu sepete ekle. Sadece productpage.php uzerinde calisir.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "integer",
+            "description": "Urun ID (ProductRecId)"
+          },
+          "quantity": {
+            "type": "integer",
+            "default": 1,
+            "minimum": 1
+          }
+        },
+        "required": [
+          "productId"
+        ]
+      }
+    },
+    {
+      "name": "browseCategories",
+      "description": "Tum kategorileri goster.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "getCompanyInfo",
+      "description": "Sirket iletisim bilgileri, kargo, iade politikasi.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "topic": {
+            "type": "string",
+            "enum": [
+              "contact",
+              "shipping",
+              "return",
+              "kvkk"
+            ],
+            "default": "contact"
+          }
+        }
+      }
+    },
+    {
+      "name": "searchProducts",
+      "description": "Site icinde urun ara. Arama terimi Turkce olabilir; karton bardak, pipet, eldiven, dezenfektan vb.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Aranacak terim (orn: karton bardak 7 oz)",
+            "minLength": 2
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "viewCart",
+      "description": "Sepet sayfasini ac.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "viewCategory",
+      "description": "Belirli kategorideki urunleri listele.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "categorySlug": {
+            "type": "string",
+            "description": "Kategori slug (orn: karton-bardak, eldiven)"
+          }
+        },
+        "required": [
+          "categorySlug"
+        ]
+      }
+    },
+    {
+      "name": "viewProduct",
+      "description": "Belirli bir urunun detay sayfasina git. SEO slug ve urun ID gerekli.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Urun SEO slug (orn: karton-bardak-7-oz-desenli)"
+          },
+          "productId": {
+            "type": "integer",
+            "description": "Urun ID (ProductRecId)"
+          }
+        },
+        "required": [
+          "slug",
+          "productId"
+        ]
+      }
+    }
+  ],
+  "host": "mertpazarlama.com.tr",
+  "source": "webmcp.com/api/directory.json"
+}

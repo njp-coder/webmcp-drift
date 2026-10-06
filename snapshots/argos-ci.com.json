@@ -1,0 +1,247 @@
+{
+  "sponsio": 1,
+  "url": "https://argos-ci.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "compare_with",
+      "description": "How Argos compares to another visual testing tool: feature-by-feature table, prices at sample volumes where the competitor publishes them, migration guide, and FAQ.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "competitor": {
+            "type": "string",
+            "enum": [
+              "applitools",
+              "percy",
+              "chromatic",
+              "backstopjs",
+              "playwright"
+            ],
+            "description": "The tool to compare Argos with. 'playwright' means Playwright's built-in toHaveScreenshot()."
+          }
+        },
+        "required": [
+          "competitor"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "estimate_monthly_cost",
+      "description": "Estimate what Argos costs per month for a given usage: screenshots, Storybook screenshots, media uploads (images and videos), and the GitHub SSO or SAML SSO add-ons. Uses the same arithmetic as the pricing page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "screenshots": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Screenshots uploaded per month from Playwright, Cypress, Vitest, or any non-Storybook SDK or the CLI."
+          },
+          "storybookScreenshots": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Storybook screenshots uploaded per month (billed at a lower rate)."
+          },
+          "mediaImages": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Standalone images uploaded per month through media sharing."
+          },
+          "mediaVideos": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Standalone videos uploaded per month through media sharing."
+          },
+          "githubSso": {
+            "type": "boolean",
+            "description": "Add the GitHub Single Sign-On add-on."
+          },
+          "samlSso": {
+            "type": "boolean",
+            "description": "Add the SAML SSO add-on."
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_argos_overview",
+      "description": "What Argos is: four things it does for every pull request, Diff (screenshots and any text file, not just pixels), Review (humans and agents approve what changed), Stabilize (flaky-test history and debugging) and Deploy (free preview URLs for Storybook and static sites), plus a map of every page, doc, API and agent surface. Start here.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_docs_page",
+      "description": "Read one Argos documentation page as markdown. Pass the path from search_docs or a docs URL, e.g. 'quickstart/playwright-quickstart' or https://argos-ci.com/docs/learn/review-workflow. An empty path returns the documentation index.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Docs path without the /docs prefix, or a full docs URL."
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_latest_changelog",
+      "description": "Recent Argos product updates and new features (the changelog), most recent first, as markdown. Read one entry in full with get_page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_mcp_connection_info",
+      "description": "How to connect an AI agent to Argos itself: the MCP server endpoint, OAuth and personal access token authentication, and the REST API endpoints.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_page",
+      "description": "Read an argos-ci.com page as markdown, by path or full URL. Pages: /, /deploy, /diff, /review, /stabilize, /ai-agents, /media-sharing, /pricing, /security, /compare/applitools, /compare/backstopjs, /compare/chromatic, /compare/percy, /compare/playwright, /dpa, /privacy, /terms, /blog/<slug>, /changelog/<slug>. Documentation paths (/docs/...) work too.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Page path such as /pricing or /blog/<slug>, or a full https://argos-ci.com URL."
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_pricing",
+      "description": "Argos plans and prices: Hobby (free), Pro (flat monthly price plus per-screenshot overage), Enterprise, add-ons, what counts as a screenshot, and the pricing FAQ. Use estimate_monthly_cost to price a specific usage.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_quickstart",
+      "description": "Step-by-step guide to set up Argos with a test framework: install the SDK, capture screenshots, run it in CI. Use 'other' for any framework not listed (upload screenshots with the Argos CLI).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "framework": {
+            "type": "string",
+            "enum": [
+              "playwright",
+              "vitest",
+              "storybook",
+              "cypress",
+              "webdriverio",
+              "puppeteer",
+              "other"
+            ],
+            "description": "The test framework to set up Argos with."
+          }
+        },
+        "required": [
+          "framework"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_security_compliance",
+      "description": "Argos security and compliance: SOC 2 Type II (auditor, report access), GDPR, data location and encryption, access controls, open source, responsible disclosure, and the security FAQ.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_service_status",
+      "description": "Current operational status of the Argos service (live, from the status page).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "search_docs",
+      "description": "Search the Argos documentation (setup guides, SDK references, CI integrations, review workflow, flaky tests, API, agents) and get the matching pages with their URLs. Follow up with get_docs_page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Keywords, e.g. 'playwright quickstart', 'gitlab', 'baseline build', 'flaky'."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "argos-ci.com",
+  "source": "webmcp.com/api/directory.json"
+}

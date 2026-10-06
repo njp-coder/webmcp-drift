@@ -1,0 +1,76 @@
+{
+  "sponsio": 1,
+  "url": "https://buscamed.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_product",
+      "description": "Full detail of one presentation by its altId (the 7-character public id every search result carries): price as the store shows it, stock, prescription requirement, category and canonical URL. Answers null for an unknown altId.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "altId": {
+            "type": "string",
+            "minLength": 7,
+            "maxLength": 7
+          }
+        },
+        "required": [
+          "altId"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "list_categories",
+      "description": "The catalogue tree as a flat list: title, slug, PLP URL and parentSlug. Slugs are valid `category` arguments for search_products.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Free-text search over BuscaMed's catalogue of medicines and health products. Returns presentations with price, stock and canonical URL; a product not sold online is listed without a price and availableForOnlineSale=false. Optionally narrow to a category slug from list_categories (a parent category covers its children).",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "category": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 25
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "buscamed.com",
+  "source": "webmcp.com/api/directory.json"
+}

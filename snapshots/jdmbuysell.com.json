@@ -1,0 +1,66 @@
+{
+  "sponsio": 1,
+  "url": "https://www.jdmbuysell.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "estimate_import_cost",
+      "description": "Calculates the estimated total landed cost for importing a JDM vehicle to a supported destination country. Inputs: vehicleValueUSD (Japan-side FOB asking price in USD) and countryCode (ISO 3166-1 alpha-2 from list_destination_countries). Returns a breakdown: FOB, shipping (midpoint), CIF, import duty, VAT/GST, port handling, broker fee (midpoint), and total. This is a first-order planning estimate, not a customs declaration.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "vehicleValueUSD": {
+            "type": "number",
+            "description": "Vehicle FOB (Free on Board) price in USD. Must be positive.",
+            "minimum": 1,
+            "maximum": 10000000
+          },
+          "countryCode": {
+            "type": "string",
+            "description": "ISO 3166-1 alpha-2 code of the destination country. Use list_destination_countries to discover supported codes (US, CA, GB, AU, NZ, MX).",
+            "minLength": 2,
+            "maxLength": 2
+          }
+        },
+        "required": [
+          "vehicleValueUSD",
+          "countryCode"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_canonical_site_index",
+      "description": "Returns the contents of /llms.txt: a categorized inventory of canonical jdmbuysell.com URLs (marketplace pages, listing categories, chassis reference guides, blog/editorial pages, dealer directory, data endpoints). Use to find the right citation URL or to discover the site's coverage of a make/model/chassis before answering. Cached for 24h on the server.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "list_destination_countries",
+      "description": "Returns the 6 destination countries the JDMBUYSELL import cost calculator supports (USA, Canada, UK, Australia, New Zealand, Mexico). Each entry includes ISO country code, currency, import duty rate, VAT/GST rate, age-exemption rule (when one applies), and a short regulatory note. Use before calling estimate_import_cost to confirm the destination is supported.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "jdmbuysell.com",
+  "source": "webmcp.com/api/directory.json"
+}

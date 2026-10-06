@@ -1,0 +1,85 @@
+{
+  "sponsio": 1,
+  "url": "https://kentcdodds.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_current_page_context",
+      "description": "Return structured context about the current page, including title, canonical URL, headings, and a text preview.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "navigate_site",
+      "description": "Navigate to a key section of kentcdodds.com or open the site search page for a query.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "destination": {
+            "type": "string",
+            "enum": [
+              "about",
+              "blog",
+              "calls",
+              "chats",
+              "contact",
+              "courses",
+              "credits",
+              "discord",
+              "home",
+              "resume",
+              "search",
+              "subscribe",
+              "talks",
+              "testimonials"
+            ],
+            "description": "Named destination on the site."
+          },
+          "query": {
+            "type": "string",
+            "description": "Optional search query used when destination is \"search\"."
+          }
+        },
+        "required": [
+          "destination"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_site_content",
+      "description": "Search Kent C. Dodds site content and return structured results from the site search index.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search query. Short natural-language phrases work best."
+          },
+          "maxResults": {
+            "type": "number",
+            "description": "Maximum number of results to return (1-8)."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "kentcdodds.com",
+  "source": "webmcp.com/api/directory.json"
+}

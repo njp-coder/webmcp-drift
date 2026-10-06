@@ -1,0 +1,76 @@
+{
+  "sponsio": 1,
+  "url": "https://belago.co.il/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_page_content",
+      "description": "Fetch a page of this site as clean markdown — title, metadata, and body with HTML removed. Pass the page URL in \"url\". Only published, public, non-password-protected content is served; pages excluded from llms.txt are not available. Use it to actually read the site's content.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "Full URL of the page on this site."
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_site_info",
+      "description": "Get basic machine-readable facts about this site: name, tagline, language, llms.txt URL, and feed URLs. Takes no arguments. Call it first to orient yourself before using the content skills.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_recent_content",
+      "description": "List this site's most recently published content. Optionally filter by post type with \"type\" and cap the result count with \"limit\" (max 20). Returns title, URL, date, and type for each item. Only published, public content is listed.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Post type to filter by (e.g. \"post\", \"page\", \"product\"). Omit for all types."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum number of items to return (1–20).",
+            "minimum": 1,
+            "maximum": 20
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_site",
+      "description": "Search this site's published content by keyword. Pass the search terms in \"q\". Returns matching posts/pages with title, URL, excerpt, and content type. Only published, public content included in the site's llms.txt settings is searched. Use it to find relevant pages before fetching them with get_page_content.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string",
+            "description": "Search keywords."
+          }
+        },
+        "required": [
+          "q"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "belago.co.il",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,828 @@
+{
+  "sponsio": 1,
+  "url": "https://www.okna-konfigurator.pl/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "compare_configurations",
+      "description": "Evaluate two or three explicit configurations for the same tenant. Do not infer absent dimensions or choices.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "configurations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "tenant": {
+                  "type": "string",
+                  "enum": [
+                    "okna-konfigurator.pl",
+                    "okna-nowogard.pl",
+                    "fensteronline-hamburg.de",
+                    "fensterbremen24.de",
+                    "fensterlubeck.de",
+                    "mfenster.de",
+                    "fenster-henstedt.de",
+                    "oknakamien.pl",
+                    "okna-goleniow.pl"
+                  ]
+                },
+                "group": {
+                  "type": "string",
+                  "enum": [
+                    "windows",
+                    "balcony",
+                    "suwanki",
+                    "HS",
+                    "doors",
+                    "roletyPortos"
+                  ]
+                },
+                "model": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.-]{1,180}$"
+                },
+                "pricingCountry": {
+                  "type": "string",
+                  "enum": [
+                    "PL",
+                    "DE",
+                    "UNKNOWN"
+                  ]
+                },
+                "unit": {
+                  "type": "string",
+                  "const": "mm"
+                },
+                "steps": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "featureId": {
+                        "type": "string",
+                        "pattern": "^[A-Za-z0-9_.-]{1,180}$"
+                      },
+                      "dimensions": {
+                        "type": "object",
+                        "properties": {
+                          "rows": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "width": {
+                                  "type": "integer",
+                                  "minimum": 1,
+                                  "maximum": 10000
+                                },
+                                "height": {
+                                  "type": "integer",
+                                  "minimum": 1,
+                                  "maximum": 10000
+                                }
+                              },
+                              "required": [
+                                "width",
+                                "height"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "maxItems": 8
+                          },
+                          "cells": {
+                            "type": "array",
+                            "items": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "width": {
+                                    "type": "integer",
+                                    "minimum": 1,
+                                    "maximum": 10000
+                                  },
+                                  "height": {
+                                    "type": "integer",
+                                    "minimum": 1,
+                                    "maximum": 10000
+                                  }
+                                },
+                                "required": [
+                                  "width",
+                                  "height"
+                                ],
+                                "additionalProperties": false
+                              },
+                              "maxItems": 8
+                            },
+                            "maxItems": 8
+                          }
+                        },
+                        "required": [
+                          "rows",
+                          "cells"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "featureId"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "maxItems": 32
+                }
+              },
+              "required": [
+                "tenant",
+                "group",
+                "model",
+                "pricingCountry",
+                "unit",
+                "steps"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 2,
+            "maxItems": 3
+          }
+        },
+        "required": [
+          "configurations"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "estimate_configuration",
+      "description": "Indicative Java quotation for exactly one product. Returns net, VAT and gross only if all choices and dimensions are supplied. Excludes delivery and installation; not a formal offer.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tenant": {
+            "type": "string",
+            "enum": [
+              "okna-konfigurator.pl",
+              "okna-nowogard.pl",
+              "fensteronline-hamburg.de",
+              "fensterbremen24.de",
+              "fensterlubeck.de",
+              "mfenster.de",
+              "fenster-henstedt.de",
+              "oknakamien.pl",
+              "okna-goleniow.pl"
+            ]
+          },
+          "group": {
+            "type": "string",
+            "enum": [
+              "windows",
+              "balcony",
+              "suwanki",
+              "HS",
+              "doors",
+              "roletyPortos"
+            ]
+          },
+          "model": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.-]{1,180}$"
+          },
+          "pricingCountry": {
+            "type": "string",
+            "enum": [
+              "PL",
+              "DE",
+              "UNKNOWN"
+            ]
+          },
+          "unit": {
+            "type": "string",
+            "const": "mm"
+          },
+          "steps": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "featureId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.-]{1,180}$"
+                },
+                "dimensions": {
+                  "type": "object",
+                  "properties": {
+                    "rows": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "width": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 10000
+                          },
+                          "height": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 10000
+                          }
+                        },
+                        "required": [
+                          "width",
+                          "height"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "maxItems": 8
+                    },
+                    "cells": {
+                      "type": "array",
+                      "items": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "width": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 10000
+                            },
+                            "height": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 10000
+                            }
+                          },
+                          "required": [
+                            "width",
+                            "height"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "maxItems": 8
+                      },
+                      "maxItems": 8
+                    }
+                  },
+                  "required": [
+                    "rows",
+                    "cells"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "featureId"
+              ],
+              "additionalProperties": false
+            },
+            "maxItems": 32
+          }
+        },
+        "required": [
+          "tenant",
+          "group",
+          "model",
+          "pricingCountry",
+          "unit",
+          "steps"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get_configuration_options",
+      "description": "Start with steps:[] after list_systems; then append one explicitly selected featureId from nextStep.options and replay the full steps array. Return localized labels and the nextAction. Replay only supplied choices and return the next available choices and dimension bounds. Missing selections stay missing. pricingCountry is explicit because Java prices include geography-dependent profit. Millimetres only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tenant": {
+            "type": "string",
+            "enum": [
+              "okna-konfigurator.pl",
+              "okna-nowogard.pl",
+              "fensteronline-hamburg.de",
+              "fensterbremen24.de",
+              "fensterlubeck.de",
+              "mfenster.de",
+              "fenster-henstedt.de",
+              "oknakamien.pl",
+              "okna-goleniow.pl"
+            ]
+          },
+          "group": {
+            "type": "string",
+            "enum": [
+              "windows",
+              "balcony",
+              "suwanki",
+              "HS",
+              "doors",
+              "roletyPortos"
+            ]
+          },
+          "model": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.-]{1,180}$"
+          },
+          "pricingCountry": {
+            "type": "string",
+            "enum": [
+              "PL",
+              "DE",
+              "UNKNOWN"
+            ]
+          },
+          "unit": {
+            "type": "string",
+            "const": "mm"
+          },
+          "steps": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "featureId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.-]{1,180}$"
+                },
+                "dimensions": {
+                  "type": "object",
+                  "properties": {
+                    "rows": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "width": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 10000
+                          },
+                          "height": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 10000
+                          }
+                        },
+                        "required": [
+                          "width",
+                          "height"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "maxItems": 8
+                    },
+                    "cells": {
+                      "type": "array",
+                      "items": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "width": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 10000
+                            },
+                            "height": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 10000
+                            }
+                          },
+                          "required": [
+                            "width",
+                            "height"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "maxItems": 8
+                      },
+                      "maxItems": 8
+                    }
+                  },
+                  "required": [
+                    "rows",
+                    "cells"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "featureId"
+              ],
+              "additionalProperties": false
+            },
+            "maxItems": 32
+          }
+        },
+        "required": [
+          "tenant",
+          "group",
+          "model",
+          "pricingCountry",
+          "unit",
+          "steps"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get_configurator_info",
+      "description": "Start here. Discover available product groups and whether quotation is enabled on this dealer. Returns the exact workflow, limitations and price snapshot version; never assume all catalog groups can be quoted.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tenant": {
+            "type": "string",
+            "enum": [
+              "okna-konfigurator.pl",
+              "okna-nowogard.pl",
+              "fensteronline-hamburg.de",
+              "fensterbremen24.de",
+              "fensterlubeck.de",
+              "mfenster.de",
+              "fenster-henstedt.de",
+              "oknakamien.pl",
+              "okna-goleniow.pl"
+            ]
+          }
+        },
+        "required": [
+          "tenant"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "list_systems",
+      "description": "List the published system identifiers for an explicit tenant and product group. No quotation or session.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tenant": {
+            "type": "string",
+            "enum": [
+              "okna-konfigurator.pl",
+              "okna-nowogard.pl",
+              "fensteronline-hamburg.de",
+              "fensterbremen24.de",
+              "fensterlubeck.de",
+              "mfenster.de",
+              "fenster-henstedt.de",
+              "oknakamien.pl",
+              "okna-goleniow.pl"
+            ]
+          },
+          "group": {
+            "type": "string",
+            "enum": [
+              "windows",
+              "balcony",
+              "suwanki",
+              "HS",
+              "doors",
+              "roletyPortos"
+            ]
+          }
+        },
+        "required": [
+          "tenant",
+          "group"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "prepare_configuration_review",
+      "description": "Create a temporary review link for this explicit configuration. Does not alter a browser cart or create an order. Review page links to the standard configurator; it does not import the configuration.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tenant": {
+            "type": "string",
+            "enum": [
+              "okna-konfigurator.pl",
+              "okna-nowogard.pl",
+              "fensteronline-hamburg.de",
+              "fensterbremen24.de",
+              "fensterlubeck.de",
+              "mfenster.de",
+              "fenster-henstedt.de",
+              "oknakamien.pl",
+              "okna-goleniow.pl"
+            ]
+          },
+          "group": {
+            "type": "string",
+            "enum": [
+              "windows",
+              "balcony",
+              "suwanki",
+              "HS",
+              "doors",
+              "roletyPortos"
+            ]
+          },
+          "model": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.-]{1,180}$"
+          },
+          "pricingCountry": {
+            "type": "string",
+            "enum": [
+              "PL",
+              "DE",
+              "UNKNOWN"
+            ]
+          },
+          "unit": {
+            "type": "string",
+            "const": "mm"
+          },
+          "steps": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "featureId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.-]{1,180}$"
+                },
+                "dimensions": {
+                  "type": "object",
+                  "properties": {
+                    "rows": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "width": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 10000
+                          },
+                          "height": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 10000
+                          }
+                        },
+                        "required": [
+                          "width",
+                          "height"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "maxItems": 8
+                    },
+                    "cells": {
+                      "type": "array",
+                      "items": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "width": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 10000
+                            },
+                            "height": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 10000
+                            }
+                          },
+                          "required": [
+                            "width",
+                            "height"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "maxItems": 8
+                      },
+                      "maxItems": 8
+                    }
+                  },
+                  "required": [
+                    "rows",
+                    "cells"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "featureId"
+              ],
+              "additionalProperties": false
+            },
+            "maxItems": 32
+          }
+        },
+        "required": [
+          "tenant",
+          "group",
+          "model",
+          "pricingCountry",
+          "unit",
+          "steps"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnly": false,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "validate_configuration",
+      "description": "Validate an explicit configuration using Java. Report incomplete choices or missing explicit dimensions; never guess defaults.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tenant": {
+            "type": "string",
+            "enum": [
+              "okna-konfigurator.pl",
+              "okna-nowogard.pl",
+              "fensteronline-hamburg.de",
+              "fensterbremen24.de",
+              "fensterlubeck.de",
+              "mfenster.de",
+              "fenster-henstedt.de",
+              "oknakamien.pl",
+              "okna-goleniow.pl"
+            ]
+          },
+          "group": {
+            "type": "string",
+            "enum": [
+              "windows",
+              "balcony",
+              "suwanki",
+              "HS",
+              "doors",
+              "roletyPortos"
+            ]
+          },
+          "model": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.-]{1,180}$"
+          },
+          "pricingCountry": {
+            "type": "string",
+            "enum": [
+              "PL",
+              "DE",
+              "UNKNOWN"
+            ]
+          },
+          "unit": {
+            "type": "string",
+            "const": "mm"
+          },
+          "steps": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "featureId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.-]{1,180}$"
+                },
+                "dimensions": {
+                  "type": "object",
+                  "properties": {
+                    "rows": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "width": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 10000
+                          },
+                          "height": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 10000
+                          }
+                        },
+                        "required": [
+                          "width",
+                          "height"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "maxItems": 8
+                    },
+                    "cells": {
+                      "type": "array",
+                      "items": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "width": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 10000
+                            },
+                            "height": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 10000
+                            }
+                          },
+                          "required": [
+                            "width",
+                            "height"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "maxItems": 8
+                      },
+                      "maxItems": 8
+                    }
+                  },
+                  "required": [
+                    "rows",
+                    "cells"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "featureId"
+              ],
+              "additionalProperties": false
+            },
+            "maxItems": 32
+          }
+        },
+        "required": [
+          "tenant",
+          "group",
+          "model",
+          "pricingCountry",
+          "unit",
+          "steps"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    }
+  ],
+  "host": "okna-konfigurator.pl",
+  "source": "webmcp.com/api/directory.json"
+}

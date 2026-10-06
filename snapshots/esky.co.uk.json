@@ -1,0 +1,75 @@
+{
+  "sponsio": 1,
+  "url": "https://www.esky.co.uk/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "search_hotels",
+      "description": "Search for Hotels on the Hotels search form.  Builds the search and moves the user to the results page - it does not return offers or prices itself; read those from the results page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "place": {
+            "type": "string",
+            "description": "Exactly one destination or specific hotel name as the user said it, e.g. \"Crete\" or \"Blue Lagoon Resort\"."
+          },
+          "exactDates": {
+            "type": "object",
+            "description": "The fixed hotel stay dates. Hotel search does not support flexible date windows.",
+            "properties": {
+              "checkin": {
+                "type": "string",
+                "description": "Check-in date in ISO YYYY-MM-DD format."
+              },
+              "checkout": {
+                "type": "string",
+                "description": "Check-out date in ISO YYYY-MM-DD format."
+              }
+            },
+            "required": [
+              "checkin",
+              "checkout"
+            ],
+            "additionalProperties": false
+          },
+          "rooms": {
+            "type": "array",
+            "description": "Defaults to one room, two adults, when omitted.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "adults": {
+                  "type": "number"
+                },
+                "childrenAges": {
+                  "type": "array",
+                  "items": {
+                    "type": [
+                      "number",
+                      "null"
+                    ]
+                  },
+                  "description": "Each child's age. Every child needs an age - do not call with a missing one."
+                }
+              },
+              "required": [
+                "adults"
+              ]
+            }
+          }
+        },
+        "required": [
+          "place",
+          "exactDates"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "untrustedContent": true
+      }
+    }
+  ],
+  "host": "esky.co.uk",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,101 @@
+{
+  "sponsio": 1,
+  "url": "https://www.horecagrootkeukenshop.nl/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "add_to_cart",
+      "description": "Add a visible, in-stock simple product to the current Magento shopping cart by exact SKU. Products requiring configuration must be configured on their product page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sku": {
+            "type": "string",
+            "description": "Exact product SKU.",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "quantity": {
+            "type": "number",
+            "description": "Quantity to add.",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 1
+          }
+        },
+        "required": [
+          "sku"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "get_checkout_details",
+      "description": "Read the current shopping cart totals, items, selected shipping method, and checkout readiness. This tool does not place an order or change checkout data.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_my_order",
+      "description": "Get the logged-in customer's order with the supplied order number. If no order number is supplied, get the customer's most recent order. Never use this for another customer.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "order_number": {
+            "type": "string",
+            "description": "Optional Magento order number.",
+            "maxLength": 32
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Search the HorecaGrootkeukenShop catalog by product name, keywords, or exact SKU. Use this before adding a product when the SKU or product type is uncertain.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Product name, keywords, or an exact SKU.",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum number of products to return.",
+            "minimum": 1,
+            "maximum": 10,
+            "default": 5
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "horecagrootkeukenshop.nl",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,82 @@
+{
+  "sponsio": 1,
+  "url": "https://www.elend.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "list_loan_products",
+      "description": "List eLEND loan products for a channel. Returns product names, descriptions and URLs. Contains no rates, APRs or approval criteria -- never infer those.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "channel": {
+            "type": "string",
+            "enum": [
+              "direct",
+              "tpo"
+            ],
+            "description": "\"direct\" for consumer products, \"tpo\" for partner products."
+          }
+        },
+        "required": [
+          "channel"
+        ]
+      }
+    },
+    {
+      "name": "prefill_enquiry_form",
+      "description": "Fill in the enquiry form on the current page with details the user has given you. IMPORTANT: this only populates fields. It never submits. Tell the user to review what was entered and press submit themselves, because submitting is how they consent to being contacted about a loan.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The user's full name."
+          },
+          "email": {
+            "type": "string",
+            "description": "The user's email address."
+          },
+          "phone": {
+            "type": "string",
+            "description": "The user's phone number."
+          },
+          "message": {
+            "type": "string",
+            "description": "What the user wants to ask."
+          }
+        }
+      }
+    },
+    {
+      "name": "search_elend",
+      "description": "Search eLEND for pages, loan products, articles and team members. Use this before answering any question about what eLEND offers. Does not return rates or eligibility decisions, which are not published on the site.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "What to search for."
+          },
+          "channel": {
+            "type": "string",
+            "enum": [
+              "any",
+              "direct",
+              "tpo"
+            ],
+            "description": "\"direct\" for consumers seeking a mortgage, \"tpo\" for brokers and correspondent partners, \"any\" to search both."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "elend.com",
+  "source": "webmcp.com/api/directory.json"
+}

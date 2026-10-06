@@ -1,0 +1,638 @@
+{
+  "sponsio": 1,
+  "url": "https://tlo.korea.ac.kr/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "user.events-sites-toggle-favorite.create",
+      "description": "행사를 즐겨찾기에 넣거나 뺀다. 🔴 **토글이다** — 현재 상태의 반대로 바뀌므로, 「넣어 달라」는 요청이면 상세 도구로 현재 상태를 먼저 확인한다. 로그인이 필요하다. 🔴 **대상이나 행위가 모호하면 지르지 말고 멈춘다** — 무엇을 가리키는지와 어느 도구를 부를지가 **둘 다 좁혀져야** 실행한다. 한 낱말이 서로 다른 도구 둘 이상에 맞으면(예: 「없애줘」는 삭제와 숨김 중 무엇인지 정해지지 않는다) 아직 좁혀진 것이 아니다. 둘 다 좁혀졌으면 그 지시가 곧 승인이다.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "즐겨찾기 토글할 행사 ID. `GET /v1/events/sites/{siteId} → data.content[].id` 값 사용."
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "consequential": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "user.events-sites.list",
+      "description": "행사(이벤트) 목록을 조건으로 찾는다. 검색어·카테고리·모집상태·등록일 구간·정렬·페이지를 파라미터로 받는다. 화면의 행사 목록과 같은 데이터를 돌려준다.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "categories": {
+            "type": "string"
+          },
+          "keyword": {
+            "type": "string"
+          },
+          "recruitmentStatus": {
+            "type": "string",
+            "enum": [
+              "OPEN",
+              "CLOSING_SOON",
+              "CLOSED"
+            ],
+            "description": "모집상태 — OPEN(모집중) / CLOSING_SOON(마감임박, 종료 7일 이내) / CLOSED(마감). 모집 종료일에서 실시간 파생하며 생략 시 전체."
+          },
+          "createdFrom": {
+            "type": "string",
+            "description": "등록일(createdAt) 시작 — 해당 날짜 00:00:00 이상. 형식: yyyy-MM-dd. 생략 시 하한 없음"
+          },
+          "createdTo": {
+            "type": "string",
+            "description": "등록일(createdAt) 종료 — 해당 날짜 23:59:59 이하(포함). 형식: yyyy-MM-dd. 생략 시 상한 없음"
+          },
+          "page": {
+            "type": "integer",
+            "description": "페이지 번호(1-based, 모든 도메인 공통). page ≥ 1이며, 1 미만(0/음수) 값이 들어오면 첫 페이지(1)로 자동 보정된다."
+          },
+          "size": {
+            "type": "integer"
+          },
+          "desc": {
+            "type": "array",
+            "items": {
+              "type": "boolean"
+            },
+            "description": "정렬 방향 배열. `sort` 와 인덱스로 짝을 이룬다(true=내림차순, 미지정=오름차순). Spring 표준 표기 `sort=필드,desc` 를 쓰면 이 배열은 필요 없다."
+          },
+          "sort": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "정렬 키 배열. 허용 키는 **오퍼레이션마다 다르며** 대개 그 목록의 백킹 테이블 컬럼이다. camelCase(`createdAt`)·snake_case(`created_at`) 둘 다 받는다(서버가 폴백 변환). ⚠️ 모르는 키의 처리가 **오퍼레이션마다 다르다** — 대부분은 `F302`(400)로 거부하지만 일부 목록은 **조용히 무시**하고 200 을 돌려준다(정렬만 안 먹는다). 허용 키를 명시한 오퍼레이션은 그 설명을 따른다. 생략 시 도메인 기본 정렬이며, 정렬을 명시하면 상단고정(`fixed`) 우선 정렬이 해제된다."
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "user.news-sites-toggle-favorite.create",
+      "description": "뉴스를 즐겨찾기에 넣거나 뺀다. 🔴 **토글이다** — 현재 상태의 반대로 바뀌므로, 「넣어 달라」는 요청이면 상세 도구로 현재 상태를 먼저 확인한다. 로그인이 필요하다. 🔴 **대상이나 행위가 모호하면 지르지 말고 멈춘다** — 무엇을 가리키는지와 어느 도구를 부를지가 **둘 다 좁혀져야** 실행한다. 한 낱말이 서로 다른 도구 둘 이상에 맞으면(예: 「없애줘」는 삭제와 숨김 중 무엇인지 정해지지 않는다) 아직 좁혀진 것이 아니다. 둘 다 좁혀졌으면 그 지시가 곧 승인이다.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "즐겨찾기 토글할 뉴스의 ID. `GET /v1/news/sites/{siteId} → data.content[].id` 값 사용."
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "consequential": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "user.news-sites.list",
+      "description": "뉴스 목록을 조건으로 찾는다. 검색어·카테고리·등록일 구간·정렬·페이지를 파라미터로 받는다.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "categories": {
+            "type": "string"
+          },
+          "keyword": {
+            "type": "string"
+          },
+          "createdFrom": {
+            "type": "string",
+            "description": "등록일(createdAt) 시작일 (yyyy-MM-dd). 해당 일자 00:00:00 이후. 생략 시 미적용"
+          },
+          "createdTo": {
+            "type": "string",
+            "description": "등록일(createdAt) 종료일 (yyyy-MM-dd). 해당 일자 23:59:59 이전. 생략 시 미적용"
+          },
+          "page": {
+            "type": "integer",
+            "description": "페이지 번호(1-based, 모든 도메인 공통). page ≥ 1이며, 1 미만(0/음수) 값이 들어오면 첫 페이지(1)로 자동 보정된다."
+          },
+          "size": {
+            "type": "integer"
+          },
+          "desc": {
+            "type": "array",
+            "items": {
+              "type": "boolean"
+            },
+            "description": "정렬 방향 배열. `sort` 와 인덱스로 짝을 이룬다(true=내림차순, 미지정=오름차순). Spring 표준 표기 `sort=필드,desc` 를 쓰면 이 배열은 필요 없다."
+          },
+          "sort": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "정렬 키 배열. 허용 키는 **오퍼레이션마다 다르며** 대개 그 목록의 백킹 테이블 컬럼이다. camelCase(`createdAt`)·snake_case(`created_at`) 둘 다 받는다(서버가 폴백 변환). ⚠️ 모르는 키의 처리가 **오퍼레이션마다 다르다** — 대부분은 `F302`(400)로 거부하지만 일부 목록은 **조용히 무시**하고 200 을 돌려준다(정렬만 안 먹는다). 허용 키를 명시한 오퍼레이션은 그 설명을 따른다. 생략 시 도메인 기본 정렬이며, 정렬을 명시하면 상단고정(`fixed`) 우선 정렬이 해제된다."
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "user.partnerships-sites-toggle-favorite.create",
+      "description": "파트너십을 즐겨찾기에 넣거나 뺀다. 🔴 **토글이다** — 현재 상태의 반대로 바뀌므로, 「넣어 달라」는 요청이면 상세 도구로 현재 상태를 먼저 확인한다. 로그인이 필요하다. 🔴 **대상이나 행위가 모호하면 지르지 말고 멈춘다** — 무엇을 가리키는지와 어느 도구를 부를지가 **둘 다 좁혀져야** 실행한다. 한 낱말이 서로 다른 도구 둘 이상에 맞으면(예: 「없애줘」는 삭제와 숨김 중 무엇인지 정해지지 않는다) 아직 좁혀진 것이 아니다. 둘 다 좁혀졌으면 그 지시가 곧 승인이다.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "즐겨찾기 토글할 파트너십의 ID. `GET /v1/partnerships/sites/{siteId} → data.content[].id` 값 사용."
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "consequential": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "user.partnerships-sites.list",
+      "description": "파트너십(협력기업) 목록을 조건으로 찾는다. 검색어·카테고리·등급(`tierId`)·기업(`businessId`)·등록일 구간으로 거를 수 있다.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "businessId": {
+            "type": "integer"
+          },
+          "categories": {
+            "type": "string"
+          },
+          "keyword": {
+            "type": "string"
+          },
+          "tierId": {
+            "type": "integer"
+          },
+          "createdFrom": {
+            "type": "string",
+            "description": "등록일 범위 시작 (ISO 8601, 예: 2024-01-15). 포함. null/생략 시 미적용"
+          },
+          "createdTo": {
+            "type": "string",
+            "description": "등록일 범위 종료 (ISO 8601, 예: 2024-01-15). 해당일 포함. null/생략 시 미적용"
+          },
+          "page": {
+            "type": "integer",
+            "description": "페이지 번호(1-based, 모든 도메인 공통). page ≥ 1이며, 1 미만(0/음수) 값이 들어오면 첫 페이지(1)로 자동 보정된다."
+          },
+          "size": {
+            "type": "integer"
+          },
+          "desc": {
+            "type": "array",
+            "items": {
+              "type": "boolean"
+            },
+            "description": "정렬 방향 배열. `sort` 와 인덱스로 짝을 이룬다(true=내림차순, 미지정=오름차순). Spring 표준 표기 `sort=필드,desc` 를 쓰면 이 배열은 필요 없다."
+          },
+          "sort": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "정렬 키 배열. 허용 키는 **오퍼레이션마다 다르며** 대개 그 목록의 백킹 테이블 컬럼이다. camelCase(`createdAt`)·snake_case(`created_at`) 둘 다 받는다(서버가 폴백 변환). ⚠️ 모르는 키의 처리가 **오퍼레이션마다 다르다** — 대부분은 `F302`(400)로 거부하지만 일부 목록은 **조용히 무시**하고 200 을 돌려준다(정렬만 안 먹는다). 허용 키를 명시한 오퍼레이션은 그 설명을 따른다. 생략 시 도메인 기본 정렬이며, 정렬을 명시하면 상단고정(`fixed`) 우선 정렬이 해제된다."
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "user.researchers-sites-toggle-favorite.create",
+      "description": "연구자를 즐겨찾기에 넣거나 뺀다. 🔴 **토글이다** — 현재 상태의 반대로 바뀌므로, 「넣어 달라」는 요청이면 상세 도구로 현재 상태를 먼저 확인한다. 로그인이 필요하다. 🔴 **대상이나 행위가 모호하면 지르지 말고 멈춘다** — 무엇을 가리키는지와 어느 도구를 부를지가 **둘 다 좁혀져야** 실행한다. 한 낱말이 서로 다른 도구 둘 이상에 맞으면(예: 「없애줘」는 삭제와 숨김 중 무엇인지 정해지지 않는다) 아직 좁혀진 것이 아니다. 둘 다 좁혀졌으면 그 지시가 곧 승인이다.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "즐겨찾기 토글할 연구자 ID. `GET /v1/researchers/sites/{siteId} → data.content[].id` 값 사용."
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "consequential": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "user.researchers-sites.list",
+      "description": "연구자 목록을 조건으로 찾는다. 검색어·소속(`affiliationId`)·상태·퇴직자 제외 여부·등록일 구간으로 거를 수 있다. 🔴 **`affiliationId` 는 숫자 id 라 소속 이름으로는 못 거른다** — 소속으로 좁히려면 「소속 선택지 조회」 도구로 id 를 먼저 얻는다.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "affiliationId": {
+            "type": "integer",
+            "description": "소속 기관 ID 필터 — `GET /v1/selections/sites/{siteId}/affiliation` (플랫폼: `GET /v1/platforms/{platformId}/selections/affiliation`) 응답의 `data[].id` 값 사용. null/생략 시 전체"
+          },
+          "keyword": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "EMPLOYED",
+              "ON_LEAVE",
+              "RETIRED"
+            ]
+          },
+          "sortType": {
+            "type": "string",
+            "enum": [
+              "NAME",
+              "POPULARITY"
+            ],
+            "description": "정렬 기준. NAME(이름순), POPULARITY(인기순). null/생략: 기본 정렬"
+          },
+          "excludeRetired": {
+            "type": "boolean"
+          },
+          "createdFrom": {
+            "type": "string"
+          },
+          "createdTo": {
+            "type": "string"
+          },
+          "researchInstitutionId": {
+            "type": "integer",
+            "description": "연구기관(학교) ID 필터 — `GET /v1/selections/sites/{siteId}/affiliation` (플랫폼: `GET /v1/platforms/{platformId}/selections/affiliation`) 응답의 `data[].researchInstitutionId` 값 사용. 학과 미선택(학교만) 필터용 — 해당 기관 소속 전체 연구자. null/생략 시 전체"
+          },
+          "page": {
+            "type": "integer",
+            "description": "페이지 번호(1-based, 모든 도메인 공통). page ≥ 1이며, 1 미만(0/음수) 값이 들어오면 첫 페이지(1)로 자동 보정된다."
+          },
+          "size": {
+            "type": "integer"
+          },
+          "desc": {
+            "type": "array",
+            "items": {
+              "type": "boolean"
+            },
+            "description": "정렬 방향 배열. `sort` 와 인덱스로 짝을 이룬다(true=내림차순, 미지정=오름차순). Spring 표준 표기 `sort=필드,desc` 를 쓰면 이 배열은 필요 없다."
+          },
+          "sort": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "정렬 키 배열. 허용 키는 **오퍼레이션마다 다르며** 대개 그 목록의 백킹 테이블 컬럼이다. camelCase(`createdAt`)·snake_case(`created_at`) 둘 다 받는다(서버가 폴백 변환). ⚠️ 모르는 키의 처리가 **오퍼레이션마다 다르다** — 대부분은 `F302`(400)로 거부하지만 일부 목록은 **조용히 무시**하고 200 을 돌려준다(정렬만 안 먹는다). 허용 키를 명시한 오퍼레이션은 그 설명을 따른다. 생략 시 도메인 기본 정렬이며, 정렬을 명시하면 상단고정(`fixed`) 우선 정렬이 해제된다."
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "user.sites-main-page-search-preview.list",
+      "description": "키워드 하나로 이 사이트의 **전 도메인을 한 번에** 검색한다(기술이전·연구자·행사·뉴스·지원사업·파트너십·특허). 도메인마다 상위 몇 건과 전체 건수(`…Count`)를 함께 돌려주므로 「이 사이트에 OO 있어?」에 이 도구 하나로 답할 수 있다. 특허는 출원번호(`applicationCode`)·등록번호(`registerCode`)·발명자(`researcher`)로도 찾는다. `excludeHiddenDomains` 를 켜면 이 사이트가 메뉴에서 끈 도메인을 결과에서 뺀다. 더 읽으려면 각 도메인의 목록·상세 도구로 넘어간다. 로그인 없이 쓸 수 있다.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "keyword": {
+            "type": "string"
+          },
+          "applicationCode": {
+            "type": "string"
+          },
+          "registerCode": {
+            "type": "string"
+          },
+          "researcher": {
+            "type": "string"
+          },
+          "excludeHiddenDomains": {
+            "type": "boolean"
+          },
+          "page": {
+            "type": "integer",
+            "description": "페이지 번호(1-based, 모든 도메인 공통). page ≥ 1이며, 1 미만(0/음수) 값이 들어오면 첫 페이지(1)로 자동 보정된다."
+          },
+          "size": {
+            "type": "integer"
+          },
+          "desc": {
+            "type": "array",
+            "items": {
+              "type": "boolean"
+            },
+            "description": "정렬 방향 배열. `sort` 와 인덱스로 짝을 이룬다(true=내림차순, 미지정=오름차순). Spring 표준 표기 `sort=필드,desc` 를 쓰면 이 배열은 필요 없다."
+          },
+          "sort": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "정렬 키 배열. 허용 키는 **오퍼레이션마다 다르며** 대개 그 목록의 백킹 테이블 컬럼이다. camelCase(`createdAt`)·snake_case(`created_at`) 둘 다 받는다(서버가 폴백 변환). ⚠️ 모르는 키의 처리가 **오퍼레이션마다 다르다** — 대부분은 `F302`(400)로 거부하지만 일부 목록은 **조용히 무시**하고 200 을 돌려준다(정렬만 안 먹는다). 허용 키를 명시한 오퍼레이션은 그 설명을 따른다. 생략 시 도메인 기본 정렬이며, 정렬을 명시하면 상단고정(`fixed`) 우선 정렬이 해제된다."
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "user.support-projects-sites-toggle-favorite.create",
+      "description": "지원사업을 즐겨찾기에 넣거나 뺀다. 🔴 **토글이다** — 현재 상태의 반대로 바뀌므로, 「넣어 달라」는 요청이면 상세 도구로 현재 상태를 먼저 확인한다. 로그인이 필요하다. 🔴 **대상이나 행위가 모호하면 지르지 말고 멈춘다** — 무엇을 가리키는지와 어느 도구를 부를지가 **둘 다 좁혀져야** 실행한다. 한 낱말이 서로 다른 도구 둘 이상에 맞으면(예: 「없애줘」는 삭제와 숨김 중 무엇인지 정해지지 않는다) 아직 좁혀진 것이 아니다. 둘 다 좁혀졌으면 그 지시가 곧 승인이다.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "즐겨찾기 토글 대상 지원사업의 ID. `GET /v1/support-projects/sites/{siteId} → data.content[].id` 값 사용."
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "consequential": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "user.support-projects-sites.list",
+      "description": "지원사업 공고를 조건으로 찾는다. 검색어·카테고리·사업 상태·모집 방식·모집 상태·등록일 구간으로 거를 수 있다. 「신청 마감이 안 지난 것」은 `recruitmentStatus` 로 좁힌다.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "categories": {
+            "type": "string"
+          },
+          "keyword": {
+            "type": "string"
+          },
+          "supportProjectStatus": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "REQUESTED",
+              "RECEIVED",
+              "IN_PROGRESS",
+              "ANNOUNCED",
+              "CANCELED",
+              "HOLD",
+              "ALWAYS_OPEN"
+            ]
+          },
+          "recruitmentMethodType": {
+            "type": "string",
+            "enum": [
+              "INTERNAL",
+              "EXTERNAL"
+            ]
+          },
+          "recruitmentStatus": {
+            "type": "string",
+            "enum": [
+              "OPEN",
+              "CLOSING_SOON",
+              "CLOSED"
+            ],
+            "description": "모집창 상태 — OPEN(모집중, 상시접수 포함) / CLOSING_SOON(마감임박, 종료 7일 이내) / CLOSED(마감, 취소 포함). 접수 종료일에서 실시간 파생하며 생략 시 전체. 사업 lifecycle 인 supportProjectStatus 와 별개 축이다."
+          },
+          "createdFrom": {
+            "type": "string",
+            "description": "등록일(createdAt) 시작 — 이 날짜 00:00:00 이상. 형식 yyyy-MM-dd. 생략 시 미적용"
+          },
+          "createdTo": {
+            "type": "string",
+            "description": "등록일(createdAt) 종료 — 이 날짜 23:59:59 이하(포함). 형식 yyyy-MM-dd. 생략 시 미적용"
+          },
+          "page": {
+            "type": "integer",
+            "description": "페이지 번호(1-based, 모든 도메인 공통). page ≥ 1이며, 1 미만(0/음수) 값이 들어오면 첫 페이지(1)로 자동 보정된다."
+          },
+          "size": {
+            "type": "integer"
+          },
+          "desc": {
+            "type": "array",
+            "items": {
+              "type": "boolean"
+            },
+            "description": "정렬 방향 배열. `sort` 와 인덱스로 짝을 이룬다(true=내림차순, 미지정=오름차순). Spring 표준 표기 `sort=필드,desc` 를 쓰면 이 배열은 필요 없다."
+          },
+          "sort": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "정렬 키 배열. 허용 키는 **오퍼레이션마다 다르며** 대개 그 목록의 백킹 테이블 컬럼이다. camelCase(`createdAt`)·snake_case(`created_at`) 둘 다 받는다(서버가 폴백 변환). ⚠️ 모르는 키의 처리가 **오퍼레이션마다 다르다** — 대부분은 `F302`(400)로 거부하지만 일부 목록은 **조용히 무시**하고 200 을 돌려준다(정렬만 안 먹는다). 허용 키를 명시한 오퍼레이션은 그 설명을 따른다. 생략 시 도메인 기본 정렬이며, 정렬을 명시하면 상단고정(`fixed`) 우선 정렬이 해제된다."
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "user.technology-transfers-sites-popular.list",
+      "description": "조회수가 높은 기술이전 공고를 읽는다. 「요즘 관심 많은 기술」 같은 요청에 쓴다.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "description": "페이지 번호(1-based, 모든 도메인 공통). page ≥ 1이며, 1 미만(0/음수) 값이 들어오면 첫 페이지(1)로 자동 보정된다."
+          },
+          "size": {
+            "type": "integer"
+          },
+          "desc": {
+            "type": "array",
+            "items": {
+              "type": "boolean"
+            },
+            "description": "정렬 방향 배열. `sort` 와 인덱스로 짝을 이룬다(true=내림차순, 미지정=오름차순). Spring 표준 표기 `sort=필드,desc` 를 쓰면 이 배열은 필요 없다."
+          },
+          "sort": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "정렬 키 배열. 허용 키는 **오퍼레이션마다 다르며** 대개 그 목록의 백킹 테이블 컬럼이다. camelCase(`createdAt`)·snake_case(`created_at`) 둘 다 받는다(서버가 폴백 변환). ⚠️ 모르는 키의 처리가 **오퍼레이션마다 다르다** — 대부분은 `F302`(400)로 거부하지만 일부 목록은 **조용히 무시**하고 200 을 돌려준다(정렬만 안 먹는다). 허용 키를 명시한 오퍼레이션은 그 설명을 따른다. 생략 시 도메인 기본 정렬이며, 정렬을 명시하면 상단고정(`fixed`) 우선 정렬이 해제된다."
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "user.technology-transfers-sites-toggle-favorite.create",
+      "description": "기술이전 공고를 즐겨찾기에 넣거나 뺀다. 🔴 **토글이다** — 현재 상태의 반대로 바뀌므로, 「넣어 달라」는 요청이면 상세 도구로 현재 상태를 먼저 확인한다. 로그인이 필요하다. 🔴 **대상이나 행위가 모호하면 지르지 말고 멈춘다** — 무엇을 가리키는지와 어느 도구를 부를지가 **둘 다 좁혀져야** 실행한다. 한 낱말이 서로 다른 도구 둘 이상에 맞으면(예: 「없애줘」는 삭제와 숨김 중 무엇인지 정해지지 않는다) 아직 좁혀진 것이 아니다. 둘 다 좁혀졌으면 그 지시가 곧 승인이다.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "즐겨찾기 토글 대상 기술이전의 ID. `GET /v1/technology-transfers/sites/{siteId} → data.content[].id` 값 사용."
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "consequential": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "user.technology-transfers-sites.list",
+      "description": "기술이전 공고를 조건으로 찾는다. 검색어·카테고리·출원번호·등록번호·연구자·가격 구간·기술성숙도(TRL)·기술 유형·등록일 구간으로 거를 수 있다.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "categories": {
+            "type": "string"
+          },
+          "keyword": {
+            "type": "string"
+          },
+          "applicationCode": {
+            "type": "string"
+          },
+          "registerCode": {
+            "type": "string"
+          },
+          "researcher": {
+            "type": "string"
+          },
+          "priceFrom": {
+            "type": "integer",
+            "description": "금액(원) 하한 — 해당 금액 이상(>=). 생략 시 하한 없음"
+          },
+          "priceTo": {
+            "type": "integer",
+            "description": "금액(원) 상한 — 해당 금액 이하(<=). 생략 시 상한 없음"
+          },
+          "technologyReadinessLevel": {
+            "type": "string",
+            "enum": [
+              "TRL1_BASIC_PRINCIPLE_DEMONSTRATION",
+              "TRL2_CONCEPT_AND_TECHNOLOGY_PROOF",
+              "TRL3_EXPERIMENTAL_PROOF_AND_TECHNOLOGY_DEVELOPMENT_START",
+              "TRL4_TECHNOLOGY_COMPONENT_VALIDATION",
+              "TRL5_SYSTEM_OR_SUBSYSTEM_VALIDATION",
+              "TRL6_PROTOTYPE_SYSTEM_VALIDATION",
+              "TRL7_SYSTEM_PROTOTYPE_OPERATION",
+              "TRL8_FINAL_SYSTEM_DEVELOPMENT_COMPLETE",
+              "TRL9_FULL_SYSTEM_OPERATIONAL_VALIDATION"
+            ],
+            "description": "기술성숙도(TRL) 단계 정확 일치 필터. TRL1_..~TRL9_.. enum 명. `전체 단계` 선택 시 생략(미적용)"
+          },
+          "techType": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "PATENT",
+                "KNOW_HOW",
+                "UNPUBLISHED"
+              ]
+            },
+            "description": "기술 유형 필터. PATENT(특허 기반) / KNOW_HOW(노하우·영업비밀) / UNPUBLISHED(미공개 출원중). 콤마로 복수 지정 시 OR (예: `KNOW_HOW,UNPUBLISHED`). `전체 유형` 선택 시 생략(미적용). 유형 미지정(techType=null) 레거시 항목은 어느 값으로도 조회되지 않는다."
+          },
+          "createdFrom": {
+            "type": "string",
+            "description": "등록일(createdAt) 시작 — 해당 날짜 00:00:00 이상. 형식 yyyy-MM-dd. 생략 시 하한 없음"
+          },
+          "createdTo": {
+            "type": "string",
+            "description": "등록일(createdAt) 종료 — 해당 날짜 23:59:59 이하(포함). 형식 yyyy-MM-dd. 생략 시 상한 없음"
+          },
+          "page": {
+            "type": "integer",
+            "description": "페이지 번호(1-based, 모든 도메인 공통). page ≥ 1이며, 1 미만(0/음수) 값이 들어오면 첫 페이지(1)로 자동 보정된다."
+          },
+          "size": {
+            "type": "integer"
+          },
+          "desc": {
+            "type": "array",
+            "items": {
+              "type": "boolean"
+            },
+            "description": "정렬 방향 배열. `sort` 와 인덱스로 짝을 이룬다(true=내림차순, 미지정=오름차순). Spring 표준 표기 `sort=필드,desc` 를 쓰면 이 배열은 필요 없다."
+          },
+          "sort": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "정렬 키 배열. 허용 키는 **오퍼레이션마다 다르며** 대개 그 목록의 백킹 테이블 컬럼이다. camelCase(`createdAt`)·snake_case(`created_at`) 둘 다 받는다(서버가 폴백 변환). ⚠️ 모르는 키의 처리가 **오퍼레이션마다 다르다** — 대부분은 `F302`(400)로 거부하지만 일부 목록은 **조용히 무시**하고 200 을 돌려준다(정렬만 안 먹는다). 허용 키를 명시한 오퍼레이션은 그 설명을 따른다. 생략 시 도메인 기본 정렬이며, 정렬을 명시하면 상단고정(`fixed`) 우선 정렬이 해제된다."
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    }
+  ],
+  "host": "tlo.korea.ac.kr",
+  "source": "webmcp.com/api/directory.json"
+}

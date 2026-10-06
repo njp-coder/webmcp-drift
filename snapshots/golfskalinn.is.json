@@ -1,0 +1,149 @@
+{
+  "sponsio": 1,
+  "url": "https://golfskalinn.is/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_golf_trip_details",
+      "description": "Get editorial details and Itsy departures for one Golfskálinn golf trip slug returned by search_golf_trips. Does not reserve seats, submit an enquiry, or book travel.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "slug": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "maxLength": 80,
+            "description": "Exact trip slug returned by search_golf_trips."
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get_product_details",
+      "description": "Get public details for one Golfskálinn product ID returned by search_products. Does not add the product to a cart or place an order.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "product_id": {
+            "type": "string",
+            "pattern": "^prod_[A-Za-z0-9_-]+$",
+            "maxLength": 64,
+            "description": "Exact product ID returned by search_products."
+          }
+        },
+        "required": [
+          "product_id"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "search_golf_trips",
+      "description": "Search Golfskálinn golf trips by destination, theme, or category. Returns Itsy departure and price readings with the matching travel page. Final availability is confirmed when booking; this does not hold seats.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "query": {
+            "type": "string",
+            "maxLength": 128,
+            "description": "Destination, resort, trip, or golf theme."
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "destination",
+              "school",
+              "special",
+              "wellness"
+            ],
+            "description": "Trip category: destination, school, special, or wellness."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5,
+            "description": "Results to return, up to five."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Search or browse Golfskálinn products. Returns indexed catalogue prices, stock flags that can change, and product links, and shows the same filters on the page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "query": {
+            "type": "string",
+            "maxLength": 128,
+            "description": "Words from the product name or use."
+          },
+          "brand": {
+            "type": "string",
+            "maxLength": 80,
+            "description": "Exact brand name, when known."
+          },
+          "category": {
+            "type": "string",
+            "maxLength": 80,
+            "description": "Exact product category, when known."
+          },
+          "in_stock": {
+            "type": "boolean",
+            "description": "Set true for products marked in stock; false does not filter."
+          },
+          "on_sale": {
+            "type": "boolean",
+            "description": "Set true for products marked on sale; false does not filter."
+          },
+          "min_price_isk": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100000000,
+            "description": "Minimum price in Icelandic króna."
+          },
+          "max_price_isk": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100000000,
+            "description": "Maximum price in Icelandic króna."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5,
+            "description": "Results to return, up to five."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": true
+      }
+    }
+  ],
+  "host": "golfskalinn.is",
+  "source": "webmcp.com/api/directory.json"
+}

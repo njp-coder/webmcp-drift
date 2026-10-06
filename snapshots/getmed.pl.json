@@ -1,0 +1,187 @@
+{
+  "sponsio": 1,
+  "url": "https://getmed.pl/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "book_visit",
+      "description": "Opens the booking flow for a visit type. Requires a logged-in GetMed account; anonymous users are redirected to the login page. Allowed values: consultation, laboratory-test, imaging-test, outpatient-procedure, prescription, sick-leave.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "consultation",
+              "laboratory-test",
+              "imaging-test",
+              "outpatient-procedure",
+              "prescription",
+              "sick-leave"
+            ]
+          }
+        },
+        "required": [
+          "type"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_medical_package",
+      "description": "Returns details and pricing of one medical package identified by category slug and variant slug from its URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "description": "Category slug, e.g. dla-rodziny"
+          },
+          "variant": {
+            "type": "string",
+            "description": "Variant slug, e.g. komfortowy"
+          },
+          "slug": {
+            "type": "string",
+            "description": "Full package slug (alternative to category + variant)"
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_site_overview",
+      "description": "Returns a markdown overview of GetMed: what the platform offers, key pages and how booking works.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "list_medical_packages",
+      "description": "Lists private medical packages with monthly prices in PLN, age ranges and page URLs. Filter by category slug (indywidualne, dla-dwojga, dla-rodziny, rodzic-z-dzieckiem, senior) or patient age.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "description": "Category slug"
+          },
+          "age": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 120,
+            "description": "Patient age"
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "list_specialists",
+      "description": "Lists medical specialties available on GetMed with page URLs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "open_page",
+      "description": "Navigates the current tab to a key GetMed page. Allowed values: home, packages, company-packages, specialists, facilities, providers, knowledge-base, faq, test-preparation, contact, login, register.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "string",
+            "enum": [
+              "home",
+              "packages",
+              "company-packages",
+              "specialists",
+              "facilities",
+              "providers",
+              "knowledge-base",
+              "faq",
+              "test-preparation",
+              "contact",
+              "login",
+              "register"
+            ]
+          }
+        },
+        "required": [
+          "page"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_faq",
+      "description": "Returns frequently asked questions about GetMed with answers, optionally filtered by keywords.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Optional keywords"
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "search_knowledge_base",
+      "description": "Searches GetMed health articles by keywords (Polish) and returns titles, summaries and URLs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "description": "Keywords"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "description": "Maximum results (default 5)"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "getmed.pl",
+  "source": "webmcp.com/api/directory.json"
+}

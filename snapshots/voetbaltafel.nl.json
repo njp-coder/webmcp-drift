@@ -1,0 +1,118 @@
+{
+  "sponsio": 1,
+  "url": "https://www.voetbaltafel.nl/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "add_to_cart",
+      "description": "Put a product in the shopper's cart in this browser. For products with variants give variant_sku; for custom options give options as {\"option_id\": value} (see get_product_details). The shop computes the price.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sku": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "variant_sku": {
+            "type": "string"
+          },
+          "options": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        },
+        "required": [
+          "sku"
+        ]
+      },
+      "annotations": {
+        "readOnly": false,
+        "consequential": true
+      }
+    },
+    {
+      "name": "get_current_product",
+      "description": "Details of the product the shopper is looking at now, if this is a product page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get_product_details",
+      "description": "Full details of one product by SKU: specifications, variants, custom options with their ids, quantity prices.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sku": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "sku"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "open_cart",
+      "description": "Open the shopping cart page so the shopper can check out.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Search the products of Voetbaltafel.nl. Returns SKU, name, price including and excluding VAT, availability and URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search terms, best in the shop language."
+          },
+          "max_price": {
+            "type": "number",
+            "description": "Highest price including VAT."
+          },
+          "in_stock_only": {
+            "type": "boolean"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    }
+  ],
+  "host": "voetbaltafel.nl",
+  "source": "webmcp.com/api/directory.json"
+}

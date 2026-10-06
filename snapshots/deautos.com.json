@@ -1,0 +1,90 @@
+{
+  "sponsio": 1,
+  "url": "https://deautos.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "how_to_sell",
+      "description": "How to sell a car on DeAutos.com. DeAutos.com does not buy cars: sellers publish their car for free and buyers contact them directly.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_news",
+      "description": "List recent Argentine + global automotive news curated by DeAutos.com (title, source, date, link).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "region": {
+            "type": "string",
+            "enum": [
+              "Argentina",
+              "Global"
+            ],
+            "description": "Filter by region"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Max items (default 15)"
+          }
+        }
+      }
+    },
+    {
+      "name": "search_cars",
+      "description": "Search the DeAutos.com used-car inventory in Argentina. Returns matching cars with the asking price set by the seller in the currency of the listing (ARS or USD, not converted; DeAutos.com charges no commission), year, km, location and seller.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "make": {
+            "type": "string",
+            "description": "Brand, e.g. Toyota, Volkswagen, Fiat"
+          },
+          "model": {
+            "type": "string",
+            "description": "Model, e.g. Hilux, Gol, Cronos"
+          },
+          "yearMin": {
+            "type": "integer",
+            "description": "Minimum model year"
+          },
+          "priceMax": {
+            "type": "integer",
+            "description": "Maximum price, in the currency given by currency"
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "ARS",
+              "USD"
+            ],
+            "description": "Currency of priceMax. Only listings priced in this currency are returned; prices are never converted."
+          },
+          "city": {
+            "type": "string",
+            "description": "City/province substring, e.g. Córdoba, Mendoza"
+          },
+          "fuel": {
+            "type": "string",
+            "description": "Nafta, Diésel, GNC, Híbrido, Eléctrico"
+          },
+          "transmission": {
+            "type": "string",
+            "description": "Manual or Automática"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Max results (default 20)"
+          }
+        }
+      }
+    }
+  ],
+  "host": "deautos.com",
+  "source": "webmcp.com/api/directory.json"
+}

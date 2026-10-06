@@ -1,0 +1,898 @@
+{
+  "sponsio": 1,
+  "url": "https://vivahome.com.tr/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "add_vivahome_confirmed_configuration_to_cart",
+      "description": "UYARI: Bu araç kullanıcının mevcut OpenCart sepetini değiştirir. Yalnız quote_vivahome_full_configuration sonucundaki aynı oturuma bağlı, 5 dakika geçerli tek kullanımlık confirmation_token; kullanıcı tarafından onaylanan KDV dahil confirmed_total; ve açık confirm=true birlikte verilirse çalışır. Eklemeden hemen önce ürün, stok, seçenek ve toplamı sunucuda yeniden doğrular. Fiyat değişmişse sepete eklemez. Ödeme başlatmaz ve sipariş oluşturmaz.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "confirmation_token": {
+            "type": "string",
+            "minLength": 32,
+            "maxLength": 128,
+            "description": "Tam konfigürasyon teklifindeki cart_confirmation.confirmation_token değeri."
+          },
+          "confirmed_total": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 10000000,
+            "description": "Kullanıcının açıkça onayladığı, teklifteki KDV dahil cart_confirmation.confirmed_total."
+          },
+          "confirm": {
+            "type": "boolean",
+            "description": "Sepetin değiştirileceğini kullanıcı onayladıysa yalnız true gönderilir."
+          }
+        },
+        "required": [
+          "confirmation_token",
+          "confirmed_total",
+          "confirm"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "answer_vivahome_question",
+      "description": "Yayınlanmış Content Studio rehberleri ve /ara/ SEO landing sayfalarının SSS havuzunda eşleştirir; cevabı ve kaynak bağlantısını döner.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "question": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 200,
+            "description": "Kullanıcının sorusu."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5,
+            "default": 3
+          }
+        },
+        "required": [
+          "question"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "compare_vivahome_products",
+      "description": "İki ila dört ürünü aynı adet ve konfigürasyon senaryosunda fiyat, stok, puan, yorum, özellik, ortak standart ebat ve özel ölçü uygunluğu bakımından karşılaştırır. Standart ebat veya özel ölçü fiyatı istenebilir; dinamik saçak/püskül tercihi tüm uygun ürünlere eşit uygulanır. Tek bir genel kazanan belirlemez ve sepeti değiştirmez.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_ids": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 4,
+            "uniqueItems": true,
+            "items": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "description": "Karşılaştırılacak iki ila dört benzersiz OpenCart ürün kimliği."
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "default": 1,
+            "description": "Her ürün için aynı adet."
+          },
+          "configuration_mode": {
+            "type": "string",
+            "enum": [
+              "catalog",
+              "standard",
+              "custom_rug"
+            ],
+            "default": "catalog",
+            "description": "Katalog fiyatı, ortak standart ebat veya aynı özel ölçü senaryosu."
+          },
+          "standard_size": {
+            "type": "string",
+            "maxLength": 40,
+            "description": "standard modunda tüm ürünlerde aranacak ebat; örneğin 80 x 150 cm."
+          },
+          "width_cm": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2000,
+            "description": "custom_rug modunda istenen en."
+          },
+          "height_cm": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5000,
+            "description": "custom_rug modunda istenen boy."
+          },
+          "dynamic_choice": {
+            "type": "string",
+            "enum": [
+              "omit",
+              "yes",
+              "no"
+            ],
+            "default": "omit",
+            "description": "Dinamik saçak/püskül tercihi. omit gerekli seçimleri yalnızca bildirir."
+          }
+        },
+        "required": [
+          "product_ids"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "estimate_vivahome_delivery",
+      "description": "Bir Viva Home ürünü ve Türkiye il/ilçesi için mevcut kargoya teslim ve tahmini teslimat tarihlerini hesaplar. Kullanıcının adresini veya oturumunu değiştirmez.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Teslimatı hesaplanacak ürün kimliği."
+          },
+          "province": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 64,
+            "description": "Türkiye il adı; örneğin İstanbul."
+          },
+          "district": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 64,
+            "description": "İlçe adı; örneğin Kadıköy."
+          }
+        },
+        "required": [
+          "product_id",
+          "province",
+          "district"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "get_vivahome_campaign_shipping",
+      "description": "Bir ürün için geçerli kampanyalı fiyatı, adet indirimlerini, ürüne uygun açık kuponları, ücretsiz kargo eşiği ve uygunluk ön değerlendirmesini, varsa ürün promosyonunu ve il/ilçe verilirse teslimat tahminini birlikte getirir. Tam ürün konfigürasyonundan alınan KDV dahil toplam order_subtotal olarak verilebilir. Kupon uygulamaz, konum kaydetmez ve sepeti değiştirmez; nihai kargo ücreti ödeme adımında doğrulanır.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Kampanya ve kargo bilgisi alınacak OpenCart ürün kimliği."
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "default": 1,
+            "description": "Adet indirimi ve ürün toplamı için ürün adedi."
+          },
+          "order_subtotal": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 10000000,
+            "description": "Varsa tam konfigürasyon aracından veya sipariş senaryosundan alınan KDV dahil ara toplam. Verilmezse ürünün geçerli birim fiyatı ve adet kullanılır."
+          },
+          "province": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 64,
+            "description": "Teslimat tahmini isteniyorsa Türkiye il adı."
+          },
+          "district": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 64,
+            "description": "Teslimat tahmini isteniyorsa ilçe adı."
+          }
+        },
+        "required": [
+          "product_id"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "get_vivahome_category_rankings",
+      "description": "Bir kategorideki çok satan, en çok favorilenen, en çok ziyaret edilen ve en çok yorum alan ürün sıralamalarını mağazanın VH Catfeat kapsam kurallarıyla getirir. Sonuçlar zaman damgalı OpenCart önbelleğinde tutulur; sepeti veya kullanıcı verisini değiştirmez.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category_id": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Sıralaması alınacak OpenCart kategori kimliği."
+          },
+          "metric": {
+            "type": "string",
+            "enum": [
+              "all",
+              "bestsellers",
+              "favorites",
+              "viewed",
+              "reviewed"
+            ],
+            "default": "all",
+            "description": "Tek sıralama metriği veya dört metriğin tamamı."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "default": 10,
+            "description": "Her metrik için döndürülecek ürün sayısı."
+          }
+        },
+        "required": [
+          "category_id"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "get_vivahome_filter_options",
+      "description": "Bir arama ifadesi, kategori ve mevcut seçimler için Viva Home kataloğunda gerçekten kullanılabilen kategori, renk, desen, ebat ve diğer filtre değerlerini getirir. Kesin filtre değerleri bilinmiyorsa ürün aramasından önce kullanılır.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Filtreleri keşfetmek için ürün adı veya arama ifadesi."
+          },
+          "category_id": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Biliniyorsa OpenCart kategori kimliği."
+          },
+          "selected_filters": {
+            "type": "object",
+            "description": "Sonraki filtre seçenekleri hesaplanırken korunacak mevcut seçimler.",
+            "properties": {
+              "category": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "gender": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "age_group": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "color": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "theme": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "size": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "shape": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "backing": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "edge": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "overlock_color": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "feature": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "material": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "keyword": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "seller": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "piece_count": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "additionalProperties": false
+          },
+          "limit_per_filter": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 60,
+            "default": 30,
+            "description": "Her filtre için döndürülecek en fazla değer sayısı."
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get_vivahome_guide",
+      "description": "Tek bir rehberi veya /ara/ SEO landing içeriğini yapılandırılmış ve kapsamlı olarak döner: tam metin, hızlı cevap, bölümler, özellikler, karşılaştırma, uzman görüşü, adımlar ve SSS.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 255,
+            "description": "Rehberin veya /ara/ sayfasının slug değeri; arama sonucundan alınır."
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "auto",
+              "content_studio",
+              "seo_tags"
+            ],
+            "default": "auto",
+            "description": "Kaynak seçimi; auto önce Content Studio sonra SEO Tags dener."
+          },
+          "include": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "content",
+                "key_points",
+                "features",
+                "comparison",
+                "sections",
+                "steps",
+                "faq",
+                "products",
+                "meta"
+              ]
+            },
+            "description": "Yalnız istenen bölümler; boş bırakılırsa tam içerik dahil tamamı döner."
+          }
+        },
+        "required": [
+          "slug"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "get_vivahome_product",
+      "description": "Belirli bir Viva Home ürününün açıklamasını, ürün kodlarını, marka ve kategori yollarını, görsel galerisini, güncel/kampanyalı/adet fiyat katmanlarını, stok durumunu, özellik haritasını, standart ebatlarını, seçeneklerini, yapılandırma gereksinimlerini, özel ölçü uygunluğunu ve ilgili ürünlerini getirir. Ürünü veya sepeti değiştirmez.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Arama aracından veya ürün bağlantısından alınan OpenCart ürün kimliği."
+          }
+        },
+        "required": [
+          "product_id"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "quote_vivahome_custom_rug",
+      "description": "Özel ölçü üretime uygun bir ürün için santimetre cinsinden en ve boy kullanarak güncel fiyat teklifi hesaplar. Fiyat, istenen enin dahil olduğu üretim eni kademesi ve boy üzerinden hesaplanır; talep edilen ve ücretlendirilen alan ayrı döner. Sepeti veya siparişi değiştirmez.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Özel ölçü uygunluğu doğrulanmış ürün kimliği."
+          },
+          "width_cm": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2000,
+            "description": "Halı eni, santimetre."
+          },
+          "height_cm": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5000,
+            "description": "Halı boyu, santimetre."
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "default": 1,
+            "description": "Ürün adedi."
+          }
+        },
+        "required": [
+          "product_id",
+          "width_cm",
+          "height_cm"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "quote_vivahome_full_configuration",
+      "description": "Bir ürünün standart veya özel ölçüsünü, seçili OpenCart seçeneklerini, saçak/püskül gibi dinamik ölçü seçeneklerini, kampanyalı ya da adet indirimli taban fiyatını ve miktarı birlikte doğrular. KDV dahil birim ve genel toplamı mağazanın sepet fiyatlama kurallarıyla hesaplar; tek başına sepeti veya siparişi değiştirmez. Onaylı sepet aracı açıksa sonuçta yalnız aynı oturumda 5 dakika geçerli, tek kullanımlık bir cart_confirmation döner. product_option_id, değer kimlikleri ve dynamic rule_id bilgileri için önce get_vivahome_product kullanılır.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Konfigüre edilecek OpenCart ürün kimliği."
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "default": 1,
+            "description": "Ürün adedi."
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "standard",
+              "custom_rug"
+            ],
+            "description": "Standart ebat veya özel ölçü fiyatlama modu."
+          },
+          "width_cm": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2000,
+            "description": "custom_rug modunda istenen en."
+          },
+          "height_cm": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5000,
+            "description": "custom_rug modunda istenen boy."
+          },
+          "options": {
+            "type": "array",
+            "description": "Ürün ayrıntısındaki product_option_id değerlerine göre seçimler. Tekli seçeneklerde product_option_value_id, çoklu checkbox için product_option_value_ids, metin türleri için value kullanılır.",
+            "maxItems": 30,
+            "items": {
+              "type": "object",
+              "properties": {
+                "product_option_id": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "product_option_value_id": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "product_option_value_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "maxItems": 20
+                },
+                "value": {
+                  "type": "string",
+                  "maxLength": 255
+                }
+              },
+              "required": [
+                "product_option_id"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "dynamic_choices": {
+            "type": "array",
+            "description": "Ürün ayrıntısındaki dinamik seçenekler için açık yes/no kararı.",
+            "maxItems": 20,
+            "items": {
+              "type": "object",
+              "properties": {
+                "rule_id": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "choice": {
+                  "type": "string",
+                  "enum": [
+                    "yes",
+                    "no"
+                  ]
+                }
+              },
+              "required": [
+                "rule_id",
+                "choice"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "product_id",
+          "mode"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "recommend_vivahome_rug_size",
+      "description": "Oda veya kullanılabilir zemin ölçüsüne, yerleşim türüne, mobilya ölçülerine ve bırakılacak boşluklara göre uygun halı/yolluk ölçüsünü önerir. İsteğe bağlı product_id verildiğinde yalnız ürünün gerçek standart ebatlarını sıralar, özel ölçü HPCR uygunluğunu denetler ve tam fiyat aracına aktarılabilecek bir istek taslağı döndürür. Sonuç dekorasyon önerisidir; sepeti değiştirmez.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "İsteğe bağlı ürün kimliği. Verilirse öneriler bu ürünün ebatlarıyla sınırlandırılır."
+          },
+          "room_type": {
+            "type": "string",
+            "enum": [
+              "corridor",
+              "entryway",
+              "kitchen",
+              "living_room",
+              "dining_room",
+              "bedroom",
+              "kids_room",
+              "bathroom",
+              "other"
+            ],
+            "description": "Odanın veya kullanım alanının türü."
+          },
+          "placement": {
+            "type": "string",
+            "enum": [
+              "runner",
+              "open_area",
+              "seating_group",
+              "dining_table",
+              "bed"
+            ],
+            "description": "Halı yerleşim biçimi. Verilmezse oda türünden belirlenir."
+          },
+          "preference": {
+            "type": "string",
+            "enum": [
+              "balanced",
+              "standard",
+              "custom"
+            ],
+            "default": "balanced",
+            "description": "Standart ebat, özel ölçü veya dengeli öneri tercihi."
+          },
+          "space_width_cm": {
+            "type": "integer",
+            "minimum": 40,
+            "maximum": 5000,
+            "description": "Halı için değerlendirilecek alanın eni."
+          },
+          "space_length_cm": {
+            "type": "integer",
+            "minimum": 40,
+            "maximum": 10000,
+            "description": "Halı için değerlendirilecek alanın boyu."
+          },
+          "furniture_width_cm": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5000,
+            "description": "Masa, yatak veya oturma grubunun eni."
+          },
+          "furniture_length_cm": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10000,
+            "description": "Masa, yatak veya oturma grubunun boyu."
+          },
+          "side_clearance_cm": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 200,
+            "description": "Alan eninin her iki yanında bırakılacak boşluk."
+          },
+          "end_clearance_cm": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 200,
+            "description": "Alan boyunun iki ucunda bırakılacak boşluk."
+          }
+        },
+        "required": [
+          "room_type",
+          "space_width_cm",
+          "space_length_cm"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "search_vivahome_knowledge",
+      "description": "Content Studio rehberleri ile VH AI SEO Tags tarafından yayınlanan kapsamlı /ara/ landing içeriklerinde arar; doğrudan cevap, içerik özeti, bölüm bağlantıları ve kaynak URL döner.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 120,
+            "description": "Arama ifadesi."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 8,
+            "default": 5
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "search_vivahome_products",
+      "description": "Viva Home kataloğunda halı, kilim, yolluk ve ev tekstili ürünlerini anahtar kelime, kategori ve ürün özellikleriyle arar. Ürün kimliği, fiyat, puan, görsel ve ürün bağlantısı döndürür.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Ürün adı, kullanım alanı, renk, desen veya aranacak ifade."
+          },
+          "category_id": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Biliniyorsa OpenCart kategori kimliği."
+          },
+          "filters": {
+            "type": "object",
+            "description": "İsteğe bağlı katalog filtreleri. Her alan bir veya daha fazla metin değeri alır.",
+            "properties": {
+              "category": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "gender": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "age_group": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "color": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "theme": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "size": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "shape": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "backing": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "edge": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "overlock_color": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "feature": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "material": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "keyword": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "seller": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "piece_count": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "additionalProperties": false
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "relevance",
+              "newest",
+              "price_low",
+              "price_high",
+              "rating"
+            ],
+            "description": "Sonuç sıralaması."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12,
+            "description": "Döndürülecek en fazla ürün sayısı."
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    }
+  ],
+  "host": "vivahome.com.tr",
+  "source": "webmcp.com/api/directory.json"
+}

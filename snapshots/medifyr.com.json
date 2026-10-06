@@ -1,0 +1,213 @@
+{
+  "sponsio": 1,
+  "url": "https://medifyr.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "medifyr_apply_to_job",
+      "description": "Apply to a MediFyr job posting. Get job_posting_id from the careers page (/careers). Resume upload is not supported via this tool.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "job_posting_id",
+          "name",
+          "email"
+        ],
+        "properties": {
+          "job_posting_id": {
+            "type": "integer",
+            "description": "Id of the job posting to apply for."
+          },
+          "name": {
+            "type": "string",
+            "description": "Applicant's full name."
+          },
+          "email": {
+            "type": "string",
+            "description": "Applicant's email."
+          },
+          "phone": {
+            "type": "string",
+            "description": "Optional phone number."
+          },
+          "cover_letter": {
+            "type": "string",
+            "description": "Optional cover letter text."
+          },
+          "linkedin_url": {
+            "type": "string",
+            "description": "Optional LinkedIn profile URL."
+          },
+          "portfolio_url": {
+            "type": "string",
+            "description": "Optional portfolio URL."
+          }
+        }
+      }
+    },
+    {
+      "name": "medifyr_request_appointment",
+      "description": "Submit an appointment / consultation request (lead). Provide doctor_id or hospital_id or speciality_id to target a provider; otherwise it is a general enquiry.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "fullname",
+          "phone",
+          "country_code"
+        ],
+        "properties": {
+          "fullname": {
+            "type": "string",
+            "description": "Patient's full name."
+          },
+          "phone": {
+            "type": "string",
+            "description": "Phone number without country code, digits only."
+          },
+          "country_code": {
+            "type": "string",
+            "description": "Dialing code with '+', e.g. '+91'."
+          },
+          "email": {
+            "type": "string",
+            "description": "Optional email address."
+          },
+          "doctor_id": {
+            "type": "integer",
+            "description": "Optional target doctor id."
+          },
+          "hospital_id": {
+            "type": "integer",
+            "description": "Optional target hospital id."
+          },
+          "speciality_id": {
+            "type": "integer",
+            "description": "Optional speciality id."
+          },
+          "procedure_id": {
+            "type": "integer",
+            "description": "Optional procedure id."
+          },
+          "city_id": {
+            "type": "integer",
+            "description": "Optional city id."
+          },
+          "message": {
+            "type": "string",
+            "description": "Optional note describing the request."
+          }
+        }
+      }
+    },
+    {
+      "name": "medifyr_request_login_otp",
+      "description": "Start phone OTP login by sending a one-time passcode to the user's phone. Follow with medifyr_verify_login_otp.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "phone",
+          "country_code"
+        ],
+        "properties": {
+          "phone": {
+            "type": "string",
+            "description": "Phone number without country code, digits only."
+          },
+          "country_code": {
+            "type": "string",
+            "description": "Dialing code with '+', e.g. '+91'."
+          }
+        }
+      }
+    },
+    {
+      "name": "medifyr_search",
+      "description": "Search MediFyr for doctors, hospitals, specialities, and procedures within a location. Read-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "query"
+        ],
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search text, e.g. 'cardiologist' or 'knee replacement'."
+          },
+          "location": {
+            "type": "string",
+            "description": "Location slug (default 'india'), e.g. 'delhi', 'mumbai'."
+          }
+        }
+      }
+    },
+    {
+      "name": "medifyr_submit_contact_message",
+      "description": "Send a message through MediFyr's contact form.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "email",
+          "message"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Sender's name."
+          },
+          "email": {
+            "type": "string",
+            "description": "Sender's email."
+          },
+          "phone": {
+            "type": "string",
+            "description": "Optional phone number."
+          },
+          "subject": {
+            "type": "string",
+            "description": "Optional subject."
+          },
+          "message": {
+            "type": "string",
+            "description": "Message body."
+          }
+        }
+      }
+    },
+    {
+      "name": "medifyr_verify_login_otp",
+      "description": "Verify the OTP sent by medifyr_request_login_otp and sign the user in.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "phone",
+          "otp"
+        ],
+        "properties": {
+          "phone": {
+            "type": "string",
+            "description": "Full phone with country code, e.g. '+919876543210'."
+          },
+          "otp": {
+            "type": "string",
+            "description": "One-time passcode received via SMS."
+          }
+        }
+      }
+    }
+  ],
+  "host": "medifyr.com",
+  "source": "webmcp.com/api/directory.json"
+}

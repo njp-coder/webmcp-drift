@@ -1,0 +1,286 @@
+{
+  "sponsio": 1,
+  "url": "https://www.sbhfue.com/en/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "apply_booking_upgrade",
+      "description": "Aplica una mejora (Upgrade) de habitación o régimen a la pre-reserva actual antes de finalizar. Usar si el usuario pide mejorar categoría a partir de los availableUpgrades.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "bookingToken": {
+            "type": "string"
+          },
+          "bookedRoomId": {
+            "type": "number",
+            "description": "ID de la habitación reservada devuelto por prepare_checkout_room"
+          },
+          "upgradeCode": {
+            "type": "string",
+            "description": "Código del upgrade (ej: Habitacion1)"
+          },
+          "upgradeType": {
+            "type": "string",
+            "description": "Tipo de mejora: Room o MealPlan"
+          },
+          "upgradeFrom": {
+            "type": "string",
+            "description": "Código origen (el que ya tenías reservado)"
+          },
+          "upgradeTo": {
+            "type": "string",
+            "description": "Código destino de la mejora"
+          },
+          "upgradeAmount": {
+            "type": "number",
+            "description": "Precio de diferencia total"
+          }
+        },
+        "required": [
+          "bookingToken",
+          "bookedRoomId",
+          "upgradeCode",
+          "upgradeType",
+          "upgradeFrom",
+          "upgradeTo",
+          "upgradeAmount"
+        ]
+      }
+    },
+    {
+      "name": "confirm_booking_payment",
+      "description": "Confirma definitivamente la reserva. IMPORTANTE: Debes llamar primero a set_reservation_contact con el bookingToken y usar el bookingToken rotado que devuelve. Usa el paymentOptionKey exacto devuelto por prepare_checkout_room.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "bookingToken": {
+            "type": "string"
+          },
+          "paymentOptionKey": {
+            "type": "string",
+            "description": "Por ej: Hotel#QAHTT#65016"
+          },
+          "amount": {
+            "type": "number",
+            "description": "Monto de la reserva a confirmar"
+          },
+          "checkInDate": {
+            "type": "string",
+            "description": "Fecha de entrada en formato YYYY-MM-DD, la misma que se usó en prepare_checkout_room"
+          },
+          "paymentType": {
+            "type": "string",
+            "description": "Opcional, por omisión Cash"
+          },
+          "paymentOrder": {
+            "type": "string",
+            "description": "Opcional, por omisión Establishment"
+          }
+        },
+        "required": [
+          "bookingToken",
+          "paymentOptionKey",
+          "amount",
+          "checkInDate"
+        ]
+      }
+    },
+    {
+      "name": "get_destination_hotels",
+      "description": "Obtiene características, CÓDIGOS, descripciones, regímenes y habitaciones de los hoteles.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "location": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "location"
+        ]
+      }
+    },
+    {
+      "name": "get_hotel_rooms_availability",
+      "description": "Obtiene TODAS las habitaciones, regímenes y tarifas detalladas para UN SOLO hotel seleccionado.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "hotelCode": {
+            "type": "string"
+          },
+          "dateFrom": {
+            "type": "string",
+            "description": "Fecha de inicio en formato YYYY-MM-DD (ej: 2026-05-08)"
+          },
+          "dateTo": {
+            "type": "string",
+            "description": "Fecha de fin en formato YYYY-MM-DD (ej: 2026-05-10)"
+          },
+          "adults": {
+            "type": "number",
+            "description": "Número de adultos"
+          }
+        },
+        "required": [
+          "hotelCode",
+          "dateFrom",
+          "dateTo",
+          "adults"
+        ]
+      }
+    },
+    {
+      "name": "prepare_checkout_room",
+      "description": "Valora una tarifa específica y obtiene las políticas, desglose de precio exacto y opciones de pago antes de confirmar la reserva.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "hotelCode": {
+            "type": "string"
+          },
+          "checkInDate": {
+            "type": "string",
+            "description": "Fecha de entrada en formato YYYY-MM-DD (ej: 2026-05-08)"
+          },
+          "numberOfNights": {
+            "type": "number"
+          },
+          "roomCode": {
+            "type": "string"
+          },
+          "fareCode": {
+            "type": "string"
+          },
+          "priceType": {
+            "type": "string",
+            "description": "Usualmente \"PVP\""
+          },
+          "mealPlanCode": {
+            "type": "string"
+          },
+          "occupancy": {
+            "type": "string",
+            "description": "Ej: O@2-0-0"
+          },
+          "adults": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "hotelCode",
+          "checkInDate",
+          "numberOfNights",
+          "roomCode",
+          "fareCode",
+          "priceType",
+          "mealPlanCode",
+          "occupancy",
+          "adults"
+        ]
+      }
+    },
+    {
+      "name": "search_hotel_rates",
+      "description": "Busca los precios reales de las habitaciones dado un array de hotelCodes.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "hotelCodes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "dateFrom": {
+            "type": "string",
+            "description": "Fecha de inicio en formato YYYY-MM-DD (ej: 2026-05-08)"
+          },
+          "dateTo": {
+            "type": "string",
+            "description": "Fecha de fin en formato YYYY-MM-DD (ej: 2026-05-10)"
+          },
+          "adults": {
+            "type": "number",
+            "description": "Número de adultos"
+          }
+        },
+        "required": [
+          "hotelCodes",
+          "dateFrom",
+          "dateTo",
+          "adults"
+        ]
+      }
+    },
+    {
+      "name": "set_reservation_contact",
+      "description": "PASO OBLIGATORIO antes de confirm_booking_payment. Envía los datos de contacto del cliente y los vincula a la reserva con el bookingToken. Devuelve un nuevo bookingToken rotado que debes usar en el siguiente paso.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "bookingToken": {
+            "type": "string"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "description": "Debe incluir siempre el prefijo internacional (ej. +34)"
+          },
+          "postalCode": {
+            "type": "string"
+          },
+          "stateProvince": {
+            "type": "string"
+          },
+          "documentType": {
+            "type": "string",
+            "description": "Ej: DNI, PASS"
+          },
+          "documentNumber": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string",
+            "description": "Código ISO2 de País (Ej. ES)"
+          },
+          "locationName": {
+            "type": "string",
+            "description": "Ciudad o Población"
+          },
+          "nationality": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "bookingToken",
+          "firstName",
+          "lastName",
+          "email",
+          "phoneNumber",
+          "documentType",
+          "documentNumber",
+          "country"
+        ]
+      }
+    }
+  ],
+  "host": "sbhfue.com",
+  "source": "webmcp.com/api/directory.json"
+}

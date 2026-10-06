@@ -1,0 +1,103 @@
+{
+  "sponsio": 1,
+  "url": "https://gesteco.ca/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "search_housing_unit",
+      "description": "Search available condos/apartments based on user-selected criteria (size, dog policy, dates, floor, and price).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "listingType": {
+            "type": "string",
+            "enum": [
+              "rental",
+              "sale"
+            ],
+            "description": "Search mode. Defaults to current page listing type."
+          },
+          "regionName": {
+            "type": "string",
+            "enum": [
+              "Cowansville",
+              "Waterloo",
+              "Granby",
+              "Sherbrooke"
+            ],
+            "description": "Allowed region name."
+          },
+          "size": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ],
+            "description": "Human-readable unit size (example: \"4 1/2\")."
+          },
+          "unitConfigurations": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Unit configuration IDs as strings."
+          },
+          "availabilityDates": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Availability date values from existing filters."
+          },
+          "dogsAllowed": {
+            "type": "boolean",
+            "description": "Whether dogs are allowed."
+          },
+          "floor": {
+            "oneOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                }
+              }
+            ],
+            "description": "Floor number or floor numbers."
+          },
+          "minPrice": {
+            "type": "number",
+            "description": "Minimum price filter."
+          },
+          "maxPrice": {
+            "type": "number",
+            "description": "Maximum price filter."
+          },
+          "page": {
+            "type": "number",
+            "description": "Page number (default 1)."
+          },
+          "pageSize": {
+            "type": "number",
+            "description": "Page size (default 20)."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    }
+  ],
+  "host": "gesteco.ca",
+  "source": "webmcp.com/api/directory.json"
+}

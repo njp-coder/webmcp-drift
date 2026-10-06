@@ -1,0 +1,88 @@
+{
+  "sponsio": 1,
+  "url": "https://datreal.com/en/lv",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "check_company_sanctions",
+      "description": "Check whether a company is on any sanctions list and return the detailed sanctions hits if so.",
+      "kind": "imperative",
+      "inputSchema": {
+        "properties": {
+          "regcode": {
+            "description": "Company registration number",
+            "type": "string"
+          }
+        },
+        "required": [
+          "regcode"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_company_details",
+      "description": "Get full registry, financial, tax and compliance details for a specific company by its registration number.",
+      "kind": "imperative",
+      "inputSchema": {
+        "properties": {
+          "country": {
+            "description": "Country code (recommended — regcodes are not globally unique)",
+            "enum": [
+              "LV",
+              "LT",
+              "EE",
+              "FI"
+            ],
+            "type": "string"
+          },
+          "regcode": {
+            "description": "Company registration number",
+            "type": "string"
+          }
+        },
+        "required": [
+          "regcode"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "search_companies",
+      "description": "Search Baltic/Nordic (LV, LT, EE, FI) companies by name, address, or registration number and return matching companies with basic registry data.",
+      "kind": "imperative",
+      "inputSchema": {
+        "properties": {
+          "country": {
+            "description": "Optional country filter (LV, LT, EE, FI)",
+            "enum": [
+              "LV",
+              "LT",
+              "EE",
+              "FI"
+            ],
+            "type": "string"
+          },
+          "limit": {
+            "default": 10,
+            "description": "Max results (1-100)",
+            "maximum": 100,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "query": {
+            "description": "Company name, address, or registration number",
+            "minLength": 2,
+            "type": "string"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "type": "object"
+      }
+    }
+  ],
+  "host": "datreal.com",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,94 @@
+{
+  "sponsio": 1,
+  "url": "https://nte.no/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "check_fiber_availability",
+      "description": "Check whether NTE can deliver fiber broadband (TV og internett) to a Norwegian street address. Pass the address as the customer wrote it. If the result is 'multiple_addresses', ask the customer to pick one of the candidates and call again with it exactly. On 'checked', the 'result' field means: deliverable: fiber can be ordered now; campaign: deliverable with a campaign price, the customer identifies on nte.no to see it, so no products are listed; brl: NTE has an agreement with the customer's housing company (borettslag/sameie), so no products are listed; continueUrl leads to the housing company's offer, or to a form where the customer asks NTE for help choosing the right product; partner: delivered by another Altibox partner, named in 'partner' when known, otherwise the customer finds their partner on altibox.no; lead or notDeliverable: not available yet, the customer can register interest on nte.no; If the status is 'unit_selection', the building has several dwellings: ask the customer for their bruksenhetsnummer (for example H0201, on the letterbox or the door) and call again with both address and unit. For a 'checked' result, always give the customer 'continueUrl' to see details and order. This tool never places an order.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 200,
+            "description": "Street address, e.g. 'Kongens gate 1, 7713 Steinkjer'"
+          },
+          "unit": {
+            "type": "string",
+            "maxLength": 20,
+            "description": "Bruksenhetsnummer, only when a previous call returned 'unit_selection', e.g. 'H0201'"
+          }
+        },
+        "required": [
+          "address"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_power_products",
+      "description": "List NTE's strømavtaler (power agreements) with price description, terms (påslag, månedlig fastbeløp and similar, as written on nte.no), angrerett and a link to each product. Optionally filter by customer segment: Privat, Bedrift, Borettslag or Landbruk. Prices are NTE's own; spotpris itself varies by hour and area and is not included. Always give the customer the product 'url' to read the full terms and order. This tool never places an order.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "segment": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Customer segment: Privat, Bedrift, Borettslag, Landbruk. Default all"
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_service_announcements",
+      "description": "Get NTE's current driftsmeldinger (known faults and planned outages) for TV og bredbånd (fiber) and the Mitt NTE app. Each service has a list of announcements; an empty list means none right now, and null means they could not be fetched, so tell the customer to check 'url' or try again rather than saying all is well. For power cuts, NTE is not the nettselskap: point the customer to their grid company, listed in 'power'.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "search_nte",
+      "description": "Search nte.no for strømavtaler, products, customer service articles and blog posts. Content is in Norwegian, so use Norwegian search terms. Returns titles, descriptions and URLs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search terms, e.g. 'fastpris strøm' or 'flytte'"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "default": 5
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "nte.no",
+  "source": "webmcp.com/api/directory.json"
+}

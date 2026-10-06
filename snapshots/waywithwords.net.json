@@ -1,0 +1,79 @@
+{
+  "sponsio": 1,
+  "url": "https://waywithwords.net/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_pricing_quote",
+      "description": "Fetch an indicative pricing quote from the public /api/pricing endpoint (transcription or captioning).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "serviceType": {
+            "type": "string",
+            "description": "transcription or caption",
+            "enum": [
+              "transcription",
+              "caption"
+            ]
+          },
+          "turnaroundId": {
+            "type": "integer",
+            "description": "Turnaround id from turnarounds action"
+          },
+          "minutes": {
+            "type": "number",
+            "description": "Audio minutes",
+            "minimum": 0
+          },
+          "timecoding": {
+            "type": "boolean"
+          },
+          "fullVerbatim": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "serviceType",
+          "turnaroundId",
+          "minutes"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_pricing_turnarounds",
+      "description": "List valid turnaround options for a service type (for use before quoting).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "serviceType": {
+            "type": "string",
+            "enum": [
+              "transcription",
+              "caption"
+            ]
+          }
+        },
+        "required": [
+          "serviceType"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_transcription_services",
+      "description": "List main Way With Words service pages (transcription, captioning, polishing, languages).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "waywithwords.net",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,246 @@
+{
+  "sponsio": 1,
+  "url": "https://www.cheers.tech/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "ask_cheers",
+      "description": "Ask any question about Cheers (services, fit, process, proof, integrations, pricing approach). Answers come only from Cheers' published information, with sources, and say so when the answer is not published.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "question": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 1000
+          }
+        },
+        "required": [
+          "question"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "check_fit",
+      "description": "Assess whether Cheers is a good fit for a business from its industry and number of locations. Returns strong, possible or unlikely with reasons and the most relevant solution pages and case studies.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "industry": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 120,
+            "description": "What the business does, e.g. 'HVAC and plumbing' or 'med spa franchise'."
+          },
+          "location_count": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100000,
+            "description": "Number of physical locations or branches."
+          },
+          "markets": {
+            "description": "Cities, metros or regions served.",
+            "type": "string",
+            "maxLength": 300
+          },
+          "goal": {
+            "description": "What the business wants, e.g. 'show up in ChatGPT for AC repair in Phoenix'.",
+            "type": "string",
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "industry",
+          "location_count"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_ai_visibility_check",
+      "description": "How to run Cheers' free AI Visibility Grader, which checks whether ChatGPT, Gemini and Perplexity recommend a specific local business. Returns the link the person uses to start it.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "business_name": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "city": {
+            "type": "string",
+            "maxLength": 120
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_cheers_overview",
+      "description": "What Cheers is, who it serves, what the team does each month, how an engagement works, and where to go next (demo, free AI visibility check, contact). Call this first when evaluating Cheers as a vendor.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_pricing",
+      "description": "Cheers' published plans and monthly prices, physical badge pricing, contract terms and how to start. Returns only published pricing.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "list_proof",
+      "description": "Published Cheers case studies with their metrics, observation dates, measurement windows and sources. Optionally filter by industry keyword.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "industry": {
+            "description": "Optional industry keyword, e.g. 'plumbing' or 'waxing'.",
+            "type": "string",
+            "maxLength": 120
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "request_demo",
+      "description": "Ask the Cheers team for a demo on a person's behalf. Cheers emails the person a confirmation link; the request is saved only after they click it (an assistant with access to their inbox may do that for them). Requires a work email, a phone number, the company website and the number of locations.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "first_name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "last_name": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "email": {
+            "type": "string",
+            "maxLength": 254,
+            "description": "The person's work email. Personal email domains are declined."
+          },
+          "phone": {
+            "type": "string",
+            "minLength": 7,
+            "maxLength": 30
+          },
+          "company": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "company_website": {
+            "type": "string",
+            "minLength": 4,
+            "maxLength": 200
+          },
+          "location_count": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100000
+          },
+          "role": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "industry": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "goal": {
+            "description": "What they want help with.",
+            "type": "string",
+            "maxLength": 1500
+          }
+        },
+        "required": [
+          "first_name",
+          "email",
+          "phone",
+          "company",
+          "company_website",
+          "location_count"
+        ]
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "search_cheers_knowledge",
+      "description": "Keyword search across Cheers' published FAQs, solution pages, case studies, vendor comparisons and GEO Academy articles about local SEO, reviews and AI visibility. Returns passages with URLs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 300
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 8
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "fact",
+              "faq",
+              "process",
+              "solution",
+              "case_study",
+              "comparison",
+              "article"
+            ]
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "cheers.tech",
+  "source": "webmcp.com/api/directory.json"
+}

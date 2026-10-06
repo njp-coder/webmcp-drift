@@ -1,0 +1,77 @@
+{
+  "sponsio": 1,
+  "url": "https://highfocuscenters.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "find_locations",
+      "description": "Find High Focus Centers outpatient locations, optionally filtered by state (nj, pa, ct, ga) or city name. Returns address, phone, and page URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "state": {
+            "type": "string",
+            "enum": [
+              "nj",
+              "pa",
+              "ct",
+              "ga"
+            ],
+            "description": "Two-letter state code."
+          },
+          "city": {
+            "type": "string",
+            "description": "Full or partial city name."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_contact_info",
+      "description": "Get High Focus Centers admissions contact details and the URLs for starting admissions or verifying insurance.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_programs",
+      "description": "List the outpatient treatment programs offered by High Focus Centers, with a short summary and page URL for each.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Optional keyword to filter programs by title or summary, e.g. 'trauma' or 'adolescent'."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "navigate_site",
+      "description": "Open a page on the High Focus Centers site, such as a program or location page returned by the other tools.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Site-relative path beginning with '/', e.g. '/programs/teletherapy'."
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "highfocuscenters.com",
+  "source": "webmcp.com/api/directory.json"
+}

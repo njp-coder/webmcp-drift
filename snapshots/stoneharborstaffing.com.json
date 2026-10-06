@@ -1,0 +1,123 @@
+{
+  "sponsio": 1,
+  "url": "https://stoneharborstaffing.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "open_job",
+      "description": "Read one job advert in full, by its slug or by its URL on this site. The slug is the last path segment of a job's page, as returned by search_jobs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "The job slug, e.g. local-rn-er-wichita-ks-1135509, or its full URL."
+          }
+        },
+        "required": [
+          "slug"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "search_jobs",
+      "description": "Search open jobs at Stone Harbor Staffing Group across every business unit. Returns the matching jobs, with a link to each, and the board URL for the same search. There is no keyword search over advert text: `q` is resolved to a state, a city or a specialty, so prefer the specific filters when you know them.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string",
+            "description": "Free text. Resolved to a US state, a \"City, ST\" pair, a specialty, or a city prefix — in that order."
+          },
+          "state": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Two-letter US state codes, e.g. [\"TX\",\"CA\"]."
+          },
+          "place": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Exact \"City, ST\" pairs, e.g. [\"Austin, TX\"]."
+          },
+          "jt": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "contract",
+                "per-diem",
+                "interim",
+                "permanent"
+              ]
+            },
+            "description": "Engagement types."
+          },
+          "shift": {
+            "type": "string",
+            "enum": [
+              "Days",
+              "Mid",
+              "Nights",
+              "Variable"
+            ]
+          },
+          "start": {
+            "type": "number",
+            "enum": [
+              14,
+              30,
+              60
+            ],
+            "description": "Starting within N days."
+          },
+          "weeks": {
+            "type": "number",
+            "description": "Contract length in weeks."
+          },
+          "hours": {
+            "type": "number",
+            "description": "Hours per day."
+          },
+          "compact": {
+            "type": "boolean",
+            "description": "Compact-licensure states only."
+          },
+          "brand": {
+            "type": "string",
+            "description": "Restrict to one business unit by slug, e.g. tidepoint-staffing, seabright-staffing, orbis-clinical."
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "newest",
+              "pay_high",
+              "pay_low",
+              "start_date_asc"
+            ],
+            "description": "Defaults to newest."
+          },
+          "page": {
+            "type": "number",
+            "description": "1-based; 20 results per page."
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "stoneharborstaffing.com",
+  "source": "webmcp.com/api/directory.json"
+}

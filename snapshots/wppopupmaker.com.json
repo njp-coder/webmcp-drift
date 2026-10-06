@@ -1,0 +1,99 @@
+{
+  "sponsio": 1,
+  "url": "https://wppopupmaker.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "wp_get-categories",
+      "description": "List all post categories with their names, descriptions, and post counts.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "wp_get-post",
+      "description": "Retrieve a single post by its ID or slug. Returns the full post content, categories, tags, and metadata.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Post ID."
+          },
+          "slug": {
+            "type": "string",
+            "description": "Post slug (URL name)."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "wp_search-posts",
+      "description": "Search published posts by keyword. Returns titles, excerpts, and URLs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "The search keyword or phrase."
+          },
+          "count": {
+            "type": "integer",
+            "description": "Number of results to return (1–50).",
+            "default": 10,
+            "minimum": 1,
+            "maximum": 50
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "wp_submit-comment",
+      "description": "Submit a comment on a post. Respects WordPress comment settings including open/closed comments and login requirements.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "post_id": {
+            "type": "integer",
+            "description": "ID of the post to comment on."
+          },
+          "content": {
+            "type": "string",
+            "description": "Comment text."
+          },
+          "author_name": {
+            "type": "string",
+            "description": "Commenter name (optional for logged-in users)."
+          },
+          "author_email": {
+            "type": "string",
+            "description": "Commenter email (optional for logged-in users)."
+          }
+        },
+        "required": [
+          "post_id",
+          "content"
+        ]
+      }
+    }
+  ],
+  "host": "wppopupmaker.com",
+  "source": "webmcp.com/api/directory.json"
+}

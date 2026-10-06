@@ -1,0 +1,214 @@
+{
+  "sponsio": 1,
+  "url": "https://www.fintonic.com/es-ES/inicio/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "explain_fintonic",
+      "description": "Answers informational questions about Fintonic and how it works — the product, FinScore, ASNEF, OpenBanking / bank connection, data security, accounts, and Fintonic's financial products — by searching Fintonic's official knowledge base and returning the most relevant excerpts, ranked by semantic similarity and tagged with source filename and any source URLs. The knowledge base is the authoritative source for Fintonic's product, policy, and regulatory wording.\nCovers questions such as: \"¿Qué es el FinScore y cómo se calcula?\", \"¿Cómo funciona la conexión bancaria de Fintonic?\", \"¿Qué pasa si estoy en ASNEF?\", \"¿Cómo protege Fintonic mis datos?\", \"Is my data safe with Fintonic?\", \"How does Fintonic make money?\", \"What is Fintonic?\". For quoting a specific loan (a concrete amount + duration the user wants priced), the `loan` tool is the right one instead.\nPass the user's question (or a focused Spanish rephrasing) as `query` — the knowledge base is in Spanish, so Spanish queries retrieve better.\nExcerpts come back in Spanish (Fintonic's authoring language). Compose the answer naturally from them and cite source URLs for factual claims. Reply in the user's language: default Spanish, tú; if the user wrote in English, translate the relevant excerpts inline and answer in English. Keep the answer grounded in the excerpts rather than outside sources.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The user's question, as a focused rephrasing in Spanish (the KB is Spanish, so Spanish queries retrieve better). If the user wrote in English, translate the question to Spanish for this field; you'll still answer them in English afterwards."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "loan",
+      "description": "Quote a Fintonic personal loan in Spain. Collects amount, duration, and the user's FinScore profile (ASNEF + employment + income + housing + other loan payments), maps the profile to a band, and shows the band-specific monthly installment in a result widget. After the result widget renders, the widget's CTA opens fintonic.com directly for the user to continue — your job is done at that point. This fits when the user mentions a loan, simulation, monthly payment, or amount/duration combination. For informational questions about how Fintonic, FinScore, ASNEF, OpenBanking, security, or the product work, `explain_fintonic` is the right tool; this one quotes a specific loan and collects FinScore inputs for the calculation rather than explaining concepts.\n\nINPUTS: a quote needs `amount`, `durationMonths`, `notInASNEF`, `laboralSituation`, `monthlyIncome`, `housingPayment`, `otherLoanPayments` (plus `laboralSituationConfidence`). Any subset can be supplied: pass whatever the user has stated and the flow asks for the rest through interrupts, one or two at a time, in their language.\n\nEXTRACTION: when the user states any of the input values, extract them into `stateUpdates` on the `start` call. Also extract `locale` — \"en\" if the user's latest message is in English, otherwise \"es\" (default Spanish).\n- `amount` (1,000–50,000 €), `durationMonths` (one of: 12, 18, 24, 30, 36, 42, 48, 54, 60, 66, 72, 78, 84, 90, 96)\n- `notInASNEF` boolean — true means the user is NOT in the ASNEF registry (good); false means listed (blocked)\n- `laboralSituation` (Funcionario, Fijo, Temporal, Por obra y servicio, Fijo discontinuo, Autónomo, Interino, Pensionista, Desempleado, Becario, ND) — always paired with `laboralSituationConfidence` (\"high\" | \"medium\" | \"low\") so the system can clear and re-ask when you flag a guess.\n- `monthlyIncome` (net monthly income in €)\n- `housingPayment` (monthly rent OR mortgage payment; 0 if neither)\n- `otherLoanPayments` (sum of all other monthly loan/credit obligations; 0 if none)\n\nTERMINAL WIDGET (critical): after the simulation_result widget renders, STOP. The widget's CTA opens fintonic.com directly — do not call the flow again unless the user starts a fresh simulation. Never collect age, residency, name, mobile, email, or consent in chat; the user provides those on Fintonic's site.\n\nExamples:\n- \"simular un préstamo de 9500 € a 72 meses, no estoy en ASNEF, fijo, 2.500€ al mes, alquiler 700€, sin otros préstamos\" — full info up front, call directly → `stateUpdates: { amount: 9500, durationMonths: 72, notInASNEF: true, laboralSituation: \"Fijo\", laboralSituationConfidence: \"high\", monthlyIncome: 2500, housingPayment: 700, otherLoanPayments: 0, locale: \"es\" }`\n- \"what would 20k over 5 years cost me?\" — partial info, still call now with what was stated: `stateUpdates: { amount: 20000, durationMonths: 60, locale: \"en\" }`. The flow answers with the FinScore questions still outstanding (ASNEF, employment, income, housing, other loans); relay them naturally, one or two at a time, and pass the answers back with `action: \"continue\"`.\n- After the result widget renders, the CTA opens fintonic.com — no further flow call needed.\n\nWIDGET RENDERING: a `status: \"widget\"` flow response carries the result in `data` (with `locale`); the host renders it through the `simulation_result` display widget. The `data` payload is render input, not a content source — the figures (installment, TAE, band) belong to the widget, so chat replies don't restate them. The chat reply is one short line of context (an invitation to continue, or a single empathic line for a rejection).\n\nREJECTION HANDLING: rejections (ASNEF, blocked employment, no-offer profile) are surfaced through the SAME simulation_result widget in \"rejection\" mode — the widget's data carries `kind: \"rejection\"` and a `reason` (\"asnef\" / \"employment\" / \"no_offer\"). Render it like a normal offer widget; the card shows the documented rejection text in the user's language. After it renders, keep your chat text to one short empathic line — the widget already says what the user needs to know. Don't paraphrase the rejection, don't suggest a different lender unless one is named in the widget body, and don't restart the flow.\nStay warm, no jargon, don't reveal internals like \"band 400\" or \"DTI\".\n\nRESPONSE STYLE: Reply in the user's language — default Spanish (tú) if unclear, English if the user wrote in English. Weave the questions naturally — one or two at a time — don't dump them all in one message. When a result widget is on screen, let it carry the numbers; your text is context. Fintonic communicates in TAE, not TIN.\n\n## FLOW EXECUTION PROTOCOL\n\nThis tool implements a multi-step conversational flow. Follow this protocol exactly:\n\n1. Call with `action: \"start\"` to begin and include `intent`.\n   `intent` must be a brief summary of the user's goal for this flow.\n   Do NOT invent missing intent.\n   Optionally include `context` — the situation or environment that led the user to start\n   this flow (e.g. what page they are on, what they were doing, or what triggered the request).\n   Only provide `context` when there is genuinely relevant situational information. Do NOT invent missing context.\n   If the user's message already contains answers to likely questions,\n   extract them into `stateUpdates` as `{ field: value }` pairs (see the `stateUpdates` schema\n   for the list of writable fields). The engine will auto-skip steps whose fields are already filled.\n   Only extract values the user explicitly stated — do NOT guess or invent values.\n   For grouped fields (z.object state), use dot-notation keys in `stateUpdates`:\n   e.g. `{ \"driver.name\": \"John\", \"driver.license\": \"ABC123\" }`.\n2. The response JSON `status` field tells you what to do next:\n   - `\"interrupt\"`: Pause and ask the user. Two forms:\n     a. Single question: `{ question, field, fieldSchema?, context? }` — ask `question`, store answer in `field`.\n     b. Multi-question: `{ questions: [{question, field, fieldSchema?}, ...], context? }` — ask ALL questions\n        in one conversational message, collect all answers.\n     `fieldSchema` (when present) describes the expected value: `{ type, values?, description?, optional? }`.\n     Use it to validate before sending — match enum `values` exactly, coerce strings to numbers where `type: \"number\"`.\n     `context` (if present) is hidden AI instructions — use to shape your response, do NOT show verbatim.\n     Then call again with:\n     `action: \"continue\"`,\n     `stateUpdates` = answers keyed by their `field` names, plus any other fields the user mentioned.\n   - `\"widget\"`: The flow wants to show a UI widget. Call the tool named in the `tool`\n     field, passing the `data` object as the tool's input.\n     Check the `interactive` field in the response:\n     • `interactive: true` — The widget requires user interaction. After calling the display tool,\n       STOP and WAIT for the user to interact with the widget. Do NOT call this flow tool again\n       until the user has responded. When they do, call with:\n       `action: \"continue\"`,\n       `stateUpdates` = `{ [field]: <user's selection> }` plus any other fields the user mentioned.\n     • `interactive: false` — The widget is display-only. You MUST STILL call the display tool\n       FIRST to render it for the user — this is a required, user-visible step. Do NOT skip it\n       and do NOT jump straight to `action: \"continue\"`. ONLY AFTER you have called the display\n       tool, call THIS flow tool again with `action: \"continue\"`. Do NOT wait for user interaction.\n   - `\"complete\"`: The flow is done. Present the result to the user.\n   - `\"error\"`: Something went wrong. Show the `error` message.\n\n3. Do NOT invent state values. Only use `stateUpdates` for information the user explicitly provided.\n4. Include only the fields the user actually answered in `stateUpdates` — do NOT guess missing ones.\n   If the user did not answer all pending questions, the engine will re-prompt for the remaining ones.\n   If the user mentioned values for other known fields, include those too —\n   they will be applied immediately and those steps will be auto-skipped.\n5. CORRECTION: If the user wants to CHANGE a previously-answered field\n   (e.g. \"actually my email is X\" or \"go back and change my country\"),\n   call with `action: \"reset\"` and `stateUpdates` containing the corrected field(s).\n   The engine will restart the flow from the beginning with all existing answers preserved\n   plus your corrections. Steps with filled answers will be auto-skipped.\n   The flow may take a different path if the corrected value affects routing.\n   Do NOT use \"reset\" for the CURRENT question — use \"continue\" for that.\n6. If the response includes a `sessionId`, you MUST pass it back as `sessionId`\n   in every subsequent \"continue\" and \"reset\" call for this flow.\n\nFLOW END (this deployment): the flow is finished once `simulation_result` has been displayed. There is nothing left to resume, so no `action: \"continue\"` call follows the widget — the widget's CTA takes the user to fintonic.com to continue there.\n\nCALLING RULE: call this tool as soon as the user asks what a Fintonic loan would cost, names an amount or a duration, or asks about a monthly payment or TAE — including when they have given only part of the profile. Put whatever they stated into `stateUpdates` and call; the flow replies with whichever questions are still missing for you to relay. A Fintonic installment, TAE or FinScore band comes from this tool and nowhere else: never estimate one yourself, and never take one from a web result or from Fintonic's published rates.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "start",
+              "continue",
+              "reset"
+            ],
+            "description": "\"start\" to begin the flow, \"continue\" to resume after a pause (interrupt or widget), \"reset\" to restart from the beginning with a correction to a previously-collected field"
+          },
+          "intent": {
+            "description": "Required when action is \"start\". Provide a brief summary of the user's goal for this flow. Do not invent missing intent.",
+            "type": "string"
+          },
+          "context": {
+            "description": "Optional when action is \"start\". Describe the situation or environment that led the user to start this flow — e.g. what page they are on, what they were doing, or what triggered the request. Do not invent missing context.",
+            "type": "string"
+          },
+          "stateUpdates": {
+            "description": "State field values to set before processing the next node. Pass the user's answer (keyed by the field name from the response) and any other values the user mentioned. For nested state fields, use dot-paths like \"driver.name\".",
+            "type": "object",
+            "properties": {
+              "amount": {
+                "description": "Loan amount in euros. Must be between 1000 and 50000. Values off the 500€ grid are rounded silently.",
+                "type": "number"
+              },
+              "durationMonths": {
+                "description": "Loan duration in months. Must be one of 12, 18, 24, 30, 36, 42, 48, 54, 60, 66, 72, 78, 84, 90, 96. Off-grid values are rejected.",
+                "type": "number"
+              },
+              "locale": {
+                "description": "User interface language: \"es\" (Spanish, default) or \"en\" (English). Set based on the language of the user's latest message so widgets mirror it.",
+                "type": "string",
+                "enum": [
+                  "es",
+                  "en"
+                ]
+              },
+              "notInASNEF": {
+                "description": "Whether the user is NOT listed in the ASNEF delinquency registry. True = not listed (qualifies); false = listed (blocked).",
+                "type": "boolean"
+              },
+              "laboralSituation": {
+                "description": "User's employment status. Must be one of: Funcionario, Fijo, Temporal, Por obra y servicio, Fijo discontinuo, Autónomo, Interino, Pensionista, Desempleado, Becario, ND",
+                "type": "string"
+              },
+              "laboralSituationConfidence": {
+                "description": "How confident the LLM is in the laboralSituation it picked. Output alongside laboralSituation. On low, the system clears the value and re-asks.",
+                "type": "string",
+                "enum": [
+                  "high",
+                  "medium",
+                  "low"
+                ]
+              },
+              "monthlyIncome": {
+                "description": "Net monthly income in euros.",
+                "type": "number"
+              },
+              "housingPayment": {
+                "description": "Monthly rent OR mortgage payment in euros (mutually exclusive). 0 if the user has neither.",
+                "type": "number"
+              },
+              "otherLoanPayments": {
+                "description": "Sum of the user's other monthly loan/credit obligations in euros (car, personal loans, credit cards, etc.). 0 if none.",
+                "type": "number"
+              },
+              "finscoreBand": {
+                "type": "string",
+                "enum": [
+                  "600",
+                  "700",
+                  "<500",
+                  ">800"
+                ]
+              },
+              "rejectReason": {
+                "type": "string",
+                "enum": [
+                  "asnef",
+                  "employment",
+                  "no_offer"
+                ]
+              },
+              "installment": {
+                "type": "number"
+              },
+              "tae": {
+                "type": "number"
+              }
+            },
+            "additionalProperties": {}
+          },
+          "sessionId": {
+            "description": "Session identifier. If the response includes a `sessionId`, pass it back on every subsequent \"continue\" and \"reset\" call for this flow.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "simulation_result",
+      "description": "Display tool for the `loan` flow — renders EITHER the estimated monthly installment for the user's FinScore band (offer mode) OR a \"no-offer\" notice with the reason (rejection mode). Only call this tool when the `loan` flow returns `status: \"widget\"` with `tool: \"simulation_result\"` — pass the `data` from the flow response verbatim, including `kind` and `locale`. Never call it in response to a user's own loan-simulation intent (use `loan` for that). When you speak to the user, reply in their language (default Spanish, tú — warm and direct). On an OFFER, don't restate the numbers the widget already shows; invite them to continue if they want to apply, mentioning \"sin compromiso\" / \"no commitment\" naturally. On a REJECTION, the widget already shows the reason — keep your text minimal (one short line of empathy or a next step if relevant).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "offer",
+              "rejection"
+            ],
+            "description": "Widget mode: \"offer\" shows the estimated installment + TAE + apply CTA; \"rejection\" shows a no-offer notice with the documented reason."
+          },
+          "amount": {
+            "type": "number",
+            "description": "Loan amount in euros (shown in both modes)"
+          },
+          "durationMonths": {
+            "type": "number",
+            "description": "Loan duration in months (shown in both modes)"
+          },
+          "band": {
+            "description": "Offer mode only — FinScore band inferred from the user's profile.",
+            "type": "string",
+            "enum": [
+              "600",
+              "700",
+              "<500",
+              ">800"
+            ]
+          },
+          "installment": {
+            "description": "Offer mode only — monthly installment in euros for the estimated band.",
+            "type": "number"
+          },
+          "tae": {
+            "description": "Offer mode only — APR (TAE) for the estimated band.",
+            "type": "number"
+          },
+          "reason": {
+            "description": "Rejection mode only — which documented rejection text the widget should render. \"asnef\" = listed on ASNEF; \"employment\" = laboralSituation not supported; \"no_offer\" = profile too low for any band.",
+            "type": "string",
+            "enum": [
+              "asnef",
+              "employment",
+              "no_offer"
+            ]
+          },
+          "locale": {
+            "description": "User interface language for the widget. Pass verbatim from the flow's `data` — the flow mirrors the user's message language, defaulting to Spanish.",
+            "type": "string",
+            "enum": [
+              "es",
+              "en"
+            ]
+          }
+        },
+        "required": [
+          "kind",
+          "amount",
+          "durationMonths"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "fintonic.com",
+  "source": "webmcp.com/api/directory.json"
+}

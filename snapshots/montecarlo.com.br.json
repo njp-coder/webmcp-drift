@@ -1,0 +1,106 @@
+{
+  "sponsio": 1,
+  "url": "https://www.montecarlo.com.br/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "add_to_cart",
+      "description": "Add a SKU to the shopper's cart. Proposes a purchase — it does NOT complete one, and the shopper can remove it in the cart drawer.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sku": {
+            "type": "string",
+            "description": "SKU id, e.g. from the product page or a `?format=md` document."
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 99,
+            "default": 1
+          },
+          "seller": {
+            "type": "string",
+            "default": "1"
+          }
+        },
+        "required": [
+          "sku"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "apply_coupon",
+      "description": "Apply a coupon code to the shopper's cart and report whether it was accepted and what the total became.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "code"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "estimate_shipping",
+      "description": "Estimate shipping options and cost for the current cart to a Brazilian postal code (CEP). Read-only — does not change the cart.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "postal_code": {
+            "type": "string",
+            "description": "Brazilian CEP, 8 digits (dashes are fine)."
+          }
+        },
+        "required": [
+          "postal_code"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_cart",
+      "description": "Read the shopper's current cart in this browser session: items, quantities, unit prices and total.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "update_cart_quantity",
+      "description": "Change the quantity of a cart line by its index (see get_cart). Quantity 0 removes the line.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "index": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 99
+          }
+        },
+        "required": [
+          "index",
+          "quantity"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "montecarlo.com.br",
+  "source": "webmcp.com/api/directory.json"
+}

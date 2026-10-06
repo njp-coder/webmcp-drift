@@ -1,0 +1,144 @@
+{
+  "sponsio": 1,
+  "url": "https://delio.com.pl/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "add_to_cart",
+      "description": "Add a product to the user's delio cart by SKU. Works for signed-in and anonymous users; the cart is created automatically on first add. Requires a delivery address; if this tool returns address_required, call set_delivery_address. Availability and prices depend on the delivery address.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sku": {
+            "type": "string",
+            "description": "Product SKU, e.g. \"A0023673\" (from search_products or view_product)."
+          },
+          "quantity": {
+            "type": "number",
+            "description": "How many units to add. Positive integer, default 1, max 50."
+          }
+        },
+        "required": [
+          "sku"
+        ]
+      }
+    },
+    {
+      "name": "list_categories",
+      "description": "List delio product categories. Without parentKey returns the top-level categories; with parentKey returns its direct subcategories. Use list_category_products to browse the products of a category. Category keys can be browsed on the site at /categories/{key}. Requires a delivery address; if this tool returns address_required, call set_delivery_address. Availability and prices depend on the delivery address.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "parentKey": {
+            "type": "string",
+            "description": "Optional category key whose direct subcategories should be listed, e.g. \"nabial\"."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "list_category_products",
+      "description": "List the products of a delio category with pagination. Use list_categories to discover category keys. Returns products with prices, availability and slugs usable with the view_product and add_to_cart tools. Requires a delivery address; if this tool returns address_required, call set_delivery_address. Availability and prices depend on the delivery address.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "categoryKey": {
+            "type": "string",
+            "description": "Category key, e.g. \"nabial\" — from list_categories results."
+          },
+          "limit": {
+            "type": "number",
+            "description": "Maximum number of results (default 10, max 50)."
+          },
+          "offset": {
+            "type": "number",
+            "description": "Number of products to skip — use for pagination, e.g. offset=10 with limit=10 for the second page (default 0)."
+          }
+        },
+        "required": [
+          "categoryKey"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Search the delio grocery catalog by free-text query. Returns matching products with prices, availability and slugs usable with the view_product and add_to_cart tools. Works for signed-in and anonymous users. Requires a delivery address; if this tool returns address_required, call set_delivery_address. Availability and prices depend on the delivery address.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Free-text search phrase, e.g. \"jogurt naturalny\"."
+          },
+          "limit": {
+            "type": "number",
+            "description": "Maximum number of results (default 10, max 50)."
+          },
+          "offset": {
+            "type": "number",
+            "description": "Number of results to skip — use for pagination, e.g. offset=10 with limit=10 for the second page (default 0)."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "set_delivery_address",
+      "description": "Set or change the delivery address. If no address is set yet, opens the address dialog for the user to confirm one (it cannot be set autonomously); if an address is already set, reports that and makes no change. A delivery address is required before the other tools work.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "view_cart",
+      "description": "Read the user's current delio shopping cart: line items with quantities and prices, plus the cart total. Requires a delivery address; if this tool returns address_required, call set_delivery_address. Availability and prices depend on the delivery address.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "view_product",
+      "description": "Fetch full details of a delio product by its slug (e.g. from search_products or category listings): price, promotion, availability, ingredients, allergens and other attributes. Requires a delivery address; if this tool returns address_required, call set_delivery_address. Availability and prices depend on the delivery address.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Product slug in the form {SKU}-{name-kebab-case}, e.g. \"A0023673-zott-jogurt-naturalny\"."
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "delio.com.pl",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,63 @@
+{
+  "sponsio": 1,
+  "url": "https://www.rent-motorhome.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get-page-offers",
+      "description": "List the motorhome and campervan rental offers shown on the current Bandana page, with each vehicle's name, rental company, indicative price and currency, and a link to its own page. Use this to answer questions about what is available or how much it costs here, instead of reading the page text. When a vehicle is offered in several pickup cities, price is the LOWEST listed from-price in the page's primary currency, location is the pickup city that price applies to, and pickupCityCount is how many pickup cities the vehicle is offered from in that same currency. Prices are indicative from-prices for comparison, not a quote for specific dates.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "search-motorhome-rentals",
+      "description": "Build a Bandana search link for motorhome and campervan rentals in a given pickup city, optionally with a different drop-off city, travel dates and number of travellers. Returns the search URL and the locations it matched; it does not run the search or leave the page, so show the user the link or open it to see live prices and availability.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "pickupCity": {
+            "type": "string",
+            "description": "City or airport to pick the vehicle up in, e.g. \"Reykjavik\" or \"Denver\". Give the name in the language of the page: the location list is in the page's own language, and a no-match answer returns example names from it to retry with."
+          },
+          "dropoffCity": {
+            "type": "string",
+            "description": "City to return the vehicle to, for a one-way rental. Defaults to the pickup city."
+          },
+          "pickupDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Pickup date as YYYY-MM-DD. Omit both dates to search without fixed dates."
+          },
+          "dropoffDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Return date as YYYY-MM-DD. Must be after pickupDate."
+          },
+          "travellers": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "description": "Number of people travelling. Defaults to 2."
+          }
+        },
+        "required": [
+          "pickupCity"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "rent-motorhome.com",
+  "source": "webmcp.com/api/directory.json"
+}

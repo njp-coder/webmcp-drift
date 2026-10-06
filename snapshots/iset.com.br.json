@@ -1,0 +1,149 @@
+{
+  "sponsio": 1,
+  "url": "https://www.iset.com.br/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "calcular-custo-mensal",
+      "description": "Calcula quanto custa por mês um plano iSET somando a mensalidade e a tarifa por venda sobre um faturamento. Use quando a pessoa quiser saber o custo total, não só a mensalidade.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "plano": {
+            "type": "string",
+            "enum": [
+              "iSET Starter",
+              "iSET PRO",
+              "iSET Advanced",
+              "iSET Prime"
+            ],
+            "description": "Nome do plano"
+          },
+          "faturamentoMensal": {
+            "type": "number",
+            "description": "Faturamento da loja no mês, em reais"
+          },
+          "vendasPeloIpay": {
+            "type": "boolean",
+            "description": "Se as vendas são processadas pelo iPay, o meio de pagamento da própria iSET"
+          }
+        },
+        "required": [
+          "plano",
+          "faturamentoMensal"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "consultar-duvida-frequente",
+      "description": "Responde dúvidas frequentes sobre contratação da iSET: tarifas, setup obrigatório, migração de outra plataforma, domínio, cancelamento e formas de pagamento. Use antes de responder de memória sobre regras comerciais.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "assunto": {
+            "type": "string",
+            "description": "Assunto ou pergunta, em linguagem natural. Sem isto, devolve todas as perguntas."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "consultar-integracao",
+      "description": "Verifica se uma ferramenta, marketplace, gateway de pagamento, transportadora ou ERP está entre as 132 integrações da plataforma iSET, e diz em que categoria está. Use quando a pessoa perguntar \"a iSET integra com X?\".",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "nome": {
+            "type": "string",
+            "description": "Nome da ferramenta procurada, como 'Mercado Livre' ou 'Bling'"
+          }
+        },
+        "required": [
+          "nome"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "consultar-planos",
+      "description": "Lista os planos da plataforma iSET com preço mensal e anual, tarifa por venda e limites de produtos, variações, pageviews e vitrines. Use quando a pessoa quiser ver, comparar ou entender as opções.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "iniciar-ativacao",
+      "description": "Abre a página de ativação da iSET para contratar um plano. Use somente quando a pessoa decidir contratar — é o começo de uma compra.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "plano": {
+            "type": "string",
+            "enum": [
+              "iSET Starter",
+              "iSET PRO",
+              "iSET Advanced",
+              "iSET Prime"
+            ],
+            "description": "Plano escolhido"
+          }
+        },
+        "required": [
+          "plano"
+        ]
+      },
+      "annotations": {
+        "readOnly": false,
+        "consequential": true
+      }
+    },
+    {
+      "name": "recomendar-plano",
+      "description": "Recomenda o plano iSET mais barato que comporta o tamanho da operação. Use quando a pessoa disser quantos produtos, variações, pageviews mensais ou vitrines tem ou espera ter.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "produtos": {
+            "type": "number",
+            "description": "Quantidade de produtos no catálogo"
+          },
+          "variacoes": {
+            "type": "number",
+            "description": "Quantidade de variações (tamanho, cor)"
+          },
+          "pageviews": {
+            "type": "number",
+            "description": "Pageviews por mês"
+          },
+          "vitrines": {
+            "type": "number",
+            "description": "Quantidade de vitrines"
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "iset.com.br",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,139 @@
+{
+  "sponsio": 1,
+  "url": "https://www.grupojafisa.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_page_content",
+      "description": "Devuelve el texto de una página de esta misma web, ya limpio de maquetación. Úsalo para leer una página cuyo enlace conoces.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Ruta de la página en esta web, por ejemplo /contacto/."
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    },
+    {
+      "name": "get_product",
+      "description": "Ficha de un producto concreto: precio, disponibilidad, categorías, referencia y descripción corta. Indica la ruta del producto en la web (la que devuelve search_products).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Ruta del producto en esta web, por ejemplo /producto/nombre/."
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    },
+    {
+      "name": "navigate_to",
+      "description": "Lleva a la persona a una página de esta misma web. Úsalo cuando quiera ir a una sección concreta.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Ruta de destino en esta web, por ejemplo /contacto/."
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Busca productos en la tienda de Grupo Jafisa. Se puede filtrar por categoría, rango de precio y disponibilidad, y ordenar por precio.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string",
+            "description": "Texto a buscar (nombre o descripción del producto)."
+          },
+          "category": {
+            "type": "string",
+            "description": "Slug de la categoría de producto. Disponibles: meat-supreme, vacuno, anojo, ternera, vaca, cerdo, cerdo-iberico, cordero, cordero-lechal, cordero-recental, aves, pavo, pollo, elaborados, chorizos-y-longanizas, morcillas, pinchos-picadillos-y-adobados, sajonia-bacon-y-ahumados, salchichas-y-butifarras, embutidos-y-quesos, quesos, caza, caza-menor, delicatessen, pato-y-foie."
+          },
+          "min_price": {
+            "type": "number",
+            "description": "Precio mínimo."
+          },
+          "max_price": {
+            "type": "number",
+            "description": "Precio máximo."
+          },
+          "in_stock": {
+            "type": "boolean",
+            "description": "Solo productos disponibles."
+          },
+          "orderby": {
+            "type": "string",
+            "enum": [
+              "relevance",
+              "price_asc",
+              "price_desc",
+              "date"
+            ],
+            "default": "relevance"
+          },
+          "per_page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "default": 5
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "search_site",
+      "description": "Busca contenido publicado en Grupo Jafisa. Úsalo cuando la persona pregunte por algo que podría estar en esta web.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string",
+            "description": "Términos de búsqueda."
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "post",
+              "page",
+              "product"
+            ],
+            "description": "Limitar a un tipo de contenido."
+          },
+          "per_page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "default": 5
+          }
+        },
+        "required": [
+          "q"
+        ]
+      }
+    }
+  ],
+  "host": "grupojafisa.com",
+  "source": "webmcp.com/api/directory.json"
+}

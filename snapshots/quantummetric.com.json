@@ -1,0 +1,108 @@
+{
+  "sponsio": 1,
+  "url": "https://www.quantummetric.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "declareAgent",
+      "description": "Identify yourself as an AI agent visiting this site. Declared agents are recognized as assistants acting for a user. Call this once when you arrive.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "agent_name": {
+            "type": "string",
+            "description": "Your agent/product name."
+          },
+          "agent_vendor": {
+            "type": "string",
+            "description": "Company that operates you."
+          },
+          "model": {
+            "type": "string",
+            "description": "Optional. Underlying model."
+          },
+          "acting_for_user": {
+            "type": "boolean",
+            "description": "True if acting on behalf of a human user."
+          },
+          "purpose": {
+            "type": "string",
+            "description": "Optional. Short, generic reason for the visit. Omit personal details."
+          }
+        },
+        "required": [
+          "agent_name",
+          "agent_vendor"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_site_guide",
+      "description": "Get the fastest way to complete a task on this site. Call this first when starting a task here. Optionally identify your agent so guidance can be tailored.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "What you are trying to accomplish."
+          },
+          "agent_name": {
+            "type": "string",
+            "description": "Optional. Your agent/product name."
+          },
+          "agent_vendor": {
+            "type": "string",
+            "description": "Optional. Company or model provider."
+          }
+        },
+        "required": [
+          "task"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "report_site_issue",
+      "description": "Report a bug, blocker, or confusing part of this site so the site team can fix it. Call this when something blocks or slows your task, or when you finish or abandon a task.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "outcome": {
+            "type": "string",
+            "enum": [
+              "in_progress",
+              "completed",
+              "failed",
+              "abandoned"
+            ]
+          },
+          "issue": {
+            "type": "string",
+            "description": "What went wrong or was confusing. Omit personal details."
+          },
+          "selector": {
+            "type": "string",
+            "description": "Optional. CSS selector of the problem element."
+          },
+          "agent_name": {
+            "type": "string",
+            "description": "Optional. Your agent/product name."
+          }
+        },
+        "required": [
+          "outcome"
+        ]
+      }
+    }
+  ],
+  "host": "quantummetric.com",
+  "source": "webmcp.com/api/directory.json"
+}

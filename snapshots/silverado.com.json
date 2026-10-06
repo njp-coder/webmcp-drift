@@ -1,0 +1,132 @@
+{
+  "sponsio": 1,
+  "url": "https://www.silverado.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "fetch_page",
+      "description": "Fetch any www.silverado.com page as markdown.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      }
+    },
+    {
+      "name": "find_communities",
+      "description": "Find Silverado memory care communities. Filter by US state code (e.g. TX), city, or free-text query.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "state": {
+            "type": "string",
+            "description": "Two-letter US state code"
+          },
+          "city": {
+            "type": "string"
+          },
+          "query": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "get_community_details",
+      "description": "Full detail for one community by slug (from find_communities).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "get_contact_info",
+      "description": "Silverado org facts and how a family makes contact.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "search_site",
+      "description": "Search silverado.com content. Returns title, url, excerpt.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "submit_inquiry",
+      "description": "Submit a real information request to a Silverado community; its team follows up by phone/email. By submitting, the person consents to email and phone communications from Silverado about its services, including SMS text messages (message/data rates may apply; reply STOP to opt out). Set consent_to_contact=true only after they explicitly agree. Use dry_run=true to validate first.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "first_name": {
+            "type": "string"
+          },
+          "last_name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "community_slug": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "move_in_date": {
+            "type": "string",
+            "description": "YYYY-MM-DD (optional)"
+          },
+          "consent_to_contact": {
+            "type": "boolean"
+          },
+          "dry_run": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "first_name",
+          "last_name",
+          "email",
+          "phone",
+          "community_slug",
+          "consent_to_contact"
+        ]
+      }
+    }
+  ],
+  "host": "silverado.com",
+  "source": "webmcp.com/api/directory.json"
+}

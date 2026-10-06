@@ -1,0 +1,140 @@
+{
+  "sponsio": 1,
+  "url": "https://touridat.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "go_to_checkout",
+      "description": "Navigate the user to the checkout page. Only useful if the shopping basket already contains items.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    },
+    {
+      "name": "open_blog_index",
+      "description": "Open the touriDat blog index listing all published articles.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    },
+    {
+      "name": "open_blog_post",
+      "description": "Open a touriDat blog post by slug. Use when the user asks to read a specific article.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "slug"
+        ],
+        "properties": {
+          "slug": {
+            "type": "string",
+            "minLength": 1,
+            "description": "URL slug of the blog post, e.g. 'unentdeckte-wellnessoasen-deutschland'."
+          }
+        }
+      }
+    },
+    {
+      "name": "open_category",
+      "description": "Navigate to a touriDat category listing page (brand, theme, or voucher family). Use when the user asks to browse a category, e.g. 'show all wellness offers' or 'open the gift vouchers category'.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Category path under /kategorien/, without leading slash, e.g. 'deluxe', 'reisethemen/wellness', 'marken/a-rosa'."
+          }
+        }
+      }
+    },
+    {
+      "name": "open_host",
+      "description": "Open the detail page of a touriDat accommodation (Host). Use when the user wants to view a specific hotel or property they've seen in results.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "slug"
+        ],
+        "properties": {
+          "slug": {
+            "type": "string",
+            "minLength": 1,
+            "description": "URL slug of the host, usually the last path segment of a /gastgeber/<slug> URL."
+          }
+        }
+      }
+    },
+    {
+      "name": "open_map",
+      "description": "Open the interactive map view of touriDat accommodations. Use when the user asks to 'see on a map' or 'browse by location'.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Search touriDat for travel vouchers and accommodations. Navigates the user to the search results page for the given query. Use for any request of the form 'find X', 'show me Y'.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "query"
+        ],
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Natural-language search term, e.g. 'Wellness Schwarzwald' or 'Sylt 4 Tage'."
+          },
+          "minNights": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Optional minimum nights."
+          },
+          "maxNights": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Optional maximum nights."
+          },
+          "maxPrice": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "description": "Optional upper price bound in EUR."
+          }
+        }
+      }
+    },
+    {
+      "name": "view_favorites",
+      "description": "Open the user's saved favorites list. Requires the user to be logged in; otherwise they'll be redirected to the login page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    }
+  ],
+  "host": "touridat.com",
+  "source": "webmcp.com/api/directory.json"
+}

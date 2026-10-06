@@ -1,0 +1,186 @@
+{
+  "sponsio": 1,
+  "url": "https://www.challengerschool.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "find-campus",
+      "description": "Find Challenger School campuses by location, state, and/or grade. Provide at least one of: a ZIP code; a city; a state; or one or more grades — any one works on its own. A ZIP or city does a nearest-campus search (add a state to disambiguate a city); a state on its own lists every campus in that state; grades narrow results to campuses that offer them (all by default, or any via grade_match), and can be used alone to list every campus offering them. Returns campuses with the numeric id needed to schedule a tour.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "zip": {
+            "type": "string",
+            "pattern": "^\\d{5}(-\\d{4})?$",
+            "description": "US ZIP code, e.g. '84070' (5 digits, or ZIP+4 like '84070-1234'). Used as the search location; takes precedence over city/state if both are given."
+          },
+          "city": {
+            "type": "string",
+            "description": "City name, e.g. 'Sandy'. Finds the nearest campuses to that city; works alone (add a state only to disambiguate)."
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "UT",
+              "ID",
+              "NV",
+              "CA",
+              "TX"
+            ],
+            "description": "Two-letter state (UT, ID, NV, CA, TX — where Challenger operates). Use alone to list every campus in that state, or with a city to disambiguate the location."
+          },
+          "grade": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "preschool",
+                "kindergarten",
+                "first-grade",
+                "second-grade",
+                "third-grade",
+                "fourth-grade",
+                "fifth-grade",
+                "sixth-grade",
+                "seventh-grade",
+                "eighth-grade"
+              ]
+            },
+            "description": "One or more grade slugs. Only return campuses offering them (see grade_match). Combine with a location, or use alone to list every campus offering the grade(s)."
+          },
+          "grade_match": {
+            "type": "string",
+            "enum": [
+              "all",
+              "any"
+            ],
+            "description": "How to match multiple grades. 'all' (default) requires the campus to offer every listed grade; 'any' matches a campus that offers at least one."
+          }
+        }
+      }
+    },
+    {
+      "name": "schedule-tour",
+      "description": "Schedule (request) a tour at a Challenger School campus. Submits a real tour request to the campus. Call find-campus first to get the campus id.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "campus": {
+            "type": "number",
+            "description": "Campus id from find-campus"
+          },
+          "first_name": {
+            "type": "string",
+            "description": "Parent/guardian first name"
+          },
+          "last_name": {
+            "type": "string",
+            "description": "Parent/guardian last name"
+          },
+          "email_address": {
+            "type": "string",
+            "description": "Parent/guardian email"
+          },
+          "phone_number": {
+            "type": "string",
+            "description": "US phone, e.g. (801) 123-4567"
+          },
+          "preferred_contact_method": {
+            "type": "string",
+            "enum": [
+              "phone",
+              "email"
+            ]
+          },
+          "preferred_time_of_tour": {
+            "type": "string",
+            "enum": [
+              "Monday",
+              "Tuesday",
+              "Wednesday",
+              "Thursday",
+              "Friday"
+            ],
+            "description": "Preferred weekday"
+          },
+          "time_of_day": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "Morning",
+                "Afternoon"
+              ]
+            },
+            "description": "Preferred time(s) of day"
+          },
+          "program_of_interest": {
+            "type": "string",
+            "enum": [
+              "Preschool",
+              "Kindergarten",
+              "Elementary",
+              "Middle School",
+              "General"
+            ]
+          },
+          "how_did_you_hear": {
+            "type": "string",
+            "enum": [
+              "Billboards/Other Signs",
+              "Campus Signage",
+              "Direct Mail",
+              "Event Booth/Presentation",
+              "Magazine",
+              "Newspaper",
+              "Online Advertising",
+              "Programs/Playbills",
+              "Radio/Audio Source",
+              "Referral",
+              "Returning Customer",
+              "Television",
+              "Web Search"
+            ]
+          },
+          "children": {
+            "type": "array",
+            "description": "Children to enroll/tour for",
+            "items": {
+              "type": "object",
+              "properties": {
+                "first_name": {
+                  "type": "string"
+                },
+                "last_name": {
+                  "type": "string"
+                },
+                "age": {
+                  "type": "number",
+                  "minimum": 2,
+                  "maximum": 14
+                },
+                "grade": {
+                  "type": "string",
+                  "description": "Grade slug, e.g. 'kindergarten', 'first-grade'"
+                }
+              }
+            }
+          }
+        },
+        "required": [
+          "campus",
+          "first_name",
+          "last_name",
+          "email_address",
+          "phone_number",
+          "preferred_contact_method",
+          "how_did_you_hear"
+        ]
+      }
+    }
+  ],
+  "host": "challengerschool.com",
+  "source": "webmcp.com/api/directory.json"
+}

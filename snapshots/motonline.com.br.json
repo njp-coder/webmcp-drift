@@ -1,0 +1,200 @@
+{
+  "sponsio": 1,
+  "url": "https://motonline.com.br/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "lookup_fipe_price",
+      "description": "Consulta o preço de uma moto na tabela FIPE, a referência de preço de veículos usada no Brasil. Informe marca e modelo; o ano é opcional e, sem ele, responde o ano mais recente disponível. Devolve o valor, o mês/ano da tabela de onde ele saiu, o código FIPE e os outros anos que podem ser consultados. É preço de referência, não preço de anúncio.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "brand": {
+            "type": "string",
+            "description": "Marca, como \"Honda\"."
+          },
+          "model": {
+            "type": "string",
+            "description": "Modelo, como \"CB 500F\"."
+          },
+          "year": {
+            "type": "integer",
+            "description": "Ano do modelo. Sem ele, usa o mais recente."
+          }
+        },
+        "required": [
+          "brand",
+          "model"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "search_articles",
+      "description": "Busca artigos e notícias sobre motos publicados no Motonline: lançamentos, comparativos e matérias. Devolve título, resumo, data, editoria e link. A busca casa o termo no TÍTULO do artigo, não no corpo — termo muito específico pode não achar um artigo que fala do assunto sem citá-lo no título.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string",
+            "minLength": 2,
+            "description": "Termo a buscar nos títulos."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "description": "Quantos resultados devolver. Padrão 10, máximo 20."
+          }
+        },
+        "required": [
+          "q"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "search_dealers",
+      "description": "Busca revendas de motos com loja própria no Motonline, por estado e cidade. Devolve o nome da revenda, onde fica e o endereço da loja dela. Lista apenas revendas premium, que são as que têm vitrine publicada; vendedores particulares não aparecem aqui — para achar as motos deles use search_motorcycles_for_sale.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "state": {
+            "type": "string",
+            "description": "Estado: sigla (\"MG\") ou nome (\"Minas Gerais\")."
+          },
+          "city": {
+            "type": "string",
+            "description": "Cidade. Informe junto com o estado."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "description": "Quantos resultados devolver. Padrão 10, máximo 20."
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "search_motorcycle_guides",
+      "description": "Busca no guia de motos do Motonline: as fichas de modelo, com marca, estilo e os anos em que cada modelo foi fabricado. Serve para descobrir quais modelos existem (\"que motos a Honda faz?\") e para chegar à página de cada um. Não diz quem está vendendo nem por quanto — para isso use search_motorcycles_for_sale ou lookup_fipe_price.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string",
+            "description": "Termo livre: casa nome do modelo ou nome da marca."
+          },
+          "brand": {
+            "type": "string",
+            "description": "Restringe a uma marca, como \"Honda\"."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "description": "Quantos resultados devolver. Padrão 10, máximo 20."
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "search_motorcycles_for_sale",
+      "description": "Busca motos à venda anunciadas no Motonline, o classificado brasileiro de motocicletas. Filtra por marca, modelo, estado, cidade, faixa de preço em reais, ano de fabricação e quilometragem. Devolve cada anúncio com preço, ano, km, localização e link, mais o total de anúncios que casam a busca e a URL da listagem equivalente no site. Só motos: o site não anuncia carros.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "brand": {
+            "type": "string",
+            "description": "Marca, como \"Honda\", \"Yamaha\" ou \"Royal Enfield\"."
+          },
+          "model": {
+            "type": "string",
+            "description": "Modelo, como \"CB 500F\", \"Fazer 250\" ou \"Biz\"."
+          },
+          "state": {
+            "type": "string",
+            "description": "Estado: sigla (\"SP\") ou nome (\"São Paulo\")."
+          },
+          "city": {
+            "type": "string",
+            "description": "Cidade. Informe junto com o estado: há cidades de mesmo nome em estados diferentes."
+          },
+          "price_min": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Preço mínimo em reais."
+          },
+          "price_max": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Preço máximo em reais."
+          },
+          "year_min": {
+            "type": "integer",
+            "description": "Ano de fabricação mínimo."
+          },
+          "year_max": {
+            "type": "integer",
+            "description": "Ano de fabricação máximo."
+          },
+          "max_km": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Quilometragem máxima rodada."
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "mais-recentes",
+              "menor-valor",
+              "maior-valor",
+              "mais-relevantes"
+            ],
+            "description": "Ordenação dos resultados. Padrão: mais-recentes."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "description": "Quantos resultados devolver. Padrão 10, máximo 20."
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    }
+  ],
+  "host": "motonline.com.br",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,112 @@
+{
+  "sponsio": 1,
+  "url": "https://coindex.app/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "calculate_melt_value",
+      "description": "Calculate precious-metal melt value at the current spot price, either for a Coindex catalog product id (uses its fine metal weight) or for a metal and a fine troy-ounce weight. Melt is metal value only; coins and bars normally trade above it.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "maxLength": 64,
+            "description": "Catalog id, e.g. \"ASEA\". Use instead of metal + troyOunces."
+          },
+          "metal": {
+            "type": "string",
+            "enum": [
+              "gold",
+              "silver",
+              "platinum",
+              "palladium"
+            ]
+          },
+          "troyOunces": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "maximum": 100000,
+            "description": "Fine (pure) troy ounces per item."
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100000,
+            "description": "Number of items (default 1)."
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_bullion_ask_reference",
+      "description": "For one canonical bullion product id (from search_bullion_catalog), return what Reddit sellers have been ASKING over melt: the median dollar premium across distinct sellers in a trailing 30-day window, the seller count, as-of date, current spot and melt, sample source posts, and the Coindex page and methodology URLs. When evidence is too thin or inconsistent the figure is withheld and the reason is returned instead. Asking prices, not sold prices.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64,
+            "description": "Canonical catalog id, e.g. \"ASEA\"."
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "search_bullion_catalog",
+      "description": "Find canonical bullion products (coins, rounds, bars) in the Coindex catalog by name, alias, metal or weight, e.g. \"silver eagle\", \"1/10 oz gold eagle\", \"maple leaf\", \"10 oz silver bar\". Returns canonical ids to pass to get_bullion_ask_reference or calculate_melt_value, and the Coindex page URL where one is published. Identity only: no prices.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "description": "Product name, alias, or weight words."
+          },
+          "metal": {
+            "type": "string",
+            "enum": [
+              "gold",
+              "silver",
+              "platinum",
+              "palladium"
+            ],
+            "description": "Optional: restrict to one metal."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "description": "Maximum results (default 5)."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "coindex.app",
+  "source": "webmcp.com/api/directory.json"
+}

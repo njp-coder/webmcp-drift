@@ -1,0 +1,263 @@
+{
+  "sponsio": 1,
+  "url": "https://yogobe.com/en/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "yogobe_browse_video_library",
+      "description": "Opens the video library with an optional public search, genre, and video-or-audio filter.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "maxLength": 200,
+            "description": "Optional title, instructor, or topic search."
+          },
+          "genre": {
+            "type": "string",
+            "enum": [
+              "all",
+              "yoga",
+              "meditation",
+              "workout",
+              "breathing",
+              "grow"
+            ],
+            "description": "Optional library section. Defaults to all."
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "video",
+              "audio"
+            ],
+            "description": "Optional media-kind filter."
+          },
+          "lang": {
+            "type": "string",
+            "enum": [
+              "se",
+              "en",
+              "fi",
+              "no"
+            ],
+            "description": "Yogobe locale. Omit it to keep the language of the current page."
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "consequential": false,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "yogobe_get_page_context",
+      "description": "Returns the current Yogobe path, language, page type, and document title without changing anything.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "yogobe_open_page",
+      "description": "Navigates visibly to a top-level Yogobe page in the requested or current language.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "string",
+            "enum": [
+              "home",
+              "video_library",
+              "live_classes",
+              "courses",
+              "programs",
+              "challenges",
+              "pricing",
+              "search",
+              "contact"
+            ],
+            "description": "The Yogobe destination to open."
+          },
+          "lang": {
+            "type": "string",
+            "enum": [
+              "se",
+              "en",
+              "fi",
+              "no"
+            ],
+            "description": "Yogobe locale. Omit it to keep the language of the current page."
+          }
+        },
+        "required": [
+          "page"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "consequential": false,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "yogobe_open_program",
+      "description": "Opens a public Yogobe course, program, or challenge by slug. Access and purchase decisions remain in the normal page UI.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "enum": [
+              "courses",
+              "programs",
+              "challenges"
+            ],
+            "description": "The type of guided content to open."
+          },
+          "slug": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256,
+            "pattern": "^[a-zA-Z0-9_-]+$",
+            "description": "The public course, program, or challenge slug."
+          },
+          "lang": {
+            "type": "string",
+            "enum": [
+              "se",
+              "en",
+              "fi",
+              "no"
+            ],
+            "description": "Yogobe locale. Omit it to keep the language of the current page."
+          }
+        },
+        "required": [
+          "category",
+          "slug"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "consequential": false,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "yogobe_open_video",
+      "description": "Opens a Yogobe video by its public identifier. Playback and access remain controlled by the normal page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "videoId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[a-zA-Z0-9_-]+$",
+            "description": "The public Yogobe video identifier."
+          },
+          "lang": {
+            "type": "string",
+            "enum": [
+              "se",
+              "en",
+              "fi",
+              "no"
+            ],
+            "description": "Yogobe locale. Omit it to keep the language of the current page."
+          }
+        },
+        "required": [
+          "videoId"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "consequential": false,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "yogobe_search",
+      "description": "Searches Yogobe and visibly opens the results page. It does not alter the user account.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "description": "Words to search for exactly as provided by the user."
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "all",
+              "videos",
+              "live",
+              "courses",
+              "resources",
+              "blog"
+            ],
+            "description": "Optional result category. Defaults to all."
+          },
+          "languages": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "se",
+                "en",
+                "fi",
+                "no"
+              ]
+            },
+            "maxItems": 4,
+            "uniqueItems": true,
+            "description": "Optional content-language filter."
+          },
+          "lang": {
+            "type": "string",
+            "enum": [
+              "se",
+              "en",
+              "fi",
+              "no"
+            ],
+            "description": "Yogobe locale. Omit it to keep the language of the current page."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "consequential": false,
+        "untrustedContent": false
+      }
+    }
+  ],
+  "host": "yogobe.com",
+  "source": "webmcp.com/api/directory.json"
+}

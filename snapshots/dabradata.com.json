@@ -1,0 +1,76 @@
+{
+  "sponsio": 1,
+  "url": "https://dabradata.com/#n",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "descrever_consulta",
+      "description": "Mostra parâmetros, formato de resposta, preço e exemplo de uma consulta da Dabra, a partir do slug. Gratuito e sem credencial.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Slug da consulta, como retornado por listar_consultas. Ex.: consulta-cnpj-receita."
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "executar_consulta",
+      "description": "Executa uma consulta paga da Dabra. Funciona em duas fases: a primeira chamada devolve o custo e NÃO cobra nada; para cobrar, chame de novo com confirmar=true e a api_key da conta. Confirme o custo com o usuário antes de confirmar. A chave é usada apenas nesta chamada, vai direto para app.dabradata.com e não é armazenada.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Slug da consulta. Ex.: consulta-cnpj-receita."
+          },
+          "parametros": {
+            "type": "object",
+            "description": "Parâmetros da consulta, como descritos por descrever_consulta. Ex.: {\"cnpj\": \"11222333000181\"}.",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "confirmar": {
+            "type": "boolean",
+            "description": "true executa e cobra. Omitido ou false apenas informa o custo."
+          },
+          "api_key": {
+            "type": "string",
+            "description": "Chave de API da conta (header X-API-Key). Criada pelo titular em https://app.dabradata.com/dashboard/keys. Obrigatória quando confirmar=true."
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "listar_consultas",
+      "description": "Lista as consultas de dados brasileiros disponíveis na Dabra (CNPJ, CPF, compliance, certidões, processos judiciais, sanções), com preço em reais. Gratuito e sem credencial. Use para descobrir qual consulta serve antes de executar qualquer coisa paga.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "busca": {
+            "type": "string",
+            "description": "Texto livre para filtrar por nome, descrição ou slug. Ex.: \"cnpj\", \"certidão\"."
+          },
+          "categoria": {
+            "type": "string",
+            "description": "Filtra por categoria. Ex.: pj, pf, compliance, fiscal, certidoes, judicial, tribunais."
+          }
+        }
+      }
+    }
+  ],
+  "host": "dabradata.com",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,58 @@
+{
+  "sponsio": 1,
+  "url": "https://usesuperflow.ai/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "superflow_list_pages",
+      "description": "Return the site's own index of its pages, grouped and annotated - the llms.txt document. Use it to find the path for a topic before calling superflow_read_page. Takes no arguments.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "superflow_read_current_page",
+      "description": "Return the page the visitor is looking at right now as Markdown, written for a machine rather than scraped from the rendered DOM. Use this instead of reading the page's HTML: it is the same content without the navigation, footer, and markup noise. Takes no arguments - it always reads the current URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "superflow_read_page",
+      "description": "Return any page of usesuperflow.ai as Markdown, given its path. Use this to follow a link without navigating away from what the visitor is looking at - pricing, a comparison, a feature page, a blog post. Call superflow_list_pages first if you do not already know the path.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Site-relative path, for example \"/pricing\" or \"/comparisons/superflow-vs-bugherd\". Use \"/\" for the homepage. Paths only: this tool does not fetch other sites."
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "usesuperflow.ai",
+  "source": "webmcp.com/api/directory.json"
+}

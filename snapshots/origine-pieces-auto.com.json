@@ -1,0 +1,144 @@
+{
+  "sponsio": 1,
+  "url": "https://www.origine-pieces-auto.com/fr/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "compare_prices",
+      "description": "Price comparison for one part: every merchant offer (price, stock, link), lowest and highest price. This site is a comparator: it does not sell parts itself.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "integer",
+            "description": "Part id (the `id` from search_parts)."
+          },
+          "url": {
+            "type": "string",
+            "description": "Or the part's page URL on this site."
+          },
+          "lang": {
+            "type": "string",
+            "enum": [
+              "fr",
+              "en",
+              "it"
+            ],
+            "description": "Site language for labels and URLs (defaults to the current page's language)."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "find_parts_for_vehicle",
+      "description": "Lists catalog parts compatible with a vehicle. Ids come from list_vehicle_options; the more levels given (brand, family, model, engine), the more precise the result.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "brand": {
+            "type": "integer"
+          },
+          "family": {
+            "type": "integer"
+          },
+          "model": {
+            "type": "integer"
+          },
+          "engine": {
+            "type": "integer"
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Results page (50 parts per page); see `has_more`."
+          },
+          "lang": {
+            "type": "string",
+            "enum": [
+              "fr",
+              "en",
+              "it"
+            ],
+            "description": "Site language for labels and URLs (defaults to the current page's language)."
+          }
+        },
+        "required": [
+          "brand"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "list_vehicle_options",
+      "description": "Walks the vehicle selector one level at a time: brand -> family -> model -> engine. Call with no vehicle fields to get the brands, then pass the chosen ids back to get the next level's options. `next_level` tells which level to choose next (null once the engine is chosen).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "brand": {
+            "type": "integer",
+            "description": "Brand id (from a previous call)."
+          },
+          "family": {
+            "type": "integer",
+            "description": "Family id, e.g. CLIO."
+          },
+          "model": {
+            "type": "integer",
+            "description": "Model id, e.g. CLIO III."
+          },
+          "lang": {
+            "type": "string",
+            "enum": [
+              "fr",
+              "en",
+              "it"
+            ],
+            "description": "Site language for labels and URLs (defaults to the current page's language)."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "search_parts",
+      "description": "Full-text search of the auto-parts catalog (part name, OEM/manufacturer reference, EAN, brand). Returns the best matching parts, plus matching categories and part brands.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search terms, e.g. 'plaquette de frein clio 3' or a part reference."
+          },
+          "lang": {
+            "type": "string",
+            "enum": [
+              "fr",
+              "en",
+              "it"
+            ],
+            "description": "Site language for labels and URLs (defaults to the current page's language)."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "origine-pieces-auto.com",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,135 @@
+{
+  "sponsio": 1,
+  "url": "https://www.withlantern.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "lantern_get_template",
+      "description": "Read one public gallery template's brief, required inputs, and outputs. This does not change the page or execute the template.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "templateId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "description": "An ID returned by lantern_list_templates."
+          }
+        },
+        "required": [
+          "templateId"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false
+      }
+    },
+    {
+      "name": "lantern_list_templates",
+      "description": "Search the public templates currently available in the homepage gallery. Returns a paginated list without reading a user's brief or starting a plan.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "maxLength": 200,
+            "description": "Match all words across template titles, descriptions, inputs, and outputs."
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "all",
+              "people-moves",
+              "buying-intent",
+              "tech-changes",
+              "outreach",
+              "research"
+            ],
+            "default": "all"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 6,
+            "default": 3
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 10000,
+            "default": 0
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false
+      }
+    },
+    {
+      "name": "lantern_prepare_brief",
+      "description": "Fill and focus the visible homepage brief for the user to review. Does not submit the form or start a plan. The user must click Build my plan. Existing different text requires explicit replacement permission.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "brief": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 10000
+          },
+          "replaceCurrent": {
+            "type": "boolean",
+            "default": false,
+            "description": "Set true only when the user has agreed to replace their existing brief."
+          }
+        },
+        "required": [
+          "brief"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "consequential": false
+      }
+    },
+    {
+      "name": "lantern_select_template",
+      "description": "Fill and focus the homepage brief with an available template. Does not execute the template or start a plan. The user reviews the brief and clicks Build my plan. Ask before replacing existing different text.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "templateId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "description": "An ID returned by lantern_list_templates."
+          },
+          "replaceCurrent": {
+            "type": "boolean",
+            "default": false,
+            "description": "Set true only when the user has agreed to replace their existing brief."
+          }
+        },
+        "required": [
+          "templateId"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "consequential": false
+      }
+    }
+  ],
+  "host": "withlantern.com",
+  "source": "webmcp.com/api/directory.json"
+}

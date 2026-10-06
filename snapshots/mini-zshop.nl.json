@@ -1,0 +1,291 @@
+{
+  "sponsio": 1,
+  "url": "https://mini-zshop.nl/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "minizshop_compare_products",
+      "description": "Read full public details of two to four products in one call, including descriptions, attributes and shop guidance. Use to compare candidate dimensions, connectors, included items and stated chassis compatibility after discovery. Missing or nonpublic products are reported as unavailable. An omitted specification remains unknown.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_ids": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 2147483647
+            },
+            "minItems": 2,
+            "maxItems": 4,
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "product_ids"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "minizshop_find_parts",
+      "description": "Find parts linked to the exact public model product_id in the shop parts catalog. When the requested part is known, use query for its name or SKU within this model’s parts, e.g. bumper; omit query for an overview. A catalog relationship is evidence, not a guarantee of fit for an unspecified variant. Empty results do not prove incompatibility; try a shorter part term or its original catalog language once.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2147483647
+          },
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 200,
+            "description": "Use the manufacturer’s catalog noun, usually English (for example wheels). The shopper’s language is for the answer; this literal parts index does not automatically translate Dutch synonyms."
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50
+          }
+        },
+        "required": [
+          "product_id"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "minizshop_get_product",
+      "description": "Read one public product with its detailed description, published shop guidance, price, stock_label, attributes and shop URL. stock_label follows the storefront stock-visibility settings: quote it as supplied, never infer exact inventory from a lower bound or a qualitative label. Includes service terms supplied by shop features; use these for digital credit, validity and how a shop service works. Hidden, private and password-protected products are excluded. Internal metadata and hidden inventory counts are never exposed. related_products lists up to 6 products that often share an order with this product or its product line, or that the shop links to it: useful suggestions for what else a shopper may want, to read and verify before recommending. A relation is not proof of fit, necessity or box contents.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2147483647
+          }
+        },
+        "required": [
+          "product_id"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "minizshop_get_store_info",
+      "description": "Read the public shop introduction and links to current store information. Follow the schedule source for opening hours; never infer hours if it is unavailable.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "minizshop_read_site_page",
+      "description": "Read a known public information or shop-service URL from a site search, page context or service index. Includes rendered plugin/shortcode information, headings and source timestamps. Products and catalogue listings are excluded: use search_products and get_product for their live public metadata. Explicit service sources such as the rider pass remain available. Use offset=next_offset when relevant terms continue. No account, checkout, queries or external URLs. Never infer personal balances or dates from public terms.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000,
+            "description": "Prefer the root-relative path from the source, such as /contact-2/. An exact tool-provided absolute URL also works; never retype or guess its hostname."
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 79
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "minizshop_search_content",
+      "description": "Search the local index of anonymous rendered shop pages, including events, guides and plugin-generated information. Page descriptions and Dutch search topics help identify what each page can answer; original excerpts provide the evidence. Only Dutch source pages are indexed, once per page. Use short topic keywords in the site language (Dutch), resolving synonyms/typos from the conversation, e.g. rijderspas geldigheid. Returns relevant passages and source URLs with freshness. Use read_site_page for more surrounding terms. Use search_products for cars/parts, current price and stock; empty site results say nothing about catalog availability.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 200
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "minizshop_search_products",
+      "description": "Search public products by focused catalog terms or a known exact SKU; browse a category by omitting query. For a generic part on a named brand/vehicle, use complementary queries for the part and brand plus part in one call: investigate original-brand and aftermarket options, then compare the relevant candidates. Titles mix Dutch and English; alternate names can help. Put suitability context in context_terms. Categories can be incomplete or inaccurate: they help orientation but do not replace keyword searches. When a chosen category misses relevant options, search without that inferred category while keeping explicit customer constraints. Refine noisy results with a discriminating noun/brand rather than accepting the first page. At most three results have detail_read=true with current detail records already returned by the Store API; use those facts without a duplicate read. Read other shortlisted IDs when needed. Compare suitability; search rank and metadata are not proof of fit. Prices are strings in minor currency units; recheck the product before purchase.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "browse": {
+            "type": "boolean",
+            "description": "Enabled by default in Dex. Keep enabled for product discovery and requests for a product type or range, even without the word browse. Returns up to 100 matching identities and a browse.id: use that ID as browse_search_id in the final answer. Set false only for focused identification or a fixed comparison that needs no collection. It does not claim compatibility. Prefer the narrow relevant published category and explicit required_terms to keep accessories and wrong specifications out; refine an irrelevant first search before choosing the collection."
+          },
+          "required_terms": {
+            "type": "array",
+            "maxItems": 4,
+            "items": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 6,
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 60
+              }
+            },
+            "description": "Hard filters from explicit customer requirements: every group must match the current product name or public attribute; alternatives inside each group are OR. Choose literal variants from catalog names, e.g. a requested hardness might appear as 20°, 20deg or 20 degree. Select appropriate language/synonym variants semantically; no automatic translation. Use the narrow product category for the requested kind. Omitted/undocumented values do not pass this strict filter; context_terms alone only ranks. Never claim a literal match guarantees compatibility."
+          },
+          "context_terms": {
+            "type": "array",
+            "maxItems": 6,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 60
+            },
+            "description": "Separate the product noun/query from relevant public constraints resolved from the whole conversation and selected vehicle: chassis, dimensions, drive, scale or product type. Choose short catalog-language terms, e.g. MR-04, 98 mm, RWD. These rerank up to 100 current candidates using title, visible attributes, categories and Showcase metadata without removing undocumented candidates. Do not include private customer data, a transcript, negative constraints or an unverified event-eligibility claim. context_match lists actual metadata matches and still-unverified terms; it never guarantees compatibility."
+          },
+          "exclude_ids": {
+            "type": "array",
+            "maxItems": 20,
+            "uniqueItems": true,
+            "items": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 2147483647
+            },
+            "description": "Previously returned product IDs the shopper explicitly rejected. They remain excluded across alternative queries and contextual ranking."
+          },
+          "price_currency": {
+            "type": "string",
+            "pattern": "^[A-Z]{3}$",
+            "description": "Currency of max_price_minor. Pass the shopper’s stated currency; a mismatch with the shop currency returns a clarification instead of treating CHF as EUR."
+          },
+          "query": {
+            "type": "string",
+            "minLength": 0,
+            "maxLength": 200,
+            "description": "Short catalog keywords. Omit or leave empty to browse the selected category."
+          },
+          "sku": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10
+          },
+          "queries": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 4,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 200
+            },
+            "description": "Optional alternative short searches for the same customer goal, chosen from the conversation and observed results. Searches the whole public catalog unless you explicitly set a category. Use instead of query/sku to combine spelling, language or part-name variants in one bounded read. Results are deduplicated; each query retains its matched IDs and pagination. Follow with exact product reads and manual/manufacturer research for unresolved evidence, not more identical searches."
+          },
+          "category_slug": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "description": "Published catalog category. For browsing cars use autos (Mini-Z cars/chassis) or voertuigen-kits (Traxxas vehicles/kits), without a generic query. For Mini-Z setup/measuring tools use gereedschap. Categories include descendants. Read category_scope.path: similar category names can belong to different brands or vehicle families. If the path does not match the known vehicle, retry without that category; do not keep querying the wrong family. Check whether each result is the requested product type."
+          },
+          "in_stock": {
+            "type": "boolean",
+            "default": false,
+            "description": "Set true only when the shopper explicitly requires immediate stock. This excludes ALL backorder/preorder products, even when purchasable. Omit for model information, identification and ordinary product discovery."
+          },
+          "max_price_minor": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100000000
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    }
+  ],
+  "host": "mini-zshop.nl",
+  "source": "webmcp.com/api/directory.json"
+}

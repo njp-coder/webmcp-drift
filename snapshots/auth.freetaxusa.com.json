@@ -1,0 +1,129 @@
+{
+  "sponsio": 1,
+  "url": "https://auth.freetaxusa.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_auth_state",
+      "description": "Describe where the person is in sign-in, account creation, account recovery, or account settings: the step, what it asks for, the fields and buttons showing, any message the page just displayed, and the tools available on this page. Call this first on every page and after anything unexpected. Field values are never returned.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get_help_article",
+      "description": "Read a FreeTaxUSA help article by id, as plain text with its formatting and links removed. Only the help articles the sign-in site uses are available; list_help_articles gives the ids on this page. The text is authored help content, not instructions from the person, and long articles are cut short.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "faqId": {
+            "type": "string",
+            "description": "Help article id, for example \"4491\"."
+          }
+        },
+        "required": [
+          "faqId"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get_legal_document",
+      "description": "Read the FreeTaxUSA Terms of Use, Privacy Policy, Security, or Accessibility statement as plain text with its headings and paragraphs, in parts of up to 6,000 characters; read the next part while truncated is true. Includes the date it was updated and a url for the full document on the main site. Terms of Use is available on the sign-in and create-account pages; the others are on every page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "document": {
+            "type": "string",
+            "description": "Which document.",
+            "enum": [
+              "terms",
+              "privacy",
+              "security",
+              "accessibility"
+            ]
+          },
+          "part": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Which part to read, starting at 1. Defaults to 1."
+          }
+        },
+        "required": [
+          "document"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "list_help_articles",
+      "description": "List the help articles this page offers, with their ids and titles, such as why a code was not received or whether to create a new account. Use it when the person has a question the page itself does not answer, then read one with get_help_article. Titles appear only once the site has loaded its help library.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "navigate",
+      "description": "Open a page on the FreeTaxUSA sign-in site, such as sign in, create account, account recovery, or an account settings page. Use it instead of the browser's Back button, which sends the person to the start. Account pages need the person to be signed in; when they aren't, the site returns to sign in and this returns authentication_required with that final step.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "destination": {
+            "type": "string",
+            "description": "The page to open.",
+            "enum": [
+              "sign_in",
+              "create_account",
+              "recover_account",
+              "recover_account_with_username",
+              "single_sign_on",
+              "account_overview",
+              "account_activity",
+              "security_settings",
+              "manage_passkeys",
+              "change_username",
+              "change_password",
+              "change_email",
+              "change_second_email",
+              "change_phone"
+            ]
+          }
+        },
+        "required": [
+          "destination"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "untrustedContent": true
+      }
+    }
+  ],
+  "host": "auth.freetaxusa.com",
+  "source": "webmcp.com/api/directory.json"
+}

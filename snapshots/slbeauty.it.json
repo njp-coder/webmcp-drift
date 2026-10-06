@@ -1,0 +1,142 @@
+{
+  "sponsio": 1,
+  "url": "https://www.slbeauty.it/estetica",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_contact_info",
+      "description": "Recapiti di SL Beauty & Hair (numero verde, WhatsApp, email, orari, sede) e come funziona l'accesso: e' un grossista, per vedere i prezzi e ordinare serve un account approvato.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_product",
+      "description": "Scheda completa di un prodotto: descrizione, categoria, disponibilita' e link. Si indica l'id oppure il codice articolo (reference) stampato sulla confezione e usato nei listini SL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Identificativo numerico del prodotto."
+          },
+          "reference": {
+            "type": "string",
+            "description": "Codice articolo SL, es. '0202'."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_shipping_info",
+      "description": "Costi di spedizione, soglia per la consegna gratuita, eccezione per le isole e tempi di consegna del corriere.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "list_categories",
+      "description": "Le categorie del catalogo con le loro sottocategorie e i link: utile per capire cosa tratta il negozio (estetica, parrucchieri, nails, make-up, monouso, attrezzature) e da dove partire.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "list_offers",
+      "description": "Le offerte attive del tipo \"compra N, ricevi un omaggio\" (2+1, 3+1, 6+6...): l'omaggio si aggiunge da solo al carrello e l'offerta si ripete a ogni multiplo della soglia. Restituisce prodotto, quantita' da comprare e quantita' in omaggio.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "max_results": {
+            "type": "integer",
+            "description": "Quante offerte al massimo (1-50). Predefinito 20.",
+            "minimum": 1,
+            "maximum": 50
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "navigate_to_section",
+      "description": "Porta il browser su una sezione principale del negozio. Da usare dopo aver individuato cio' che serve, per mostrarlo davvero alla persona.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "section": {
+            "type": "string",
+            "description": "Sezione da aprire.",
+            "enum": [
+              "home",
+              "offerte",
+              "estetica",
+              "parrucchieri",
+              "spedizioni",
+              "pagamenti",
+              "contatti",
+              "accedi",
+              "carrello"
+            ]
+          }
+        },
+        "required": [
+          "section"
+        ]
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Cerca nel catalogo di SL Beauty & Hair, grossista di forniture professionali per centri estetici e parrucchieri. Si puo' cercare per nome prodotto o per codice articolo. Restituisce nome, codice e link della scheda. I prezzi sono riservati ai clienti approvati: se chi naviga non ha un account abilitato, il prezzo torna vuoto.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Nome del prodotto o codice articolo, es. 'crema mani', 'smalto', '0202'."
+          },
+          "max_results": {
+            "type": "integer",
+            "description": "Quanti risultati al massimo (1-20). Predefinito 8.",
+            "minimum": 1,
+            "maximum": 20
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "slbeauty.it",
+  "source": "webmcp.com/api/directory.json"
+}

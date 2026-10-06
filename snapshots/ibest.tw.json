@@ -1,0 +1,142 @@
+{
+  "sponsio": 1,
+  "url": "https://www.ibest.tw/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_work_case",
+      "description": "依 slug 取得單一網頁設計案例詳情，包含標題、摘要、描述、產業／方案／風格標籤、官網連結與詳細頁 URL。slug 可從 list_work_cases 的回傳取得。",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "slug"
+        ],
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "案例 slug（必填），例如 chunshuitang"
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "list_work_cases",
+      "description": "回傳 ibest 的網頁設計作品案例清單，包含產業、製作方案、視覺風格、色調、產業細項、標題、摘要與詳細頁連結。建議先呼叫 list_work_filters 取得可用選項，再以此工具篩選。可依產業／方案／風格／色調／產業細項／關鍵字篩選，並以 limit 限制筆數。",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "industry": {
+            "type": "string",
+            "description": "產業類型關鍵字或 slug（選填）。例：餐飲、飯店、restaurant、hotel、company、shopping-cart、organization"
+          },
+          "plan": {
+            "type": "string",
+            "description": "製作方案關鍵字或 slug（選填）。例：頂級客製、風格客製、拼圖、標速、customized、standard、ileo-puzzleprojet、ileo-speedprojet"
+          },
+          "style": {
+            "type": "string",
+            "description": "視覺風格關鍵字或 slug（選填）。例：極簡、現代、中式、minimalist、modern、chinese"
+          },
+          "tone": {
+            "type": "string",
+            "description": "整體色調關鍵字或 slug（選填）。例：深色、淺色、dark、light"
+          },
+          "sub_industry": {
+            "type": "string",
+            "description": "產業細項關鍵字或 slug（選填）。例：星級飯店、飲料店、上市櫃公司、star-hotel"
+          },
+          "keyword": {
+            "type": "string",
+            "description": "關鍵字，比對標題與摘要（選填）"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "description": "最多回傳筆數（選填，預設 10，上限 50）"
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "list_work_filters",
+      "description": "回傳 ibest 作品案例可用的篩選選項（產業類型、製作方案、視覺風格、整體色調、產業細項），供後續呼叫 list_work_cases 時使用正確的 title 或 slug。",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "submit_contact_inquiry",
+      "description": "幫使用者把網頁設計/SEO 諮詢內容填入 ibest 官網的聯絡表單。工具只負責填入欄位，實際送出需使用者按「確認送出」並通過人機驗證。",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "_token": {
+            "type": "string"
+          },
+          "fromtw": {
+            "type": "string"
+          },
+          "data_view_logs": {
+            "type": "string"
+          },
+          "data_category_title[]": {
+            "type": "boolean"
+          },
+          "data_name": {
+            "type": "string"
+          },
+          "data_sex": {
+            "type": "boolean"
+          },
+          "data_telephone": {
+            "type": "string"
+          },
+          "data_email": {
+            "type": "string"
+          },
+          "data_company": {
+            "type": "string"
+          },
+          "data_web_link": {
+            "type": "string"
+          },
+          "data_exp": {
+            "type": "string"
+          },
+          "data_finishdate": {
+            "type": "string"
+          },
+          "data_cost": {
+            "type": "string"
+          },
+          "data_web": {
+            "type": "string"
+          },
+          "data_comefrom": {
+            "type": "boolean"
+          }
+        }
+      }
+    }
+  ],
+  "host": "ibest.tw",
+  "source": "webmcp.com/api/directory.json"
+}

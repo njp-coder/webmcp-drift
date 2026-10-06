@@ -1,0 +1,239 @@
+{
+  "sponsio": 1,
+  "url": "https://human.marketing/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "assess_fit",
+      "description": "Assess whether a prospective client is a good fit for human.marketing. Returns a fit score and rationale, recommended services, relevant case studies, and a suggested next step. For business prospects (ecommerce, local/franchise, general) — not job seekers.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "company": {
+            "type": "string",
+            "description": "A description of the company (industry, model, size)."
+          },
+          "goals": {
+            "type": "string",
+            "description": "What the company is trying to achieve."
+          },
+          "budget": {
+            "type": "string",
+            "description": "Approximate budget or budget range, if known."
+          }
+        },
+        "required": [
+          "company"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_blog_posts",
+      "description": "Search and list human.marketing blog articles (marketing thought leadership). Filter by topic or business type. Returns title, summary, link, author, publish date, and read time.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "topic": {
+            "type": "string",
+            "description": "Filter by category slug, e.g. 'seo', 'paid-media', 'email-marketing', 'cro'."
+          },
+          "business_type": {
+            "type": "string",
+            "description": "Filter by audience.",
+            "enum": [
+              "b2b",
+              "ecommerce"
+            ]
+          },
+          "limit": {
+            "type": "number",
+            "description": "Maximum number of posts to return (default 20)."
+          },
+          "slug": {
+            "type": "string",
+            "description": "Return a single post by its slug."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_case_studies",
+      "description": "List human.marketing client case studies — real results from the agency's portfolio. Returns the title, summary, link, and image for each. Use to surface proof of work or find examples relevant to a prospect.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Return a single case study by its slug, e.g. 'work/thompson-tee'."
+          },
+          "limit": {
+            "type": "number",
+            "description": "Maximum number of case studies to return (default 50)."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_guided_journey",
+      "description": "Get a curated, persona-aware path through human.marketing — an ordered set of services, case studies, articles, and a contact step tailored to the visitor. Pass a persona, or a free-text description and it will infer one.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "persona": {
+            "type": "string",
+            "description": "The visitor type to tailor the journey to.",
+            "enum": [
+              "ecommerce",
+              "local-franchise",
+              "job-seeker"
+            ]
+          },
+          "description": {
+            "type": "string",
+            "description": "Free-text description of the visitor or company; used to infer the persona when one isn’t given."
+          },
+          "limit": {
+            "type": "number",
+            "description": "Max items to include per step (default 4)."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_services",
+      "description": "List the marketing services human.marketing offers (SEO, paid media, email, CRO, branding, social, SMS, and more). Returns the title, summary, and link for each service.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Return a single service by its slug."
+          },
+          "limit": {
+            "type": "number",
+            "description": "Maximum number of services to return (default 50)."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_team",
+      "description": "List human.marketing team members. Filter by role or name. Returns each person’s name, role, short bio, photo, and profile link.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "string",
+            "description": "Filter by job title, e.g. 'designer', 'strategist'."
+          },
+          "name": {
+            "type": "string",
+            "description": "Filter by name (partial match)."
+          },
+          "slug": {
+            "type": "string",
+            "description": "Return a single person by their slug."
+          },
+          "limit": {
+            "type": "number",
+            "description": "Maximum number of people to return (default 50)."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "lead_capture",
+      "description": "Submit a prospective client's contact details to human.marketing's sales team, who will follow up directly. Only call this after the visitor has explicitly provided their own info and agreed to be contacted — do not invent or guess details on their behalf. Rate-limited to prevent abuse.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "first_name": {
+            "type": "string",
+            "description": "The visitor's first name."
+          },
+          "last_name": {
+            "type": "string",
+            "description": "The visitor's last name."
+          },
+          "email": {
+            "type": "string",
+            "description": "The visitor's business email address."
+          },
+          "phone": {
+            "type": "string",
+            "description": "The visitor's phone number."
+          },
+          "company": {
+            "type": "string",
+            "description": "The name of the company the visitor represents."
+          },
+          "budget": {
+            "type": "string",
+            "description": "Approximate monthly marketing budget, if known.",
+            "enum": [
+              "$8,000 - $15,000",
+              "$15,000 - $30,000",
+              "$30,000 - $45,000",
+              "$45,000+"
+            ]
+          },
+          "goals": {
+            "type": "string",
+            "description": "What the visitor is trying to achieve."
+          }
+        },
+        "required": [
+          "email",
+          "company"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_site",
+      "description": "Full-text search across human.marketing pages and blog posts. Returns matching titles, summaries, and links.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string",
+            "description": "The search query."
+          },
+          "scope": {
+            "type": "string",
+            "description": "Limit results to pages, blog posts, or both.",
+            "enum": [
+              "all",
+              "pages",
+              "blog"
+            ]
+          },
+          "limit": {
+            "type": "number",
+            "description": "Maximum number of results to return (default 20)."
+          }
+        },
+        "required": [
+          "q"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "human.marketing",
+  "source": "webmcp.com/api/directory.json"
+}

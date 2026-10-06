@@ -1,0 +1,286 @@
+{
+  "sponsio": 1,
+  "url": "https://vesremont.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "add_to_cart",
+      "description": "Добавляет указанное количество доступного товара в текущую корзину и возвращает её новое состояние.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "ID товара Vesremont."
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 99,
+            "default": 1,
+            "description": "Количество единиц для добавления."
+          }
+        },
+        "required": [
+          "productId"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get_cart",
+      "description": "Постранично возвращает товары, количества и итоговую сумму текущей корзины. Ничего не изменяет.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 10000,
+            "default": 0,
+            "description": "Смещение первой позиции корзины."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 3,
+            "default": 3,
+            "description": "Число позиций в ответе, не более 3."
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get_favorites",
+      "description": "Возвращает ID товаров в избранном текущего посетителя. Ничего не изменяет.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 10000,
+            "default": 0,
+            "description": "Смещение первого ID избранного."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 50,
+            "description": "Число ID избранного в ответе."
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get_page_context",
+      "description": "Возвращает тип и URL текущей страницы, заголовок, товар карточки и первые видимые товары без изменения сайта.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get_visible_products",
+      "description": "Возвращает товары, уже загруженные в текущую выдачу: ID, название, URL, цену, остаток и возможность заказа.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 3,
+            "default": 3,
+            "description": "Число видимых товаров в ответе."
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "remove_from_cart",
+      "description": "Полностью удаляет товар из текущей корзины и возвращает её новое состояние.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "ID товара Vesremont."
+          }
+        },
+        "required": [
+          "productId"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Открывает поиск Vesremont по товару, категории, бренду, модели или артикулу.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "search": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "description": "Товар, категория, бренд, модель или артикул."
+          }
+        },
+        "required": [
+          "search"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Search Vesremont products, categories and brands by a user query.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "search": {
+            "type": "string",
+            "description": "Искать на Vesremont..."
+          }
+        },
+        "required": [
+          "search"
+        ]
+      }
+    },
+    {
+      "name": "set_cart_quantity",
+      "description": "Устанавливает точное количество товара в корзине. Значение 0 удаляет товар.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "ID товара Vesremont."
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 999,
+            "description": "Новое точное количество; 0 удаляет позицию."
+          }
+        },
+        "required": [
+          "productId",
+          "quantity"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "set_favorite",
+      "description": "Явно добавляет товар в избранное или удаляет его оттуда, без неоднозначного переключения.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "ID товара Vesremont."
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "add",
+              "remove"
+            ],
+            "description": "Явно добавить или удалить товар."
+          }
+        },
+        "required": [
+          "productId",
+          "state"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "start_fast_order",
+      "description": "Гарантирует наличие одной позиции товара в корзине без увеличения уже добавленного количества и возвращает URL оформления.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "ID товара Vesremont."
+          }
+        },
+        "required": [
+          "productId"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": true
+      }
+    }
+  ],
+  "host": "vesremont.com",
+  "source": "webmcp.com/api/directory.json"
+}

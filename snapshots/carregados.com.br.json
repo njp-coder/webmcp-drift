@@ -1,0 +1,2512 @@
+{
+  "sponsio": 1,
+  "url": "https://carregados.com.br/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "add_garage_vehicle",
+      "description": "Add a curated catalog vehicle to the authenticated user's route-planning garage.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "catalogVehicleId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "subtypeId": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "exclusiveMinimum": 0,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "ratedRangeKm": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 50,
+                "maximum": 2000
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "batteryCapacityKwh": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 5,
+                "maximum": 250
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "isPrimary": {
+            "type": "boolean"
+          },
+          "idempotencyKey": {
+            "description": "Optional stable key for safely retrying the same create request for 24 hours.",
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.:/+=-]{8,200}$"
+          },
+          "confirmed": {
+            "description": "Must be true only after the user explicitly confirms this action.",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "catalogVehicleId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "archive_car_listing",
+      "description": "Remove an owned car listing from public results without permanently deleting its record.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "carId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "ifMatch": {
+            "description": "Optional ETag from the corresponding detail tool; rejects stale updates.",
+            "type": "string",
+            "minLength": 1
+          },
+          "confirmed": {
+            "description": "Must be true only after the user explicitly confirms this action.",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "carId"
+        ]
+      }
+    },
+    {
+      "name": "archive_trip",
+      "description": "Archive an owned trip without permanently deleting it.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "tripId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "ifMatch": {
+            "description": "Optional ETag from the corresponding detail tool; rejects stale updates.",
+            "type": "string",
+            "minLength": 1
+          },
+          "confirmed": {
+            "description": "Must be true only after the user explicitly confirms this action.",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "tripId"
+        ]
+      }
+    },
+    {
+      "name": "create_car_listing",
+      "description": "Create a complete draft electric-car listing for the authenticated user. Ask for explicit user confirmation before calling.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "title": {
+            "description": "Public listing title.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "content": {
+            "description": "Listing description/body text.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "maker": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Vehicle maker/brand."
+          },
+          "model": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Vehicle model."
+          },
+          "version": {
+            "description": "Vehicle version/trim.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "fabricationYear": {
+            "type": "integer",
+            "minimum": 1900,
+            "maximum": 2100,
+            "description": "Vehicle fabrication/manufacture year."
+          },
+          "modelYear": {
+            "type": "integer",
+            "minimum": 1900,
+            "maximum": 2100,
+            "description": "Vehicle model year."
+          },
+          "odometer": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Vehicle odometer in kilometers."
+          },
+          "doorNumber": {
+            "description": "Number of doors.",
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "bodyType": {
+            "description": "Body type.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "color": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Vehicle color."
+          },
+          "price": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "description": "Listing price in BRL."
+          },
+          "listingType": {
+            "description": "Seller listing type.",
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "particular",
+                  "concessionaria"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "sellerType": {
+            "description": "Seller type label.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "city": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Listing city."
+          },
+          "state": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Listing state value, for example \"parana (pr)\"."
+          },
+          "condition": {
+            "description": "Vehicle condition, for example \"new\" or \"used\".",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "pattern": "^(?:[A-Za-z0-9_'+\\-]+\\.)*[A-Za-z0-9_'+\\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$",
+            "description": "Seller contact email stored on the private listing."
+          },
+          "phone": {
+            "type": "string",
+            "description": "Seller contact phone with 11 digits including area code."
+          },
+          "website": {
+            "description": "Seller or listing website.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "armored": {
+            "description": "Whether the vehicle is armored.",
+            "type": "boolean"
+          },
+          "isWarrantyActive": {
+            "description": "Whether warranty is active.",
+            "type": "boolean"
+          },
+          "isIpvaPaid": {
+            "description": "Whether IPVA is paid.",
+            "type": "boolean"
+          },
+          "isRevisionOk": {
+            "description": "Whether maintenance is up to date.",
+            "type": "boolean"
+          },
+          "isRevisionsOnDealer": {
+            "description": "Whether revisions were done at the dealer.",
+            "type": "boolean"
+          },
+          "isBatteryOk": {
+            "description": "Whether battery condition is OK.",
+            "type": "boolean"
+          },
+          "isOriginalChargerIncluded": {
+            "description": "Whether the original charger is included.",
+            "type": "boolean"
+          },
+          "isExchangeAccepted": {
+            "description": "Whether the seller accepts exchange/trade.",
+            "type": "boolean"
+          },
+          "isUniqueOwner": {
+            "description": "Whether the vehicle has had one owner.",
+            "type": "boolean"
+          },
+          "hasAutopilot": {
+            "description": "Whether the vehicle has autopilot.",
+            "type": "boolean"
+          },
+          "hasFsd": {
+            "description": "Whether the vehicle has FSD.",
+            "type": "boolean"
+          },
+          "hasSunroof": {
+            "description": "Whether the vehicle has a sunroof.",
+            "type": "boolean"
+          },
+          "hasHud": {
+            "description": "Whether the vehicle has HUD.",
+            "type": "boolean"
+          },
+          "hasDualMotor": {
+            "description": "Whether the vehicle has dual motor.",
+            "type": "boolean"
+          },
+          "hasPremiumInterior": {
+            "description": "Whether the vehicle has premium interior.",
+            "type": "boolean"
+          },
+          "hasAwd": {
+            "description": "Whether the vehicle has AWD.",
+            "type": "boolean"
+          },
+          "hasPremiumSound": {
+            "description": "Whether the vehicle has premium sound.",
+            "type": "boolean"
+          },
+          "hasHeatedSeats": {
+            "description": "Whether the vehicle has heated seats.",
+            "type": "boolean"
+          },
+          "hasHeatedSteeringWheel": {
+            "description": "Whether the vehicle has a heated steering wheel.",
+            "type": "boolean"
+          },
+          "hasChargingCables": {
+            "description": "Whether charging cables are included.",
+            "type": "boolean"
+          },
+          "has360Camera": {
+            "description": "Whether the vehicle has 360 camera.",
+            "type": "boolean"
+          },
+          "hasVoiceAssistant": {
+            "description": "Whether the vehicle has voice assistant.",
+            "type": "boolean"
+          },
+          "hasSmartEntry": {
+            "description": "Whether the vehicle has smart entry.",
+            "type": "boolean"
+          },
+          "hasElectricTrunk": {
+            "description": "Whether the vehicle has electric trunk.",
+            "type": "boolean"
+          },
+          "idempotencyKey": {
+            "description": "Optional stable key for safely retrying the same create request for 24 hours.",
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.:/+=-]{8,200}$"
+          },
+          "confirmed": {
+            "description": "Must be true only after the user explicitly confirms this action.",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "maker",
+          "model",
+          "fabricationYear",
+          "modelYear",
+          "odometer",
+          "color",
+          "price",
+          "city",
+          "state",
+          "email",
+          "phone"
+        ]
+      }
+    },
+    {
+      "name": "create_check_in",
+      "description": "Record a success, neutral, or failure check-in for a public charging station.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "stationId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "outcome": {
+            "type": "string",
+            "enum": [
+              "success",
+              "neutral",
+              "failure"
+            ]
+          },
+          "comment": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1000
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "powerKw": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1000
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "idempotencyKey": {
+            "description": "Optional stable key for safely retrying the same create request for 24 hours.",
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.:/+=-]{8,200}$"
+          },
+          "confirmed": {
+            "description": "Must be true only after the user explicitly confirms this action.",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "stationId",
+          "outcome",
+          "comment",
+          "powerKw"
+        ]
+      }
+    },
+    {
+      "name": "create_highlight_checkout",
+      "description": "Create a Stripe Checkout URL for a station highlight. The user must complete payment in the browser; this tool cannot complete payment. Ask for explicit user confirmation before calling.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "locationId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Carregados location id to highlight."
+          },
+          "confirmed": {
+            "description": "Must be true only after the user explicitly confirms this action.",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "locationId"
+        ]
+      }
+    },
+    {
+      "name": "create_location",
+      "description": "Create a charging location and submit it for Carregados review. Ask for explicit user confirmation before calling.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Internal charging-location name."
+          },
+          "displayName": {
+            "description": "Public display name.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "address": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Street address or public location description."
+          },
+          "description": {
+            "description": "Public station description.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "hours": {
+            "description": "Opening hours text.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "formattedPhoneNumber": {
+            "description": "Formatted public phone number.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "phoneNumber": {
+            "description": "Raw phone number.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "city": {
+            "description": "City value.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "state": {
+            "description": "State value, for example \"parana (pr)\".",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "country": {
+            "description": "Country value.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "displayCity": {
+            "description": "Public display city.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "displayState": {
+            "description": "Public display state.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "displayCountry": {
+            "description": "Public display country.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "priceKwh": {
+            "description": "Charging price per kWh in BRL.",
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "priceKwhComment": {
+            "description": "Comment explaining the kWh price.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "activationPrice": {
+            "description": "Activation or session fee in BRL.",
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "activationPriceComment": {
+            "description": "Comment explaining the activation/session fee.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "costDescription": {
+            "description": "Freeform pricing/cost description.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Whether chargers are currently enabled."
+          },
+          "open247": {
+            "type": "boolean",
+            "description": "Whether the station is open 24/7."
+          },
+          "comingSoon": {
+            "description": "Whether the station is marked as coming soon.",
+            "type": "boolean"
+          },
+          "underRepair": {
+            "description": "Whether the station is marked as under repair.",
+            "type": "boolean"
+          },
+          "latitude": {
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90,
+            "description": "Station latitude for authenticated creation."
+          },
+          "longitude": {
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180,
+            "description": "Station longitude for authenticated creation."
+          },
+          "icon_type": {
+            "description": "Station icon/category type.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "restricted": {
+            "type": "boolean",
+            "description": "Whether access is restricted."
+          },
+          "isFree": {
+            "type": "boolean",
+            "description": "Whether charging is free."
+          },
+          "stations": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "description": "Existing charger id when updating an owned/imported location.",
+                  "type": "integer",
+                  "exclusiveMinimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "networkId": {
+                  "description": "Optional Carregados charging network id.",
+                  "type": "integer",
+                  "exclusiveMinimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "kilowatts": {
+                  "description": "Optional charger power in kW.",
+                  "type": "integer",
+                  "exclusiveMinimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "outlets": {
+                  "minItems": 1,
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "description": "Existing outlet id when updating an owned/imported location.",
+                        "type": "integer",
+                        "exclusiveMinimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "connector": {
+                        "type": "integer",
+                        "exclusiveMinimum": 0,
+                        "maximum": 9007199254740991,
+                        "description": "Required connector id, for example 20 for CCS2 or 7 for Tipo 2."
+                      },
+                      "connectorName": {
+                        "description": "Optional connector display name, for example CCS2.",
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "connector"
+                    ],
+                    "additionalProperties": {}
+                  },
+                  "description": "Connector outlets for this charger."
+                }
+              },
+              "required": [
+                "outlets"
+              ],
+              "additionalProperties": {}
+            },
+            "description": "Chargers at the location. Each charger needs at least one outlet with a connector id."
+          },
+          "idempotencyKey": {
+            "description": "Optional stable key for safely retrying the same create request for 24 hours.",
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.:/+=-]{8,200}$"
+          },
+          "confirmed": {
+            "description": "Must be true only after the user explicitly confirms this action.",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "name",
+          "address",
+          "enabled",
+          "open247",
+          "latitude",
+          "longitude",
+          "restricted",
+          "isFree",
+          "stations"
+        ]
+      }
+    },
+    {
+      "name": "delete_check_in",
+      "description": "Permanently delete one check-in owned by the authenticated user.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "checkInId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "confirmed": {
+            "description": "Must be true only after the user explicitly confirms this action.",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "checkInId"
+        ]
+      }
+    },
+    {
+      "name": "get_car_listing",
+      "description": "Get one car listing owned by the authenticated user, including its ETag for safe updates.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "carId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "carId"
+        ]
+      }
+    },
+    {
+      "name": "get_current_user",
+      "description": "Verify the supplied Carregados API token and return the authenticated user and token scopes.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_garage_vehicle",
+      "description": "Get one garage vehicle and its ETag for safe updates.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "vehicleId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "vehicleId"
+        ]
+      }
+    },
+    {
+      "name": "get_my_location",
+      "description": "Get one charging location created or owned by the authenticated user, including charger/outlet ids and an ETag for safe updates.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "locationId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "locationId"
+        ]
+      }
+    },
+    {
+      "name": "get_notification_preferences",
+      "description": "Get notification delivery, quiet-hour, timezone, and email-cap settings with an ETag.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_public_car",
+      "description": "Get useful public details for an active Carregados electric-car listing. Does not require authentication and does not return seller private contact fields or owner ids.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "carId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Public Carregados car listing id."
+          }
+        },
+        "required": [
+          "carId"
+        ]
+      }
+    },
+    {
+      "name": "get_public_market_data",
+      "description": "Get public Brazil EV sales, charging-station distribution, and recent route-demand signals. Does not require authentication.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_public_station",
+      "description": "Get useful public details for a Carregados charging station. Does not require authentication and never returns station coordinates; returns distanceKm only when the caller supplies latitude and longitude.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "stationId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Public Carregados station id."
+          },
+          "latitude": {
+            "description": "Caller-provided origin latitude used only to calculate distanceKm. Station coordinates are not returned.",
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90
+          },
+          "longitude": {
+            "description": "Caller-provided origin longitude used only to calculate distanceKm. Station coordinates are not returned.",
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180
+          }
+        },
+        "required": [
+          "stationId"
+        ]
+      }
+    },
+    {
+      "name": "get_public_vehicle",
+      "description": "Get one curated EV model or variant, including a profile that can be passed to route planning.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "vehicleId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "subtypeId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "vehicleId"
+        ]
+      }
+    },
+    {
+      "name": "get_trip",
+      "description": "Get one owned trip and its ETag for safe updates.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "tripId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "tripId"
+        ]
+      }
+    },
+    {
+      "name": "inspect_image_c2pa",
+      "description": "Fetch a single image (by CSS selector or URL) and return its fully decoded C2PA manifest store: every manifest's claim, assertions (e.g. c2pa.actions edit history, schema.org authorship), and the COSE signature details (algorithm and signing-certificate identity). Provide exactly one of `selector` or `url`. Note: the signature is decoded but NOT cryptographically verified.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "selector": {
+            "type": "string",
+            "maxLength": 8192,
+            "description": "CSS selector for an <img> element on the page."
+          },
+          "url": {
+            "type": "string",
+            "maxLength": 8192,
+            "description": "Image URL (absolute, or relative to the current page) to fetch and inspect."
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "list_car_listings",
+      "description": "List car listings owned by the authenticated Carregados user.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_check_ins",
+      "description": "List the authenticated user's station check-ins with cursor pagination.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "cursor": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          }
+        }
+      }
+    },
+    {
+      "name": "list_favorite_stations",
+      "description": "List the authenticated user's favorite charging stations without exact station coordinates.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_garage_vehicles",
+      "description": "List vehicles in the authenticated user's route-planning garage.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_my_locations",
+      "description": "List charging locations created or owned by the authenticated Carregados user.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_notifications",
+      "description": "List or count the authenticated user's notifications.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "filter": {
+            "type": "string",
+            "enum": [
+              "all",
+              "unread",
+              "read"
+            ]
+          },
+          "cursor": {
+            "type": "string",
+            "minLength": 1
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50
+          },
+          "countOnly": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    {
+      "name": "list_trips",
+      "description": "List saved, recent, or archived trips with cursor pagination.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "saved",
+              "recent",
+              "archived"
+            ]
+          },
+          "cursor": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          }
+        }
+      }
+    },
+    {
+      "name": "plan_route",
+      "description": "Plan an EV route using manual vehicle range, battery capacity, battery targets, waypoints, and station/network preferences. Authentication is optional; responses include an overview and a \"see route on map\" link.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "waypoints": {
+            "minItems": 2,
+            "maxItems": 11,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "latitude": {
+                  "type": "number",
+                  "minimum": -90,
+                  "maximum": 90
+                },
+                "longitude": {
+                  "type": "number",
+                  "minimum": -180,
+                  "maximum": 180
+                },
+                "label": {
+                  "description": "Optional label for the waypoint.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              },
+              "required": [
+                "latitude",
+                "longitude"
+              ]
+            },
+            "description": "Ordered route waypoints. The first point is origin and the last point is destination."
+          },
+          "vehicleId": {
+            "description": "Public catalog vehicle id used to fill range and battery defaults.",
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "subtypeId": {
+            "description": "Optional catalog variant id; requires vehicleId.",
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "garageVehicleId": {
+            "description": "Owned garage vehicle id used to fill route profile defaults.",
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "rangeKm": {
+            "description": "Manual vehicle range in kilometers; required without a vehicle profile.",
+            "type": "number",
+            "minimum": 50,
+            "maximum": 1000
+          },
+          "batteryCapacityKwh": {
+            "description": "Manual battery capacity in kWh; required without a vehicle profile.",
+            "type": "number",
+            "minimum": 5,
+            "maximum": 250
+          },
+          "initialBatteryPercent": {
+            "description": "Initial battery percentage. Defaults to 100.",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "arrivalBatteryTargetPercent": {
+            "description": "Minimum target battery percentage at arrival. Defaults to 15.",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 90
+          },
+          "autoPlan": {
+            "description": "Whether the routing backend may add charging stops. Defaults to true.",
+            "type": "boolean"
+          },
+          "allowFerries": {
+            "description": "Whether ferry routes are allowed. Defaults to false.",
+            "type": "boolean"
+          },
+          "blockedStationIds": {
+            "description": "Station ids the planner must avoid.",
+            "maxItems": 20,
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "maximum": 9007199254740991
+            }
+          },
+          "preferredStationIds": {
+            "description": "Station ids the planner should prefer.",
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "maximum": 9007199254740991
+            }
+          },
+          "networkIds": {
+            "description": "Optional charging network ids to constrain or prefer.",
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "maximum": 9007199254740991
+            }
+          },
+          "routeMode": {
+            "description": "Route optimization mode. Defaults to fastest.",
+            "type": "string",
+            "enum": [
+              "fastest",
+              "fewer_stops"
+            ]
+          }
+        },
+        "required": [
+          "waypoints"
+        ]
+      }
+    },
+    {
+      "name": "remove_garage_vehicle",
+      "description": "Remove a vehicle from the authenticated user's garage.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "vehicleId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "ifMatch": {
+            "description": "Optional ETag from the corresponding detail tool; rejects stale updates.",
+            "type": "string",
+            "minLength": 1
+          },
+          "confirmed": {
+            "description": "Must be true only after the user explicitly confirms this action.",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "vehicleId"
+        ]
+      }
+    },
+    {
+      "name": "save_trip",
+      "description": "Save a route returned by plan_route to the authenticated user's trips.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "routeId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "idempotencyKey": {
+            "description": "Optional stable key for safely retrying the same create request for 24 hours.",
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.:/+=-]{8,200}$"
+          },
+          "confirmed": {
+            "description": "Must be true only after the user explicitly confirms this action.",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "routeId"
+        ]
+      }
+    },
+    {
+      "name": "scan_images_c2pa",
+      "description": "Scan every <img> on the current page for C2PA Content Credentials (content provenance metadata) and return a per-image summary: whether a manifest is present, the claim generator (the tool that produced or edited the image), the title, and the signer name. Use this to find which images on a page carry provenance data. Note: provenance is decoded but NOT cryptographically verified.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 25,
+            "description": "Maximum number of images to fetch and scan (default 25, max 100)."
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "search_public_cars",
+      "description": "Search active public Carregados electric-car listings by maker, model, location, price, range, year, or condition. Does not require authentication and does not return seller private contact fields or owner ids.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "maker": {
+            "description": "Vehicle maker/brand, for example \"byd\".",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "model": {
+            "description": "Vehicle model, for example \"dolphin\".",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "version": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "state": {
+            "description": "Brazilian state value used by Carregados, for example \"parana (pr)\".",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "city": {
+            "description": "City value used by Carregados, for example \"curitiba\".",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "condition": {
+            "description": "Listing condition, for example \"new\" or \"used\".",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "listingType": {
+            "type": "string",
+            "enum": [
+              "particular",
+              "concessionaria"
+            ]
+          },
+          "sellerType": {
+            "type": "string"
+          },
+          "minPrice": {
+            "description": "Minimum price in BRL.",
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "maxPrice": {
+            "description": "Maximum price in BRL.",
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "minYear": {
+            "description": "Minimum model year.",
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "maxYear": {
+            "description": "Maximum model year.",
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "minRange": {
+            "description": "Minimum range in km.",
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "maxRange": {
+            "description": "Maximum range in km.",
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "minOdometer": {
+            "description": "Minimum odometer in kilometers.",
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "maxOdometer": {
+            "description": "Maximum odometer in kilometers.",
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "newest",
+              "price_asc",
+              "price_desc",
+              "popular"
+            ]
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 25
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          }
+        }
+      }
+    },
+    {
+      "name": "search_public_places",
+      "description": "Search place names, addresses, station names, or a caller-provided latitude/longitude pair and return labeled candidates without exact coordinates.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 200
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10
+          },
+          "countryCodes": {
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z]{2}$"
+            }
+          },
+          "includeStations": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "search_public_station_map",
+      "description": "Search a map viewport or radius for public station facts, live aggregate status, power, distance, and pagination without returning exact coordinates.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "latitude": {
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90
+          },
+          "longitude": {
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180
+          },
+          "radiusKm": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "maximum": 250
+          },
+          "north": {
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90
+          },
+          "east": {
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180
+          },
+          "south": {
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90
+          },
+          "west": {
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180
+          },
+          "status": {
+            "maxItems": 4,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "operational",
+                "limited",
+                "unavailable",
+                "unknown"
+              ]
+            }
+          },
+          "open247": {
+            "type": "boolean"
+          },
+          "minPowerKw": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1000
+          },
+          "maxPowerKw": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1000
+          },
+          "maxPriceKwh": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1000
+          },
+          "minimumReviews": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000000
+          },
+          "networkId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "connectorIds": {
+            "minItems": 1,
+            "maxItems": 20,
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "maximum": 9007199254740991
+            }
+          },
+          "amenityIds": {
+            "minItems": 1,
+            "maxItems": 20,
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "maximum": 9007199254740991
+            }
+          },
+          "poi": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "verified": {
+            "type": "boolean"
+          },
+          "photos": {
+            "type": "string",
+            "enum": [
+              "with",
+              "without"
+            ]
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          }
+        }
+      }
+    },
+    {
+      "name": "search_public_stations",
+      "description": "Search public Carregados charging-station data by state, city, or caller-provided origin. Does not require authentication and never returns station coordinates; returns distanceKm only when the caller supplies latitude and longitude.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "state": {
+            "description": "Brazilian state value used by Carregados, for example \"parana (pr)\".",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "city": {
+            "description": "City value used by Carregados, for example \"curitiba\".",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "latitude": {
+            "description": "Caller-provided origin latitude used only to calculate distanceKm. Station coordinates are not returned.",
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90
+          },
+          "longitude": {
+            "description": "Caller-provided origin longitude used only to calculate distanceKm. Station coordinates are not returned.",
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 25
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          }
+        }
+      }
+    },
+    {
+      "name": "search_public_vehicles",
+      "description": "Search curated EV models and variants with route-ready range, battery, and connector profiles.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "make": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "minRangeKm": {
+            "type": "number",
+            "minimum": 50,
+            "maximum": 1000
+          },
+          "connectorIds": {
+            "maxItems": 20,
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "maximum": 9007199254740991
+            }
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          }
+        }
+      }
+    },
+    {
+      "name": "set_favorite_station",
+      "description": "Add or remove a station from the authenticated user's favorites.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "stationId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "favorite": {
+            "type": "boolean"
+          },
+          "confirmed": {
+            "description": "Must be true only after the user explicitly confirms this action.",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "stationId",
+          "favorite"
+        ]
+      }
+    },
+    {
+      "name": "update_car_listing",
+      "description": "Update an owned Carregados car listing. Ask for explicit user confirmation before calling.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "carId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Carregados car listing id owned by the token user."
+          },
+          "title": {
+            "description": "Public listing title.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "content": {
+            "description": "Listing description/body text.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "maker": {
+            "description": "Vehicle maker/brand.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "model": {
+            "description": "Vehicle model.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "version": {
+            "description": "Vehicle version/trim.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "fabricationYear": {
+            "description": "Vehicle fabrication year.",
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "modelYear": {
+            "description": "Vehicle model year.",
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "odometer": {
+            "description": "Odometer reading in kilometers.",
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "doorNumber": {
+            "description": "Number of doors.",
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "bodyType": {
+            "description": "Body type.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "color": {
+            "description": "Vehicle color.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "price": {
+            "description": "Asking price in BRL.",
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "listingType": {
+            "description": "Seller listing type.",
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "particular",
+                  "concessionaria"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "sellerType": {
+            "description": "Seller type label.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "city": {
+            "description": "Listing city.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "state": {
+            "description": "Listing state value, for example \"parana (pr)\".",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "condition": {
+            "description": "Vehicle condition, for example \"new\" or \"used\".",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "email": {
+            "description": "Seller contact email stored on the private listing.",
+            "type": "string",
+            "format": "email",
+            "pattern": "^(?:[A-Za-z0-9_'+\\-]+\\.)*[A-Za-z0-9_'+\\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+          },
+          "phone": {
+            "description": "Seller contact phone with 11 digits including area code.",
+            "type": "string"
+          },
+          "website": {
+            "description": "Seller or listing website.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "armored": {
+            "description": "Whether the vehicle is armored.",
+            "type": "boolean"
+          },
+          "isWarrantyActive": {
+            "description": "Whether warranty is active.",
+            "type": "boolean"
+          },
+          "isIpvaPaid": {
+            "description": "Whether IPVA is paid.",
+            "type": "boolean"
+          },
+          "isRevisionOk": {
+            "description": "Whether maintenance is up to date.",
+            "type": "boolean"
+          },
+          "isRevisionsOnDealer": {
+            "description": "Whether revisions were done at the dealer.",
+            "type": "boolean"
+          },
+          "isBatteryOk": {
+            "description": "Whether battery condition is OK.",
+            "type": "boolean"
+          },
+          "isOriginalChargerIncluded": {
+            "description": "Whether the original charger is included.",
+            "type": "boolean"
+          },
+          "isExchangeAccepted": {
+            "description": "Whether the seller accepts exchange/trade.",
+            "type": "boolean"
+          },
+          "isUniqueOwner": {
+            "description": "Whether the vehicle has had one owner.",
+            "type": "boolean"
+          },
+          "hasAutopilot": {
+            "description": "Whether the vehicle has autopilot.",
+            "type": "boolean"
+          },
+          "hasFsd": {
+            "description": "Whether the vehicle has FSD.",
+            "type": "boolean"
+          },
+          "hasSunroof": {
+            "description": "Whether the vehicle has a sunroof.",
+            "type": "boolean"
+          },
+          "hasHud": {
+            "description": "Whether the vehicle has HUD.",
+            "type": "boolean"
+          },
+          "hasDualMotor": {
+            "description": "Whether the vehicle has dual motor.",
+            "type": "boolean"
+          },
+          "hasPremiumInterior": {
+            "description": "Whether the vehicle has premium interior.",
+            "type": "boolean"
+          },
+          "hasAwd": {
+            "description": "Whether the vehicle has AWD.",
+            "type": "boolean"
+          },
+          "hasPremiumSound": {
+            "description": "Whether the vehicle has premium sound.",
+            "type": "boolean"
+          },
+          "hasHeatedSeats": {
+            "description": "Whether the vehicle has heated seats.",
+            "type": "boolean"
+          },
+          "hasHeatedSteeringWheel": {
+            "description": "Whether the vehicle has a heated steering wheel.",
+            "type": "boolean"
+          },
+          "hasChargingCables": {
+            "description": "Whether charging cables are included.",
+            "type": "boolean"
+          },
+          "has360Camera": {
+            "description": "Whether the vehicle has 360 camera.",
+            "type": "boolean"
+          },
+          "hasVoiceAssistant": {
+            "description": "Whether the vehicle has voice assistant.",
+            "type": "boolean"
+          },
+          "hasSmartEntry": {
+            "description": "Whether the vehicle has smart entry.",
+            "type": "boolean"
+          },
+          "hasElectricTrunk": {
+            "description": "Whether the vehicle has electric trunk.",
+            "type": "boolean"
+          },
+          "ifMatch": {
+            "description": "Optional ETag from the corresponding detail tool; rejects stale updates.",
+            "type": "string",
+            "minLength": 1
+          },
+          "confirmed": {
+            "description": "Must be true only after the user explicitly confirms this action.",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "carId"
+        ]
+      }
+    },
+    {
+      "name": "update_garage_vehicle",
+      "description": "Update range, battery capacity, or primary status for an owned garage vehicle.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "vehicleId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "ratedRangeKm": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 50,
+                "maximum": 2000
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "batteryCapacityKwh": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 5,
+                "maximum": 250
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "isPrimary": {
+            "type": "boolean"
+          },
+          "ifMatch": {
+            "description": "Optional ETag from the corresponding detail tool; rejects stale updates.",
+            "type": "string",
+            "minLength": 1
+          },
+          "confirmed": {
+            "description": "Must be true only after the user explicitly confirms this action.",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "vehicleId"
+        ]
+      }
+    },
+    {
+      "name": "update_location",
+      "description": "Update a user-created or owned charging location. Ask for explicit user confirmation before calling.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "locationId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Carregados location id created or owned by the token user."
+          },
+          "name": {
+            "description": "Internal charging-location name.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "displayName": {
+            "description": "Public display name.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "address": {
+            "description": "Street address.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "description": {
+            "description": "Public station description.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "hours": {
+            "description": "Opening hours text.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "formattedPhoneNumber": {
+            "description": "Formatted public phone number.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "phoneNumber": {
+            "description": "Raw phone number.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "city": {
+            "description": "City value.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "state": {
+            "description": "State value, for example \"parana (pr)\".",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "country": {
+            "description": "Country value.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "displayCity": {
+            "description": "Public display city.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "displayState": {
+            "description": "Public display state.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "displayCountry": {
+            "description": "Public display country.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "priceKwh": {
+            "description": "Charging price per kWh in BRL.",
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "priceKwhComment": {
+            "description": "Comment explaining the kWh price.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "activationPrice": {
+            "description": "Activation or session fee in BRL.",
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "activationPriceComment": {
+            "description": "Comment explaining the activation/session fee.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "costDescription": {
+            "description": "Freeform pricing/cost description.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "enabled": {
+            "description": "Whether the location is enabled in owner/user workflows.",
+            "type": "boolean"
+          },
+          "open247": {
+            "description": "Whether the station is open 24/7.",
+            "type": "boolean"
+          },
+          "comingSoon": {
+            "description": "Whether the station is marked as coming soon.",
+            "type": "boolean"
+          },
+          "underRepair": {
+            "description": "Whether the station is marked as under repair.",
+            "type": "boolean"
+          },
+          "latitude": {
+            "description": "Station latitude for authenticated creation/update.",
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "longitude": {
+            "description": "Station longitude for authenticated creation/update.",
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "icon_type": {
+            "description": "Station icon/category type.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "restricted": {
+            "description": "Whether access is restricted.",
+            "type": "boolean"
+          },
+          "stations": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "description": "Existing charger id when updating an owned/imported location.",
+                  "type": "integer",
+                  "exclusiveMinimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "networkId": {
+                  "description": "Optional Carregados charging network id.",
+                  "type": "integer",
+                  "exclusiveMinimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "kilowatts": {
+                  "description": "Optional charger power in kW.",
+                  "type": "integer",
+                  "exclusiveMinimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "outlets": {
+                  "minItems": 1,
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "description": "Existing outlet id when updating an owned/imported location.",
+                        "type": "integer",
+                        "exclusiveMinimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "connector": {
+                        "type": "integer",
+                        "exclusiveMinimum": 0,
+                        "maximum": 9007199254740991,
+                        "description": "Required connector id, for example 20 for CCS2 or 7 for Tipo 2."
+                      },
+                      "connectorName": {
+                        "description": "Optional connector display name, for example CCS2.",
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "connector"
+                    ],
+                    "additionalProperties": {}
+                  },
+                  "description": "Connector outlets for this charger."
+                }
+              },
+              "required": [
+                "outlets"
+              ],
+              "additionalProperties": {}
+            },
+            "description": "Chargers at the location. Each charger needs at least one outlet with a connector id."
+          },
+          "ifMatch": {
+            "description": "Optional ETag from the corresponding detail tool; rejects stale updates.",
+            "type": "string",
+            "minLength": 1
+          },
+          "confirmed": {
+            "description": "Must be true only after the user explicitly confirms this action.",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "locationId"
+        ]
+      }
+    },
+    {
+      "name": "update_notification_preferences",
+      "description": "Update one or more notification delivery preferences.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "threadMessagesEmail": {
+            "type": "boolean"
+          },
+          "threadMessagesInApp": {
+            "type": "boolean"
+          },
+          "threadMentionsEmail": {
+            "type": "boolean"
+          },
+          "threadMentionsInApp": {
+            "type": "boolean"
+          },
+          "reviewRepliesEmail": {
+            "type": "boolean"
+          },
+          "reviewRepliesInApp": {
+            "type": "boolean"
+          },
+          "stationCheckinsEmail": {
+            "type": "boolean"
+          },
+          "stationActivityInApp": {
+            "type": "boolean"
+          },
+          "favoriteStationActivityInApp": {
+            "type": "boolean"
+          },
+          "favoriteStationDigestEmail": {
+            "type": "boolean"
+          },
+          "cityDigestEmail": {
+            "type": "boolean"
+          },
+          "savedTripAlertsEmail": {
+            "type": "boolean"
+          },
+          "nextBestActionsInApp": {
+            "type": "boolean"
+          },
+          "engagementEmailWeeklyCap": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 20
+          },
+          "timeZone": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "quietHoursStartMinute": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 1439
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "quietHoursEndMinute": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 1439
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "ifMatch": {
+            "description": "Optional ETag from the corresponding detail tool; rejects stale updates.",
+            "type": "string",
+            "minLength": 1
+          },
+          "confirmed": {
+            "description": "Must be true only after the user explicitly confirms this action.",
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    {
+      "name": "update_notifications",
+      "description": "Mark selected notifications read/unread, mark all as read, or delete selected notifications.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "intent": {
+            "type": "string",
+            "enum": [
+              "mark-as-read",
+              "mark-as-unread",
+              "delete"
+            ]
+          },
+          "notificationIds": {
+            "maxItems": 100,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          "confirmed": {
+            "description": "Must be true only after the user explicitly confirms this action.",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "intent"
+        ]
+      }
+    },
+    {
+      "name": "update_trip",
+      "description": "Rename, save/unsave, archive/restore, or rate an owned trip.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "tripId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "saved": {
+            "type": "boolean"
+          },
+          "archived": {
+            "type": "boolean"
+          },
+          "rating": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 5
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "ifMatch": {
+            "description": "Optional ETag from the corresponding detail tool; rejects stale updates.",
+            "type": "string",
+            "minLength": 1
+          },
+          "confirmed": {
+            "description": "Must be true only after the user explicitly confirms this action.",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "tripId"
+        ]
+      }
+    }
+  ],
+  "host": "carregados.com.br",
+  "source": "webmcp.com/api/directory.json"
+}

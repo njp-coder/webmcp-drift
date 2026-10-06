@@ -1,0 +1,150 @@
+{
+  "sponsio": 1,
+  "url": "https://zinnov.com/en-us/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_session",
+      "description": "Return whether the visitor is logged in on zinnov.com (via the ZURD cookie) and, if so, their profile fields useful for prefilling forms on the USA home page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "logout_session",
+      "description": "Log the visitor out by clearing the ZURD session cookie. Call only when the user explicitly asks to sign out.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    },
+    {
+      "name": "submit_contact_request",
+      "description": "Submit a contact or \"book a 30-min call\" request from the USA home page. Requires a business email (no personal providers like Gmail). Returns the API response including success or validation errors.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "firstName": {
+            "type": "string",
+            "description": "Visitor's first name."
+          },
+          "lastName": {
+            "type": "string",
+            "description": "Visitor's last name."
+          },
+          "companyName": {
+            "type": "string",
+            "description": "Company or organization name."
+          },
+          "jobTitle": {
+            "type": "string",
+            "description": "Visitor's job title."
+          },
+          "businessEmail": {
+            "type": "string",
+            "description": "Business email address. Personal/free providers (gmail, yahoo, outlook.com, etc.) are rejected."
+          },
+          "priority": {
+            "type": "string",
+            "description": "Biggest business priority / enquiry subject. Prefer one of: Set up a high-performing GCC in India; Transform my GCC; Explore the GCC Accelerator Platform; Win in Technology and Tech Services; Execute M&A; Maximize PE returns; Build, Assess and Augment my Partner Strategy.",
+            "enum": [
+              "Set up a high-performing GCC in India",
+              "Transform my GCC",
+              "Explore the GCC Accelerator Platform",
+              "Win in Technology and Tech Services",
+              "Execute M&A",
+              "Maximize PE returns",
+              "Build, Assess and Augment my Partner Strategy"
+            ]
+          },
+          "focusAreas": {
+            "type": "array",
+            "description": "Optional focus areas refining the chosen priority.",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "firstName",
+          "lastName",
+          "companyName",
+          "jobTitle",
+          "businessEmail"
+        ]
+      }
+    },
+    {
+      "name": "subscribe_to_insights",
+      "description": "Subscribe a business email to Zinnov's latest insights newsletter from the USA home page. Returns the API response (success, already subscribed, or validation errors).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Business email to subscribe. Personal/free providers are rejected."
+          }
+        },
+        "required": [
+          "email"
+        ]
+      }
+    },
+    {
+      "name": "subscribe_to_podcast",
+      "description": "Subscribe to the Zinnov podcast from the USA home page. Requires name, business email, LinkedIn URL, and country/location. Optionally also opt into the insights newsletter.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "firstName": {
+            "type": "string",
+            "description": "Subscriber's first name."
+          },
+          "lastName": {
+            "type": "string",
+            "description": "Subscriber's last name."
+          },
+          "email": {
+            "type": "string",
+            "description": "Business email. Personal/free providers are rejected."
+          },
+          "linkedinUrl": {
+            "type": "string",
+            "description": "LinkedIn profile URL (must include linkedin.com)."
+          },
+          "country": {
+            "type": "string",
+            "description": "Country or location."
+          },
+          "subscribeToNewsletter": {
+            "type": "boolean",
+            "description": "Also subscribe this email to the Zinnov insights newsletter."
+          }
+        },
+        "required": [
+          "firstName",
+          "lastName",
+          "email",
+          "linkedinUrl",
+          "country"
+        ]
+      }
+    }
+  ],
+  "host": "zinnov.com",
+  "source": "webmcp.com/api/directory.json"
+}

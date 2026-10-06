@@ -1,0 +1,82 @@
+{
+  "sponsio": 1,
+  "url": "https://financialfilings.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "browse-country",
+      "description": "Open the FinancialFilings country landing page for a specific market — a curated list of listed companies and recent filings filed in that jurisdiction. Use this when the user wants to explore a market rather than a specific company (e.g. \"show me filings from Germany\", \"what's in the FTSE 100\").",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "country": {
+            "type": "string",
+            "description": "Country slug (e.g. \"germany\", \"united-kingdom\", \"japan\", \"united-states\"). Use the kebab-case English name.",
+            "pattern": "^[a-z][a-z-]{0,49}$"
+          }
+        },
+        "required": [
+          "country"
+        ]
+      }
+    },
+    {
+      "name": "search-companies",
+      "description": "Search FinancialFilings for listed companies by name, ticker, ISIN, or LEI. Navigates the user's browser to the search results page. Use this when the user mentions a company by name or identifier and wants to find filings, financials, or further actions for that company.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Company name, ticker (e.g. SAP, AAPL), ISIN (e.g. DE0007164600), or LEI.",
+            "minLength": 1,
+            "maxLength": 200
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "view-company",
+      "description": "Open the FinancialFilings company page for a specific company by its URL slug. Use this after search-companies has returned a result and the user wants to see the full filings history for that company. If the user gave a company name without a slug, call search-companies first.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "URL slug of the company (e.g. \"sap-se\", \"volkswagen-ag\"). Use the slug returned by search-companies, not the human-readable name.",
+            "pattern": "^[a-z0-9][a-z0-9-]{0,99}$"
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "view-filing",
+      "description": "Open a specific regulatory filing page on FinancialFilings by its filing ID. Use this when the user asks to \"see\", \"open\", or \"read\" a filing they have an ID for. The ID is the integer surfaced by the REST API or MCP server.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "filing_id": {
+            "type": "integer",
+            "description": "Numeric filing ID (e.g. 12345678).",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "filing_id"
+        ]
+      }
+    }
+  ],
+  "host": "financialfilings.com",
+  "source": "webmcp.com/api/directory.json"
+}

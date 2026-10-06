@@ -1,0 +1,106 @@
+{
+  "sponsio": 1,
+  "url": "https://mytools.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "find_mytools_tools",
+      "description": "Search the MyTools catalogue of free browser-based file tools for PDF, image, video and audio. Returns matching tools with their slug, page path and whether they can load files from a URL. Use this first to discover what MyTools can do, then call open_mytools_tool with the slug. Results are capped, so narrow the search with query, category or inputType rather than asking for everything at once.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Keywords to match against tool names and descriptions, e.g. 'rotate pdf'."
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "image",
+              "pdf",
+              "video",
+              "audio",
+              "tools"
+            ],
+            "description": "Restrict to one family of tools."
+          },
+          "inputType": {
+            "type": "string",
+            "description": "MIME type of the file to process, e.g. 'application/pdf' or 'image/jpeg'."
+          },
+          "limit": {
+            "type": "number",
+            "description": "Maximum number of tools to return. Default 8, maximum 10."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "open_mytools_tool",
+      "description": "Open a MyTools tool page so it is ready to use. Pass urls to load remote files straight into the tool and skip the upload step — only for tools that find_mytools_tools reports as byUrl. Opening a tool replaces the page-specific tools available to you, so read the tool list again afterwards. All file processing happens locally in the browser; nothing is uploaded to a server.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Tool slug from find_mytools_tools, e.g. 'merge-pdf' or 'crop-image'."
+          },
+          "urls": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Optional http(s) URLs of files to load into the tool. Only for tools with byUrl: true."
+          },
+          "carryResult": {
+            "type": "boolean",
+            "description": "Hand the files the current tool just produced straight to the tool being opened, instead of arriving at an empty upload screen. Defaults to true whenever this page has a result and no urls were given. Set false to open the tool empty."
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "suggest_mytools_pipeline",
+      "description": "Given a MyTools tool slug and the names of the files it just produced, list the tools those files can be passed to next. Use it to chain operations, for example crop-image then compress-image then jpg-to-pdf. Only compatible destinations are returned: a batch of files is never offered to a single-file tool, and no tool is offered a format it cannot open.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Slug of the tool that produced the files, e.g. 'crop-image'."
+          },
+          "fileNames": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Names of the produced files, with extensions — the type is read from those."
+          }
+        },
+        "required": [
+          "slug",
+          "fileNames"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    }
+  ],
+  "host": "mytools.com",
+  "source": "webmcp.com/api/directory.json"
+}

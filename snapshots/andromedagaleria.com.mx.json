@@ -1,0 +1,227 @@
+{
+  "sponsio": 1,
+  "url": "https://andromedagaleria.com.mx/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_artist_profile",
+      "description": "Obtiene la biografía y enlaces públicos de un artista usando su slug exacto.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 180,
+            "description": "Slug exacto del artista."
+          }
+        },
+        "required": [
+          "slug"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get_artwork_details",
+      "description": "Obtiene los datos públicos completos de una obra usando su slug exacto.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 220,
+            "description": "Slug exacto de la obra."
+          }
+        },
+        "required": [
+          "slug"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get_gallery_contact",
+      "description": "Devuelve la información pública de contacto, dirección, horario y URL del formulario de la galería.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get_perspective_article",
+      "description": "Obtiene el contenido público completo, autor, etiquetas, imagen y adjunto de un artículo publicado usando su slug exacto.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "description": "Slug exacto del artículo publicado."
+          }
+        },
+        "required": [
+          "slug"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "list_art_categories",
+      "description": "Devuelve las categorías públicas disponibles en el catálogo de la galería, junto con sus slugs y URLs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "list_exhibitions",
+      "description": "Lista exposiciones públicas actuales, próximas, pasadas o todas, con fechas, ubicación y URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "all",
+              "current",
+              "upcoming",
+              "past"
+            ],
+            "description": "Estado temporal; el valor predeterminado es current."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "description": "Cantidad máxima de resultados."
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "list_open_calls",
+      "description": "Lista convocatorias públicas que están abiertas en la fecha actual, con fechas, resumen y URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "description": "Cantidad máxima de resultados."
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "list_perspectives",
+      "description": "Busca y lista artículos publicados en Perspectiva por texto o slug de etiqueta, con autor, fecha, resumen, etiquetas y URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "maxLength": 120,
+            "description": "Texto libre para buscar en título, extracto, contenido o autor."
+          },
+          "tag": {
+            "type": "string",
+            "maxLength": 120,
+            "description": "Slug exacto de una etiqueta de Perspectiva."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "description": "Cantidad máxima de resultados."
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "search_artworks",
+      "description": "Busca obras públicas por título, artista, técnica o descripción. Puede filtrar por slug de categoría y disponibilidad para venta.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "maxLength": 120,
+            "description": "Texto libre: título, artista, técnica o palabras de la descripción."
+          },
+          "category": {
+            "type": "string",
+            "maxLength": 120,
+            "description": "Slug exacto de una categoría obtenida con list_art_categories."
+          },
+          "available": {
+            "type": "boolean",
+            "description": "Si es true, devuelve únicamente obras disponibles y no vendidas."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "description": "Cantidad máxima de resultados."
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    }
+  ],
+  "host": "andromedagaleria.com.mx",
+  "source": "webmcp.com/api/directory.json"
+}

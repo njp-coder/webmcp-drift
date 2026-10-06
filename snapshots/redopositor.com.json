@@ -1,0 +1,192 @@
+{
+  "sponsio": 1,
+  "url": "https://redopositor.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "anadir_al_carrito",
+      "description": "Añade un producto al carrito del usuario (no cobra nada). Comprueba antes que está a la venta.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Slug del producto (lo devuelve buscar_productos)."
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "buscar_productos",
+      "description": "Busca temarios, tests y packs de Red Opositor para una oposición española. Devuelve nombre, precio, slug y enlaces.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "consulta": {
+            "type": "string",
+            "description": "Cuerpo u oposición, p. ej. «auxiliar administrativo Junta de Andalucía»."
+          },
+          "max_resultados": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 8
+          }
+        },
+        "required": [
+          "consulta"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "contactar",
+      "description": "Envía un mensaje al equipo de Red Opositor (dudas sobre un producto, una oposición o una compra). Responden por email.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "nombre": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "asunto": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "mensaje": {
+            "type": "string",
+            "maxLength": 2000
+          }
+        },
+        "required": [
+          "nombre",
+          "email",
+          "mensaje"
+        ]
+      },
+      "annotations": {
+        "consequential": true
+      }
+    },
+    {
+      "name": "iniciar_pago",
+      "description": "Abre el pago seguro (Stripe) con lo que hay en el carrito. El usuario introduce la tarjeta y confirma en Stripe; la herramienta no cobra por sí sola. Necesita el email donde se enviará el acceso.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Email del comprador (recibe el acceso)."
+          },
+          "nombre": {
+            "type": "string",
+            "description": "Nombre del comprador (opcional)."
+          },
+          "cupon": {
+            "type": "string",
+            "description": "Código de descuento, si el usuario tiene uno."
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "annotations": {
+        "consequential": true
+      }
+    },
+    {
+      "name": "producto_de_esta_pagina",
+      "description": "Si la página actual es la ficha de un producto, devuelve sus datos (nombre, precio, disponibilidad).",
+      "kind": "imperative",
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "quitar_del_carrito",
+      "description": "Quita un producto del carrito del usuario.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Slug del producto (lo devuelve buscar_productos)."
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "reservar",
+      "description": "Reserva gratis un producto que aún no está a la venta (disponibilidad «reserva»): solo pide el email y se avisa cuando se publique. No cobra nada.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Slug del producto (lo devuelve buscar_productos)."
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          }
+        },
+        "required": [
+          "slug",
+          "email"
+        ]
+      },
+      "annotations": {
+        "consequential": true
+      }
+    },
+    {
+      "name": "ver_carrito",
+      "description": "Productos que hay en el carrito del usuario, con precio y total.",
+      "kind": "imperative",
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "ver_producto",
+      "description": "Detalle de un producto por su slug: qué incluye, precio, disponibilidad y enlace a la ficha.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Slug del producto (lo devuelve buscar_productos)."
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "redopositor.com",
+  "source": "webmcp.com/api/directory.json"
+}

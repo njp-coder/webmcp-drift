@@ -1,0 +1,92 @@
+{
+  "sponsio": 1,
+  "url": "https://www.konkordato.web.tr/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "konkordato_araclari_listele",
+      "description": "Kullanılabilir hukuki/mali hesaplama araçlarını listeler: her aracın \"kod\" değeri, adı ve gereken girdi alanları. Hesaplama yapmadan ÖNCE doğru kodu/alanları öğrenmek için bunu çağırın.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "konkordato_hesapla",
+      "description": "Bir hesaplama aracını çalıştırır (faiz, damga vergisi, kıdem/ihbar tazminatı vb.). \"kod\" konkordato_araclari_listele aracından alınan araç kodudur (slug DEĞİL); \"girdi\" o aracın alanlarını içeren nesnedir.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "kod": {
+            "type": "string",
+            "description": "Araç kodu (örn. damga-vergisi). Listeleme aracından alın."
+          },
+          "girdi": {
+            "type": "object",
+            "description": "Aracın girdi alanları (anahtar/değer)"
+          }
+        },
+        "required": [
+          "kod"
+        ]
+      }
+    },
+    {
+      "name": "konkordato_ilan_ara",
+      "description": "Türkiye konkordato ve iflas resmî ilanlarını arar. İl, tür (konkordato/iflas), sektör veya serbest metinle filtrelenebilir. Kamuya açık, KVKK-uyumlu kayıtlar döner.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "il": {
+            "type": "string",
+            "description": "Şehir adı (örn. İstanbul)"
+          },
+          "tur": {
+            "type": "string",
+            "enum": [
+              "konkordato",
+              "iflas"
+            ],
+            "description": "İlan türü"
+          },
+          "sektor": {
+            "type": "string",
+            "description": "Sektör adı (örn. İnşaat)"
+          },
+          "q": {
+            "type": "string",
+            "description": "Serbest metin araması (şirket/başlık)"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "description": "Sonuç sayısı (1-20)"
+          }
+        }
+      }
+    },
+    {
+      "name": "konkordato_sirket_sorgula",
+      "description": "Bir şirketin konkordato/iflas durumunu adıyla sorgular. Eşleşen şirketlerin ili, sektörü, ilan sayısı, son ilan tarihi ve sayfa bağlantısı döner.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "ad": {
+            "type": "string",
+            "description": "Şirket adı veya parçası (en az 2 karakter)"
+          }
+        },
+        "required": [
+          "ad"
+        ]
+      }
+    }
+  ],
+  "host": "konkordato.web.tr",
+  "source": "webmcp.com/api/directory.json"
+}

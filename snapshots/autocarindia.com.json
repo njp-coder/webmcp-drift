@@ -1,0 +1,201 @@
+{
+  "sponsio": 1,
+  "url": "https://www.autocarindia.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "calculate_emi",
+      "description": "Loan EMI for a vehicle purchase — monthly instalment, total interest and total payable, all in rupees. Pure arithmetic, no lookup: pair it with get_on_road_price to turn a car's price into a monthly cost.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "loan_amount": {
+            "type": "number",
+            "description": "Principal in rupees (on-road price minus down payment).",
+            "exclusiveMinimum": 0
+          },
+          "annual_interest_rate": {
+            "type": "number",
+            "description": "Annual rate in percent (default 9.5).",
+            "exclusiveMinimum": 0
+          },
+          "tenure_years": {
+            "type": "number",
+            "description": "Loan tenure in years (default 5).",
+            "exclusiveMinimum": 0
+          }
+        },
+        "required": [
+          "loan_amount"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "compare_vehicles",
+      "description": "Side-by-side spec and price comparison of 2-4 models, as rendered on the compare pages. Slugs are `make-model` (e.g. \"maruti-suzuki-swift\"), optionally `make-model-variant`.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slugs": {
+            "type": "array",
+            "description": "2-4 slugs, e.g. [\"tata-nexon\", \"maruti-suzuki-brezza\"].",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 2,
+            "maxItems": 4
+          },
+          "vehicle_type": {
+            "type": "string",
+            "enum": [
+              "car",
+              "bike"
+            ],
+            "description": "Default car."
+          },
+          "city": {
+            "type": "string",
+            "description": "City slug; defaults to the user's current city."
+          }
+        },
+        "required": [
+          "slugs"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_on_road_price",
+      "description": "City-wise on-road price breakup for a model — ex-showroom, RTO, insurance and on-road, per variant. On-road price is city-dependent, so pass `city` whenever the user names one.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "make": {
+            "type": "string",
+            "description": "Make slug, e.g. \"maruti-suzuki\"."
+          },
+          "model": {
+            "type": "string",
+            "description": "Model slug, e.g. \"swift\"."
+          },
+          "city": {
+            "type": "string",
+            "description": "City slug, e.g. \"delhi-ncr\"; defaults to the user's current city."
+          }
+        },
+        "required": [
+          "make",
+          "model"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_vehicle_overview",
+      "description": "Overview of one car or bike model: price range, Autocar rating, launch stage, headline specs and a plain-text summary. Takes the make/model slugs from search_vehicles or list_vehicles.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "make": {
+            "type": "string",
+            "description": "Make slug, e.g. \"mahindra\"."
+          },
+          "model": {
+            "type": "string",
+            "description": "Model slug, e.g. \"thar\"."
+          },
+          "city": {
+            "type": "string",
+            "description": "City slug; defaults to the user's current city."
+          }
+        },
+        "required": [
+          "make",
+          "model"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_vehicles",
+      "description": "Browse the car/bike listing (PLP) with filters, sorting and pagination — the tool for \"show me SUVs under 15 lakh\" style questions. Filter slugs are backend-driven: pass include_filters=true on the first call to get the valid filter slugs and option slugs, then pass them back in `filters`.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "vehicle_type": {
+            "type": "string",
+            "enum": [
+              "cars",
+              "bikes"
+            ],
+            "description": "Default cars."
+          },
+          "filters": {
+            "type": "object",
+            "description": "Facet slug -> selected option slugs, e.g. {\"body_type\": [\"suv\"]}. Discover valid keys via include_filters.",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "city": {
+            "type": "string",
+            "description": "City slug; defaults to the user's current city."
+          },
+          "sort": {
+            "type": "string",
+            "description": "Backend sort key; omit for default ordering."
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "page_size": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20
+          },
+          "include_filters": {
+            "type": "boolean",
+            "description": "Also return the available filter facets and their option slugs."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_vehicles",
+      "description": "Search Autocar India by name for cars, bikes and editorial content. Use this first to turn a user's phrasing (\"swift\", \"thar 5 door\") into the site URL and the make/model slugs the other tools need.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Free text, e.g. \"mahindra thar\"."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Max results (default 8, max 20).",
+            "minimum": 1,
+            "maximum": 20
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "autocarindia.com",
+  "source": "webmcp.com/api/directory.json"
+}

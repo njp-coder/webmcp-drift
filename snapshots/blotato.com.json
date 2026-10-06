@@ -1,0 +1,70 @@
+{
+  "sponsio": 1,
+  "url": "https://www.blotato.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_blotato_facts",
+      "description": "Return verified facts about Blotato for an agent: MCP endpoint, REST base URL, OpenAPI spec, auth header, key facts (platform counts, tool count, capability scope) and the current pricing rate card. Read-only; publishing itself happens through mcp.blotato.com/mcp with the user's own credentials.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "list_recent_posts",
+      "description": "List the newest posts on the Blotato blog, optionally filtered to one category (Tool Comparisons, Tutorials, Content Repurposing, AI Automation, DM Automation, Content Strategy, Developer Guide, Creator Success Stories, News).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 10
+          },
+          "category": {
+            "type": "string",
+            "description": "Optional category name, matched case-insensitively."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "search_blog_posts",
+      "description": "Search the Blotato blog (social media API and MCP guides, tool comparisons, API pricing, posting from Claude, ChatGPT, n8n and Make). Returns matching posts with title, date, category, canonical URL and a one-line description.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Keywords, e.g. \"instagram mcp\", \"ayrshare alternatives\", \"twitter api pricing\"."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 25,
+            "default": 8
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "blotato.com",
+  "source": "webmcp.com/api/directory.json"
+}

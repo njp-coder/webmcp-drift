@@ -1,0 +1,73 @@
+{
+  "sponsio": 1,
+  "url": "https://stylion.pl/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_product",
+      "description": "Get full details of a single product by its id (as returned by search_products). Read-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Product id"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "go_to_page",
+      "description": "Navigate the current browser tab to a shop page (product, category or any internal path). Accepts only same-origin absolute paths starting with \"/\".",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Internal path, e.g. \"/pl/p/Nazwa/123\""
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    },
+    {
+      "name": "list_categories",
+      "description": "List the shop category tree (id, name, url, parent_id, products_count). Read-only, backed by a static build-time feed.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Search the shop product catalog by name or brand. Read-only, backed by a static build-time feed. Returns matching products with price, availability and product page URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search phrase (product name or brand)"
+          },
+          "limit": {
+            "type": "number",
+            "description": "Max results, default 10"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "stylion.pl",
+  "source": "webmcp.com/api/directory.json"
+}

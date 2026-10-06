@@ -1,0 +1,70 @@
+{
+  "sponsio": 1,
+  "url": "https://anyseats.net/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_event",
+      "description": "Get one event by id: its venue, date, and current price range. Set availability=true for the STOCK — how many listings and tickets are on sale, the cheapest price per seating category, and the delivery estimate — which is the fastest way to answer 'what is on sale and how cheaply'. The id is the value returned in an event's `id` field by search_events, e.g. 'premier-league/arsenal-vs-everton/24-oct-2026'. Returns 404 when no such event is on sale.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Event id from search_events, e.g. 'premier-league/arsenal-vs-everton/24-oct-2026'"
+          },
+          "availability": {
+            "type": "boolean",
+            "description": "Include stock per seating category (listings, tickets, cheapest price) plus a delivery estimate. Default false."
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "search_events",
+      "description": "Search upcoming football, music and live sport events with tickets on sale at anyseats, and get the current price range for each. Prices are in the buyer's currency and INCLUDE fees — the number returned is the number paid at checkout, so it is directly comparable with sites that add fees later. Returns what the event starts from, what it runs to, how many separate listings there are and how many tickets across them.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string",
+            "description": "Free text: team, artist, venue or city. e.g. 'arsenal'"
+          },
+          "league": {
+            "type": "string",
+            "description": "Competition slug, e.g. 'premier-league'"
+          },
+          "from": {
+            "type": "string",
+            "description": "Earliest date, ISO YYYY-MM-DD"
+          },
+          "to": {
+            "type": "string",
+            "description": "Latest date, ISO YYYY-MM-DD"
+          },
+          "limit": {
+            "type": "number",
+            "description": "Max results, 1-50 (default 20)"
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    }
+  ],
+  "host": "anyseats.net",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,56 @@
+{
+  "sponsio": 1,
+  "url": "https://sitegpt.ai/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "sitegpt_open_chat",
+      "description": "Open the SiteGPT demo chat widget on the current page — SiteGPT's own support chatbot, i.e. the product demoing itself. Use it when the user wants to try the widget, ask SiteGPT's bot a question, or talk to support. UI-only: it changes what this visitor sees on this page and creates no data. Only works on sitegpt.ai marketing pages where the demo widget is embedded.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "sitegpt_overview",
+      "description": "Get the machine-readable overview of SiteGPT (the /llms.txt file): what SiteGPT does, when to use it, and the canonical entry points for agents — REST API, MCP server, CLI, and anonymous agent-first onboarding. Call this first to orient yourself before taking any action on sitegpt.ai. Read-only, no side effects.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "sitegpt_start_chatbot_preview",
+      "description": "Create a SiteGPT chatbot preview workspace for the user's website, no account needed. SIDE EFFECT: this creates a real preview workspace (empty chatbot + scoped API token, expires if never claimed). SiteGPT does NOT crawl the site on this path — YOU, the calling agent, add the site's content afterwards using the returned API token or MCP URL (ingest the sitemap or key pages), then hand the user the onboardingUrl (the browser page where they watch training and claim the chatbot; claimUrl is an API endpoint for clients, not a page). Only call it when the user asked for a chatbot for a specific website, and pass the website URL the user gave you — never invent or guess one.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "websiteUrl": {
+            "type": "string",
+            "description": "The user's own website URL to build the chatbot from (http or https, e.g. \"https://example.com\"). Must come from the user — do not fabricate."
+          }
+        },
+        "required": [
+          "websiteUrl"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    }
+  ],
+  "host": "sitegpt.ai",
+  "source": "webmcp.com/api/directory.json"
+}

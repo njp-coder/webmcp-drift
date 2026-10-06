@@ -1,0 +1,331 @@
+{
+  "sponsio": 1,
+  "url": "https://inter-car.fr/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "estimate_intervention",
+      "description": "Chiffrer un remorquage ou dépannage avec le moteur InterCar, sans créer de demande. Prix indicatif, aucune réservation. Demander les données manquantes au client.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "service_type": {
+            "type": "string",
+            "enum": [
+              "remorquage",
+              "depannage"
+            ]
+          },
+          "start_address": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000,
+            "description": "Adresse complète, code postal et ville du véhicule."
+          },
+          "end_address": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000,
+            "description": "Obligatoire pour un remorquage ; inutile pour un dépannage sur place."
+          },
+          "vehicle_type": {
+            "type": "string",
+            "enum": [
+              "moto",
+              "citadine",
+              "berline",
+              "suv",
+              "utilitaire",
+              "poids-lourd"
+            ]
+          },
+          "vehicle_states": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "roulant",
+                "en_panne",
+                "accidente",
+                "roue_bloquee",
+                "immobilise"
+              ]
+            },
+            "maxItems": 5
+          },
+          "access_location": {
+            "type": "string",
+            "enum": [
+              "rue",
+              "parking_souterrain",
+              "chemin_terre"
+            ]
+          },
+          "mission_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date ISO 8601 avec fuseau horaire ; omettre pour une intervention immédiate."
+          },
+          "distance_km": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 20000,
+            "description": "Distance routière vérifiée par un outil cartographique ou fournie par le client, si connue. Ne pas inventer ni utiliser une distance à vol d’oiseau. Le chiffrage reste indicatif."
+          }
+        },
+        "required": [
+          "service_type",
+          "start_address",
+          "vehicle_type",
+          "vehicle_states",
+          "access_location"
+        ],
+        "oneOf": [
+          {
+            "properties": {
+              "service_type": {
+                "enum": [
+                  "remorquage"
+                ]
+              }
+            },
+            "required": [
+              "vehicle_type",
+              "vehicle_states",
+              "access_location",
+              "end_address"
+            ]
+          },
+          {
+            "properties": {
+              "service_type": {
+                "enum": [
+                  "depannage"
+                ]
+              }
+            },
+            "required": [
+              "vehicle_type",
+              "vehicle_states",
+              "access_location"
+            ]
+          }
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_request_status",
+      "description": "Consulter le statut d’un dossier avec son jeton privé, sans révéler de coordonnées. Conserver le jeton après soumission pour le suivi.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "request_token": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 24000,
+            "description": "Jeton privé retourné par prepare_request. Ne pas publier, placer dans une URL ou journaliser."
+          }
+        },
+        "required": [
+          "request_token"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "prepare_request",
+      "description": "Préparer une demande de remorquage, dépannage ou rachat. Retourne un récapitulatif à montrer au client et un jeton valable 30 minutes. Aucun dossier créé, aucun message envoyé. Pour le rachat, aucun prix de reprise ferme n’est promis.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "service_type": {
+            "type": "string",
+            "enum": [
+              "remorquage",
+              "depannage",
+              "rachat"
+            ]
+          },
+          "start_address": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000,
+            "description": "Adresse complète, code postal et ville du véhicule."
+          },
+          "end_address": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000,
+            "description": "Obligatoire pour un remorquage ; inutile pour un dépannage sur place."
+          },
+          "vehicle_type": {
+            "type": "string",
+            "enum": [
+              "moto",
+              "citadine",
+              "berline",
+              "suv",
+              "utilitaire",
+              "poids-lourd"
+            ]
+          },
+          "vehicle_states": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "roulant",
+                "en_panne",
+                "accidente",
+                "roue_bloquee",
+                "immobilise"
+              ]
+            },
+            "maxItems": 5
+          },
+          "access_location": {
+            "type": "string",
+            "enum": [
+              "rue",
+              "parking_souterrain",
+              "chemin_terre"
+            ]
+          },
+          "mission_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date ISO 8601 avec fuseau horaire ; omettre pour une intervention immédiate."
+          },
+          "distance_km": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 20000,
+            "description": "Distance routière vérifiée par un outil cartographique ou fournie par le client, si connue. Ne pas inventer ni utiliser une distance à vol d’oiseau. Le chiffrage reste indicatif."
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255
+          },
+          "phone": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 25,
+            "description": "Téléphone du client pour le rappel."
+          },
+          "email": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255,
+            "format": "email"
+          },
+          "license_plate": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 30
+          },
+          "message": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000,
+            "description": "Panne et contraintes ; pour le rachat : marque, modèle, année, kilométrage et état connus. Ne rien inventer."
+          }
+        },
+        "required": [
+          "service_type",
+          "start_address",
+          "name",
+          "phone",
+          "message"
+        ],
+        "oneOf": [
+          {
+            "properties": {
+              "service_type": {
+                "enum": [
+                  "remorquage"
+                ]
+              }
+            },
+            "required": [
+              "vehicle_type",
+              "vehicle_states",
+              "access_location",
+              "end_address"
+            ]
+          },
+          {
+            "properties": {
+              "service_type": {
+                "enum": [
+                  "depannage"
+                ]
+              }
+            },
+            "required": [
+              "vehicle_type",
+              "vehicle_states",
+              "access_location"
+            ]
+          },
+          {
+            "properties": {
+              "service_type": {
+                "enum": [
+                  "rachat"
+                ]
+              }
+            },
+            "required": [
+              "license_plate"
+            ]
+          }
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "submit_request",
+      "description": "Transmettre exactement la demande préparée, après autorisation du client. Crée un dossier InterCar, sans paiement ni réservation. Réutiliser le même request_token lors des nouvelles tentatives : un seul dossier sera créé.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "request_token": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 24000,
+            "description": "Jeton privé retourné par prepare_request. Ne pas publier, placer dans une URL ou journaliser."
+          },
+          "consent": {
+            "type": "boolean",
+            "description": "true uniquement si le client a autorisé la transmission de ce récapitulatif et de ses coordonnées à InterCar."
+          }
+        },
+        "required": [
+          "request_token",
+          "consent"
+        ]
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    }
+  ],
+  "host": "inter-car.fr",
+  "source": "webmcp.com/api/directory.json"
+}

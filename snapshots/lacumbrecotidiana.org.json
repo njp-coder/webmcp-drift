@@ -1,0 +1,95 @@
+{
+  "sponsio": 1,
+  "url": "https://www.lacumbrecotidiana.org/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "explain_difficulty_rating",
+      "description": "Explain La Cumbre Cotidiana's three-axis hiking difficulty system (physical 1-10, technical A-G, sun exposure I-III), including what each level means in practice and the associated safety implications.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_route_details",
+      "description": "Fetch the full detail page for one hiking route as markdown, given its slug or URL as returned by search_hiking_routes.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Route slug (the last path segment of a /ruta/ URL) or a full route URL."
+          }
+        },
+        "required": [
+          "slug"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_education_articles",
+      "description": "List La Cumbre Cotidiana mountain-education articles — hiking safety, gear, training and conservation — optionally filtered by topic keyword.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "topic": {
+            "type": "string",
+            "description": "Keyword to match against article title, theme or summary."
+          },
+          "limit": {
+            "type": "number",
+            "description": "Maximum results. Defaults to 10."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_hiking_routes",
+      "description": "Search La Cumbre Cotidiana's catalog of hiking routes near Monterrey, Mexico. Filter by difficulty (physical 1-10, technical 1-7, sun exposure 1-3), distance, or area. Returns matching routes with their stats and canonical URLs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Free-text match against route name, area, or description."
+          },
+          "maxPhysical": {
+            "type": "number",
+            "description": "Maximum physical difficulty, 1-10. Use 3 for beginners, 6 for moderately fit hikers."
+          },
+          "maxTechnical": {
+            "type": "number",
+            "description": "Maximum technical difficulty, 1-7 (A-G). Use 2 to restrict to walking trails with no scrambling."
+          },
+          "maxSolar": {
+            "type": "number",
+            "description": "Maximum sun exposure, 1-3. Use 2 or lower for summer or midday hikes."
+          },
+          "maxDistanceKm": {
+            "type": "number",
+            "description": "Maximum one-way/loop distance in kilometres."
+          },
+          "area": {
+            "type": "string",
+            "description": "Restrict to a named area or massif."
+          },
+          "limit": {
+            "type": "number",
+            "description": "Maximum results to return. Defaults to 8."
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "lacumbrecotidiana.org",
+  "source": "webmcp.com/api/directory.json"
+}

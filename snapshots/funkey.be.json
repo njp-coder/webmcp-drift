@@ -1,0 +1,61 @@
+{
+  "sponsio": 1,
+  "url": "https://funkey.be/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "search_activities",
+      "description": "Search the Funkey team building catalogue. Returns matching activities with the price per participant for the given party size, VAT included. Read-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500,
+            "description": "What the group is looking for, in the visitor's words. E.g. \"cooking workshop for a sales team\", \"outdoor competitive activity near Ghent\"."
+          },
+          "participants": {
+            "description": "Number of participants. Prices in the results are for this party size.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 500
+          },
+          "locationLabel": {
+            "description": "City or place the group wants to stay near, e.g. \"Gent\" or \"Antwerpen\".",
+            "type": "string",
+            "maxLength": 120
+          },
+          "radiusKm": {
+            "description": "Search radius around locationLabel in km. Default 20.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 200
+          },
+          "maxBudgetPerParticipant": {
+            "description": "Maximum price per participant in EUR, VAT included.",
+            "type": "number",
+            "minimum": 0
+          },
+          "limit": {
+            "description": "How many activities to return. Default 8.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "funkey.be",
+  "source": "webmcp.com/api/directory.json"
+}

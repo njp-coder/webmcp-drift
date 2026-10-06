@@ -1,0 +1,184 @@
+{
+  "sponsio": 1,
+  "url": "https://www.coursefinder.com.au/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_course",
+      "description": "Get full details for a single course by its courseId (as returned by search_courses). Use this to read fees, prerequisites, career outcomes and provider info before enquiring.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "courseId": {
+            "type": [
+              "string",
+              "number"
+            ],
+            "description": "The courseId from search_courses (Qdrant point id / WP post id)"
+          }
+        },
+        "required": [
+          "courseId"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "search_courses",
+      "description": "Search CourseFinder for nationally recognised Australian courses. Hybrid keyword + semantic search over the live index. Understands natural language (e.g. 'free online diploma of aged care in Brisbane'): it auto-detects study mode, qualification level, government funding and location. Returns courses with a courseId to pass to submit_course_enquiry.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Natural language search, e.g. 'aged care courses' or 'online diploma of nursing'"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 25,
+            "description": "Max number of courses to return (default 8)"
+          },
+          "study_mode": {
+            "type": "string",
+            "enum": [
+              "Online",
+              "On Campus",
+              "Blended",
+              "Classroom"
+            ],
+            "description": "Filter by delivery mode (exact, case-sensitive)"
+          },
+          "qualification": {
+            "type": "string",
+            "description": "Filter by qualification level, e.g. 'Diploma', 'Certificate IV', 'Bachelor'"
+          },
+          "gov_funded": {
+            "type": "string",
+            "enum": [
+              "yes",
+              "no"
+            ],
+            "description": "Filter by government-funded eligibility"
+          },
+          "location": {
+            "type": "string",
+            "description": "Soft-boost a location, e.g. 'Brisbane' or 'NSW'"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "submit_course_enquiry",
+      "description": "Submit a course enquiry to CourseFinder on the user's behalf. Calling without confirm returns a preview listing the fields still required - collect those from the user, then call again with confirm:true to create a real lead. The preview's `form` field describes this course's specific requirements: some courses only accept leads from certain states/postcodes or within a distance of the campus, and postgraduate courses require confirming prerequisites (qualification_confirmed), so always check the preview first. phone_number must be a valid Australian mobile (04XXXXXXXX or +614XXXXXXXX). Always show the preview and get explicit user approval before submitting with confirm:true.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "courseId": {
+            "type": [
+              "string",
+              "number"
+            ],
+            "description": "The courseId from search_courses"
+          },
+          "first_name": {
+            "type": "string",
+            "description": "Required to submit. Applicant first name"
+          },
+          "last_name": {
+            "type": "string",
+            "description": "Required to submit. Applicant last name"
+          },
+          "email_address": {
+            "type": "string",
+            "description": "Required to submit. Applicant email address"
+          },
+          "phone_number": {
+            "type": "string",
+            "description": "Required to submit. Australian mobile, e.g. 0412345678 or +61412345678"
+          },
+          "state": {
+            "type": "string",
+            "description": "Required to submit. State/territory of residence, e.g. 'NSW', 'VIC', 'QLD'"
+          },
+          "country": {
+            "type": "string",
+            "description": "Country of residence. Defaults to 'Australia'."
+          },
+          "suburb_or_postcode": {
+            "type": "string",
+            "description": "Australian suburb or postcode. Required when the preview's form.location_gate is not 'none' (location-restricted courses)."
+          },
+          "start_timeframe": {
+            "type": "string",
+            "enum": [
+              "Ready Now",
+              "3-6 months",
+              "6-12 months",
+              "1 year+"
+            ],
+            "description": "Required to submit. When the user wants to start studying."
+          },
+          "enquiry_reasons": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "Location",
+                "Cost of the Course",
+                "Length of the Course",
+                "Study Mode",
+                "Career Outcomes",
+                "Start Dates",
+                "Reputation of the Provider",
+                "Course Financing Options",
+                "Other (please specify)"
+              ]
+            },
+            "description": "Required to submit (at least one). Reasons for the enquiry. If 'Other (please specify)' is included, put the detail in enquiry_message."
+          },
+          "study_mode": {
+            "type": "string",
+            "description": "Preferred study mode"
+          },
+          "campus": {
+            "type": "string",
+            "description": "Preferred campus / location"
+          },
+          "enquiry_message": {
+            "type": "string",
+            "description": "Free-text message / questions for the provider"
+          },
+          "qualification_confirmed": {
+            "type": "boolean",
+            "description": "Required for postgraduate courses (see the preview's form.requires_qualification_check). Set true only after the user confirms they meet the entry prerequisites shown in form.prerequisites."
+          },
+          "prequalify_acknowledged": {
+            "type": "boolean",
+            "description": "Required when the preview returns form.prequalify_text. Set true only after the user acknowledges that text."
+          },
+          "confirm": {
+            "type": "boolean",
+            "description": "Set true ONLY after the user approves the preview. Defaults to false (preview only)."
+          }
+        },
+        "required": [
+          "courseId"
+        ]
+      }
+    }
+  ],
+  "host": "coursefinder.com.au",
+  "source": "webmcp.com/api/directory.json"
+}

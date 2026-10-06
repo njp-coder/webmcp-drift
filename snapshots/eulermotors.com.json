@@ -1,0 +1,287 @@
+{
+  "sponsio": 1,
+  "url": "https://www.eulermotors.com/en/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "book_test_drive",
+      "description": "Book a test drive for an Euler Motors electric vehicle.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "vehicle": {
+            "type": "string",
+            "description": "The model of the vehicle to book (e.g., 'HiLoad EV', 'Storm EV T1500')"
+          },
+          "customerName": {
+            "type": "string",
+            "description": "Full name of the customer"
+          },
+          "phone": {
+            "type": "string",
+            "description": "10-digit Indian mobile number (e.g., '9876543210')"
+          },
+          "city": {
+            "type": "string",
+            "description": "City name for the test drive location"
+          }
+        },
+        "required": [
+          "vehicle",
+          "customerName",
+          "phone",
+          "city"
+        ]
+      }
+    },
+    {
+      "name": "calculate_emi",
+      "description": "Calculate the monthly EMI, total interest, and total payable amount for a vehicle based on down payment and tenure.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "vehicle": {
+            "type": "string",
+            "description": "The name/model of the vehicle (e.g., 'HiLoad EV', 'Storm EV T1500')"
+          },
+          "downPayment": {
+            "type": "number",
+            "description": "Down payment amount in INR (e.g., 50000)"
+          },
+          "tenure": {
+            "type": "number",
+            "description": "Loan tenure in months (e.g., 36, 48, 60)"
+          }
+        },
+        "required": [
+          "vehicle",
+          "downPayment",
+          "tenure"
+        ]
+      }
+    },
+    {
+      "name": "compare_vehicles",
+      "description": "Compare specifications of multiple Euler Motors electric vehicles (e.g., HiLoad EV vs Storm EV T1500).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "vehicles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of vehicle names to compare (e.g., ['HiLoad EV', 'Storm EV T1500'])"
+          }
+        },
+        "required": [
+          "vehicles"
+        ]
+      }
+    },
+    {
+      "name": "download_brochure",
+      "description": "Get the brochure download link for a specific Euler Motors electric vehicle.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "vehicle": {
+            "type": "string",
+            "description": "The vehicle name to get the brochure for (e.g., 'HiLoad EV', 'Storm EV T1500')"
+          }
+        },
+        "required": [
+          "vehicle"
+        ]
+      }
+    },
+    {
+      "name": "find_charging_station",
+      "description": "Find nearby Euler charging stations and partner charging points in a specified city or along a route.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "city": {
+            "type": "string",
+            "description": "City name to search for charging stations (e.g., 'Delhi', 'Bangalore')"
+          },
+          "connectorType": {
+            "type": "string",
+            "enum": [
+              "CCS2",
+              "CHAdeMO",
+              "Type2",
+              "Bharat AC-001",
+              "Bharat DC-001"
+            ],
+            "description": "Optional: Connector type filter"
+          }
+        },
+        "required": [
+          "city"
+        ]
+      }
+    },
+    {
+      "name": "find_dealer",
+      "description": "Find nearby Euler Motors dealerships and service centers in a specified city.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "city": {
+            "type": "string",
+            "description": "The name of the city to search for dealers (e.g., 'Chennai', 'Agra')"
+          }
+        },
+        "required": [
+          "city"
+        ]
+      }
+    },
+    {
+      "name": "get_faq",
+      "description": "Get frequently asked questions and answers about Euler Motors vehicles, charging, warranty, service, and financing. For vehicle-specific FAQs, use the vehicle parameter (e.g. hiload, storm, stormlr, turbo).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "vehicle": {
+            "type": "string",
+            "enum": [
+              "hiload",
+              "storm",
+              "stormlr",
+              "turbo"
+            ],
+            "description": "Optional: Vehicle to get FAQs for. Use this for model-specific questions (e.g. hiload for HiLoad EV, storm for Storm EV T1500)"
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "general",
+              "vehicle",
+              "charging",
+              "warranty",
+              "service",
+              "finance",
+              "test-drive"
+            ],
+            "description": "FAQ category to filter by (only applies to general FAQs, not vehicle-specific)"
+          },
+          "query": {
+            "type": "string",
+            "description": "Optional: Search keywords within FAQs"
+          }
+        }
+      }
+    },
+    {
+      "name": "get_vehicle_specs",
+      "description": "Return detailed technical specifications for an Euler Motors vehicle. Use this for payload, range, battery, dimensions, motor, brakes, and features.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "vehicle": {
+            "type": "string",
+            "enum": [
+              "hiload",
+              "storm",
+              "stormlr"
+            ],
+            "description": "Vehicle to get specs for: hiload = HiLoad EV, storm = Storm EV T1500, stormlr = Storm EV LongRange 200"
+          }
+        },
+        "required": [
+          "vehicle"
+        ]
+      }
+    },
+    {
+      "name": "request_callback",
+      "description": "Submit a callback request for a customer interested in Euler Motors vehicles. Uses the same enquire-now flow as the website contact form.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Customer's full name"
+          },
+          "phone": {
+            "type": "string",
+            "description": "10-digit Indian mobile number (e.g., '9876543210')"
+          },
+          "city": {
+            "type": "string",
+            "description": "Customer's city (optional)"
+          },
+          "preferred_time": {
+            "type": "string",
+            "description": "Preferred callback time, e.g. 'Morning', 'Evening', '10am-12pm' (optional)"
+          },
+          "vehicle_interest": {
+            "type": "string",
+            "description": "Vehicle the customer is interested in, e.g. 'HiLoad EV', 'Storm EV T1500' (optional)"
+          }
+        },
+        "required": [
+          "name",
+          "phone"
+        ]
+      }
+    },
+    {
+      "name": "search_blog",
+      "description": "Search Euler Motors blogs and news articles by keyword or get the latest articles.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search keyword (e.g., 'EV subsidy', 'HiLoad review', 'charging')"
+          },
+          "limit": {
+            "type": "number",
+            "description": "Number of articles to return (default: 5)"
+          }
+        }
+      }
+    },
+    {
+      "name": "search_vehicle",
+      "description": "Search and filter Euler Motors electric vehicles based on vehicle type (3-wheeler/4-wheeler) and payload capacity.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "vehicleType": {
+            "type": "string",
+            "enum": [
+              "THREE_WHEELER",
+              "FOUR_WHEELER"
+            ],
+            "description": "The category of the vehicle: THREE_WHEELER or FOUR_WHEELER"
+          },
+          "payload": {
+            "type": "number",
+            "description": "Required payload capacity in kg (e.g., 750, 1000, 1500)"
+          },
+          "city": {
+            "type": "string",
+            "description": "The city where the vehicle is required (optional, used for local availability checks)"
+          }
+        }
+      }
+    }
+  ],
+  "host": "eulermotors.com",
+  "source": "webmcp.com/api/directory.json"
+}

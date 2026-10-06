@@ -1,0 +1,90 @@
+{
+  "sponsio": 1,
+  "url": "https://keenielts.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_ielts_model_answer",
+      "description": "Fetch one full IELTS Writing model answer from KeenIELTS: the complete question, the student's full answer, and the AI examiner evaluation with per-criterion band scores and feedback.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sectionId": {
+            "type": "string",
+            "description": "section_id from search results"
+          },
+          "attemptId": {
+            "type": "string",
+            "description": "attempt_id from search results"
+          }
+        },
+        "required": [
+          "sectionId",
+          "attemptId"
+        ]
+      }
+    },
+    {
+      "name": "open_practice_section",
+      "description": "Navigate this KeenIELTS tab to a practice area so the user can start practicing: listening, reading, writing, speaking, drills, or model-answers.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "section": {
+            "type": "string",
+            "enum": [
+              "listening",
+              "reading",
+              "writing",
+              "speaking",
+              "drills",
+              "model-answers"
+            ],
+            "description": "Which practice area to open"
+          }
+        },
+        "required": [
+          "section"
+        ]
+      }
+    },
+    {
+      "name": "search_ielts_model_answers",
+      "description": "Search real student IELTS Writing model answers on KeenIELTS, each scored by an AI examiner on the official IELTS marking criteria. Returns band-scored samples with question and answer excerpts plus section_id/attempt_id for fetching the full answer.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "testType": {
+            "type": "string",
+            "enum": [
+              "academic",
+              "general"
+            ],
+            "description": "IELTS test type"
+          },
+          "task": {
+            "type": "string",
+            "enum": [
+              "1",
+              "2"
+            ],
+            "description": "Writing task: 1 (report/letter) or 2 (essay)"
+          },
+          "bands": {
+            "type": "string",
+            "description": "Band filter: \"All\" (default), a single band like \"7\", or a range like \"6-8\""
+          }
+        },
+        "required": [
+          "testType",
+          "task"
+        ]
+      }
+    }
+  ],
+  "host": "keenielts.com",
+  "source": "webmcp.com/api/directory.json"
+}

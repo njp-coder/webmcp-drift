@@ -1,0 +1,219 @@
+{
+  "sponsio": 1,
+  "url": "https://husniadil.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "calendar_info",
+      "description": "Describe what this calendar knows: today's date in Jakarta, which years have holiday data and whether each is an official decree or a prediction, the holiday categories in use, and how many national holidays and cuti bersama days each year holds. It takes no arguments.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "check_date",
+      "description": "Check whether a specific date is an Indonesian holiday, a weekend, or a working day. Defaults to today in Jakarta when no date is given. Cuti bersama (collective leave) counts as a holiday and is flagged with is_collective_leave: civil servants are off, while a private employer decides and the day comes out of annual leave.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "description": "Calendar date in YYYY-MM-DD format"
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "count_workdays",
+      "description": "Count working days between two dates (inclusive), excluding weekends and Indonesian national holidays. Whether cuti bersama (collective leave) is a working day depends on the employer: civil servants and employers that follow it take the day off, and it comes out of annual leave, while other employers work it. Results give both counts: workdays treats cuti bersama as a day off, workdaysIfCollectiveLeaveWorked as a working day, and collectiveLeaveDays is the difference.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "start": {
+            "type": "string",
+            "description": "Start date, YYYY-MM-DD (inclusive)"
+          },
+          "end": {
+            "type": "string",
+            "description": "End date, YYYY-MM-DD (inclusive)"
+          }
+        },
+        "required": [
+          "start",
+          "end"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "find_holidays",
+      "description": "Find Indonesian holidays matching any combination of a name keyword, a category, and a date range. Every filter is optional; with none, it returns holidays from every covered year. Results are a flat list in date order, capped by `limit`; `truncated` is true when more holidays match than were returned. Covered years: 2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Case-insensitive keyword matched against the holiday name. Everyday names such as 'lebaran' or '17 agustus' work too."
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "BUDAYA",
+              "CUTI BERSAMA",
+              "KEAGAMAAN",
+              "NASIONAL"
+            ],
+            "description": "Restrict to one category. The permitted values are listed in this schema."
+          },
+          "from": {
+            "type": "string",
+            "description": "Earliest date to include, YYYY-MM-DD (inclusive)"
+          },
+          "to": {
+            "type": "string",
+            "description": "Latest date to include, YYYY-MM-DD (inclusive)"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 200,
+            "description": "Maximum results to return, 1-200. Defaults to 50."
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "find_long_weekends",
+      "description": "Find long-weekend opportunities in a date range, with how many leave days each one costs. Weekends, national holidays and cuti bersama count as days off. A run of three or more days off comes back with no leave (type no_leave), and for each run around a holiday the best bridges that a few leave days join it to, one reaching back and one reaching on (type bridge), so the leave can be picked to suit. Each names the runs it is for (runs). The text names one long weekend per run, or per runs whose only bridges are the same, as the app draws it: the run where it needs no leave, or else its best bridge, then the other ways to take it. Defaults to the twelve months starting today, so a question asked in December still reaches into next year. Where an employer works cuti bersama, a stretch that relies on it costs more, and the text says beside each stretch what it costs there (collectiveLeaveDays and leaveDaysIfCollectiveLeaveWorked in the structured result). max_leave_days keeps only those costing at most that many leave days with cuti bersama off. Covered years: 2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "description": "Earliest date to consider, YYYY-MM-DD. Defaults to today."
+          },
+          "to": {
+            "type": "string",
+            "description": "Latest date to consider, YYYY-MM-DD. Defaults to one year after `from`."
+          },
+          "max_leave_days": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Keep only opportunities costing at most this many leave days. A bridge never costs more than 4, so anything above 4 keeps them all."
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_holiday",
+      "description": "Get one Indonesian holiday by its slug, including every date it spans and how far away each is. Omit `year` to get every year the holiday occurs in; pass it to narrow to one. An unknown slug returns the slugs that exist. On hosts supporting MCP Apps this also renders the months it falls in, for `year` or else for its next occurrence.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "year": {
+            "type": "integer",
+            "minimum": 1000,
+            "maximum": 3000,
+            "description": "Four-digit year. Omit to return every year it occurs in."
+          },
+          "slug": {
+            "type": "string",
+            "description": "Holiday slug, e.g. 'idul-fitri', 'natal', 'kemerdekaan'. Everyday names such as 'lebaran' work too."
+          }
+        },
+        "required": [
+          "slug"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "next_holiday",
+      "description": "Find the next Indonesian holiday strictly after a date, crossing into the following year when needed. Defaults to today in Jakarta and to one holiday; `count` returns up to ten.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "description": "Search strictly after this date, YYYY-MM-DD. Defaults to today."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "description": "How many upcoming holidays to return, 1–10."
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "show_calendar",
+      "description": "List Indonesian holidays across a range of months (YYYY-MM), spanning year boundaries. On hosts supporting MCP Apps this also renders the matching calendar view. Defaults to the current month in Jakarta. Covered years: 2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "pattern": "^\\d{4}-(0[1-9]|1[0-2])$",
+            "description": "First month to show, YYYY-MM. Defaults to the current month."
+          },
+          "to": {
+            "type": "string",
+            "pattern": "^\\d{4}-(0[1-9]|1[0-2])$",
+            "description": "Last month to show, YYYY-MM (inclusive). Defaults to `from`."
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "husniadil.com",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,106 @@
+{
+  "sponsio": 1,
+  "url": "https://prescientai.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "book_prescient_demo",
+      "description": "Get the link to book a demo with the Prescient AI team, and navigate the current page there. Use when a user wants to talk to sales, request a demo, see pricing for their business, or start an evaluation.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "navigate": {
+            "type": "boolean",
+            "description": "If true, navigate the current tab to the booking page. Default false."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "get_prescient_page",
+      "description": "Fetch the readable text of any page on prescientai.com — useful for reading a full blog post, case study, or product page rather than just its summary. Blog posts and the homepage return markdown; other pages return text extracted from the page. Accepts a path like '/blog/incrementality' or a full prescientai.com URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Page path (e.g. '/pricing') or full prescientai.com URL."
+          }
+        },
+        "required": [
+          "path"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "list_prescient_integrations",
+      "description": "List the advertising, ecommerce, and data platforms Prescient AI integrates with. Optionally filter by name to check whether a specific platform (e.g. Meta, Klaviyo, Amazon) is supported.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "filter": {
+            "type": "string",
+            "description": "Optional platform name substring to filter by."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "search_prescient_site",
+      "description": "Search Prescient AI's website — blog posts, case studies, integrations, glossary terms, benchmarks, FAQs, research papers, and product pages. Use this to answer questions about marketing mix modeling, Prescient's product, customer results, or supported ad platforms.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search terms, e.g. 'TikTok incrementality' or 'Shopify integration'."
+          },
+          "type": {
+            "type": "string",
+            "description": "Optional filter by content type.",
+            "enum": [
+              "post",
+              "case-study",
+              "integration",
+              "glossary",
+              "benchmark",
+              "faq",
+              "research",
+              "page",
+              "event"
+            ]
+          },
+          "limit": {
+            "type": "number",
+            "description": "Maximum results to return (default 10, max 50)."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": false
+      }
+    }
+  ],
+  "host": "prescientai.com",
+  "source": "webmcp.com/api/directory.json"
+}

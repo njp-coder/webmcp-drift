@@ -1,0 +1,94 @@
+{
+  "sponsio": 1,
+  "url": "https://wayflyer.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "check_funding_eligibility",
+      "description": "Check potential Wayflyer funding eligibility and update the homepage application-process estimate.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "monthlyRevenue": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "category": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "monthlyRevenue",
+          "category",
+          "country"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_page_content",
+      "description": "Get a Wayflyer page as Markdown. Pass a same-site path returned by list_pages.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "list_pages",
+      "description": "List Wayflyer pages available in the current locale, including their Markdown URLs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "prefill_application_email",
+      "description": "Prefill the homepage application email field. This never submits the form; the user must click Apply now.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "pattern": "^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+          }
+        },
+        "required": [
+          "email"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "wayflyer.com",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,207 @@
+{
+  "sponsio": 1,
+  "url": "https://www.bluesunhotels.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_availability_calendar",
+      "description": "Returns, for one hotel, which check-in dates are available and the cheapest \"from\" price per night for each date. Use it to find open dates or the cheapest period before calling get_room_rates. Prices are indicative; get_room_rates gives exact totals for a party.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "hotel": {
+            "type": "string",
+            "description": "Hotel slug from list_hotels.",
+            "enum": [
+              "hotel-berulia",
+              "hotel-soline",
+              "hotel-marina",
+              "hotel-maestral",
+              "hotel-alga",
+              "hotel-neptun",
+              "holiday-village-afrodita",
+              "hotel-kastelet",
+              "hotel-jadran",
+              "hotel-elaphusa",
+              "holiday-village-bonaca",
+              "hotel-borak",
+              "paklenica-mobilne-kucice",
+              "holiday-village-alan",
+              "paklenica-parcele",
+              "hotel-mala-berulia"
+            ]
+          },
+          "from": {
+            "type": "string",
+            "description": "First date to include, ISO yyyy-mm-dd. Defaults to today."
+          },
+          "days": {
+            "type": "integer",
+            "description": "How many days from `from` to include (1-365). Default 60."
+          }
+        },
+        "required": [
+          "hotel"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_room_rates",
+      "description": "Live availability and exact prices for one hotel, check-in date, length of stay and party. Returns every room type with how many are left, its occupancy limits, and each bookable rate with total price, board and cancellation type. Pass the returned unitId and rateId to start_booking.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "hotel": {
+            "type": "string",
+            "description": "Hotel slug from list_hotels.",
+            "enum": [
+              "hotel-berulia",
+              "hotel-soline",
+              "hotel-marina",
+              "hotel-maestral",
+              "hotel-alga",
+              "hotel-neptun",
+              "holiday-village-afrodita",
+              "hotel-kastelet",
+              "hotel-jadran",
+              "hotel-elaphusa",
+              "holiday-village-bonaca",
+              "hotel-borak",
+              "paklenica-mobilne-kucice",
+              "holiday-village-alan",
+              "paklenica-parcele",
+              "hotel-mala-berulia"
+            ]
+          },
+          "checkin": {
+            "type": "string",
+            "description": "Check-in date, ISO yyyy-mm-dd."
+          },
+          "nights": {
+            "type": "integer",
+            "description": "Number of nights (1-30). Default 2."
+          },
+          "adults": {
+            "type": "integer",
+            "description": "Adults per room (1-10). Default 2."
+          },
+          "children": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 17
+            },
+            "description": "Ages of children per room, e.g. [4, 9]. Max 6."
+          },
+          "promo": {
+            "type": "string",
+            "description": "Optional promo code."
+          }
+        },
+        "required": [
+          "hotel",
+          "checkin"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "list_hotels",
+      "description": "Lists every bookable Bluesun hotel and holiday village in Croatia with its slug, destination, star rating and a short summary. Call this first to get the `hotel` slug the other tools require.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "start_booking",
+      "description": "Navigates the user to the Bluesun booking page with the stay pre-filled. Without unitId/rateId it opens the room-selection step; with both (from get_room_rates) it opens the payment step with that room already selected. Nothing is charged: the user still reviews and confirms.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "hotel": {
+            "type": "string",
+            "description": "Hotel slug from list_hotels.",
+            "enum": [
+              "hotel-berulia",
+              "hotel-soline",
+              "hotel-marina",
+              "hotel-maestral",
+              "hotel-alga",
+              "hotel-neptun",
+              "holiday-village-afrodita",
+              "hotel-kastelet",
+              "hotel-jadran",
+              "hotel-elaphusa",
+              "holiday-village-bonaca",
+              "hotel-borak",
+              "paklenica-mobilne-kucice",
+              "holiday-village-alan",
+              "paklenica-parcele",
+              "hotel-mala-berulia"
+            ]
+          },
+          "checkin": {
+            "type": "string",
+            "description": "Check-in date, ISO yyyy-mm-dd."
+          },
+          "nights": {
+            "type": "integer",
+            "description": "Number of nights. Default 2."
+          },
+          "adults": {
+            "type": "integer",
+            "description": "Adults. Default 2."
+          },
+          "children": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 17
+            },
+            "description": "Ages of children."
+          },
+          "promo": {
+            "type": "string",
+            "description": "Optional promo code."
+          },
+          "unitId": {
+            "type": "string",
+            "description": "Room type id from get_room_rates. Requires rateId."
+          },
+          "rateId": {
+            "type": "string",
+            "description": "Rate id from get_room_rates. Requires unitId."
+          }
+        },
+        "required": [
+          "hotel",
+          "checkin"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "consequential": true
+      }
+    }
+  ],
+  "host": "bluesunhotels.com",
+  "source": "webmcp.com/api/directory.json"
+}

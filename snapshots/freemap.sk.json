@@ -1,0 +1,879 @@
+{
+  "sponsio": 1,
+  "url": "https://www.freemap.sk/#map=8/48.707141/19.499501&layers=X",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "add-marker",
+      "description": "Puts a labelled marker on the map. The icon is `poi:<name>` for a bundled map icon (e.g. `poi:peak`) or `fa:<name>` for a Font Awesome one; anything else shows as its first two characters.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "lat": {
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90
+          },
+          "lon": {
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180
+          },
+          "label": {
+            "type": "string"
+          },
+          "color": {
+            "description": "CSS hex colour, alpha allowed (#ff0000, #ff000080).",
+            "type": "string"
+          },
+          "markerType": {
+            "type": "string",
+            "enum": [
+              "pin",
+              "square",
+              "ring"
+            ]
+          },
+          "icon": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "lat",
+          "lon"
+        ]
+      }
+    },
+    {
+      "name": "clear-map",
+      "description": "Takes everything the user put on the map off it — searched places, the planned route, drawings, imported tracks.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "clear-search-results",
+      "description": "Takes the searched places off the map and empties the list.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "close-tool",
+      "description": "Closes one open tool.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "enum": [
+              "changesets",
+              "draw-lines",
+              "draw-points",
+              "draw-polygons",
+              "gps-recorder",
+              "import-file",
+              "map-details",
+              "objects",
+              "panorama",
+              "route-planner",
+              "toposcope",
+              "tracking"
+            ]
+          }
+        },
+        "required": [
+          "tool"
+        ]
+      }
+    },
+    {
+      "name": "describe-place",
+      "description": "Says what is at a point on the map: the nearest addressable place, the OSM elements right there, and the areas containing it. Shows them on the map as it does.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "lat": {
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90
+          },
+          "lon": {
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180
+          }
+        },
+        "required": [
+          "lat",
+          "lon"
+        ]
+      }
+    },
+    {
+      "name": "download-map-features",
+      "description": "Saves what is on the map to a file in the user's downloads, as GPX, GeoJSON or KML.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "format": {
+            "type": "string",
+            "enum": [
+              "gpx",
+              "geojson",
+              "kml"
+            ]
+          },
+          "elevation": {
+            "description": "Fill elevation from the terrain model into what is written; `missing` only where there is none.",
+            "type": "string",
+            "enum": [
+              "none",
+              "missing",
+              "all"
+            ]
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "format"
+        ]
+      }
+    },
+    {
+      "name": "draw-area",
+      "description": "Draws a filled area through the given points. The ring is closed on its own — do not repeat the first point.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "points": {
+            "minItems": 3,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "lat": {
+                  "type": "number",
+                  "minimum": -90,
+                  "maximum": 90
+                },
+                "lon": {
+                  "type": "number",
+                  "minimum": -180,
+                  "maximum": 180
+                }
+              },
+              "required": [
+                "lat",
+                "lon"
+              ]
+            }
+          },
+          "label": {
+            "type": "string"
+          },
+          "color": {
+            "description": "CSS hex colour, alpha allowed (#ff0000, #ff000080).",
+            "type": "string"
+          },
+          "fillColor": {
+            "description": "CSS hex colour, alpha allowed (#ff0000, #ff000080).",
+            "type": "string"
+          }
+        },
+        "required": [
+          "points"
+        ]
+      }
+    },
+    {
+      "name": "draw-line",
+      "description": "Draws a line through the given points. Use draw-area for a filled shape.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "points": {
+            "minItems": 2,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "lat": {
+                  "type": "number",
+                  "minimum": -90,
+                  "maximum": 90
+                },
+                "lon": {
+                  "type": "number",
+                  "minimum": -180,
+                  "maximum": 180
+                }
+              },
+              "required": [
+                "lat",
+                "lon"
+              ]
+            }
+          },
+          "label": {
+            "type": "string"
+          },
+          "color": {
+            "description": "CSS hex colour, alpha allowed (#ff0000, #ff000080).",
+            "type": "string"
+          },
+          "width": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 20
+          }
+        },
+        "required": [
+          "points"
+        ]
+      }
+    },
+    {
+      "name": "find-objects-in-area",
+      "description": "Finds POIs of the given categories (from list-object-categories) inside a bounding box, wherever it is — unlike show-objects, which is bound to what the map shows and draws what it finds. This one only reports back; it leaves the map alone.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "categories": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "west": {
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180
+          },
+          "south": {
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90
+          },
+          "east": {
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180
+          },
+          "north": {
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90
+          },
+          "limit": {
+            "description": "How many objects to return at most; 200 by default.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "deliver": {
+            "description": "`download` writes the answer to a JSON file instead of returning it — for a result too big to carry back through the agent's own channel.",
+            "type": "string",
+            "enum": [
+              "return",
+              "download"
+            ]
+          }
+        },
+        "required": [
+          "categories",
+          "west",
+          "south",
+          "east",
+          "north"
+        ]
+      }
+    },
+    {
+      "name": "fit-map-to-area",
+      "description": "Zooms the map so that the given bounding box fits the screen — the way to show a whole region, town or route extent.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "west": {
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180,
+            "description": "WGS-84 longitude"
+          },
+          "south": {
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90,
+            "description": "WGS-84 latitude"
+          },
+          "east": {
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180,
+            "description": "WGS-84 longitude"
+          },
+          "north": {
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90,
+            "description": "WGS-84 latitude"
+          }
+        },
+        "required": [
+          "west",
+          "south",
+          "east",
+          "north"
+        ]
+      }
+    },
+    {
+      "name": "get-app-guide",
+      "description": "Reads the app's own reference guide: what each tool, dialog and map layer does, and how to build a link that opens the map in a given state (viewport, layers, markers, drawn geometry, a planned route). Call it without a section for the summary and the list of sections, then again with the one you need.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "section": {
+            "description": "Heading of the section to read, as listed without one.",
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "get-app-state",
+      "description": "Returns what the app is doing right now: the open tools and dialog, the selected feature, the UI language and who is signed in.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get-elevation",
+      "description": "Reads the height above sea level of the given points from the terrain model, in metres. A point the model has no data for comes back as null.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "points": {
+            "minItems": 1,
+            "maxItems": 100,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "lat": {
+                  "type": "number",
+                  "minimum": -90,
+                  "maximum": 90
+                },
+                "lon": {
+                  "type": "number",
+                  "minimum": -180,
+                  "maximum": 180
+                }
+              },
+              "required": [
+                "lat",
+                "lon"
+              ]
+            }
+          }
+        },
+        "required": [
+          "points"
+        ]
+      }
+    },
+    {
+      "name": "get-map-features",
+      "description": "Returns everything the user has on the map — drawings, the planned route, searched places, shown objects, imported tracks — as one GeoJSON FeatureCollection.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "deliver": {
+            "description": "`download` writes the answer to a JSON file instead of returning it — for a result too big to carry back through the agent's own channel.",
+            "type": "string",
+            "enum": [
+              "return",
+              "download"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "get-map-view",
+      "description": "Returns what the map currently shows: its centre, zoom, visible bounding box, the layers that are on, and the shareable URL of this exact state.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get-route-elevation",
+      "description": "Climb, drop and the highest and lowest point of the route currently planned, in metres.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get-route-itinerary",
+      "description": "Returns the turn-by-turn steps of the route currently planned, with the distance and time of each. Distances are in metres, times in seconds.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list-drawings",
+      "description": "Lists what is drawn on the map, with the index each one is removed by.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list-map-layers",
+      "description": "Lists the map layers this app offers, with the one-letter code each is switched on by. A \"base\" layer is the map itself (only one at a time); an \"overlay\" is drawn on top of it (any number). premiumFromZoom marks a layer that needs a paid account past that zoom.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list-object-categories",
+      "description": "Finds the POI categories the objects tool can show — search them by name in the UI language (\"water\", \"shelter\", \"castle\"). Each row carries the filter that show-objects takes.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "search": {
+            "description": "Part of a category name; omitted lists the first ones.",
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "open-dialog",
+      "description": "Opens one of the app's dialogs, for the user to carry on in themselves — signing in, exporting, buying credits, configuring the map. Call get-app-guide for what each one does.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "dialog": {
+            "type": "string",
+            "enum": [
+              "about",
+              "account",
+              "browse-cache",
+              "credits-purchase",
+              "custom-maps",
+              "drawing-properties",
+              "elevation-settings",
+              "embed",
+              "file-import",
+              "gallery-filter",
+              "gallery-leaderboard",
+              "gallery-upload",
+              "gps-recorder-settings",
+              "legend",
+              "login",
+              "map-features-export",
+              "map-layers-config",
+              "map-preferences",
+              "map-to-document-export",
+              "my-maps",
+              "objects-style",
+              "offline-map-export",
+              "offline-maps",
+              "panorama-settings",
+              "premium",
+              "route-planner-style",
+              "search-result-style",
+              "support-us",
+              "toposcope-settings",
+              "track-viewer-style",
+              "track-viewer-match",
+              "tracking-my",
+              "tracking-watched",
+              "viewshed-settings"
+            ]
+          }
+        },
+        "required": [
+          "dialog"
+        ]
+      }
+    },
+    {
+      "name": "open-drawing-tool",
+      "description": "Opens a drawing toolbar so the user can carry on by hand — clicking points onto the map, restyling or labelling what is drawn.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "draw-points",
+              "draw-lines",
+              "draw-polygons"
+            ]
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      }
+    },
+    {
+      "name": "open-tool",
+      "description": "Opens one of the app's tools — its toolbar, and whatever it takes over map clicks for.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "enum": [
+              "changesets",
+              "draw-lines",
+              "draw-points",
+              "draw-polygons",
+              "gps-recorder",
+              "import-file",
+              "map-details",
+              "objects",
+              "panorama",
+              "route-planner",
+              "toposcope",
+              "tracking"
+            ]
+          }
+        },
+        "required": [
+          "tool"
+        ]
+      }
+    },
+    {
+      "name": "plan-route",
+      "description": "Plans a route through the given waypoints and draws it on the map, opening the route finder. Returns its length and estimated time. \"trip\" mode reorders the waypoints into the shortest round of them all; \"route\" keeps the given order.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "points": {
+            "minItems": 2,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "lat": {
+                  "type": "number",
+                  "minimum": -90,
+                  "maximum": 90
+                },
+                "lon": {
+                  "type": "number",
+                  "minimum": -180,
+                  "maximum": 180
+                }
+              },
+              "required": [
+                "lat",
+                "lon"
+              ]
+            },
+            "description": "Waypoints, from start to finish."
+          },
+          "transportType": {
+            "description": "How the route is travelled; defaults to what the app is set to (initially hiking).",
+            "type": "string",
+            "enum": [
+              "bike-osrm",
+              "car-osrm",
+              "foot-osrm",
+              "bike",
+              "car",
+              "car4wd",
+              "carnotoll",
+              "easyhike",
+              "ebike",
+              "foot",
+              "gravelbike",
+              "hiking",
+              "motorcycle",
+              "mtb",
+              "racingbike",
+              "stroller",
+              "manual"
+            ]
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "route",
+              "trip"
+            ]
+          }
+        },
+        "required": [
+          "points"
+        ]
+      }
+    },
+    {
+      "name": "remove-drawing",
+      "description": "Removes one drawn marker, line or area by its index from list-drawings. Removing shifts the indexes of what comes after it, so list them again between removals.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "marker",
+              "line"
+            ]
+          },
+          "index": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "kind",
+          "index"
+        ]
+      }
+    },
+    {
+      "name": "sample-elevation-grid",
+      "description": "Reads the terrain model over a rectangle on a regular grid — one call instead of one per point. Elevations come back row-major from the north-west corner (row 0 is the northern edge), in metres, `null` where the model has no data. Ask for derivatives to get slope in degrees and aspect as degrees clockwise from north pointing downhill, computed from each cell's neighbours.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "west": {
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180
+          },
+          "south": {
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90
+          },
+          "east": {
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180
+          },
+          "north": {
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90
+          },
+          "spacing": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 10000,
+            "description": "Distance between grid points, in metres."
+          },
+          "derivatives": {
+            "description": "Also return slope and aspect per cell.",
+            "type": "boolean"
+          },
+          "deliver": {
+            "description": "`download` writes the answer to a JSON file instead of returning it — for a result too big to carry back through the agent's own channel.",
+            "type": "string",
+            "enum": [
+              "return",
+              "download"
+            ]
+          }
+        },
+        "required": [
+          "west",
+          "south",
+          "east",
+          "north",
+          "spacing"
+        ]
+      }
+    },
+    {
+      "name": "search-places",
+      "description": "Searches for a place by name, category, OSM element id (e.g. \"way/123\"), coordinates, a bounding box or pasted GeoJSON, and fills the app's result list. Results are ranked around the current map view. Show one on the map with show-search-result.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "description": "What to look for."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "set-map-layers",
+      "description": "Switches map layers on and off by their code (see list-map-layers). Naming overlays replaces the set that is on; leaving them out keeps it.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "base": {
+            "description": "Code of the base map to show.",
+            "type": "string"
+          },
+          "overlays": {
+            "description": "Codes of the overlays to leave on; [] takes them all off.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "set-map-view",
+      "description": "Moves the map. Give a centre, a zoom (0 = whole world, 19 = a building), or both.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "lat": {
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90,
+            "description": "WGS-84 latitude"
+          },
+          "lon": {
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180,
+            "description": "WGS-84 longitude"
+          },
+          "zoom": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 20
+          }
+        }
+      }
+    },
+    {
+      "name": "show-objects",
+      "description": "Shows POIs of the given categories (filters from list-object-categories) within the current map view, and returns what was found. The map has to be at zoom 8 or closer, and a wide view finds a lot — zoom in on what is being asked about first.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "categories": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Filters as list-object-categories gives them."
+          }
+        },
+        "required": [
+          "categories"
+        ]
+      }
+    },
+    {
+      "name": "show-search-result",
+      "description": "Draws one result of the last search-places on the map and moves the map to it.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "index": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991,
+            "description": "The result's index as search-places returned it."
+          }
+        },
+        "required": [
+          "index"
+        ]
+      }
+    }
+  ],
+  "host": "freemap.sk",
+  "source": "webmcp.com/api/directory.json"
+}

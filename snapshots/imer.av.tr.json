@@ -1,0 +1,177 @@
+{
+  "sponsio": 1,
+  "url": "https://imer.av.tr/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "calculate_attorney_fee",
+      "description": "Avukatlık Asgari Ücret Tarifesi (AAÜT) üçüncü kısım nispi vekalet ücretini hesaplar.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "davaDegeri": {
+            "type": "number",
+            "description": "Dava değeri (TL)"
+          },
+          "maktuTaban": {
+            "type": "number",
+            "description": "Davanın görüldüğü merci için maktu ücret tabanı (Örn. Asliye Hukuk için 30000). Eğer bilinmiyorsa 0 girilebilir."
+          },
+          "tarihIso": {
+            "type": "string",
+            "description": "Hüküm tarihi veya hukuki yardımın tamamlandığı tarih (ISO formatında, örn. '2024-11-01'). AAÜT dönemini belirler."
+          }
+        },
+        "required": [
+          "davaDegeri"
+        ]
+      }
+    },
+    {
+      "name": "calculate_enforcement_fee",
+      "description": "Takip türü ve alacak tutarına göre icra takibi açılış harçlarını hesaplar.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "alacakTutari": {
+            "type": "number",
+            "description": "Takibe konu alacak tutarı (TL)"
+          },
+          "takipTuru": {
+            "type": "string",
+            "description": "Takip türü ('ilamsiz', 'ilamli' veya 'kambiyo')",
+            "enum": [
+              "ilamsiz",
+              "ilamli",
+              "kambiyo"
+            ]
+          },
+          "vekilVar": {
+            "type": "boolean",
+            "description": "Takip vekil (avukat) aracılığıyla mı açılıyor?"
+          }
+        },
+        "required": [
+          "alacakTutari",
+          "takipTuru",
+          "vekilVar"
+        ]
+      }
+    },
+    {
+      "name": "calculate_legal_deadline",
+      "description": "Adli tatil, hafta sonu ve resmi tatilleri gözeterek hukuki/adli kesin süreyi hesaplar.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "baslangicIso": {
+            "type": "string",
+            "description": "Sürenin işlemeye başladığı gün (ISO formatında, örn. '2024-05-15')"
+          },
+          "miktar": {
+            "type": "number",
+            "description": "Süre miktarı"
+          },
+          "birim": {
+            "type": "string",
+            "description": "Süre birimi ('gun', 'hafta', 'ay', 'yil', 'is_gunu')",
+            "enum": [
+              "gun",
+              "hafta",
+              "ay",
+              "yil",
+              "is_gunu"
+            ]
+          },
+          "adliTatilProfil": {
+            "type": "string",
+            "description": "Adli tatil uzama davranışı ('yok', 'hukuk', 'ceza', 'idari')",
+            "enum": [
+              "yok",
+              "hukuk",
+              "ceza",
+              "idari"
+            ]
+          }
+        },
+        "required": [
+          "baslangicIso",
+          "miktar",
+          "birim"
+        ]
+      }
+    },
+    {
+      "name": "calculate_legal_interest",
+      "description": "Tarihsel faiz dönemlerini kullanarak yasal ve ticari temerrüt faizi tutarını hesaplar.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "asilAlacak": {
+            "type": "number",
+            "description": "Faiz işletilecek asıl alacak tutarı (TL)"
+          },
+          "baslangicIso": {
+            "type": "string",
+            "description": "Faizin işlemeye başladığı tarih (ISO formatında, örn. '2023-01-01')"
+          },
+          "bitisIso": {
+            "type": "string",
+            "description": "Faizin bittiği tarih (ISO formatında, örn. '2024-01-01'). Bugün için boş bırakılabilir."
+          },
+          "faizTuru": {
+            "type": "string",
+            "description": "Faiz türü ('yasal' veya 'ticari')",
+            "enum": [
+              "yasal",
+              "ticari"
+            ]
+          }
+        },
+        "required": [
+          "asilAlacak",
+          "baslangicIso",
+          "faizTuru"
+        ]
+      }
+    },
+    {
+      "name": "calculate_rent_increase",
+      "description": "Türkiye'de kira artış oranını ve yeni kira bedelini TÜFE 12 aylık ortalamalarına göre hesaplar.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "mevcutKira": {
+            "type": "number",
+            "description": "Hâlihazırda ödenen aylık kira bedeli (TL)"
+          },
+          "tufeOrani": {
+            "type": "number",
+            "description": "Uygulanacak ham TÜFE 12 aylık ortalama değişim oranı (yüzde; ör. 32.43)"
+          },
+          "yil": {
+            "type": "number",
+            "description": "Kira sözleşmesinin yenilendiği yıl (örn. 2024)"
+          },
+          "ayNo": {
+            "type": "number",
+            "description": "Kira sözleşmesinin yenilendiği ay (1-12)"
+          }
+        },
+        "required": [
+          "mevcutKira",
+          "tufeOrani",
+          "yil",
+          "ayNo"
+        ]
+      }
+    }
+  ],
+  "host": "imer.av.tr",
+  "source": "webmcp.com/api/directory.json"
+}

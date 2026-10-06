@@ -1,0 +1,78 @@
+{
+  "sponsio": 1,
+  "url": "https://www.ameriglide.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "addToCart",
+      "description": "Add a product to the user's shopping cart by product ID. Use searchProducts first to find the productId. Does not place an order — the user must still review the cart and check out.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "integer",
+            "description": "Numeric product ID returned by searchProducts"
+          }
+        },
+        "required": [
+          "productId"
+        ]
+      }
+    },
+    {
+      "name": "getCart",
+      "description": "Read the current contents of the user's shopping cart: line items, quantities, applied coupons, and totals. Session-scoped to the current browser.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "getFreightCost",
+      "description": "Calculate freight (shipping) cost for the products currently in the user's cart and configured destination. Depends on session state — the user or agent must have added items via addToCart and selected a destination first.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "getProtectionPlans",
+      "description": "List available protection plans (extended warranty, expedited processing, shipping insurance) for a product.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "integer",
+            "description": "Numeric product ID returned by searchProducts"
+          }
+        },
+        "required": [
+          "productId"
+        ]
+      }
+    },
+    {
+      "name": "searchProducts",
+      "description": "Search the AmeriGlide product catalog (stair lifts, vertical platform lifts, walk-in tubs, ramps, scooters, etc.). Returns matching products with names, IDs, prices, and URLs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search terms, e.g. 'outdoor stair lift' or 'walk in tub'"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "ameriglide.com",
+  "source": "webmcp.com/api/directory.json"
+}

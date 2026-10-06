@@ -1,0 +1,191 @@
+{
+  "sponsio": 1,
+  "url": "https://onwardticket.com/en",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "book_onward_ticket",
+      "description": "Create an onward ticket order for the customer and open the review page, where the customer confirms and pays by card or PayPal. This does not charge anything. It searches flights first, which can take up to a few minutes. Names must be exactly as in the passport. Ask the customer before calling. An onward ticket is a real, verifiable flight reservation (with a PNR that can be checked on the airline's website) that travelers show as proof of onward travel at immigration, check-in or for a visa application. It is valid for at least 48 hours and then cancelled automatically; the customer pays only the reservation fee, not the flight. We choose the best available flight for the route and date; customers cannot pick a specific flight — they see it after checkout.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "pattern": "^[A-Za-z]{3}$",
+            "description": "3-letter IATA airport code. Use search_airports to find it."
+          },
+          "to": {
+            "type": "string",
+            "pattern": "^[A-Za-z]{3}$",
+            "description": "3-letter IATA airport code. Use search_airports to find it."
+          },
+          "departureDate": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+            "description": "Departure date, YYYY-MM-DD. At least 10 days from today and within one year."
+          },
+          "returnDate": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+            "description": "Optional return date for a round trip, YYYY-MM-DD, after the departure date."
+          },
+          "travelers": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 27,
+            "description": "Every traveler, exactly as in their passport. At least one adult; no more infants than adults.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "firstName": {
+                  "type": "string",
+                  "maxLength": 60,
+                  "description": "Given name(s). Letters, spaces, hyphens and apostrophes only."
+                },
+                "lastName": {
+                  "type": "string",
+                  "maxLength": 60,
+                  "description": "Surname. For multi-part surnames like 'De la Cruz', write them without spaces: 'Delacruz'."
+                },
+                "gender": {
+                  "type": "string",
+                  "enum": [
+                    "MALE",
+                    "FEMALE"
+                  ]
+                },
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "ADULT",
+                    "CHILD",
+                    "INFANT"
+                  ],
+                  "default": "ADULT",
+                  "description": "CHILD is 2-11 years, INFANT under 2."
+                },
+                "dateOfBirth": {
+                  "type": "string",
+                  "format": "date",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                  "description": "Optional, YYYY-MM-DD."
+                }
+              },
+              "required": [
+                "firstName",
+                "lastName",
+                "gender"
+              ]
+            }
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 254,
+            "description": "Where the reservation and receipt are sent."
+          },
+          "flexible": {
+            "type": "boolean",
+            "default": false,
+            "description": "Flexible Reservation add-on (+$8.00): one correction of name, date or route."
+          },
+          "activateLater": {
+            "type": "boolean",
+            "default": false,
+            "description": "Activate later (+$2.00): receive an activation link and start the 48-hour validity when ready to travel."
+          }
+        },
+        "required": [
+          "from",
+          "to",
+          "departureDate",
+          "travelers",
+          "email"
+        ]
+      }
+    },
+    {
+      "name": "get_order_status",
+      "description": "Status of an onward ticket order created with book_onward_ticket: whether it is paid, being booked, or done.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "ticketId": {
+            "type": "string",
+            "description": "The ticketId returned by book_onward_ticket."
+          }
+        },
+        "required": [
+          "ticketId"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_price_quote",
+      "description": "Price of an onward ticket for a given number of travelers and options, in USD. The final price is shown on the review page before payment. An onward ticket is a real, verifiable flight reservation (with a PNR that can be checked on the airline's website) that travelers show as proof of onward travel at immigration, check-in or for a visa application. It is valid for at least 48 hours and then cancelled automatically; the customer pays only the reservation fee, not the flight. We choose the best available flight for the route and date; customers cannot pick a specific flight — they see it after checkout.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "travelers": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 27,
+            "description": "Number of travelers (adults, children and infants)."
+          },
+          "roundTrip": {
+            "type": "boolean",
+            "description": "Reservation for the outbound and return flight.",
+            "default": false
+          },
+          "flexible": {
+            "type": "boolean",
+            "description": "Flexible Reservation add-on: one correction of name, date or route within the validity period.",
+            "default": false
+          },
+          "activateLater": {
+            "type": "boolean",
+            "description": "Pay now and activate the reservation later with an emailed link, instead of receiving it right away.",
+            "default": false
+          }
+        },
+        "required": [
+          "travelers"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "search_airports",
+      "description": "Find airports by city, airport name or IATA code. Returns up to 10 matches with their 3-letter codes, for use in book_onward_ticket.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "description": "City, airport name or code, e.g. 'Bangkok' or 'BKK'."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "onwardticket.com",
+  "source": "webmcp.com/api/directory.json"
+}

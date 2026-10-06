@@ -1,0 +1,166 @@
+{
+  "sponsio": 1,
+  "url": "https://idfmetale.pl/pl",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "add_to_cart",
+      "description": "Dodaje produkt (SKU z search_products) do koszyka w tej przeglądarce. NIE składa zamówienia ani nie płaci — klient kończy zakup sam w kasie. Adds a product to this browser's cart; does not place an order.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sku": {
+            "type": "string",
+            "description": "Kod produktu z wyników search_products (pole sku)."
+          },
+          "qty": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000,
+            "description": "Liczba sztuk."
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "order",
+              "in_stock"
+            ],
+            "description": "order = na zamówienie, in_stock = od ręki."
+          }
+        },
+        "required": [
+          "sku",
+          "qty"
+        ]
+      },
+      "annotations": {
+        "readOnly": false,
+        "consequential": false,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "get_branches",
+      "description": "Oddziały IDF Metale (Katowice, Warszawa, Kraków): adresy, telefony, godziny — zakup, bezpłatny odbiór zamówień i skup na miejscu. IDF Metale branches with addresses, phone numbers and opening hours.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "get_buyback_info",
+      "description": "Zasady skupu IDF Metale (co skupujemy, jak przebiega wycena) i — gdy podasz produkt — orientacyjna cena skupu. Buyback rules of IDF Metale and, optionally, an indicative buyback price for a product.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Opcjonalnie: produkt, np. „sztabka złota 1 oz”, „Krugerrand”."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "get_price_quote",
+      "description": "Wycena konkretnego produktu (SKU z search_products) dla podanej liczby sztuk i trybu: „order” (na zamówienie, zwykle taniej) albo „in_stock” (od ręki, jeśli jest na stanie). Zwraca cenę za sztukę i łącznie — tę samą, którą policzy koszyk. Exact quote for a SKU, quantity and delivery mode, identical to what the cart will charge.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sku": {
+            "type": "string",
+            "description": "Kod produktu z wyników search_products (pole sku)."
+          },
+          "qty": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000,
+            "description": "Liczba sztuk."
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "order",
+              "in_stock"
+            ],
+            "description": "order = na zamówienie, in_stock = od ręki."
+          }
+        },
+        "required": [
+          "sku",
+          "qty"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "get_spot_prices",
+      "description": "Aktualne notowania spot złota, srebra, platyny i palladu w PLN za uncję trojańską i za gram (źródło wyceny w sklepie). Current spot prices of gold, silver, platinum and palladium in PLN per troy ounce and per gram.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Szuka sztabek i monet w ofercie IDF Metale (złoto i srebro inwestycyjne, Polska) i zwraca aktualne ceny sprzedaży w PLN dla każdego terminu dostawy z progami ilościowymi oraz orientacyjną cenę skupu. Search IDF Metale's gold and silver bullion catalog; returns current PLN prices per delivery option, quantity tiers and indicative buyback price.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Czego szukasz, np. „sztabka złota 100 g”, „Krugerrand 1 oz”, „PAMP”, „srebro 1 kg”."
+          },
+          "metal": {
+            "type": "string",
+            "enum": [
+              "zloto",
+              "srebro"
+            ],
+            "description": "Opcjonalnie: tylko złoto albo tylko srebro."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "description": "Ile wyników zwrócić (domyślnie 8)."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": false
+      }
+    }
+  ],
+  "host": "idfmetale.pl",
+  "source": "webmcp.com/api/directory.json"
+}

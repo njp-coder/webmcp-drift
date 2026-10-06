@@ -1,0 +1,224 @@
+{
+  "sponsio": 1,
+  "url": "https://www.discoverygateway.org/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "audit_404",
+      "description": "Probe a non-existent path to confirm the site serves a 404 page (status + basic structure).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "probePath": {
+            "type": "string",
+            "description": "Optional path to request (defaults to a random non-existent path)"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "audit_dom",
+      "description": "Run lightweight DOM checks (images alt text, empty links) on the current page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "maxExamples": {
+            "type": "integer",
+            "description": "Maximum examples to include per check",
+            "default": 20
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "audit_forms",
+      "description": "Audit forms for basic accessibility (labels / aria-labels on fields).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "maxExamples": {
+            "type": "integer",
+            "description": "Maximum examples to include",
+            "default": 20
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "audit_headings",
+      "description": "Audit heading structure (H1 count, skipped levels, empty headings) on the current page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "maxItems": {
+            "type": "integer",
+            "description": "Maximum items to include in each list",
+            "default": 50
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "audit_images",
+      "description": "Audit images on the current page (alt text, loading behavior, width/height or aspect-ratio hints).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "maxExamples": {
+            "type": "integer",
+            "description": "Maximum examples to include per check",
+            "default": 20
+          },
+          "aboveFoldThresholdPx": {
+            "type": "integer",
+            "description": "Pixels from top of viewport considered above-the-fold",
+            "default": 0
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "audit_ix2",
+      "description": "Audit Webflow Interactions (IX2) on this page: unused action lists, missing action lists, and missing target elements.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "maxItems": {
+            "type": "integer",
+            "description": "Maximum items to include in each list",
+            "default": 50
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "audit_ix3",
+      "description": "Audit Webflow Interactions (IX3) on this page: missing timelines, deleted interactions, and selectors that match nothing on the current page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "maxItems": {
+            "type": "integer",
+            "description": "Maximum items to include in each list",
+            "default": 50
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "audit_links",
+      "description": "Audit links on the current page (empty/placeholder href, target=_blank rel=noopener, missing accessible name).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "maxExamples": {
+            "type": "integer",
+            "description": "Maximum examples to include per check",
+            "default": 20
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "audit_media",
+      "description": "Audit video elements for autoplay/controls and background video pause controls.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "maxExamples": {
+            "type": "integer",
+            "description": "Maximum examples to include",
+            "default": 20
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "audit_meta",
+      "description": "Audit SEO metadata on the current page (title, description, Open Graph, canonical, robots).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "audit_webflow_way",
+      "description": "Run a consolidated Webflow Way-focused audit (published-site checks): meta, headings, DOM, links, images, forms, media, interactions.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "maxExamples": {
+            "type": "integer",
+            "description": "Maximum examples to include per check",
+            "default": 20
+          },
+          "includeSitemap": {
+            "type": "boolean",
+            "description": "Whether to include sitemap URLs in the output",
+            "default": false
+          },
+          "sitemapMaxUrls": {
+            "type": "integer",
+            "description": "Maximum sitemap URLs to include if includeSitemap is true",
+            "default": 200
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_site_info",
+      "description": "Return basic information about the current Webflow-published page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_sitemap_urls",
+      "description": "Fetch and parse the site sitemap.xml and return the discovered URLs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sitemapPath": {
+            "type": "string",
+            "description": "Path or absolute URL to the sitemap.xml",
+            "default": "/sitemap.xml"
+          },
+          "maxUrls": {
+            "type": "integer",
+            "description": "Maximum URLs to return",
+            "default": 500
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "discoverygateway.org",
+  "source": "webmcp.com/api/directory.json"
+}

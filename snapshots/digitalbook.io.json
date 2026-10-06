@@ -1,0 +1,208 @@
+{
+  "sponsio": 1,
+  "url": "https://www.digitalbook.io/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "add_favorite",
+      "description": "Save a book to the signed-in reader's Digitalbook liked shelf. Takes the id reported by search_books.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The book id from search_books."
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "close_sample",
+      "description": "Close whatever `open_sample` opened — the audiobook clip player or the ebook reader. Reports that nothing was open rather than failing.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_playback",
+      "description": "Report the audiobook open on the page: its chapters, which one the player is on, whether it is playing, and how far in. Call this before play_chapter or seek_playback — it is where the chapter numbers those take come from. Reports that no audiobook is open rather than failing.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "list_shelf",
+      "description": "List the books on one of the reader's Digitalbook shelves. `liked` are books they saved, `started` books they have started listening to or reading, `purchased` books they have bought, and `viewed` the books viewed on this device — that last one is browser state rather than account state, so it works signed out and does not follow the reader to another device. The other three need a sign-in.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "shelf": {
+            "type": "string",
+            "enum": [
+              "liked",
+              "started",
+              "purchased",
+              "viewed"
+            ],
+            "description": "Which shelf to list."
+          }
+        },
+        "required": [
+          "shelf"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "open_sample",
+      "description": "Open a book's free sample on the reader's own screen — the clip player for an audiobook, the EPUB reader for an ebook. This is the one thing only the page can do, and it changes what the reader is looking at, so call it when they asked to hear or see a book rather than to find out about one. Takes the id reported by search_books or list_shelf.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The book id to sample."
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "pause_playback",
+      "description": "Pause the audiobook playing on the page. The position is kept, so play_chapter with no arguments picks it up again.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "play_chapter",
+      "description": "Start the audiobook on the page playing. `chapter` is the number get_playback lists, counting from 1; leave it out to resume the chapter the player is already on. `at` starts that many seconds in. This plays out loud on the reader's own device, so call it when they asked to listen, not to find something out.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chapter": {
+            "type": "number",
+            "description": "Chapter number from get_playback, counting from 1."
+          },
+          "at": {
+            "type": "number",
+            "description": "Seconds from the start of the chapter. Defaults to 0."
+          }
+        }
+      }
+    },
+    {
+      "name": "remove_favorite",
+      "description": "Take a book off the signed-in reader's Digitalbook liked shelf. Takes the id reported by search_books or list_shelf.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The book id to unsave."
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "search_books",
+      "description": "Search Digitalbook's own catalogue of free audiobooks and ebooks by keyword, title or author. Returns the matches plus a link to the full results page, which also merges partner titles (Amazon, Apple, Google, Open Library) for the reader’s market — those are not in this tool’s reply.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "What to search for."
+          },
+          "format": {
+            "type": "string",
+            "enum": [
+              "audiobook",
+              "ebook"
+            ],
+            "description": "Defaults to audiobook."
+          },
+          "field": {
+            "type": "string",
+            "enum": [
+              "keywords",
+              "title",
+              "author"
+            ],
+            "description": "Which field to match. Defaults to keywords."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "seek_playback",
+      "description": "Move the playhead within the chapter the audiobook is on. `to` is seconds from the start of that chapter — get_playback reports where it is now, so skipping forward is that plus however far. Use play_chapter to move to a different chapter.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "to": {
+            "type": "number",
+            "description": "Seconds from the start of the current chapter."
+          }
+        },
+        "required": [
+          "to"
+        ]
+      }
+    },
+    {
+      "name": "set_market",
+      "description": "Change which market the reader is browsing (an ISO 3166-1 alpha-2 code). This is reader state rather than a search argument: the Digitalbook catalogue is not market-segmented, but the partner results merged into the search page, the store their Amazon links point at, and the homepage they are served all follow it. Changing it changes what the reader sees, so only call it when they asked.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "market": {
+            "type": "string",
+            "description": "One of: AU, CA, FR, DE, GB, IN, IT, ES, US."
+          }
+        },
+        "required": [
+          "market"
+        ]
+      }
+    }
+  ],
+  "host": "digitalbook.io",
+  "source": "webmcp.com/api/directory.json"
+}

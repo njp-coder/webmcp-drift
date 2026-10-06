@@ -1,0 +1,303 @@
+{
+  "sponsio": 1,
+  "url": "https://jocafri.es/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "addToCart",
+      "description": "Añade un producto (y variante opcional) al carrito de compra actual. NO completa ninguna compra. El navegador pedirá confirmación al usuario.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "combinationId": {
+            "type": "integer",
+            "description": "Optional variant id",
+            "minimum": 1
+          },
+          "quantity": {
+            "type": "integer",
+            "default": 1,
+            "minimum": 1,
+            "maximum": 999
+          }
+        },
+        "required": [
+          "productId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "applyCoupon",
+      "description": "Aplica un código de descuento/cupón al carrito. Devuelve si fue aceptado junto con los nuevos totales.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          }
+        },
+        "required": [
+          "code"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "checkAvailability",
+      "description": "Comprueba la disponibilidad de stock actual y la entrega estimada de un producto o combinación específica.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "combinationId": {
+            "type": "integer",
+            "description": "Optional combination/variant id",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "productId"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "getCart",
+      "description": "Obtiene el carrito de compra actual: artículos, subtotal, envío y total. Solo lectura.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "getCategories",
+      "description": "Obtiene el árbol de categorías (o un subárbol) para navegación. Devuelve id, nombre, profundidad e hijos de cada nodo.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "parentId": {
+            "type": "integer",
+            "description": "Root of the subtree. Defaults to store root.",
+            "minimum": 1
+          },
+          "depth": {
+            "type": "integer",
+            "description": "Maximum depth to traverse",
+            "default": 2,
+            "minimum": 1,
+            "maximum": 5
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "getProductDetails",
+      "description": "Obtiene los detalles completos de un producto: combinaciones/variantes con stock y precio, atributos, características e imágenes.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "integer",
+            "description": "Product id",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "productId"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "getShippingOptions",
+      "description": "Obtiene los transportistas disponibles, costes y tiempos de entrega estimados para el carrito actual o un destino.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "countryIso": {
+            "type": "string",
+            "description": "ISO 3166-1 alpha-2 country code",
+            "maxLength": 2
+          },
+          "zipCode": {
+            "type": "string",
+            "description": "Postal code",
+            "maxLength": 16
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "getStoreInfo",
+      "description": "Obtiene metadatos de la tienda: nombre, idiomas y monedas soportadas, países de envío, resumen de política de devoluciones, nombres de métodos de pago aceptados (sin credenciales) e información de contacto pública.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "initiateCheckout",
+      "description": "Prepara el checkout y devuelve la URL segura de pago para que el usuario humano la revise y complete el pago. NUNCA procesa el pago.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "removeFromCart",
+      "description": "Elimina una línea específica del carrito.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "combinationId": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "productId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "searchProducts",
+      "description": "Busca en el catálogo de la tienda por palabra clave con filtros opcionales de categoría y precio. Devuelve productos coincidentes con id, nombre, precio, moneda, disponibilidad y URL del producto.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search keywords or phrase",
+            "maxLength": 200
+          },
+          "category": {
+            "type": "integer",
+            "description": "Category id to filter by",
+            "minimum": 1
+          },
+          "minPrice": {
+            "type": "number",
+            "description": "Minimum price (in store currency)",
+            "minimum": 0
+          },
+          "maxPrice": {
+            "type": "number",
+            "description": "Maximum price (in store currency)",
+            "minimum": 0
+          },
+          "inStockOnly": {
+            "type": "boolean",
+            "description": "Return only in-stock products",
+            "default": false
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Max number of results (capped server-side)",
+            "default": 12,
+            "minimum": 1,
+            "maximum": 50
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "searchProducts",
+      "description": "Search the store catalog by keyword and show matching products.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "s": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "updateCartItem",
+      "description": "Establece la cantidad de una línea existente en el carrito. Usa quantity=0 para eliminarla (o llama a removeFromCart).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "combinationId": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 999
+          }
+        },
+        "required": [
+          "productId",
+          "quantity"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "jocafri.es",
+  "source": "webmcp.com/api/directory.json"
+}

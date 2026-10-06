@@ -1,0 +1,113 @@
+{
+  "sponsio": 1,
+  "url": "https://degelderlandfabriek.nl/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "filter-events",
+      "description": "Filter events by date, genre and specials label. All filters are optional.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "description": "Optional. Date to filter events by. If omitted, search across all dates.",
+            "enum": []
+          },
+          "genre": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": []
+            },
+            "description": "Optional. Genres to filter events by. If omitted, search across all genres."
+          },
+          "special": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": []
+            },
+            "description": "Optional. Special labels to filter events by. If omitted, search across all special labels."
+          }
+        }
+      }
+    },
+    {
+      "name": "list_events_with_ticket-sales",
+      "description": "Look up shop_id and event_id for all events.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_tickets_for_event",
+      "description": "Look up ticket availability for a given event and shop.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "shop_id": {
+            "type": "integer"
+          },
+          "event_id": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "shop_id",
+          "event_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "open_cart",
+      "description": "Opens the cart for a given shop.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "shop_id": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "shop_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "reserve_tickets",
+      "description": "Reserves tickets for a given ticket group and shop.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "shop_id": {
+            "type": "integer"
+          },
+          "ticket_group_id": {
+            "type": "integer",
+            "description": "The ID of the ticket group to reserve tickets from."
+          },
+          "amount": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "shop_id",
+          "ticket_group_id",
+          "amount"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "degelderlandfabriek.nl",
+  "source": "webmcp.com/api/directory.json"
+}

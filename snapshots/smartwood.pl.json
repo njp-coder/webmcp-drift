@@ -1,0 +1,74 @@
+{
+  "sponsio": 1,
+  "url": "https://smartwood.pl/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "add_current_product_to_cart",
+      "description": "Add the product currently displayed on this product page to the cart, with the currently selected variant (size/color). Select the desired variant on the page first, then call this. Only works on product pages.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "quantity": {
+            "type": "integer",
+            "description": "Quantity, default 1"
+          }
+        }
+      }
+    },
+    {
+      "name": "add_to_cart",
+      "description": "Add a product to the shopping cart. For products with variants (size, color), id_product_attribute is REQUIRED — it is the combination ID. You can find it on the product page URL after selecting a variant (e.g. /123-456-tshirt.html#/1-rozmiar-m or ?id_product_attribute=456) or in the hidden input [name=id_product_attribute] on the product page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id_product": {
+            "type": "integer",
+            "description": "PrestaShop product ID"
+          },
+          "id_product_attribute": {
+            "type": "integer",
+            "description": "Combination (variant) ID. Omit or 0 only for products without variants."
+          },
+          "quantity": {
+            "type": "integer",
+            "description": "Quantity, default 1"
+          }
+        },
+        "required": [
+          "id_product"
+        ]
+      }
+    },
+    {
+      "name": "get_cart_summary",
+      "description": "Get the current cart contents and total.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Search the store catalog for products matching a query. Navigates to the search results page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Product search phrase"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "smartwood.pl",
+  "source": "webmcp.com/api/directory.json"
+}

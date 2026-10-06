@@ -1,0 +1,113 @@
+{
+  "sponsio": 1,
+  "url": "https://bezkecov.sk/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_latest_bezkecov_articles",
+      "description": "Vrat najnovsie clanky z bezkecov.sk (volitelne v jednej kategorii). Index je zoradeny od najnovsieho.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "description": "Volitelny filter kategorie (slug alebo nazov)."
+          },
+          "limit": {
+            "type": "number",
+            "description": "Kolko clankov (default 8, max 20)."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "list_bezkecov_categories",
+      "description": "Vypis 9 kategorii magazinu bezkecov.sk aj s ich URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "list_categories",
+      "description": "Vráti 9 kategórií magazínu bezkecov.sk aj s ich URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "open_bezkecov_article",
+      "description": "Naviguj aktualnu kartu prehliadaca na stranku na bezkecov.sk. Pouzi cestu vratenu z hladania (napr. /nejaky-clanok/ alebo /financie/).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "Cesta na bezkecov.sk, napr. /nejaky-clanok/."
+          }
+        },
+        "required": [
+          "url"
+        ]
+      }
+    },
+    {
+      "name": "search_articles",
+      "description": "Vyhľadá články na bezkecov.sk podľa dotazu. Vráti zoznam zhôd (názov, URL, úryvok).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Hľadaný výraz v slovenčine."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "search_bezkecov_articles",
+      "description": "Hladaj v clankoch magazinu bezkecov.sk (prakt. obsah pre Slovakov: financie, praca, technologie, auta, cestovanie, zdravie, byvanie, spotrebitel, zaujimavosti). Vrati zhodujuce sa clanky s nazvom, URL, kategoriou a kratkym popisom.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Klucove slova alebo otazka."
+          },
+          "category": {
+            "type": "string",
+            "description": "Volitelny filter kategorie (slug alebo nazov, napr. \"financie\" alebo \"Financie\")."
+          },
+          "limit": {
+            "type": "number",
+            "description": "Max vysledkov (default 8, max 20)."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "bezkecov.sk",
+  "source": "webmcp.com/api/directory.json"
+}

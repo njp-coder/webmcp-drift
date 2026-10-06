@@ -1,0 +1,111 @@
+{
+  "sponsio": 1,
+  "url": "https://www.thekey.academy/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "qcg_foerderung_berechnen",
+      "description": "Schätzt die Förderung nach dem Qualifizierungschancengesetz (§ 82 SGB III) für eine Expert-Qualifikation von thekey.academy: Zuschuss zu Lehrgangskosten und Arbeitsentgelt sowie Eigenanteil des Betriebs, gestaffelt nach Betriebsgröße.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "paket": {
+            "type": "string",
+            "enum": [
+              "new-work",
+              "business-satisfaction",
+              "digital-sales",
+              "data-process",
+              "business-transformation",
+              "digital-transformation-ai"
+            ],
+            "description": "Expert-Qualifikation (200 Stunden Lernzeit). Bestimmt die Lehrgangskosten (Listenpreis)."
+          },
+          "beschaeftigte": {
+            "type": "number",
+            "description": "Beschäftigte des Unternehmens bzw. Konzerns; Teilzeit anteilig (0,25/0,5/0,75). Schwellen bei 50 und 500 (§ 82 Abs. 2, 3, 6)."
+          },
+          "brutto_monat_eur": {
+            "type": "number",
+            "description": "Brutto-Monatsentgelt der oder des Beschäftigten in Euro (für den Zuschuss zum Arbeitsentgelt)."
+          },
+          "ab45": {
+            "type": "boolean",
+            "description": "45 Jahre oder älter bei Beginn der Teilnahme (Abs. 2 Satz 4)."
+          },
+          "schwerbehindert": {
+            "type": "boolean",
+            "description": "Schwerbehindert im Sinne des § 2 Abs. 2 SGB IX (Abs. 2 Satz 4)."
+          },
+          "betriebsvereinbarung": {
+            "type": "boolean",
+            "description": "Betriebsvereinbarung oder Tarifvertrag regelt betriebsbezogen die Weiterbildung (Abs. 4)."
+          }
+        },
+        "required": [
+          "paket",
+          "beschaeftigte"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "tka_get_course_details",
+      "description": "Liefert Detail-Infos zu einem thekey.academy-Lehrgang anhand seines Slugs: Beschreibung, Kategorie, Preis, Dauer, Modul-/Lektionszahl, Seiten-URL und die agent-/LLM-freundliche Volltext-Curriculum-URL (Markdown).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Kurs-Slug, z. B. 'people-culture-management-ihk' (aus tka_search_courses/tka_list_courses)."
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "tka_list_courses",
+      "description": "Listet alle aktuell verfügbaren IHK-Online-Lehrgänge von thekey.academy (kompakt: Titel, Kategorie, Preis, URL). Gut als Einstieg/Überblick.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "tka_search_courses",
+      "description": "Durchsucht den IHK-zertifizierten Online-Lehrgangs-Katalog von thekey.academy nach Stichwort und/oder Kategorie. Liefert Titel, Kategorie, Preis, Dauer, URL und die Volltext-Curriculum-URL je Treffer.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Suchbegriff (Thema, Titel, Schlagwort), z. B. 'KI', 'Führung', 'Projektmanagement'."
+          },
+          "category": {
+            "type": "string",
+            "description": "Optionaler Kategorie-Filter (z. B. 'KI & digitale Kompetenzen', 'Führung & Transformation')."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "thekey.academy",
+  "source": "webmcp.com/api/directory.json"
+}

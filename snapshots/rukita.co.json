@@ -1,0 +1,688 @@
+{
+  "sponsio": 1,
+  "url": "https://www.rukita.co/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "find-rukita-services",
+      "description": "Lists all Rukita customer services, the current sign-in state, required IDs and next steps. Covers account, stays, visits, deposits, payments, residents, insurance, laundry, support, referrals and partner forms. Page handoffs require use of the page controls to finish.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "description": "Feature or action, such as deposit, insurance, password, visit or partner."
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get-rukita-promo-properties",
+      "description": "Gets bounded Rukita property, customer price, and location details for a known promotion ID. It returns input for a separate live availability check.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "promoId": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991,
+            "description": "Promotion ID from a Rukita promotion search result."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12,
+            "description": "Maximum number of eligible properties to return."
+          }
+        },
+        "required": [
+          "promoId"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get-rukita-property-availability",
+      "description": "Gets a Rukita property and its current room variants, dates, and monthly prices by asset ID or slug. It does not book a room.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "variantPage": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000,
+            "description": "Room-type page, with 10 room types per page. Defaults to 1."
+          },
+          "assetId": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991,
+            "description": "Rukita property asset ID."
+          },
+          "slug": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "description": "Property slug from a Rukita URL or search result."
+          },
+          "checkInDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Planned check-in date in YYYY-MM-DD format."
+          },
+          "checkOutDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Optional check-out date in YYYY-MM-DD format."
+          }
+        },
+        "required": [
+          "checkInDate"
+        ],
+        "oneOf": [
+          {
+            "required": [
+              "assetId"
+            ]
+          },
+          {
+            "required": [
+              "slug"
+            ]
+          }
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get-rukita-property-facts",
+      "description": "Reads a Rukita property's building rules and facilities by asset ID or slug. Returns explicit true, false, or unknown pet policy. No check-in date is needed.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "assetId": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991,
+            "description": "Rukita property asset ID."
+          },
+          "slug": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "description": "Property slug from a Rukita URL or search result."
+          }
+        },
+        "oneOf": [
+          {
+            "required": [
+              "assetId"
+            ]
+          },
+          {
+            "required": [
+              "slug"
+            ]
+          }
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "open-rukita-booking",
+      "description": "Checks booking input and opens the booking form with room, dates, voucher and payment term. The user reviews and confirms the booking in the form.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "assetId": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "variantId": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "checkInDate": {
+            "type": "string",
+            "format": "date",
+            "description": "From tomorrow through 29 days from today, inclusive."
+          },
+          "checkOutDate": {
+            "type": "string",
+            "format": "date",
+            "description": "If supplied, at least 29 days after checkInDate."
+          },
+          "externalRoomId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "voucherCode": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "selectedPaymentTermId": {
+            "type": "string",
+            "enum": [
+              "SPLIT_MONTHLY",
+              "SPLIT_UPFRONT",
+              "COMBINED_UPFRONT",
+              "COMBINED_MONTHLY"
+            ]
+          }
+        },
+        "required": [
+          "assetId",
+          "variantId",
+          "checkInDate"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "open-rukita-property",
+      "description": "Opens a Rukita property detail page when its URL slug is known.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "description": "Property slug from a Rukita URL or search result."
+          },
+          "checkInDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Planned check-in date in YYYY-MM-DD format."
+          },
+          "checkOutDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Planned check-out date in YYYY-MM-DD format."
+          }
+        },
+        "required": [
+          "slug"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "open-rukita-service",
+      "description": "Opens a service page from find-rukita-services. Preserves required IDs and sends guests through sign-in for protected pages. Does not submit a form or complete a transaction.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "service": {
+            "type": "string",
+            "enum": [
+              "coliving",
+              "apartments",
+              "pet_friendly",
+              "ocbc",
+              "mrt_campaign",
+              "insurance_claim_form",
+              "home",
+              "search",
+              "property",
+              "building",
+              "favorites",
+              "promos",
+              "promo",
+              "login",
+              "orders",
+              "order",
+              "extend_order",
+              "order_data",
+              "order_residents",
+              "inspection",
+              "inspection_item",
+              "deposit_account",
+              "deposit_account_early",
+              "deposit_document",
+              "deposit_upload",
+              "invoices",
+              "invoice",
+              "addons",
+              "order_addons",
+              "order_addon",
+              "visits",
+              "visit",
+              "visit_review",
+              "service_requests",
+              "laundry",
+              "laundry_package",
+              "laundry_report",
+              "insurance",
+              "insurance_policy",
+              "insurance_claim",
+              "insurance_claims",
+              "profile",
+              "edit_profile",
+              "personal_data",
+              "password",
+              "residents",
+              "add_resident",
+              "resident",
+              "profile_survey",
+              "order_surveys",
+              "tenant_experience",
+              "survey",
+              "visit_survey",
+              "chat",
+              "chat_channel",
+              "help",
+              "help_topic",
+              "help_article",
+              "help_reports",
+              "referral",
+              "community",
+              "stories",
+              "story",
+              "language",
+              "tenant_app",
+              "partners",
+              "coliving_partners",
+              "apartment_partners",
+              "build_to_rent",
+              "build_to_rent_form",
+              "partner_agent",
+              "corporate_housing",
+              "corporate_subscription",
+              "rucollab",
+              "about",
+              "faq",
+              "privacy",
+              "terms",
+              "house_rules",
+              "rukita_rules",
+              "uma_rules",
+              "infokostpro_rules",
+              "tenancy_agreement",
+              "laundry_policy",
+              "insurance_terms",
+              "referral_terms",
+              "voucher_terms",
+              "rumanage_terms",
+              "rumanage_privacy",
+              "loyalty_terms",
+              "rewards",
+              "ruassist_terms",
+              "ruassist_privacy",
+              "esg"
+            ]
+          },
+          "slug": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "externalOrderId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "externalInvoiceId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "recordId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "description": "Known visit, resident, policy, claim, add-on, chat, survey or laundry ID. For help_article, use the article slug."
+          },
+          "insuranceId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "page": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]*$",
+            "description": "Inspection item page number."
+          }
+        },
+        "required": [
+          "service"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "preview-rukita-booking",
+      "description": "Checks a published room type and returns a current booking price preview, voucher errors, payment terms and invoice totals. Guests receive a sign-in link that preserves booking input. Does not reserve a room.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "assetId": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "variantId": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "checkInDate": {
+            "type": "string",
+            "format": "date",
+            "description": "From tomorrow through 29 days from today, inclusive."
+          },
+          "checkOutDate": {
+            "type": "string",
+            "format": "date",
+            "description": "If supplied, at least 29 days after checkInDate."
+          },
+          "externalRoomId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "voucherCode": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "selectedPaymentTermId": {
+            "type": "string",
+            "enum": [
+              "SPLIT_MONTHLY",
+              "SPLIT_UPFRONT",
+              "COMBINED_UPFRONT",
+              "COMBINED_MONTHLY"
+            ]
+          }
+        },
+        "required": [
+          "assetId",
+          "variantId",
+          "checkInDate"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "read-rukita-account",
+      "description": "Reads the signed-in user's favorites, orders, order details, invoices, visits, add-ons, service requests, insurance policies, claims or laundry quota. Use resource=orders to find order IDs. Never accepts a user ID. Guests receive sign-in instructions.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "propertyType": {
+            "type": "string",
+            "enum": [
+              "COLIVING",
+              "APARTMENT"
+            ],
+            "description": "Favorite rental type. Defaults to COLIVING. Read APARTMENT separately."
+          },
+          "checkInDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "checkOutDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "resource": {
+            "type": "string",
+            "enum": [
+              "favorites",
+              "orders",
+              "order",
+              "invoices",
+              "invoice",
+              "visits",
+              "addons",
+              "service_requests",
+              "insurance",
+              "insurance_claims",
+              "laundry_quota"
+            ],
+            "description": "Account records to read. Use orders first to find an externalOrderId."
+          },
+          "externalOrderId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "externalInvoiceId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "insuranceId": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "periodDate": {
+            "type": "string",
+            "format": "date",
+            "description": "First day of the laundry month, YYYY-MM-01."
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10000
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "HISTORY",
+              "OUTSTANDING_BILL"
+            ],
+            "description": "Defaults to ACTIVE. OUTSTANDING_BILL is for invoices only."
+          }
+        },
+        "required": [
+          "resource"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "search-rukita-help",
+      "description": "Searches Rukita Help Center topics and returns matching article text and direct page links.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 100,
+            "description": "Words that describe the needed help topic."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5,
+            "description": "Maximum number of Help Center results to return."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "search-rukita-promos",
+      "description": "Finds current Rukita promotions and returns their codes, descriptions, use steps, and terms.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 100,
+            "description": "Optional words from a promotion title or description."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5,
+            "description": "Maximum number of promotions to return."
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "search-rukita-rentals",
+      "description": "Finds available Rukita rentals for an area, landmark, building, or property name. Returns bounded property, price, promotion, and availability data without making a booking.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10000,
+            "description": "Rental result page. Defaults to 1. Use the returned nextInput for later pages."
+          },
+          "query": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 100,
+            "description": "Area, landmark, building, or Rukita property name."
+          },
+          "selectionId": {
+            "type": "string",
+            "maxLength": 100,
+            "description": "Candidate ID from an earlier ambiguous search."
+          },
+          "checkInDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Optional planned check-in date in YYYY-MM-DD format. The next Asia/Jakarta date is used when omitted."
+          },
+          "checkOutDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Planned check-out date in YYYY-MM-DD format."
+          },
+          "propertyType": {
+            "type": "string",
+            "enum": [
+              "COLIVING",
+              "APARTMENT"
+            ],
+            "description": "COLIVING for kost or APARTMENT for an apartment."
+          },
+          "gender": {
+            "type": "string",
+            "enum": [
+              "MALE",
+              "FEMALE",
+              "ANY"
+            ],
+            "description": "Required resident gender or ANY."
+          },
+          "minMonthlyPrice": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000000000,
+            "description": "Minimum monthly price in Indonesian rupiah."
+          },
+          "maxMonthlyPrice": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000000000,
+            "description": "Maximum monthly price in Indonesian rupiah."
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "POPULARITY",
+              "LOWEST_PRICE",
+              "HIGHEST_PRICE",
+              "NEWEST"
+            ],
+            "description": "Order for the rental search results."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    }
+  ],
+  "host": "rukita.co",
+  "source": "webmcp.com/api/directory.json"
+}

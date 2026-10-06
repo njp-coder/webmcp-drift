@@ -1,0 +1,102 @@
+{
+  "sponsio": 1,
+  "url": "https://www.sonomedszczecin.pl/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "open_registration",
+      "description": "Otwórz stronę rejestracji Sonomed z wybranym lekarzem. Użyj dokładnego slug z search_doctors. To tylko nawigacja: nie rezerwuje wizyty, nie wysyła formularza ani danych pacjenta. Dalsze kroki wykonuje użytkownik.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "doctorSlug": {
+            "type": "string",
+            "description": "Dokładny slug lekarza zwrócony przez search_doctors."
+          }
+        },
+        "required": [
+          "doctorSlug"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "search_doctors",
+      "description": "Wyszukaj lekarzy i specjalistów Sonomed Szczecin po nazwisku lub specjalizacji. Zwraca publiczne dane, uwagi i linki. Bez dostępności terminów. Użyj slug wyniku w open_registration.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "description": "Pełne słowa kluczowe po polsku, np. nazwisko, specjalizacja lub nazwa usługi. Nie całe pytanie. Polskie znaki są opcjonalne."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 30,
+            "default": 10,
+            "description": "Liczba wyników na stronie."
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Liczba pominiętych wyników; użyj nextOffset z poprzedniej odpowiedzi."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "search_prices",
+      "description": "Wyszukaj usługi w opublikowanym cenniku Sonomed Szczecin. Zwraca ceny w PLN z zachowaniem zakresów, dopłat i nazw sekcji/lekarzy. Dane z ostatniej publikacji strony; nie potwierdza dostępności ani ceny indywidualnej wizyty.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "description": "Pełne słowa kluczowe po polsku, np. nazwisko, specjalizacja lub nazwa usługi. Nie całe pytanie. Polskie znaki są opcjonalne."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 30,
+            "default": 10,
+            "description": "Liczba wyników na stronie."
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Liczba pominiętych wyników; użyj nextOffset z poprzedniej odpowiedzi."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "sonomedszczecin.pl",
+  "source": "webmcp.com/api/directory.json"
+}

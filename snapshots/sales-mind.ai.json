@@ -1,0 +1,167 @@
+{
+  "sponsio": 1,
+  "url": "https://sales-mind.ai/en",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "book_demo",
+      "description": "Book a real demo appointment with the SalesMind AI team. This creates a confirmed calendar booking and sends a confirmation email — it is not a draft. Call get_demo_availability first and confirm the exact date, time and email address with the user before calling this.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slotStart": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Exact appointment start as an ISO-8601 timestamp, taken verbatim from get_demo_availability. Do not invent or round times."
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "The user's work email address."
+          },
+          "firstName": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The user's first name."
+          },
+          "lastName": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The user's last name."
+          },
+          "companyName": {
+            "type": "string",
+            "description": "The user's company name."
+          },
+          "phone": {
+            "type": "string",
+            "description": "Phone number in international format."
+          },
+          "funnel": {
+            "type": "string",
+            "enum": [
+              "done-with-you",
+              "managed",
+              "white-label"
+            ],
+            "description": "Demo track. Must match the funnel passed to get_demo_availability."
+          },
+          "timezone": {
+            "type": "string",
+            "description": "IANA timezone, e.g. Europe/Paris. Defaults to the visitor's detected timezone."
+          },
+          "confirmed": {
+            "type": "boolean",
+            "description": "Must be true. Set this only after the user has explicitly confirmed the exact date, time and their email address. Do not set it on the user's behalf."
+          }
+        },
+        "required": [
+          "slotStart",
+          "email",
+          "firstName",
+          "lastName",
+          "confirmed"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "get_company_info",
+      "description": "Return structured company information for SalesMind AI.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "get_demo_availability",
+      "description": "List available demo appointment slots. Returns ISO-8601 timestamps grouped by day, in the visitor's timezone. Call this before book_demo so you can offer the user real times.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "funnel": {
+            "type": "string",
+            "enum": [
+              "done-with-you",
+              "managed",
+              "white-label"
+            ],
+            "description": "Which demo track. 'done-with-you' (default) for most visitors, 'managed' for fully-managed service, 'white-label' for resellers."
+          },
+          "daysAhead": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 31,
+            "description": "How many days ahead to search. Defaults to 14, maximum 31."
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "get_pricing_info",
+      "description": "Return public pricing model summary without exposing numeric pricing.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "search_content",
+      "description": "Search blog posts and static website pages by query and optional content type.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Search query"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "blog",
+              "case-study",
+              "page",
+              "glossary",
+              "integration"
+            ]
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    }
+  ],
+  "host": "sales-mind.ai",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,71 @@
+{
+  "sponsio": 1,
+  "url": "https://cvefeed.io/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "advancedSearchCVE",
+      "description": "Paginated advanced search across all CVEs in CVEFeed.io. Supports filtering by vendor, product, severity, and other vulnerability filters via query parameters.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "vendor": {
+            "type": "string",
+            "description": "Vendor name to filter by."
+          },
+          "product": {
+            "type": "string",
+            "description": "Product name to filter by."
+          },
+          "severity": {
+            "type": "string",
+            "description": "CVSS severity (e.g. \"CRITICAL\", \"HIGH\", \"MEDIUM\", \"LOW\")."
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Page number for pagination."
+          }
+        }
+      }
+    },
+    {
+      "name": "getVulnerability",
+      "description": "Retrieve detailed information about a specific CVE, including affected products, vendors, CVSS metrics, and CISA KEV status.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "cveId": {
+            "type": "string",
+            "description": "CVE identifier, e.g. \"CVE-2024-1234\".",
+            "pattern": "^CVE-[0-9]{4}-[0-9]{4,}$"
+          }
+        },
+        "required": [
+          "cveId"
+        ]
+      }
+    },
+    {
+      "name": "searchCVE",
+      "description": "Search CVEFeed.io for vulnerabilities, vendors, and products by keyword or CVE ID. Accepts a CVE ID (e.g. \"CVE-2024-1234\"), a CVE prefix, or a product/vendor keyword. Returns a small set of matched vulnerabilities, products, and vendors.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "CVE ID, CVE prefix, or product/vendor keyword to search for."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "cvefeed.io",
+  "source": "webmcp.com/api/directory.json"
+}

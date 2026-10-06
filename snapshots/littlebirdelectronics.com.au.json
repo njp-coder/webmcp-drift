@@ -1,0 +1,165 @@
+{
+  "sponsio": 1,
+  "url": "https://littlebirdelectronics.com.au/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "add_to_cart",
+      "description": "Add a product variant to the shopping cart. Requires the numeric variant_id (found via get_product_details). Returns updated cart summary.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "variant_id": {
+            "type": "integer",
+            "description": "The numeric ID of the variant to add"
+          },
+          "quantity": {
+            "type": "integer",
+            "description": "Quantity to add (default: 1)",
+            "default": 1
+          }
+        },
+        "required": [
+          "variant_id"
+        ]
+      }
+    },
+    {
+      "name": "get_cart",
+      "description": "View the current shopping cart contents including items, quantities, prices, and subtotal. All prices are in AUD and include GST.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_collection_products",
+      "description": "Get all products in a specific collection by its URL handle. Returns products with prices and stock status.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "handle": {
+            "type": "string",
+            "description": "The collection URL handle/slug (e.g. 'raspberry-pi', 'arduino')"
+          }
+        },
+        "required": [
+          "handle"
+        ]
+      }
+    },
+    {
+      "name": "get_product_details",
+      "description": "Get full details for a specific product by its URL handle (slug). Returns title, description, variants with prices/stock, options, and images. Handles look like 'raspberry-pi-5-8gb' (the part after /products/ in the URL).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "handle": {
+            "type": "string",
+            "description": "The product URL handle/slug (e.g. 'raspberry-pi-5-8gb')"
+          }
+        },
+        "required": [
+          "handle"
+        ]
+      }
+    },
+    {
+      "name": "get_shipping_estimate",
+      "description": "Get shipping rate estimates for the current cart to an Australian postcode. Cart must have items. Returns available shipping methods with prices.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "postcode": {
+            "type": "string",
+            "description": "Australian postcode (e.g. '2000' for Sydney, '3000' for Melbourne)"
+          }
+        },
+        "required": [
+          "postcode"
+        ]
+      }
+    },
+    {
+      "name": "get_store_info",
+      "description": "Get store contact information, business details, and policies. Includes phone, email, address, ABN, accepted payment methods, and links to policy pages.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_collections",
+      "description": "List all product collections (categories) in the store. Returns collection names, handles, and product counts.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "remove_from_cart",
+      "description": "Remove an item from the cart entirely. Use get_cart first to find the cart item ID.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "cart_item_id": {
+            "type": "integer",
+            "description": "The cart item ID to remove (from get_cart response)"
+          }
+        },
+        "required": [
+          "cart_item_id"
+        ]
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Search the Little Bird Electronics product catalog by keyword. Returns product names, prices, stock status, and URLs. All prices are in AUD and include GST.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search keywords (e.g. 'raspberry pi', 'arduino', 'LED strip')"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "update_cart_item",
+      "description": "Update the quantity of an item already in the cart. Use get_cart first to find the cart item ID. Set quantity to 0 to remove the item.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "cart_item_id": {
+            "type": "integer",
+            "description": "The cart item ID (from get_cart response)"
+          },
+          "quantity": {
+            "type": "integer",
+            "description": "New quantity (set to 0 to remove)"
+          }
+        },
+        "required": [
+          "cart_item_id",
+          "quantity"
+        ]
+      }
+    }
+  ],
+  "host": "littlebirdelectronics.com.au",
+  "source": "webmcp.com/api/directory.json"
+}

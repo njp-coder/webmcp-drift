@@ -1,0 +1,186 @@
+{
+  "sponsio": 1,
+  "url": "https://www.aph.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_continue_link",
+      "description": "Get a link the customer can open on any device to continue the current quote or booking, plus how many minutes the quote remains valid.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_site_context",
+      "description": "Get the list of UK airports APH sells parking for (with codes and terminals), the accepted date and time formats, and whether the customer is logged in to myAPH. Call this before searching if you are not sure which airport code to use.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "list_parking_results",
+      "description": "List the parking options found for the current quote (or a given guid), cheapest first: car park name, type (meet and greet, on-airport, off-airport with transfer), price, customer rating, transfer time and the bookable products with their product codes. Use the product_code with select_parking_product.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "guid": {
+            "type": "string",
+            "description": "Quote guid; defaults to the quote on the current page."
+          },
+          "parking_type": {
+            "type": "string",
+            "enum": [
+              "MEET_AND_GREET",
+              "ON_AIRPORT",
+              "OFF_AIRPORT"
+            ],
+            "description": "Optional filter by parking type."
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "price",
+              "rating",
+              "transfer"
+            ],
+            "description": "Sort order, default price (cheapest first)."
+          },
+          "max_price": {
+            "type": "number",
+            "description": "Optional maximum price in GBP."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "description": "Maximum number of car parks to return, default 10."
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "save_quote_to_email",
+      "description": "Email the customer a link to the current parking quote so they can come back to it later. Only use with an email address the customer has given you.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Customer email address."
+          },
+          "guid": {
+            "type": "string",
+            "description": "Quote guid; defaults to the quote on the current page."
+          }
+        },
+        "required": [
+          "email"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "search_airport_parking",
+      "description": "Search airport parking prices for a trip: airport, drop-off date and time, return date and time, number of cars. Creates a quote and opens the results page on aph.com. Returns the quote guid, the results page URL and a link the customer can use to continue later.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "airport": {
+            "type": "string",
+            "description": "Airport code (e.g. LGW, LHR, MAN) or name (e.g. \"Gatwick\")."
+          },
+          "terminal": {
+            "type": "string",
+            "description": "Optional terminal name or code, e.g. \"North\" or \"T5\". Leave empty if unknown."
+          },
+          "arrival_date": {
+            "type": "string",
+            "description": "Date the car is dropped off, YYYY-MM-DD."
+          },
+          "arrival_time": {
+            "type": "string",
+            "description": "Drop-off time HH:MM (24h), rounded to the nearest 30 minutes."
+          },
+          "return_date": {
+            "type": "string",
+            "description": "Date the car is collected, YYYY-MM-DD."
+          },
+          "return_time": {
+            "type": "string",
+            "description": "Collection time HH:MM (24h)."
+          },
+          "number_vehicles": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 4,
+            "description": "Number of cars, default 1."
+          },
+          "voucher_code": {
+            "type": "string",
+            "description": "Optional promotional code the customer has."
+          }
+        },
+        "required": [
+          "airport",
+          "arrival_date",
+          "arrival_time",
+          "return_date",
+          "return_time"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "select_parking_product",
+      "description": "Take the customer to the booking page for one parking product from the results (by product_code). The customer then enters their details and pays on aph.com; no booking or payment is made by this tool.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_code": {
+            "type": "string",
+            "description": "product_code from list_parking_results."
+          },
+          "guid": {
+            "type": "string",
+            "description": "Quote guid; defaults to the quote on the current page."
+          }
+        },
+        "required": [
+          "product_code"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    }
+  ],
+  "host": "aph.com",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,149 @@
+{
+  "sponsio": 1,
+  "url": "https://www.nylandersmattor.se/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "addToCart",
+      "description": "Add a rug variant to the cart by the variantId from searchRugs/getRugDetails. Which dimensions to supply depends on the variant's `type` (read it from the search/detail result): type 'normal' -> supply NEITHER widthCm nor lengthCm (fixed size); type 'meter' -> supply lengthCm ONLY (width is fixed by the variant's roll width; any widthCm is ignored); type 'kvadratmeter' -> supply BOTH widthCm and lengthCm, EXCEPT a round variant (sizeLabel 'rund') -> supply widthCm ONLY (length equals width). For made-to-order types, keep dimensions within the variant's `constraints` from getRugDetails. The server ALWAYS re-validates: a variant that searchRugs reported inStock:true may still be rejected, so success is never guaranteed before the call. On success returns { success:true, added, cart } (cart = the full updated cart, same shape as getCart). On failure returns { success:false, error } where error is one of: 'unknown_variant' (no such variant), 'out_of_stock' (variant flagged unavailable), 'insufficient_stock' (fewer in stock than requested quantity — try a smaller quantity or another variant), 'quantity_out_of_range' (quantity must be an integer 1–99), 'invalid_dimensions' (missing/out-of-bounds widthCm/lengthCm for the type), or 'internal_error'. Clients can react to the typed error (e.g. on insufficient_stock, pick a different variant).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "variantId": {
+            "type": "string",
+            "description": "The variantId from a search or detail result."
+          },
+          "quantity": {
+            "type": "number",
+            "description": "Number of units to add (integer 1–99). Defaults to 1."
+          },
+          "widthCm": {
+            "type": "number",
+            "description": "Desired width in cm. Supply only for type 'kvadratmeter' (both dims) or a round kvadratmeter variant (this alone). Ignored for 'meter'; omit for 'normal'."
+          },
+          "lengthCm": {
+            "type": "number",
+            "description": "Desired length in cm. Supply for type 'meter' (this alone) and non-round 'kvadratmeter'. Omit for 'normal' and round variants."
+          }
+        },
+        "required": [
+          "variantId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "browseCollections",
+      "description": "Browse OR navigate to store collections. Set navigate=true whenever the user wants to be taken to a collection page in the browser (triggers: \"browse to\", \"go to\", \"show me\", \"open\", \"take me to\", \"navigate to\" a collection or category). With navigate=false (default), returns collection or product data without changing the page — use this only when the user is asking a question about the catalog, not asking to view it. Without a collection handle, lists all collections. With a handle, returns products from that collection. Does NOT add anything to the cart; use addToCart for cart changes. Prefer this over searchRugs when the user names a category, collection, or wants to explore. When navigate=true succeeds the browser is ALREADY on the collection page — do NOT navigate again by ANY means (no other webmcp tool; no other host tool that changes the page URL, opens a URL, loads a page, or fetches a page, regardless of its name; no constructing or retyping URLs yourself) and do NOT tell the user to click links to get there; just answer them referencing the returned url exactly as given.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "handle": {
+            "type": "string",
+            "description": "The collection slug or category name (e.g. the slug of a menu entry). Omit to list all collections."
+          },
+          "navigate": {
+            "type": "boolean",
+            "description": "When true, navigate the browser to the collection page. Defaults to false."
+          },
+          "limit": {
+            "type": "number",
+            "description": "Maximum number of products to return. Defaults to 10."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "getCart",
+      "description": "Read the current shopping cart: line items with per-line ex/inc-VAT prices and the ex/inc-VAT subtotals in SEK.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "getRugDetails",
+      "description": "Get full detail for a single rug by its slug (from a searchRugs result): description, careInstructions, images, and all variants (in-stock filtering off, so every variant is listed). Each variant has: variantId (opaque id to pass to addToCart); type ('normal' = fixed-size, buy as-is; 'meter' = cut-to-length off a fixed-width roll; 'kvadratmeter' = cut to a custom width×length); colorName; sizeLabel (for normal: 'W x L cm'; for meter: a bare number = the roll width in cm; for kvadratmeter: descriptive, may be 'rund' for round); widthCm/lengthCm (numbers for normal, null for made-to-order since the size is chosen at addToCart); priceExVat and priceIncVat in SEK; currency; inStock (boolean); stockQty (a number, or null meaning quantity is untracked / made-to-order — null means AVAILABLE, not unavailable). Made-to-order variants also carry `constraints` = { width: { min, max }, length: { min, max } } in cm (a null bound = unbounded) — the valid range for the widthCm/lengthCm you pass to addToCart. For made-to-order variants (type 'meter'/'kvadratmeter'), each variant also carries `constraints` = { width: { min, max }, length: { min, max } } in cm (a null bound = unbounded) — use these to pick a valid widthCm/lengthCm for addToCart instead of guessing.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "The product slug returned by searchRugs."
+          }
+        },
+        "required": [
+          "slug"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "searchRugs",
+      "description": "Search the Nylanders rug catalogue by free-text query with optional structured filters. Returns { results, totalMatches } where each result is { productId, name, slug (pass to getRugDetails), url, type, variants }. Each variant has: variantId (opaque id to pass to addToCart); type ('normal' = fixed-size, buy as-is; 'meter' = cut-to-length off a fixed-width roll; 'kvadratmeter' = cut to a custom width×length); colorName; sizeLabel (for normal: 'W x L cm'; for meter: a bare number = the roll width in cm; for kvadratmeter: descriptive, may be 'rund' for round); widthCm/lengthCm (numbers for normal, null for made-to-order since the size is chosen at addToCart); priceExVat and priceIncVat in SEK; currency; inStock (boolean); stockQty (a number, or null meaning quantity is untracked / made-to-order — null means AVAILABLE, not unavailable). Made-to-order variants also carry `constraints` = { width: { min, max }, length: { min, max } } in cm (a null bound = unbounded) — the valid range for the widthCm/lengthCm you pass to addToCart. Filter semantics: `color` matches Swedish catalogue colour names ('Rosa', 'Grön', 'Grå', …); English colour terms are NOT translated or matched, so supply the Swedish name. Width/length range filters apply to fixed-size (normal) variants only; made-to-order (meter/kvadratmeter) variants are NOT excluded by size filters since they can be cut to the requested size. `maxPriceSek` compares against the ex-VAT price. `inStockOnly` defaults true; `limit` defaults 10.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Free-text search phrase (e.g. a rug name, colour, or style)."
+          },
+          "color": {
+            "type": "string",
+            "description": "Filter to variants matching this Swedish catalogue colour name (e.g. 'Rosa', 'Grön', 'Grå'). English colour terms are NOT translated or matched."
+          },
+          "minWidthCm": {
+            "type": "number",
+            "description": "Minimum rug width in centimetres."
+          },
+          "maxWidthCm": {
+            "type": "number",
+            "description": "Maximum rug width in centimetres."
+          },
+          "minLengthCm": {
+            "type": "number",
+            "description": "Minimum rug length in centimetres."
+          },
+          "maxLengthCm": {
+            "type": "number",
+            "description": "Maximum rug length in centimetres."
+          },
+          "maxPriceSek": {
+            "type": "number",
+            "description": "Maximum price in SEK, compared against the ex-VAT price."
+          },
+          "inStockOnly": {
+            "type": "boolean",
+            "description": "Only return variants that are in stock. Defaults to true."
+          },
+          "limit": {
+            "type": "number",
+            "description": "Maximum number of result products. Defaults to 10."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "nylandersmattor.se",
+  "source": "webmcp.com/api/directory.json"
+}

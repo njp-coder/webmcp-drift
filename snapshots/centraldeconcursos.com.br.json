@@ -1,0 +1,91 @@
+{
+  "sponsio": 1,
+  "url": "https://centraldeconcursos.com.br/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "buscar_no_site",
+      "description": "Busca por termo em concursos públicos, cursos, apostilas, notícias, aprovados e unidades desta escola. Devolve nome, tipo e URL canônica de cada resultado.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "termo": {
+            "type": "string",
+            "description": "Termo em português, ex.: \"PMERJ\", \"direito constitucional\", \"Niterói\"."
+          },
+          "limite": {
+            "type": "integer",
+            "description": "Máximo de resultados (1 a 50). Padrão 10.",
+            "minimum": 1,
+            "maximum": 50
+          }
+        },
+        "required": [
+          "termo"
+        ]
+      }
+    },
+    {
+      "name": "ler_pagina_em_markdown",
+      "description": "Lê uma página deste site em markdown limpo, sem navegação nem HTML. Use antes de resumir ou citar qualquer página encontrada pelas outras ferramentas.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "caminho": {
+            "type": "string",
+            "description": "Caminho da página neste domínio, começando com \"/\". Ex.: \"/concursos/pmerj-soldado\"."
+          }
+        },
+        "required": [
+          "caminho"
+        ]
+      }
+    },
+    {
+      "name": "listar_concursos",
+      "description": "Lista os concursos públicos cobertos pela escola, com a URL canônica da página de cada um (edital, vagas, cargos e conteúdo programático).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limite": {
+            "type": "integer",
+            "description": "Máximo de concursos (1 a 100). Padrão 20.",
+            "minimum": 1,
+            "maximum": 100
+          }
+        }
+      }
+    },
+    {
+      "name": "listar_cursos",
+      "description": "Lista os cursos preparatórios da escola por modalidade: online, presencial, ao vivo (live) ou gratuito (free).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "modalidade": {
+            "type": "string",
+            "enum": [
+              "online",
+              "presencial",
+              "live",
+              "free"
+            ],
+            "description": "Modalidade do curso. Padrão: online."
+          },
+          "limite": {
+            "type": "integer",
+            "description": "Máximo de cursos (1 a 100). Padrão 20.",
+            "minimum": 1,
+            "maximum": 100
+          }
+        }
+      }
+    }
+  ],
+  "host": "centraldeconcursos.com.br",
+  "source": "webmcp.com/api/directory.json"
+}

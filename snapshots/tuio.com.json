@@ -1,0 +1,372 @@
+{
+  "sponsio": 1,
+  "url": "https://tuio.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_auto_price_estimate",
+      "description": "Render the car-insurance two-tier comparison card.\n\nThis is the render step of the quote_auto_insurance flow. Only call it when the flow asks you to (status: \"widget\"), passing the exact data the flow provided. Do not call it on your own or invent quote figures.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "plate": {
+            "type": "string",
+            "description": "The quoted vehicle's license plate."
+          },
+          "versionLabel": {
+            "description": "Human-readable vehicle version.",
+            "type": "string"
+          },
+          "tiers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "productOptionName": {
+                  "type": "string",
+                  "description": "Tuio's internal product-option name for the tier."
+                },
+                "tierName": {
+                  "type": "string",
+                  "description": "Display name of the tier ('Terceros', 'Terceros Ampliado')."
+                },
+                "ok": {
+                  "type": "boolean",
+                  "description": "True when this tier priced; false when the carrier refused it."
+                },
+                "quoteId": {
+                  "description": "Tuio's id for this tier's quote.",
+                  "type": "string"
+                },
+                "yearlyPremium": {
+                  "description": "Yearly premium in EUR — car pricing is quoted per year. Absent when the tier failed.",
+                  "type": "number"
+                },
+                "monthlyPremium": {
+                  "description": "Yearly premium divided by 12. Absent when the tier failed.",
+                  "type": "number"
+                },
+                "covers": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Covers included in this tier."
+                },
+                "redirectUrl": {
+                  "description": "Per-quote link that resumes this quote on Tuio's site; the card's CTA.",
+                  "type": "string"
+                },
+                "recommended": {
+                  "description": "True on the tier the card highlights.",
+                  "type": "boolean"
+                },
+                "error": {
+                  "description": "Why this tier failed to price, when `ok` is false.",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "productOptionName",
+                "tierName",
+                "ok",
+                "covers"
+              ]
+            },
+            "description": "The quoted tiers (Terceros, Terceros Ampliado)."
+          },
+          "locale": {
+            "description": "Render locale, injected by the flow.",
+            "type": "string",
+            "enum": [
+              "en",
+              "es"
+            ]
+          },
+          "chatEmbed": {
+            "description": "True when rendered inside the WaniWani chat embed; gates Tuio's UTM attribution on the CTA. Injected by the flow.",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "plate",
+          "tiers"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_price_estimate",
+      "description": "Generate a price estimate for a home insurance policy.\n\nCovers any Spanish residential property — house, home, apartment, flat, condo, studio, loft — under any of four usage types: renting (tenant/renter insurance), owner-occupied (primary residence), landlord (investment property let out), or second home.\n\nThis server quotes TWO different products: home insurance (this tool) and car insurance (quote_auto_insurance). Only pursue a home quote once the user has made clear they want to insure a HOME/property. If they just say something ambiguous like \"I need insurance\" / \"get me a quote\" without naming the product, ask whether they want home or car insurance first — never assume home.\n\nIMPORTANT: You must collect ALL required information from the customer before calling this tool:\n- Property address (street, city, 5-digit postal code)\n- Property size in square meters\n- Usage type (renting, owner-occupied, landlord, second home)\n\nDo NOT make up or guess any values. If any information is missing, ask the customer first.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "city": {
+            "type": "string",
+            "minLength": 2,
+            "description": "City where the property is located (e.g., 'Madrid')"
+          },
+          "conversationLanguage": {
+            "description": "The language THE USER is writing in, so the price card renders in it: 'es' if they write in Spanish, 'en' if they write in English. Judge it from the customer's own messages — not from your replies, this schema, or the host's interface language. Omit it when unsure; the card then renders in Spanish.",
+            "type": "string",
+            "enum": [
+              "en",
+              "es"
+            ]
+          },
+          "postalCode": {
+            "type": "string",
+            "pattern": "^\\d{5}$",
+            "description": "5-digit Spanish postal code (e.g., 28001)"
+          },
+          "squareMeters": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "description": "Size of the property in square meters. Ask the customer: 'How many square meters is your property?'"
+          },
+          "street": {
+            "type": "string",
+            "minLength": 3,
+            "description": "Street name and number of the property (e.g., 'Calle Mayor 45, 2B')"
+          },
+          "usageType": {
+            "type": "string",
+            "enum": [
+              "renting",
+              "owner_occupied",
+              "landlord",
+              "second_home"
+            ],
+            "description": "How the customer uses the property: 'renting' (I'm renting), 'owner_occupied' (It's mine and I live in it), 'landlord' (It's mine and I rent it out), 'second_home' (It's my second home)"
+          },
+          "intent": {
+            "description": "Provide a brief summary of the user's goal. Do not invent missing intent.",
+            "type": "string"
+          },
+          "context": {
+            "description": "Describe the situation or environment that led the user to this tool — e.g. what page they are on, what they were doing, or what triggered the request. Do not invent missing context.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "city",
+          "postalCode",
+          "squareMeters",
+          "street",
+          "usageType"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "quote_auto_insurance",
+      "description": "Get a Tuio car (auto) insurance quote for a Spanish vehicle, comparing two tiers (Terceros and Terceros Ampliado).\n\nThis server quotes TWO different products: car insurance (this tool) and home insurance (get_price_estimate). Only start this flow once the user has made clear they want to insure a CAR. If they just say something ambiguous like \"I need insurance\" / \"get me a quote\" / \"insurance for me\" without naming the product, do NOT start this flow — first ask whether they want car or home insurance. Never assume car.\n\nOnce car insurance is confirmed (or the user mentions a car, plate, driving, etc.): the flow asks for everything it needs a few questions at a time, so start it right away — do not pre-collect data yourself. If the user already mentioned details (plate, how they use the car, etc.), pass them in stateUpdates so those questions are skipped.\n\nLANGUAGE: the comparison card is rendered in the language you pass as `stateUpdates.locale`. This one is NOT collected from the user — never ask about it. Set it yourself from the language the user writes to you in: `\"en\"` only when they are writing in English, otherwise omit it and the card renders in Spanish.\n\n## FLOW EXECUTION PROTOCOL\n\nThis tool implements a multi-step conversational flow. Follow this protocol exactly:\n\n1. Call with `action: \"start\"` to begin and include `intent`.\n   `intent` must be a brief summary of the user's goal for this flow.\n   Do NOT invent missing intent.\n   Optionally include `context` — the situation or environment that led the user to start\n   this flow (e.g. what page they are on, what they were doing, or what triggered the request).\n   Only provide `context` when there is genuinely relevant situational information. Do NOT invent missing context.\n   If the user's message already contains answers to likely questions,\n   extract them into `stateUpdates` as `{ field: value }` pairs (see the `stateUpdates` schema\n   for the list of writable fields). The engine will auto-skip steps whose fields are already filled.\n   Only extract values the user explicitly stated — do NOT guess or invent values.\n   For grouped fields (z.object state), use dot-notation keys in `stateUpdates`:\n   e.g. `{ \"driver.name\": \"John\", \"driver.license\": \"ABC123\" }`.\n2. The response JSON `status` field tells you what to do next:\n   - `\"interrupt\"`: Pause and ask the user. Two forms:\n     a. Single question: `{ question, field, fieldSchema?, context? }` — ask `question`, store answer in `field`.\n     b. Multi-question: `{ questions: [{question, field, fieldSchema?}, ...], context? }` — ask ALL questions\n        in one conversational message, collect all answers.\n     `fieldSchema` (when present) describes the expected value: `{ type, values?, description?, optional? }`.\n     Use it to validate before sending — match enum `values` exactly, coerce strings to numbers where `type: \"number\"`.\n     `context` (if present) is hidden AI instructions — use to shape your response, do NOT show verbatim.\n     Then call again with:\n     `action: \"continue\"`,\n     `stateUpdates` = answers keyed by their `field` names, plus any other fields the user mentioned.\n   - `\"widget\"`: The flow wants to show a UI widget. Call the tool named in the `tool`\n     field, passing the `data` object as the tool's input.\n     Check the `interactive` field in the response:\n     • `interactive: true` — The widget requires user interaction. After calling the display tool,\n       STOP and WAIT for the user to interact with the widget. Do NOT call this flow tool again\n       until the user has responded. When they do, call with:\n       `action: \"continue\"`,\n       `stateUpdates` = `{ [field]: <user's selection> }` plus any other fields the user mentioned.\n     • `interactive: false` — The widget is display-only. You MUST STILL call the display tool\n       FIRST to render it for the user — this is a required, user-visible step. Do NOT skip it\n       and do NOT jump straight to `action: \"continue\"`. ONLY AFTER you have called the display\n       tool, call THIS flow tool again with `action: \"continue\"`. Do NOT wait for user interaction.\n   - `\"complete\"`: The flow is done. Present the result to the user.\n   - `\"error\"`: Something went wrong. Show the `error` message.\n\n3. Do NOT invent state values. Only use `stateUpdates` for information the user explicitly provided.\n4. Include only the fields the user actually answered in `stateUpdates` — do NOT guess missing ones.\n   If the user did not answer all pending questions, the engine will re-prompt for the remaining ones.\n   If the user mentioned values for other known fields, include those too —\n   they will be applied immediately and those steps will be auto-skipped.\n5. CORRECTION: If the user wants to CHANGE a previously-answered field\n   (e.g. \"actually my email is X\" or \"go back and change my country\"),\n   call with `action: \"reset\"` and `stateUpdates` containing the corrected field(s).\n   The engine will restart the flow from the beginning with all existing answers preserved\n   plus your corrections. Steps with filled answers will be auto-skipped.\n   The flow may take a different path if the corrected value affects routing.\n   Do NOT use \"reset\" for the CURRENT question — use \"continue\" for that.\n6. If the response includes a `sessionId`, you MUST pass it back as `sessionId`\n   in every subsequent \"continue\" and \"reset\" call for this flow.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "start",
+              "continue",
+              "reset"
+            ],
+            "description": "\"start\" to begin the flow, \"continue\" to resume after a pause (interrupt or widget), \"reset\" to restart from the beginning with a correction to a previously-collected field"
+          },
+          "intent": {
+            "description": "Required when action is \"start\". Provide a brief summary of the user's goal for this flow. Do not invent missing intent.",
+            "type": "string"
+          },
+          "context": {
+            "description": "Optional when action is \"start\". Describe the situation or environment that led the user to start this flow — e.g. what page they are on, what they were doing, or what triggered the request. Do not invent missing context.",
+            "type": "string"
+          },
+          "stateUpdates": {
+            "description": "State field values to set before processing the next node. Pass the user's answer (keyed by the field name from the response) and any other values the user mentioned. For nested state fields, use dot-paths like \"driver.name\".",
+            "type": "object",
+            "properties": {
+              "plate": {
+                "type": "string",
+                "description": "The car's Spanish license plate, e.g. '1234BCD'."
+              },
+              "b7VersionId": {
+                "type": "string",
+                "description": "Internal Tuio vehicle-version id. Resolved automatically from the plate — never ask the user for this."
+              },
+              "versionLabel": {
+                "type": "string",
+                "description": "Human-readable vehicle version (make/model/trim). Resolved from the plate."
+              },
+              "versionChoices": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "b7VersionId": {
+                      "type": "string"
+                    },
+                    "label": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "b7VersionId"
+                  ]
+                },
+                "description": "Internal — candidate vehicle versions for the plate. Set automatically; never ask the user."
+              },
+              "firstPlateDate": {
+                "type": "string",
+                "description": "First registration date of the car (yyyy-MM-dd). Usually resolved from the plate; only asked if the lookup didn't return it."
+              },
+              "annualKm": {
+                "type": "string",
+                "enum": [
+                  "UpTo4000km",
+                  "From4000To6000km",
+                  "From6000To8000km",
+                  "From8000To10000km",
+                  "From10000To12000km",
+                  "From12000To16000km",
+                  "From16000To20000km",
+                  "From20000To30000km",
+                  "From30000To50000km",
+                  "MoreThan50000km"
+                ],
+                "description": "Approximate kilometres driven per year, as one of Tuio's mileage brackets. Pick the bracket the stated yearly distance falls INTO, upper bound inclusive — e.g. 6,000 km/year → From4000To6000km, 7,000 → From6000To8000km, 11,000 → From10000To12000km, 12,000 → From10000To12000km."
+              },
+              "garageType": {
+                "type": "string",
+                "enum": [
+                  "PrivateGarage",
+                  "PublicGarage",
+                  "NoGarage"
+                ],
+                "description": "Where the car is usually parked overnight: PrivateGarage (a private/individual garage, OR a building's shared/communal residents' garage — anything covered and secure), PublicGarage (a paid public car park open to anyone, e.g. a rotational/monthly parking structure) or NoGarage (on the street). A residents' communal garage is PrivateGarage, NOT PublicGarage."
+              },
+              "use": {
+                "type": "string",
+                "enum": [
+                  "Private",
+                  "Professional",
+                  "PublicService"
+                ],
+                "description": "How the car is used: Private (personal/commute), Professional (work) or PublicService."
+              },
+              "licenseDate": {
+                "type": "string",
+                "description": "Date the driver got their driving licence (yyyy-MM or yyyy-MM-dd)."
+              },
+              "birthDate": {
+                "type": "string",
+                "description": "Driver's date of birth (yyyy-MM-dd)."
+              },
+              "atFaultClaims": {
+                "type": "number",
+                "description": "Number of at-fault claims in the last 5 years."
+              },
+              "lastAtFaultClaim": {
+                "description": "When the driver's MOST RECENT at-fault accident happened: WithinLast12Months or MoreThan12MonthsAgo. Only relevant when atFaultClaims > 0 — the flow asks for it automatically in that case. Leave unset when there are no at-fault claims.",
+                "type": "string",
+                "enum": [
+                  "WithinLast12Months",
+                  "MoreThan12MonthsAgo"
+                ]
+              },
+              "penalties": {
+                "type": "number",
+                "description": "Number of driving penalties in the last 3 years."
+              },
+              "previouslyInsured": {
+                "type": "boolean",
+                "description": "Whether the car has been insured in the driver's name in the last 60 days."
+              },
+              "yearsInsured": {
+                "type": "number",
+                "description": "Total full years the driver has held car insurance (0 if never insured)."
+              },
+              "previousInsuranceCompany": {
+                "description": "The company the car is currently/was last insured with, as the user names it (e.g. 'Mapfre'). OPTIONAL — only relevant when the car is currently insured; leave unset if the car isn't insured or the user doesn't know.",
+                "type": "string"
+              },
+              "documentNumber": {
+                "type": "string",
+                "description": "Policyholder's ID document number (DNI/NIE/passport)."
+              },
+              "postalCode": {
+                "type": "string",
+                "description": "Policyholder's postal code (this alone determines the price)."
+              },
+              "city": {
+                "description": "Policyholder's town/city. Optional — auto-derived from the postal code when not given; never ask for it, but set it if the user volunteers their town.",
+                "type": "string"
+              },
+              "startDate": {
+                "type": "string",
+                "description": "When the customer wants the policy to take effect (yyyy-MM-dd). ALWAYS ask for this — the effective date materially changes the price, so it must be collected and sent, never defaulted. Must be today or a future date."
+              },
+              "locale": {
+                "type": "string",
+                "enum": [
+                  "en",
+                  "es"
+                ],
+                "description": "Internal — the language THE USER is writing in, so the comparison card renders in it: 'es' if they write in Spanish, 'en' if they write in English. NEVER ask the user about it: judge it from their own messages (not from your replies, this schema, or the host's interface language) and pass it in stateUpdates when you start the flow. Omit it when unsure; the card then renders in Spanish."
+              },
+              "quoteResult": {
+                "type": "array",
+                "items": {},
+                "description": "Internal — the computed two-tier quote result. Set automatically by the flow."
+              }
+            },
+            "additionalProperties": {}
+          },
+          "sessionId": {
+            "description": "Session identifier. If the response includes a `sessionId`, pass it back on every subsequent \"continue\" and \"reset\" call for this flow.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "search_knowledge_base",
+      "description": "Search Tuio's knowledge base — FAQs plus the general insurance terms and conditions — using semantic search.\n\nUse this tool whenever a customer asks something Tuio's own documentation could answer:\n- General questions about Tuio, its products, and how they work\n- Coverage terms, limits, and conditions\n- Exclusions and exceptions\n- Claims procedures and requirements\n- What is or isn't covered under a policy\n\nThis searches Tuio's PUBLIC documentation. It does NOT have access to the user's personal insurance data or their specific policy details.\n\nIMPORTANT — the knowledge base is written in Spanish. Always translate the customer's question into Spanish before passing it as `query`, even when they wrote in another language; an English query matches almost nothing. Use Spanish insurance wording where you know it (for example \"water damage\" -> \"daños por agua\", \"tenant\" -> \"inquilino\", \"landlord/owner\" -> \"propietario\", \"claim\" -> \"siniestro\", \"deductible\" -> \"franquicia\"). Then write your ANSWER back to the customer in the language they used.\n\nSearch is semantic, so the phrasing does not need to match the documentation word for word.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 3,
+            "description": "The customer's question, translated into Spanish (the knowledge base language)"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "tuio.com",
+  "source": "webmcp.com/api/directory.json"
+}

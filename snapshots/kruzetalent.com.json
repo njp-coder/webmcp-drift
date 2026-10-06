@@ -1,0 +1,109 @@
+{
+  "sponsio": 1,
+  "url": "https://kruzetalent.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_job",
+      "description": "Read one job posting in full by its id, including the description and how to apply.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "The posting id, from search_jobs."
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "list_job_filters",
+      "description": "List the reference values that search_jobs filters on, so you can turn a place or job type into an id. Catalogs: cities, job-types, job-modalities, degree-levels, functional-areas.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "catalog": {
+            "type": "string",
+            "enum": [
+              "cities",
+              "job-types",
+              "job-modalities",
+              "degree-levels",
+              "functional-areas"
+            ],
+            "description": "Which catalog to read."
+          },
+          "search": {
+            "type": "string",
+            "description": "Optional substring to match against the name. Use this for cities, which is large."
+          }
+        },
+        "required": [
+          "catalog"
+        ]
+      }
+    },
+    {
+      "name": "search_jobs",
+      "description": "Search live job postings on this site. Postings are in Spanish and salaries are monthly in Mexican pesos (MXN). Use list_job_filters first to turn a city or job type into the id this tool expects.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "search": {
+            "type": "string",
+            "description": "Free text matched against the job title and company name. Spanish works best."
+          },
+          "city_id": {
+            "type": "integer",
+            "description": "City id from list_job_filters. Tijuana is 1083."
+          },
+          "job_type_id": {
+            "type": "integer",
+            "description": "Employment type id from list_job_filters."
+          },
+          "job_modality_id": {
+            "type": "integer",
+            "description": "On site, hybrid or remote, from list_job_filters."
+          },
+          "degree_level_id": {
+            "type": "integer",
+            "description": "Education level id from list_job_filters."
+          },
+          "functional_area_id": {
+            "type": "integer",
+            "description": "Job function id from list_job_filters."
+          },
+          "salary_min": {
+            "type": "number",
+            "description": "Lowest monthly salary in MXN."
+          },
+          "salary_max": {
+            "type": "number",
+            "description": "Highest monthly salary in MXN."
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "recent",
+              "salary",
+              "views"
+            ],
+            "description": "Ordering, default recent."
+          },
+          "per_page": {
+            "type": "integer",
+            "description": "Results per page, up to 50."
+          }
+        }
+      }
+    }
+  ],
+  "host": "kruzetalent.com",
+  "source": "webmcp.com/api/directory.json"
+}

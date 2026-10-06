@@ -1,0 +1,99 @@
+{
+  "sponsio": 1,
+  "url": "https://zwaailicht.nl/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_incident",
+      "description": "Haal het volledige dossier van één incident (piek) op: de melding, het bewijsmateriaal, ingezette eenheden, gekoppeld nieuws en herkomst. Gebruik het id uit list_incidents of search_alerts.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "piek_id": {
+            "type": "string",
+            "description": "Het id van de piek."
+          }
+        },
+        "required": [
+          "piek_id"
+        ]
+      }
+    },
+    {
+      "name": "list_alerts",
+      "description": "Toon de meest recente losse P2000-meldingen, nieuwste eerst. Optioneel gefilterd op plaats en dienst.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "city": {
+            "type": "string",
+            "description": "Plaatsnaam of slug, bijv. \"rotterdam\" of \"Den Haag\"."
+          },
+          "service": {
+            "type": "string",
+            "description": "Dienst: brandweer, ambulance, politie, lifeliner of knrm."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Aantal meldingen (1-25).",
+            "minimum": 1,
+            "maximum": 25
+          }
+        }
+      }
+    },
+    {
+      "name": "list_incidents",
+      "description": "Toon de meest recente gereconstrueerde incidenten (pieken): clusters van meldingen die in tijd en plaats samenhangen, met titel en samenvatting. Optioneel gefilterd op plaats en dienst.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "city": {
+            "type": "string",
+            "description": "Plaatsnaam of slug, bijv. \"rotterdam\" of \"Den Haag\"."
+          },
+          "service": {
+            "type": "string",
+            "description": "Dienst: brandweer, ambulance, politie, lifeliner of knrm."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Aantal incidenten (1-25).",
+            "minimum": 1,
+            "maximum": 25
+          }
+        }
+      }
+    },
+    {
+      "name": "search_alerts",
+      "description": "Doorzoek P2000-meldingen en gereconstrueerde incidenten (pieken) op zoektekst, eventueel gefilterd op plaats en dienst. Pieken staan boven losse meldingen.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Vrije zoektekst, bijv. \"grote brand\" of een straatnaam."
+          },
+          "city": {
+            "type": "string",
+            "description": "Plaatsnaam of slug, bijv. \"rotterdam\" of \"Den Haag\"."
+          },
+          "service": {
+            "type": "string",
+            "description": "Dienst: brandweer, ambulance, politie, lifeliner of knrm."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "zwaailicht.nl",
+  "source": "webmcp.com/api/directory.json"
+}

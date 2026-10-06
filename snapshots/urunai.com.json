@@ -1,0 +1,80 @@
+{
+  "sponsio": 1,
+  "url": "https://urunai.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "urunai_fiyat_getir",
+      "description": "Bir ürünün Türkiye'deki pazaryerlerindeki güncel fiyatlarını getirir: en düşük fiyat, en ucuz pazaryeri, en ucuz teklifin son 30 gündeki en düşük fiyatı ve stoktaki en ucuz 5 satıcı teklifi. Ürünü id, urunAI URL'i/yolu ya da tam ürün adıyla ver (ad eşleşmezse 'ürün bulunamadı' döner; önce urunai_urun_ara ile doğru adı bul).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "urun": {
+            "type": "string",
+            "description": "Ürün id'si, urunai.com ürün URL'i veya ürün adı."
+          }
+        },
+        "required": [
+          "urun"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "urunai_karsilastir",
+      "description": "2-4 ürünü güncel en düşük fiyatlarına göre yan yana karşılaştırır ve urunAI'da teknik özellikleri de karşılaştıran sayfanın URL'ini döner. Ürünleri id, urunAI URL'i ya da ürün adıyla ver.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "urunler": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 2,
+            "maxItems": 4,
+            "description": "Karşılaştırılacak ürünler (id, urunai.com URL'i veya ürün adı)."
+          }
+        },
+        "required": [
+          "urunler"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "urunai_urun_ara",
+      "description": "urunAI kataloğunda (Türkiye, fiyat karşılaştırma) ürün arar. Ürün adı, marka ya da model yaz (örn. 'iphone 17', 'samsung 55 inç tv'). Her sonuç için ad, marka, kategori ve urunAI ürün sayfası URL'i döner.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sorgu": {
+            "type": "string",
+            "description": "Aranacak ürün adı, marka veya model."
+          },
+          "adet": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "description": "Döndürülecek sonuç sayısı (varsayılan 5)."
+          }
+        },
+        "required": [
+          "sorgu"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "urunai.com",
+  "source": "webmcp.com/api/directory.json"
+}

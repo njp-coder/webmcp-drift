@@ -1,0 +1,86 @@
+{
+  "sponsio": 1,
+  "url": "https://codetrendy.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_site_of_the_day",
+      "description": "Get today's Site of the Day: the current winner (if selected) and today's nominations with vote counts.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_trending",
+      "description": "Get trending listings: most viewed today, most clicked this week, and most voted this month, each with title, slug and count.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "list_categories",
+      "description": "List all directory categories with their slugs and listing counts. Use a slug with navigate_to \"/category/<slug>\" to open one.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "navigate_to",
+      "description": "Navigate the current page to a section of this site. Allowed path prefixes: /browse, /trending, /category/<slug>, /listing/<slug>, /tags, /categories. Relative paths only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Relative path to open, e.g. \"/browse\" or \"/listing/some-slug\"."
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    },
+    {
+      "name": "search_listings",
+      "description": "Browse the directory: returns the current homepage feed of approved listings (title, slug, tagline, URL, votes, categories). Use offset/limit to page through. For deeper browsing, navigate_to \"/browse\".",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Number of listings to skip (default 0)."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 24,
+            "description": "Max listings to return (default 12)."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "codetrendy.com",
+  "source": "webmcp.com/api/directory.json"
+}

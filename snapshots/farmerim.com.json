@@ -1,0 +1,125 @@
+{
+  "sponsio": 1,
+  "url": "https://farmerim.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "add_to_cart",
+      "description": "Add a product to the shopping cart by its product id. Quantity may be fractional for items sold by weight (kg). The shopper must be logged in.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "number",
+            "description": "Product id, as returned by search_products."
+          },
+          "quantity": {
+            "type": "number",
+            "description": "Amount to add. Defaults to 1."
+          }
+        },
+        "required": [
+          "product_id"
+        ]
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "duplicate_order",
+      "description": "Repeat a past order by adding all of its products to the cart. Omit order_id to repeat the most recent order. By default this replaces the current cart; set keep_current_cart to true to merge instead.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "order_id": {
+            "type": "number",
+            "description": "The order to repeat. If omitted, the most recent order is used."
+          },
+          "keep_current_cart": {
+            "type": "boolean",
+            "description": "Keep existing cart items and merge (true) instead of replacing them (false, default)."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "list_recent_orders",
+      "description": "List the logged-in shopper's recent orders (id, date, item count, total), most recent first.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 20,
+            "description": "How many orders to return (1-20). Defaults to 5."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "remove_from_cart",
+      "description": "Remove a line item from the cart using its cart_id. Call view_cart first to obtain the cart_id.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "cart_id": {
+            "type": "number",
+            "description": "The cart line id, as returned by view_cart."
+          }
+        },
+        "required": [
+          "cart_id"
+        ]
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Search the Farmerim grocery catalog by name (Hebrew or English) and return matching products with their ids.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Free-text product name, e.g. \"עגבניות\" or \"tomatoes\"."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "view_cart",
+      "description": "List the items currently in the shopping cart, with quantities and prices.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "farmerim.com",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,408 @@
+{
+  "sponsio": 1,
+  "url": "https://benchlm.ai/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "compare_ai_models",
+      "description": "Return a BenchLM side-by-side comparison summary for two AI models, then open the comparison page in the current tab. Use this when a user wants benchmark, pricing, context window, or capability tradeoffs between models.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "modelA": {
+            "type": "string",
+            "description": "First model name, alias, or slug."
+          },
+          "modelB": {
+            "type": "string",
+            "description": "Second model name, alias, or slug."
+          }
+        },
+        "required": [
+          "modelA",
+          "modelB"
+        ]
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "estimate_ai_cost",
+      "description": "Estimate monthly, daily, and yearly AI model cost for real workloads such as blog posts, website pages, docs articles, PRDs/specs, or shipped product features.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "workload": {
+            "type": "string",
+            "enum": [
+              "blog-posts",
+              "website-pages",
+              "docs-articles",
+              "prds-specs",
+              "features-shipped"
+            ],
+            "description": "Workload preset to estimate."
+          },
+          "unitsPerMonth": {
+            "type": "number",
+            "description": "Number of workload units per month, such as posts, pages, articles, specs, or features."
+          },
+          "wordsPerUnit": {
+            "type": "number",
+            "description": "Approximate final words per unit. Ignored for features-shipped."
+          },
+          "revisionRounds": {
+            "type": "number",
+            "description": "Number of drafting/revision passes per unit."
+          },
+          "complexity": {
+            "type": "string",
+            "enum": [
+              "small",
+              "medium",
+              "large"
+            ],
+            "description": "Feature complexity. Used for features-shipped."
+          },
+          "modelNames": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Optional model names to price. Defaults to BenchLM cost-calculator defaults."
+          }
+        },
+        "required": [
+          "workload"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "find_best_models",
+      "description": "Return top BenchLM-ranked AI models for a use case such as coding, reasoning, tool use, web research, computer use, long context, document AI, image understanding, factuality, open source, or value.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "useCase": {
+            "type": "string",
+            "description": "The use case or leaderboard to optimize for. Examples: coding, long context, tool use, web research, open source, value."
+          },
+          "limit": {
+            "type": "number",
+            "description": "Maximum number of models to return. Defaults to 5."
+          },
+          "openWeight": {
+            "type": "boolean",
+            "description": "If true, only return open-weight models."
+          },
+          "maxOutputPrice": {
+            "type": "number",
+            "description": "Optional maximum output price per 1M tokens."
+          },
+          "minContextTokens": {
+            "type": "number",
+            "description": "Optional minimum context window in tokens."
+          },
+          "reasoning": {
+            "type": "boolean",
+            "description": "Optional. true returns reasoning models only; false returns non-reasoning models only."
+          }
+        },
+        "required": [
+          "useCase"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "get_model_details",
+      "description": "Return BenchLM metadata for one AI model, including provider, score, source type, context window, reasoning mode, pricing, speed, and category scores.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "The model name, alias, or slug. Examples: GPT-5.5, Claude Opus 4.7, Gemini 3 Pro."
+          }
+        },
+        "required": [
+          "model"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "lookup_benchmark_results",
+      "description": "Return the BenchLM leaderboard for a specific benchmark, such as SWE-bench Verified, LiveCodeBench, MMLU, GPQA, BFCL, BrowseComp, OSWorld, or AIME.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "benchmark": {
+            "type": "string",
+            "description": "Benchmark name, full name, or slug."
+          },
+          "limit": {
+            "type": "number",
+            "description": "Maximum number of model results to return. Defaults to 10."
+          },
+          "includeUnverified": {
+            "type": "boolean",
+            "description": "If true, include non-displayable or unverified benchmark rows. Defaults to false."
+          }
+        },
+        "required": [
+          "benchmark"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "open_benchlm_page",
+      "description": "Navigate the current BenchLM tab to the best matching page for a model, benchmark, provider, ranking, comparison, blog post, or tool query.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "A natural language page request, exact title, model name, benchmark name, provider name, or BenchLM path."
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "any",
+              "model",
+              "benchmark",
+              "best-page",
+              "provider",
+              "comparison",
+              "blog",
+              "tool"
+            ],
+            "description": "Optional result type to prefer when resolving the page."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "open_model_profile",
+      "description": "Navigate to the BenchLM profile page for a specific AI model by model name, alias, or slug.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "The model name, alias, or slug. Examples: GPT-5.5, Claude Opus 4.7, Gemini 3 Pro."
+          }
+        },
+        "required": [
+          "model"
+        ]
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "recommend_llm",
+      "description": "Recommend AI models using BenchLM selector logic for a user use case, budget, context-window need, open-weight preference, and speed/quality preference.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "useCase": {
+            "type": "string",
+            "enum": [
+              "coding",
+              "agents",
+              "multimodal",
+              "writing",
+              "analysis",
+              "math",
+              "general",
+              "long-context",
+              "tool-use",
+              "web-research",
+              "computer-use",
+              "document-ai",
+              "image-understanding",
+              "frontend-app-dev",
+              "factuality"
+            ],
+            "description": "Primary model use case."
+          },
+          "task": {
+            "type": "string",
+            "enum": [
+              "emails",
+              "marketing",
+              "fiction",
+              "roleplay",
+              "studying",
+              "research",
+              "reasoning",
+              "math",
+              "legal",
+              "medical",
+              "image-understanding",
+              "charts",
+              "pdfs",
+              "spreadsheets",
+              "data-analysis",
+              "extraction",
+              "presentations",
+              "coding",
+              "debugging",
+              "frontend",
+              "local-code",
+              "agents",
+              "rag",
+              "support",
+              "translation",
+              "language-learning",
+              "voice",
+              "transcription",
+              "images",
+              "video",
+              "general"
+            ],
+            "description": "Optional exact task; overrides the broad use case."
+          },
+          "audience": {
+            "type": "string",
+            "enum": [
+              "everyday",
+              "builders"
+            ],
+            "description": "Assistant-plan guidance or API/local-model guidance."
+          },
+          "budget": {
+            "type": "string",
+            "enum": [
+              "free",
+              "low",
+              "mid",
+              "unlimited"
+            ],
+            "description": "For builders, low means at most $5 and mid at most $20 for 1M input + 200k output tokens. free requests open-weight/local candidates, not free hosting."
+          },
+          "context": {
+            "type": "string",
+            "enum": [
+              "standard",
+              "large",
+              "huge"
+            ],
+            "description": "Context requirement. large means 200K+ tokens; huge means 1M+ tokens."
+          },
+          "openWeight": {
+            "type": "string",
+            "enum": [
+              "yes",
+              "no",
+              "either"
+            ],
+            "description": "Whether the user needs an open-weight model."
+          },
+          "speed": {
+            "type": "string",
+            "enum": [
+              "critical",
+              "balanced",
+              "quality"
+            ],
+            "description": "Preference for speed versus best quality."
+          },
+          "limit": {
+            "type": "number",
+            "description": "Maximum number of recommendations to return. Defaults to 5."
+          }
+        },
+        "required": [
+          "useCase"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "search_benchlm",
+      "description": "Search BenchLM for AI models, benchmarks, rankings, comparisons, tools, providers, and blog posts. Use this before navigating when the exact BenchLM page is unknown.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "The model, benchmark, provider, comparison, tool, ranking, or topic to search for."
+          },
+          "limit": {
+            "type": "number",
+            "description": "Maximum number of results to return. Defaults to 8."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "subscribe_to_benchlm_updates",
+      "description": "Subscribe an email address to weekly BenchLM benchmark, ranking, and pricing updates. This tool always asks the user to confirm before submitting.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Email address to subscribe."
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": false
+      }
+    }
+  ],
+  "host": "benchlm.ai",
+  "source": "webmcp.com/api/directory.json"
+}

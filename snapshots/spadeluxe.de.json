@@ -1,0 +1,279 @@
+{
+  "sponsio": 1,
+  "url": "https://spadeluxe.de/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "add_to_cart",
+      "description": "Add a directly purchasable product (accessories, water care, outdoor living) to the shopping cart. For variable products pass variation_id. Whirlpools and spas are configured and quoted instead; use open_configurator for those.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "integer",
+            "description": "Product ID (simple products)"
+          },
+          "variation_id": {
+            "type": "integer",
+            "description": "For variable products: the chosen variation_id from get_product_details.variations"
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": false,
+        "consequential": true
+      }
+    },
+    {
+      "name": "book_showroom_appointment",
+      "description": "Open the online appointment booking (Zoho Bookings) of a showroom in this tab. The user completes the booking form.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "showroom_name": {
+            "type": "string",
+            "description": "e.g. Senden, Hamburg, München, Nürnberg, Esslingen, Frankfurt"
+          }
+        },
+        "required": [
+          "showroom_name"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "calculate_configuration",
+      "description": "Calculate the total price of a whirlpool/spa configuration without saving. selection maps option group slugs to option slugs (or true for yes/no options) as returned by get_product_details.configurator.groups.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "integer"
+          },
+          "selection": {
+            "type": "object",
+            "description": "e.g. {\"farbe-aussenverkleidung\":\"smoked-ebony\",\"entertainment-paket\":\"ir-lights\",\"starter-kit\":true}",
+            "additionalProperties": true
+          }
+        },
+        "required": [
+          "product_id",
+          "selection"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_cart",
+      "description": "Show the current shopping cart (items, totals) and the cart/checkout links.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_page_context",
+      "description": "What page is currently open (product, category, page) including product id, price and availability if it is a product page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_product_details",
+      "description": "Full details of one product: description, technical data, availability with expected date and lead time, configurator option groups with surcharges, price range, showrooms where the model is on display, rating.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "integer",
+            "description": "WooCommerce product ID (from search_products or page context)"
+          },
+          "sku": {
+            "type": "string",
+            "description": "Alternatively the SKU / Artikelnummer"
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "list_categories",
+      "description": "List product categories with counts and links.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "list_showrooms",
+      "description": "List SPA Deluxe showrooms (Ausstellungen) in Germany with address, phone, opening hours, page link and online appointment booking link. Optionally with stock of a given product per showroom.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "integer",
+            "description": "Optional: show where this model is on display"
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "navigate_to",
+      "description": "Navigate this tab to a spadeluxe.de URL (product, category, showroom, contact page).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "open_configurator",
+      "description": "Navigate this tab to the online configurator of a product (or to a saved configuration code).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "integer"
+          },
+          "configuration_code": {
+            "type": "string"
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "save_configuration",
+      "description": "Save a configuration and get a shareable configuration code and link that opens the configurator with these options preselected. From there the user can request a binding quote (\"Angebot anfordern\").",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "integer"
+          },
+          "selection": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        },
+        "required": [
+          "product_id",
+          "selection"
+        ]
+      },
+      "annotations": {
+        "readOnly": false,
+        "consequential": false
+      }
+    },
+    {
+      "name": "search_knowledge",
+      "description": "Search the SPA Deluxe knowledge articles (Ratgeber/Wissen) about whirlpools, water care, saunas, costs, installation.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Search the SPA Deluxe catalogue (whirlpools/hot tubs, swim spas, saunas, infrared cabins, outdoor living). Returns products with price, availability, specs (persons, seats, dimensions) and links. Prices of configurable products are base prices; see price_range.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Free text, model name or SKU, e.g. \"J-335\", \"Whirlpool 6 Personen\""
+          },
+          "category": {
+            "type": "string",
+            "description": "Category slug: whirlpool, swim-spas, gartensauna, innensauna, infrarotkabinen, lamellendach, outdoor-living, feuerstellen"
+          },
+          "min_persons": {
+            "type": "integer",
+            "description": "Minimum number of persons"
+          },
+          "max_price": {
+            "type": "number",
+            "description": "Maximum base price in EUR"
+          },
+          "availability": {
+            "type": "string",
+            "enum": [
+              "any",
+              "in_stock",
+              "incoming",
+              "orderable"
+            ],
+            "description": "in_stock = sofort lieferbar, incoming = im Zulauf mit Datum, orderable = bestellbar"
+          },
+          "per_page": {
+            "type": "integer",
+            "description": "Results per page (max 25)"
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "spadeluxe.de",
+  "source": "webmcp.com/api/directory.json"
+}

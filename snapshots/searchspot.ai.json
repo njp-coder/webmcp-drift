@@ -1,0 +1,226 @@
+{
+  "sponsio": 1,
+  "url": "https://www.searchspot.ai/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_page_context",
+      "description": "Read the current SearchSpot page: path, title, and which travel tools apply here.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "open_page",
+      "description": "Open a SearchSpot page. Use page for a named surface, or path for a known in-app URL such as /places/tokyo or /trip/abc.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "string",
+            "enum": [
+              "home",
+              "chat",
+              "hotels",
+              "flights",
+              "places",
+              "trips",
+              "history",
+              "saved",
+              "checkout",
+              "profile",
+              "review",
+              "contact",
+              "how_it_works",
+              "faqs",
+              "about"
+            ],
+            "description": "Named SearchSpot surface."
+          },
+          "path": {
+            "type": "string",
+            "description": "Root-relative SearchSpot path, for example /places/tokyo or /chat?q=Lisbon."
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "plan_around_place",
+      "description": "Start a trip that includes a place. On a public place page, placeName defaults to that place. Same action as the Plan trip button.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "placeName": {
+            "type": "string",
+            "description": "Place to include. Optional when the current page is already a place guide."
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "search_flights",
+      "description": "Search flights. Accepts origin, destination, and dates in the traveler's words or as YYYY-MM-DD. Opens the same planning chat the Flights page uses.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "origin": {
+            "type": "string",
+            "description": "Departure city or airport, such as \"London\" or \"LHR\"."
+          },
+          "destination": {
+            "type": "string",
+            "description": "Arrival city or airport, such as \"New York\" or \"JFK\"."
+          },
+          "tripType": {
+            "type": "string",
+            "enum": [
+              "one-way",
+              "round-trip"
+            ],
+            "description": "Defaults to round-trip."
+          },
+          "departureDate": {
+            "type": "string",
+            "description": "Outbound date, such as 2026-09-04 or next Thursday."
+          },
+          "returnDate": {
+            "type": "string",
+            "description": "Return date for a round-trip."
+          },
+          "adults": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Number of adults. Defaults to 1."
+          },
+          "children": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Number of children. Defaults to 0."
+          },
+          "infants": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Number of infants. Defaults to 0."
+          },
+          "cabinClass": {
+            "type": "string",
+            "description": "Cabin preference such as Economy, Premium Economy, Business, or First."
+          }
+        },
+        "required": [
+          "origin",
+          "destination",
+          "departureDate"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "search_hotels",
+      "description": "Search hotels or a specific stay. Accepts destination and stay dates in the traveler's words or as YYYY-MM-DD. Set destinationType to property when the traveler named a hotel; leave it as area for a city or neighborhood. Opens the same planning chat the Hotels page uses.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "destination": {
+            "type": "string",
+            "description": "City, area, or hotel name, such as \"Lisbon\" or \"Sea Hills Hotels\"."
+          },
+          "destinationType": {
+            "type": "string",
+            "enum": [
+              "area",
+              "property"
+            ],
+            "description": "Use property for a specific hotel or lodging name; use area for a city, neighborhood, or destination. Defaults to area."
+          },
+          "checkIn": {
+            "type": "string",
+            "description": "Check-in date, such as 2026-09-04 or 4 September 2026."
+          },
+          "checkOut": {
+            "type": "string",
+            "description": "Check-out date, such as 2026-09-08 or 8 September 2026."
+          },
+          "adults": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Number of adults. Defaults to 2."
+          },
+          "children": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Number of children. Defaults to 0."
+          },
+          "rooms": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Number of rooms. Defaults to 1."
+          },
+          "starRating": {
+            "type": "string",
+            "enum": [
+              "Any",
+              "3-star",
+              "4-star",
+              "5-star"
+            ],
+            "description": "Preferred star rating. Defaults to Any."
+          }
+        },
+        "required": [
+          "destination",
+          "checkIn",
+          "checkOut"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "start_planning",
+      "description": "Start a SearchSpot trip-planning chat with the traveler request in their own words. Use this for destinations, dates, budget, vibe, or open-ended travel questions.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "description": "The traveler request, such as \"Plan a long weekend in Kyoto in October for two\"."
+          }
+        },
+        "required": [
+          "prompt"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    }
+  ],
+  "host": "searchspot.ai",
+  "source": "webmcp.com/api/directory.json"
+}

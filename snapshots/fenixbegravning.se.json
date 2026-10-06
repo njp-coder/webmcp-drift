@@ -1,0 +1,148 @@
+{
+  "sponsio": 1,
+  "url": "https://fenixbegravning.se/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "findLocalOffice",
+      "description": "Find the Fenix Begravningsbyrå page for a Swedish town or city, returning the local page URL and, where Fenix has a local office, its street address and phone number. Use when the user names a place.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "city": {
+            "type": "string",
+            "description": "Swedish town, city or municipality name, for example \"Norrköping\", \"Uppsala\" or \"Skinnskatteberg\". Spelling does not have to be exact.",
+            "minLength": 2
+          }
+        },
+        "required": [
+          "city"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "getChecklistSteps",
+      "description": "List the practical steps to take in the first days after a death in Sweden, in order, with a link to the full guide. Use when the user asks what to do when someone has died or what needs to be arranged.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "getContactOptions",
+      "description": "Get the ways to reach Fenix Begravningsbyrå from this page: the phone number currently shown to this visitor, the tel: link, the booking page and staffed hours. Use before telling the user how to contact us.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "getPackagePrices",
+      "description": "Get Fenix Begravningsbyrå's fixed package prices in SEK for funerals and family law services. Use when the user asks what a funeral, cremation or legal service costs. Prices are the same across Sweden; a null price means the price is quoted individually.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "description": "Which prices: \"funeral\" for packages with their contents, \"legal\" for legal services, or \"all\" for both. Defaults to \"all\".",
+            "enum": [
+              "funeral",
+              "legal",
+              "all"
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "listServices",
+      "description": "List the funeral and legal services Fenix Begravningsbyrå offers, each with a page URL. Use to answer what the company can help with, or to find the right page for a service.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "description": "Which services to list: \"funeral\" for funeral services, \"legal\" for estate and family law services, or \"all\" for both. Defaults to \"all\".",
+            "enum": [
+              "funeral",
+              "legal",
+              "all"
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "openBookingForm",
+      "description": "Open the \"Boka rådgivning\" dialog so the user can book a free advisory call, optionally pre-filling what they have already told you. Opens and fills only: the user must review, pass the spam check and submit it themselves, so never tell them a booking has been made.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "first_name": {
+            "type": "string",
+            "description": "The user's first name, if they have already provided it."
+          },
+          "last_name": {
+            "type": "string",
+            "description": "The user's surname, if they have already provided it."
+          },
+          "phone": {
+            "type": "string",
+            "description": "The user's Swedish phone number, if they have already provided it."
+          },
+          "service_type": {
+            "type": "string",
+            "description": "What the user needs help with: \"funeral\" if someone has died, \"legal\" for estate or family law advice. Defaults to \"funeral\".",
+            "enum": [
+              "funeral",
+              "legal"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "searchSite",
+      "description": "Search fenixbegravning.se for guides, services, products, places and local pages. Use when no more specific tool covers the question.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "search-field": {
+            "type": "string",
+            "description": "Sök"
+          }
+        }
+      }
+    }
+  ],
+  "host": "fenixbegravning.se",
+  "source": "webmcp.com/api/directory.json"
+}

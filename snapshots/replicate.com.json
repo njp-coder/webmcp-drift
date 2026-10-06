@@ -1,0 +1,85 @@
+{
+  "sponsio": 1,
+  "url": "https://replicate.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "openModel",
+      "description": "Navigate the user's browser to a Replicate model page, for example owner='black-forest-labs', name='flux-schnell'.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "owner": {
+            "type": "string",
+            "description": "Model owner/username."
+          },
+          "name": {
+            "type": "string",
+            "description": "Model name."
+          }
+        },
+        "required": [
+          "owner",
+          "name"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "openPlayground",
+      "description": "Open the playground, optionally pre-loaded with a specific model.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "owner": {
+            "type": "string",
+            "description": "Optional model owner."
+          },
+          "name": {
+            "type": "string",
+            "description": "Optional model name."
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "searchModels",
+      "description": "Search Replicate for AI models by keyword. Returns up to `limit` models with owner, name, description, and URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search terms, for example 'text to image' or 'whisper'."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "default": 5,
+            "description": "Maximum number of models to return."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "replicate.com",
+  "source": "webmcp.com/api/directory.json"
+}

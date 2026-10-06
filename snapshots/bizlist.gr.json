@@ -1,0 +1,147 @@
+{
+  "sponsio": 1,
+  "url": "https://bizlist.gr/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "bizlist_get_company",
+      "description": "Πλήρες προφίλ εταιρείας από ΑΡ ΓΕΜΗ: στοιχεία, δραστηριότητες, πρόσωπα, οικονομικά.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "ar_gemh": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string",
+            "description": "Κωδικός χώρας μητρώου, default gr"
+          }
+        },
+        "required": [
+          "ar_gemh"
+        ]
+      }
+    },
+    {
+      "name": "bizlist_lookup_vat",
+      "description": "Αναζήτηση με ΑΦΜ / EU VAT. Αν το ΑΦΜ δεν είναι στη βάση, γίνεται fallback σε VIES για κάθε χώρα της ΕΕ και επιστρέφεται η επωνυμία/διεύθυνση από το VIES. Το bizlist_search καλύπτει μόνο ελληνικά ΑΦΜ.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "vat": {
+            "type": "string",
+            "description": "ΑΦΜ με ή χωρίς πρόθεμα χώρας, π.χ. 094014201, EL094014201, DE811569869"
+          }
+        },
+        "required": [
+          "vat"
+        ]
+      }
+    },
+    {
+      "name": "bizlist_open_company",
+      "description": "Άνοιξε τη σελίδα μιας εταιρείας στην τρέχουσα καρτέλα.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "ar_gemh": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string",
+            "description": "Κωδικός χώρας μητρώου, default gr"
+          }
+        },
+        "required": [
+          "ar_gemh"
+        ]
+      }
+    },
+    {
+      "name": "bizlist_search",
+      "description": "Ελεύθερη αναζήτηση στο ελληνικό μητρώο ΓΕΜΗ: όνομα εταιρείας, ΑΦΜ, ΑΡ ΓΕΜΗ ή όνομα προσώπου. Επιστρέφει εταιρείες και πρόσωπα.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Όνομα, ΑΦΜ ή ΑΡ ΓΕΜΗ"
+          },
+          "count": {
+            "type": "number",
+            "description": "Πλήθος αποτελεσμάτων (default 10)"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "bizlist_search_activities",
+      "description": "Βρες κωδικούς ΚΑΔ/NACE από περιγραφή δραστηριότητας, για χρήση στο bizlist_search_companies.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string"
+          },
+          "count": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "bizlist_search_companies",
+      "description": "Δομημένη αναζήτηση εταιρειών με φίλτρα: ΚΑΔ, πόλη, νομική μορφή, εύρος τζίρου/κερδών/ενεργητικού, ημερομηνία σύστασης. Για ελεύθερο κείμενο χρησιμοποίησε το bizlist_search.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string"
+          },
+          "activities": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Κωδικοί ΚΑΔ/NACE"
+          },
+          "city": {
+            "type": "string",
+            "description": "Πόλη με ελληνικά κεφαλαία"
+          },
+          "revenue_min": {
+            "type": "number"
+          },
+          "revenue_max": {
+            "type": "number"
+          },
+          "assets_min": {
+            "type": "number",
+            "description": "Ελάχιστο σύνολο ενεργητικού €"
+          },
+          "assets_max": {
+            "type": "number",
+            "description": "Μέγιστο σύνολο ενεργητικού €"
+          },
+          "count": {
+            "type": "number"
+          }
+        }
+      }
+    }
+  ],
+  "host": "bizlist.gr",
+  "source": "webmcp.com/api/directory.json"
+}

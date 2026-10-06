@@ -1,0 +1,91 @@
+{
+  "sponsio": 1,
+  "url": "https://chelhead.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_eashl_club_leaderboard",
+      "description": "Read the current EASHL club leaderboard: the top-ranked clubs with their rank and points.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "platform": {
+            "type": "string",
+            "description": "EA platform slug. Defaults to common-gen5, which covers current-generation consoles and PC."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "open_chelhead_page",
+      "description": "Navigate this ChelHead tab to one of its pages, such as a club page, a player page, the club leaderboard or free agency.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Site-relative path to open, for example /clubs-top-leaderboard, /free-agency, or /view-club/common-gen5/12345."
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    },
+    {
+      "name": "search_eashl_clubs",
+      "description": "Search EA NHL EASHL (World of Chel) clubs by name and return each match with its club id, so a club page can be opened or its stats read.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "clubName": {
+            "type": "string",
+            "description": "Full or partial EASHL club name to search for."
+          },
+          "platform": {
+            "type": "string",
+            "description": "EA platform slug. Defaults to common-gen5, which covers current-generation consoles and PC."
+          }
+        },
+        "required": [
+          "clubName"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "search_eashl_players",
+      "description": "Search EA NHL EASHL players by gamertag and return each match with a link to their ChelHead stats page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "gamertag": {
+            "type": "string",
+            "description": "Full or partial gamertag to search for."
+          },
+          "platform": {
+            "type": "string",
+            "description": "EA platform slug. Defaults to common-gen5, which covers current-generation consoles and PC."
+          }
+        },
+        "required": [
+          "gamertag"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "chelhead.com",
+  "source": "webmcp.com/api/directory.json"
+}

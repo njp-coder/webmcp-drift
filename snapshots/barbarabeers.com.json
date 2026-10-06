@@ -1,0 +1,230 @@
+{
+  "sponsio": 1,
+  "url": "https://barbarabeers.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "describeEstimator",
+      "description": "Describe a public website tool a visitor can start: contact, home evaluation, mortgage calculator, or land-transfer/closing costs. Returns purpose and the page to open. Does not submit a form.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "slug": {
+            "type": "string",
+            "enum": [
+              "general-contact",
+              "home-evaluation",
+              "mortgage-calculator",
+              "closing-costs-calculator"
+            ],
+            "description": "Public estimator slug."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "getCommunity",
+      "description": "Get a short neighbourhood summary and listings link for one served community by slug or city name.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Community slug such as burlington or stoney-creek."
+          },
+          "name": {
+            "type": "string",
+            "description": "City name when the slug is unknown."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "getListingFacts",
+      "description": "Look up one listing by MLS number or street address. Returns price, beds, baths, status, open-house flag, and the canonical property URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "listingId": {
+            "type": "string",
+            "description": "MLS number."
+          },
+          "q": {
+            "type": "string",
+            "description": "Street address when the MLS number is unknown."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "getOfficeInfo",
+      "description": "Return Barbara Beers’ brokerage, Burlington office address, phone numbers, email, and service area.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "listCommunities",
+      "description": "List neighbourhoods the Barbara Beers team serves, with region, tagline, and community page URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "listSitePages",
+      "description": "List the main public pages and what each is for: listings, buyers, sellers, communities, team, blog, and contact.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "searchListings",
+      "description": "Search live MLS listings on barbarabeers.com by city, sale/lease/sold, type, price, beds, baths, address, or MLS. Returns a short list and the matching listings page URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "q": {
+            "type": "string",
+            "description": "Street address or free-text listing search."
+          },
+          "listingId": {
+            "type": "string",
+            "description": "MLS number when the visitor already has one."
+          },
+          "city": {
+            "type": "string",
+            "description": "City name such as Burlington or Oakville."
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "all",
+              "sale",
+              "lease",
+              "sold"
+            ],
+            "description": "Transaction status. Default is the public mixed search."
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "all",
+              "residential",
+              "detached",
+              "condo",
+              "townhouses"
+            ],
+            "description": "Property type filter used on /listings."
+          },
+          "bedsMin": {
+            "type": "string",
+            "enum": [
+              "any",
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6"
+            ]
+          },
+          "bathsMin": {
+            "type": "string",
+            "enum": [
+              "any",
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6"
+            ]
+          },
+          "minPrice": {
+            "type": "number",
+            "description": "Minimum list price in CAD."
+          },
+          "maxPrice": {
+            "type": "number",
+            "description": "Maximum list price in CAD."
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "newest",
+              "oldest",
+              "price-high",
+              "price-low"
+            ]
+          },
+          "scope": {
+            "type": "string",
+            "enum": [
+              "all",
+              "agent",
+              "office"
+            ],
+            "description": "all = MLS search, agent = Barbara’s listings, office = brokerage."
+          },
+          "preset": {
+            "type": "string",
+            "enum": [
+              "featured",
+              "open-house",
+              "luxury",
+              "solds"
+            ]
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 3,
+            "description": "Page 1–3; five results per page."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    }
+  ],
+  "host": "barbarabeers.com",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,109 @@
+{
+  "sponsio": 1,
+  "url": "https://www.imforza.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_hosting_plans",
+      "description": "Returns imFORZA managed WordPress hosting plan details — Starter, Growth, and Scale tiers with monthly and annual pricing, included features, storage, and expert support hours per tier. Use when a buyer is evaluating hosting.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_services",
+      "description": "Returns the imFORZA service list with descriptions, pricing tiers, and URLs. Use when a buyer asks what imFORZA offers or how much services cost. Pass an optional category to filter results.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "description": "Optional filter. One of: hosting, websites, marketing, hubspot, seo, funnels.",
+            "enum": [
+              "hosting",
+              "websites",
+              "marketing",
+              "hubspot",
+              "seo",
+              "funnels"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_site_info",
+      "description": "Returns structured information about imFORZA — company description, services overview, contact details, support hours, and key URLs. Use this first to understand who imFORZA is before answering buyer questions.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "inspect_image_c2pa",
+      "description": "Fetch a single image (by CSS selector or URL) and return its fully decoded C2PA manifest store: every manifest's claim, assertions (e.g. c2pa.actions edit history, schema.org authorship), and the COSE signature details (algorithm and signing-certificate identity). Provide exactly one of `selector` or `url`. Note: the signature is decoded but NOT cryptographically verified.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "selector": {
+            "type": "string",
+            "maxLength": 8192,
+            "description": "CSS selector for an <img> element on the page."
+          },
+          "url": {
+            "type": "string",
+            "maxLength": 8192,
+            "description": "Image URL (absolute, or relative to the current page) to fetch and inspect."
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "scan_images_c2pa",
+      "description": "Scan every <img> on the current page for C2PA Content Credentials (content provenance metadata) and return a per-image summary: whether a manifest is present, the claim generator (the tool that produced or edited the image), the title, and the signer name. Use this to find which images on a page carry provenance data. Note: provenance is decoded but NOT cryptographically verified.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 25,
+            "description": "Maximum number of images to fetch and scan (default 25, max 100)."
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "search_knowledge_base",
+      "description": "Searches the imFORZA help center and returns matching support articles with titles, excerpts, and URLs. Use when a user has a support question or is troubleshooting an issue with their imFORZA-managed site.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search query — e.g. \"how to clear cache\", \"update plugin\", \"add new user\""
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "imforza.com",
+  "source": "webmcp.com/api/directory.json"
+}

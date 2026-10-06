@@ -1,0 +1,170 @@
+{
+  "sponsio": 1,
+  "url": "https://www.edenspiekermann.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_case_study_details",
+      "description": "Get a markdown summary of a public case study by slug, including its canonical detail URL. Returns up to 12000 characters of markdown.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "The case-study slug, for example 'mercedes-benz'."
+          }
+        },
+        "required": [
+          "slug"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_role_details",
+      "description": "Get details for a currently open role, including description sections and application URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "roleId": {
+            "type": "string",
+            "description": "The role identifier returned by list_open_roles."
+          }
+        },
+        "required": [
+          "roleId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_case_studies",
+      "description": "List public Edenspiekermann case studies, optionally filtered by query, industry, or service, with cursor-based pagination.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Free-text search across title, subtitle, slug, industries, and services."
+          },
+          "industry": {
+            "type": "string",
+            "description": "Filter case studies by industry name."
+          },
+          "service": {
+            "type": "string",
+            "description": "Filter case studies by service name."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "description": "Maximum number of case studies to return per page. Defaults to 10."
+          },
+          "cursor": {
+            "type": "string",
+            "description": "Opaque pagination cursor returned by a previous list_case_studies call."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_open_roles",
+      "description": "List the currently open roles published on edenspiekermann.com.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_taxonomies",
+      "description": "List the currently discoverable industries and services used to categorize public Edenspiekermann case studies.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "start_job_application",
+      "description": "Open the application page for a currently open role without submitting the application.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "roleId": {
+            "type": "string",
+            "description": "The role identifier returned by list_open_roles."
+          }
+        },
+        "required": [
+          "roleId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "submit_contact_inquiry",
+      "description": "Validate an inquiry with dryRun=true, or submit a real contact inquiry to Edenspiekermann. Real submission requires explicit user intent. Optional clientRequestId enables best-effort retry deduplication for up to 24 hours.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "type": "string",
+            "maxLength": 80
+          },
+          "lastName": {
+            "type": "string",
+            "maxLength": 80
+          },
+          "companyName": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "workEmail": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 254
+          },
+          "phoneNumber": {
+            "type": "string",
+            "pattern": "^[0-9+()./\\-\\s]{7,32}$"
+          },
+          "challenge": {
+            "type": "string",
+            "description": "The inquiry message or project challenge to send.",
+            "maxLength": 4000
+          },
+          "dryRun": {
+            "type": "boolean",
+            "default": false,
+            "description": "Validate the inquiry and return a preview without sending it."
+          },
+          "clientRequestId": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._:-]{1,128}$",
+            "maxLength": 128,
+            "description": "Optional best-effort idempotency key to deduplicate retries for up to 24 hours."
+          }
+        },
+        "required": [
+          "firstName",
+          "lastName",
+          "workEmail",
+          "challenge"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "edenspiekermann.com",
+  "source": "webmcp.com/api/directory.json"
+}

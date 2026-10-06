@@ -1,0 +1,69 @@
+{
+  "sponsio": 1,
+  "url": "https://www.meuemprego.com.br/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "buscar_candidatos",
+      "description": "Pesquisa candidatos cadastrados no Meu Emprego para quem está contratando. Informe a função ou vaga e, se possível, a cidade. Retorna um conjunto amplo, sem ordem de relevância garantida, com id, primeiro nome, DDD, resumo profissional e selos (novo, destaque). Analise todos, descarte quem não atende ao pedido e use mostrar_candidatos com os ids escolhidos. Não traz telefone nem e-mail.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "consulta": {
+            "type": "string",
+            "description": "Função, vaga, habilidades e cidade desejadas, por exemplo \"auxiliar administrativo Campinas\"."
+          }
+        },
+        "required": [
+          "consulta"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "como_funciona_meu_emprego",
+      "description": "Explica como o Meu Emprego funciona para empresas que contratam e para quem procura emprego, e como usar as ferramentas de busca de candidatos deste site.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "mostrar_candidatos",
+      "description": "Abre neste site a seleção com os candidatos escolhidos, na ordem informada (até 30). Na página, cada candidato tem o botão \"Chamar no WhatsApp\"; para liberar o contato a empresa entra na conta ou faz o cadastro no Meu Emprego.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "ids": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "minItems": 1,
+            "maxItems": 30,
+            "description": "ids retornados por buscar_candidatos, do mais para o menos aderente."
+          }
+        },
+        "required": [
+          "ids"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "meuemprego.com.br",
+  "source": "webmcp.com/api/directory.json"
+}

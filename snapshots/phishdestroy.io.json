@@ -1,0 +1,80 @@
+{
+  "sponsio": 1,
+  "url": "https://phishdestroy.io/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_domain_report",
+      "description": "Retrieve an LLM-readable threat-intelligence report for a domain.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "domain": {
+            "type": "string",
+            "description": "Domain to look up."
+          }
+        },
+        "required": [
+          "domain"
+        ]
+      }
+    },
+    {
+      "name": "get_platform_stats",
+      "description": "Retrieve aggregate PhishDestroy platform statistics and their last update timestamp.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_threat_feed",
+      "description": "Retrieve the Atom feed of newly detected phishing domains with optional brand or registrar filters.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "brand": {
+            "type": "string",
+            "description": "Filter by impersonated brand."
+          },
+          "registrar": {
+            "type": "string",
+            "description": "Filter by registrar name."
+          }
+        }
+      }
+    },
+    {
+      "name": "probe_domain",
+      "description": "Live-check whether a phishing domain is currently serving content. Supports liveping, redirect and cdnbypass modes.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "domain": {
+            "type": "string",
+            "description": "Domain to probe (no protocol or path)."
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "liveping",
+              "redirect",
+              "cdnbypass"
+            ],
+            "default": "liveping"
+          }
+        },
+        "required": [
+          "domain"
+        ]
+      }
+    }
+  ],
+  "host": "phishdestroy.io",
+  "source": "webmcp.com/api/directory.json"
+}

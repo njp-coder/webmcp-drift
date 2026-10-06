@@ -1,0 +1,251 @@
+{
+  "sponsio": 1,
+  "url": "https://kitploit.com/en",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "browse_categories",
+      "description": "Browse public Kitploit categories as a tree or flat list.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "lang": {
+            "type": "string"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "tree",
+              "flat"
+            ]
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get_blog_post",
+      "description": "Read a public Kitploit BlogPost by language, date, and slug.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "lang": {
+            "type": "string"
+          },
+          "year": {
+            "type": "integer",
+            "minimum": 2000
+          },
+          "month": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12
+          },
+          "day": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 31
+          },
+          "slug": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "year",
+          "month",
+          "day",
+          "slug"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get_tool",
+      "description": "Read a public Kitploit tool detail by repository type and path.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "repo_type": {
+            "type": "string",
+            "enum": [
+              "github",
+              "gitlab",
+              "bitbucket",
+              "external"
+            ]
+          },
+          "repository_path": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "lang": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "repo_type",
+          "repository_path"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "list_blog_posts",
+      "description": "List public Kitploit BlogPosts cursor-first; page is a deprecated bounded fallback.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "lang": {
+            "type": "string"
+          },
+          "cursor": {
+            "type": "string",
+            "maxLength": 2048
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "deprecated": true
+          },
+          "page_size": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "list_latest_updates",
+      "description": "List public Kitploit updates cursor-first; page is a deprecated bounded fallback.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "lang": {
+            "type": "string"
+          },
+          "cursor": {
+            "type": "string",
+            "maxLength": 2048
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "deprecated": true
+          },
+          "page_size": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "list_popular_tools",
+      "description": "List popular public Kitploit tools from public popularity snapshots.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "window": {
+            "type": "string",
+            "enum": [
+              "7d",
+              "30d"
+            ]
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20
+          },
+          "lang": {
+            "type": "string"
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "search_tools",
+      "description": "Search public Kitploit tools using the existing public search contract.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "q": {
+            "type": "string",
+            "maxLength": 80
+          },
+          "lang": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "page_size": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "ordering": {
+            "type": "string",
+            "enum": [
+              "relevance",
+              "newest",
+              "most_popular",
+              "recently_updated"
+            ]
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    }
+  ],
+  "host": "kitploit.com",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,156 @@
+{
+  "sponsio": 1,
+  "url": "https://semerenkogroup.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "sem.get_contact_paths",
+      "description": "Return safe contact, lead, listing, and market-research URLs for a human-visible handoff.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "sem.get_overview",
+      "description": "Returns Semerenko Group's public site purpose, major paths, and safe agent-use rules.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "sem.open_city_guide",
+      "description": "Navigate to a Semerenko city/location guide. Pass a city slug when possible; free text is slugified.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "city": {
+            "type": "string",
+            "description": "City name or city slug, such as jerusalem or beit-shemesh."
+          }
+        },
+        "required": [
+          "city"
+        ]
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "sem.open_lead_form",
+      "description": "Open the visible lead form with intent hints. This tool never submits contact data.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "intent": {
+            "type": "string",
+            "enum": [
+              "buy",
+              "rent",
+              "sell",
+              "invest",
+              "agent_contact"
+            ],
+            "description": "User intent."
+          },
+          "city": {
+            "type": "string",
+            "description": "Desired city or area."
+          },
+          "budget": {
+            "type": "string",
+            "description": "Budget range, if known."
+          },
+          "timeline": {
+            "type": "string",
+            "description": "Timing or urgency."
+          },
+          "notes": {
+            "type": "string",
+            "description": "Short visible handoff note."
+          }
+        },
+        "required": [
+          "intent"
+        ]
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "sem.open_listing_search",
+      "description": "Navigate to the relevant listing, project, buy, rent, or sell page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "buy",
+              "rent",
+              "sell",
+              "listings",
+              "new_projects"
+            ],
+            "description": "Search or service mode."
+          },
+          "city": {
+            "type": "string",
+            "description": "Optional city hint."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "sem.search_site",
+      "description": "Search public Semerenko Group content by query and return matching canonical URLs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search query."
+          },
+          "subtype": {
+            "type": "string",
+            "enum": [
+              "any",
+              "post",
+              "page",
+              "listings",
+              "market-insight"
+            ],
+            "description": "Optional content type filter."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    }
+  ],
+  "host": "semerenkogroup.com",
+  "source": "webmcp.com/api/directory.json"
+}

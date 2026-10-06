@@ -1,0 +1,102 @@
+{
+  "sponsio": 1,
+  "url": "https://www.aircargobook.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "list_companies_by_category",
+      "description": "List companies from the company directory by category, without a search term. Categories are forwarder, airline, trucker, handling_agent, gsa, airport, service_provider, organization and security. Can be narrowed down by country and by IATA airport code. Returns id, name, city, country, airport, category, website and profile URL. Use this to browse or compare providers of a given type. Read-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "enum": [
+              "forwarder",
+              "airline",
+              "trucker",
+              "handling_agent",
+              "gsa",
+              "airport",
+              "service_provider",
+              "organization",
+              "security"
+            ],
+            "description": "The category of companies to list."
+          },
+          "country": {
+            "type": "string",
+            "pattern": "^[A-Za-z]{2}$",
+            "description": "Optional ISO 3166-1 alpha-2 country code, for example \"DE\" or \"NL\"."
+          },
+          "airport": {
+            "type": "string",
+            "pattern": "^[A-Za-z]{3}$",
+            "description": "Optional IATA airport code, for example \"FRA\". Lists companies located at that airport."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "description": "Maximum number of companies to return. Defaults to 20."
+          }
+        },
+        "required": [
+          "category"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "search_companies",
+      "description": "Search for companies in the application using the existing company database. Matches company name and city and returns id, name, city, country and the profile URL of each match. Use this when you have a name or a search term. Read-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "description": "Search term. Matches company name and city. Every word has to appear in the name or the city. A numeric value also matches the company id."
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "forwarder",
+              "airline",
+              "trucker",
+              "handling_agent",
+              "gsa",
+              "airport",
+              "service_provider",
+              "organization",
+              "security"
+            ],
+            "description": "Optional filter for the category of company."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 25,
+            "description": "Maximum number of companies to return. Defaults to 10."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    }
+  ],
+  "host": "aircargobook.com",
+  "source": "webmcp.com/api/directory.json"
+}

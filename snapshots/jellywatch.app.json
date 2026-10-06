@@ -1,0 +1,86 @@
+{
+  "sponsio": 1,
+  "url": "https://jellywatch.app/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "browse_hub",
+      "description": "Browse the JellyWatch Community Hub — a directory of Jellyfin and Emby plugins, themes, clients, and tools. Use filter to sort by popularity, recency, or views.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "filter": {
+            "type": "string",
+            "enum": [
+              "all",
+              "best",
+              "new",
+              "most-viewed",
+              "new-this-month"
+            ],
+            "description": "Sort/filter preset (default: all)",
+            "default": "all"
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_page_markdown",
+      "description": "Fetch any public JellyWatch page as clean Markdown. Supports: / (homepage), /about, /privacy, /glossary, /status, /blog (listing), /blog/{slug} (article), /doc/{slug} (docs), /hub (community hub listing), /hub/{slug} (plugin detail).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "URL path, e.g. \"/about\" or \"/blog/my-post\""
+          }
+        },
+        "required": [
+          "path"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_site_index",
+      "description": "Get the complete JellyWatch site index (llms.txt format). Lists all public pages, app features, blog articles, and community hub projects.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "search_blog",
+      "description": "Search JellyWatch blog articles by keyword. Returns matching posts as Markdown with titles, summaries, and URLs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search keywords"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "jellywatch.app",
+  "source": "webmcp.com/api/directory.json"
+}

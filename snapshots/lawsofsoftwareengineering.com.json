@@ -1,0 +1,59 @@
+{
+  "sponsio": 1,
+  "url": "https://lawsofsoftwareengineering.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "find_laws",
+      "description": "Search or filter the Laws of Software Engineering corpus (56 laws). Provide a text query to match titles and descriptions, a category to filter by group, or both. Returns a list of matching laws with their slug, title, description, category, and URLs to HTML and markdown versions.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Case-insensitive text to match against law title and description (e.g., \"organization\", \"estimate\", \"complexity\")."
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "Architecture",
+              "Teams",
+              "Planning",
+              "Quality",
+              "Scale",
+              "Design",
+              "Decisions"
+            ],
+            "description": "Filter by thematic group."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 56,
+            "description": "Maximum number of results (default 20)."
+          }
+        }
+      }
+    },
+    {
+      "name": "get_law",
+      "description": "Get the full content of a specific law by its slug (e.g., \"conways-law\", \"brooks-law\", \"yagni\"). Returns structured data including definition, takeaways, overview, examples, origins, related laws, and further reading. Use find_laws first if you do not know the slug.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Law slug: lowercase, hyphen-separated, no apostrophes (e.g., \"conways-law\" not \"conway's-law\")."
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    }
+  ],
+  "host": "lawsofsoftwareengineering.com",
+  "source": "webmcp.com/api/directory.json"
+}

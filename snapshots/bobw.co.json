@@ -1,0 +1,81 @@
+{
+  "sponsio": 1,
+  "url": "https://bobw.co/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_search_options",
+      "description": "Get supported Bob W cities and guest limits for this apartment search widget.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "open_apartment_search",
+      "description": "Change the visible CMS apartment search widget and navigate to the Bob W booking search for one city, exact dates, one apartment, and guests. This changes page state and navigates, but never books an apartment.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "city": {
+            "type": "string",
+            "description": "City value returned by get_search_options."
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Exact check-in date in YYYY-MM-DD format."
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Exact check-out date in YYYY-MM-DD format."
+          },
+          "adultCount": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "childCount": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0
+          },
+          "infantCount": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 5,
+            "default": 0
+          },
+          "apartmentCount": {
+            "type": "integer",
+            "const": 1,
+            "default": 1,
+            "description": "WebMCP search supports one apartment per search."
+          }
+        },
+        "required": [
+          "city",
+          "startDate",
+          "endDate",
+          "adultCount"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "consequential": false,
+        "untrustedContent": false
+      }
+    }
+  ],
+  "host": "bobw.co",
+  "source": "webmcp.com/api/directory.json"
+}

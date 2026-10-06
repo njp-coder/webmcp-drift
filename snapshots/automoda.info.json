@@ -1,0 +1,86 @@
+{
+  "sponsio": 1,
+  "url": "https://www.automoda.info/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "search_inventory",
+      "description": "Cerca e filtra i veicoli in stock pubblicati su questo sito: usa filtri strutturati (alimentazione, cambio, km massimi, tipo veicolo) e/o testo libero per marca e modello.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Ricerca libera: marca, modello o parola chiave, es. \"Golf\" o \"station wagon\"."
+          },
+          "fuel": {
+            "type": "string",
+            "enum": [
+              "Diesel",
+              "Benzina",
+              "Ibrido",
+              "Elettrica"
+            ],
+            "description": "Alimentazione del veicolo."
+          },
+          "gearbox": {
+            "type": "string",
+            "enum": [
+              "Automatico",
+              "Manuale"
+            ],
+            "description": "Tipo di cambio."
+          },
+          "max_km": {
+            "type": "number",
+            "description": "Chilometraggio massimo, es. 50000."
+          },
+          "catalog_type": {
+            "type": "string",
+            "enum": [
+              "auto",
+              "vcom",
+              "vind"
+            ],
+            "description": "Tipologia: auto, veicoli commerciali (vcom) o industriali (vind)."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "search_nlt_offers",
+      "description": "Cerca e filtra le offerte di noleggio lungo termine (NLT) pubblicate su questo sito.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Ricerca libera: marca, modello o parola chiave."
+          },
+          "convenienza_alta": {
+            "type": "boolean",
+            "description": "Mostra solo le offerte piu convenienti."
+          },
+          "posti_7plus": {
+            "type": "boolean",
+            "description": "Solo veicoli con 7 o piu posti."
+          },
+          "neopatentati": {
+            "type": "boolean",
+            "description": "Solo veicoli guidabili dai neopatentati."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "automoda.info",
+  "source": "webmcp.com/api/directory.json"
+}

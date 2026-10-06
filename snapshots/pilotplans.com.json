@@ -1,0 +1,199 @@
+{
+  "sponsio": 1,
+  "url": "https://www.pilotplans.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_hotel_details",
+      "description": "Description, amenities, photos and address for a hotel id returned by search_hotels.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "hotel_id": {
+            "type": "string",
+            "description": "Hotel id from search_hotels"
+          }
+        },
+        "required": [
+          "hotel_id"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get_install_instructions",
+      "description": "Step-by-step instructions for adding Pilot's hotel search MCP server to an AI client, so the user can keep using these tools outside this page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "client": {
+            "type": "string",
+            "enum": [
+              "claude",
+              "chatgpt",
+              "claude-code",
+              "cursor",
+              "vs-code",
+              "windsurf",
+              "codex",
+              "gemini-cli",
+              "other"
+            ],
+            "description": "The AI client to install into"
+          }
+        },
+        "required": [
+          "client"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_room_rates_for_hotel",
+      "description": "Bookable room offers for a hotel id from search_hotels, each with price, board type and refundability. Booking is not available through this tool; send the user to the hotel `url` on Pilot to book.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "hotel_id": {
+            "type": "string",
+            "description": "Hotel id from search_hotels"
+          },
+          "check_in": {
+            "type": "string",
+            "description": "Override check-in, YYYY-MM-DD",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          },
+          "check_out": {
+            "type": "string",
+            "description": "Override check-out, YYYY-MM-DD",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          },
+          "guests": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Number of guests"
+          }
+        },
+        "required": [
+          "hotel_id"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "search_hotels",
+      "description": "Search bookable hotels on Pilot by location and dates. Returns hotels with prices, star and guest ratings, photos, coordinates, a `url` to book the hotel on Pilot, and an opaque id for get_hotel_details and get_room_rates_for_hotel. Booking is not available through this tool; link the user to the hotel `url`. Narrow with the rating, amenity and radius filters rather than a large limit, and page with offset.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "location": {
+            "type": "string",
+            "description": "City, neighbourhood, address or place name"
+          },
+          "check_in": {
+            "type": "string",
+            "description": "Check-in date, YYYY-MM-DD",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          },
+          "check_out": {
+            "type": "string",
+            "description": "Check-out date, YYYY-MM-DD",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          },
+          "guests": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 2,
+            "description": "Number of adults"
+          },
+          "rooms": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1,
+            "description": "Rooms required"
+          },
+          "children_ages": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 17
+            },
+            "description": "Ages of children sharing the room"
+          },
+          "currency": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 3,
+            "default": "USD",
+            "description": "ISO 4217 currency"
+          },
+          "guest_nationality": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 2,
+            "default": "US",
+            "description": "ISO 3166-1 alpha-2 country of the guest; affects rate eligibility"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 20,
+            "description": "Maximum hotels to return"
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Hotels to skip, for paging"
+          },
+          "radius_meters": {
+            "type": "integer",
+            "minimum": 1000,
+            "description": "Restrict to this radius around the location"
+          },
+          "min_star_rating": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 5,
+            "description": "Minimum star rating"
+          },
+          "min_guest_rating": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 10,
+            "description": "Minimum guest score out of 10"
+          },
+          "ai_search": {
+            "type": "string",
+            "description": "Free-text preference, e.g. 'boutique hotel near the old town'"
+          }
+        },
+        "required": [
+          "location",
+          "check_in",
+          "check_out"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    }
+  ],
+  "host": "pilotplans.com",
+  "source": "webmcp.com/api/directory.json"
+}

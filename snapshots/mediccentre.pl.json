@@ -1,0 +1,107 @@
+{
+  "sponsio": 1,
+  "url": "https://mediccentre.pl/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "find_facilities",
+      "description": "Wyszukuje placówki medyczne LUX MED lub Enel-Med w podanym mieście. Zwraca nazwę, adres, telefon i godziny otwarcia.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "city": {
+            "type": "string",
+            "description": "Nazwa miasta, np. Warszawa, Kraków."
+          },
+          "provider": {
+            "type": "string",
+            "enum": [
+              "luxmed",
+              "enelmed"
+            ],
+            "description": "Sieć medyczna. Domyślnie luxmed."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "description": "Maksymalna liczba wyników (domyślnie 20)."
+          }
+        },
+        "required": [
+          "city"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_offer",
+      "description": "Zwraca szczegóły jednego pakietu medycznego po slugu lub id: opis, ceny dla okresów umowy, zakres, adres URL do zakupu.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Slug pakietu z adresu URL /pakiet/{slug}."
+          },
+          "id": {
+            "type": "integer",
+            "description": "Numeryczne id pakietu."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_offers",
+      "description": "Zwraca aktywne pakiety medyczne MedicCentre pogrupowane (indywidualny, dla dwojga, dla rodziny, dla seniora, dla matki i dziecka) z ceną miesięczną, adresem URL oferty i skrótem zakresu.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "provider": {
+            "type": "string",
+            "enum": [
+              "luxmed",
+              "enelmed"
+            ],
+            "description": "Sieć medyczna. Domyślnie luxmed."
+          },
+          "group": {
+            "type": "string",
+            "description": "Opcjonalny slug grupy pakietów, np. indywidualny, dla-rodziny, dla-seniora."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_articles",
+      "description": "Przeszukuje artykuły poradnikowe MedicCentre o zdrowiu, badaniach i pakietach medycznych. Zwraca tytuł, skrót i adres URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Fraza do wyszukania."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "description": "Maksymalna liczba wyników (domyślnie 10)."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "mediccentre.pl",
+  "source": "webmcp.com/api/directory.json"
+}

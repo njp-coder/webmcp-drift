@@ -1,0 +1,126 @@
+{
+  "sponsio": 1,
+  "url": "https://bloom-bridge.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_memorial",
+      "description": "Full detail for one public memorial: dates, cemetery, and the history of flower deliveries made to that grave, each with a photo count.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "slug"
+        ],
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Memorial slug, the last path segment of its URL."
+          }
+        }
+      }
+    },
+    {
+      "name": "list_arrangements",
+      "description": "The flower arrangements BloomBridge can place at a grave, with prices.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_plans",
+      "description": "Delivery plans and pricing: one-time, or recurring remembrance plans of one to four deliveries a year.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "prepare_order",
+      "description": "Build a checkout link that arrives with the plan, arrangement and grave details already filled in, so the customer only has to confirm and pay. Use this once you know what they want. It does NOT place an order or take payment: it returns a URL for a person to open.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "plan": {
+            "type": "string",
+            "description": "single, sub1, sub2, sub3 or sub4. Default single."
+          },
+          "arrangement": {
+            "type": "string",
+            "description": "Arrangement name, SKU or id from list_arrangements."
+          },
+          "first": {
+            "type": "string",
+            "description": "First name on the headstone."
+          },
+          "middle": {
+            "type": "string",
+            "description": "Middle name on the headstone."
+          },
+          "last": {
+            "type": "string",
+            "description": "Last name on the headstone."
+          },
+          "cemetery": {
+            "type": "string",
+            "description": "Cemetery name."
+          },
+          "city": {
+            "type": "string",
+            "description": "Cemetery city."
+          },
+          "state": {
+            "type": "string",
+            "description": "Cemetery state, two letters."
+          },
+          "zip": {
+            "type": "string",
+            "description": "Cemetery ZIP."
+          }
+        }
+      }
+    },
+    {
+      "name": "search_memorials",
+      "description": "Search public BloomBridge memorial pages by name, or by cemetery. Returns matching people with their dates, cemetery and page URL. Only memorials the family chose to make public are searchable.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Full or partial name of the person."
+          },
+          "cemetery": {
+            "type": "string",
+            "description": "Full or partial cemetery name."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Max results, 1-25. Default 10."
+          }
+        }
+      }
+    },
+    {
+      "name": "start_order",
+      "description": "Returns the URL a person opens to order flowers for a grave. This does NOT place an order or take payment: a human completes checkout in a browser. Give the URL to the person you are helping.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "memorial_slug": {
+            "type": "string",
+            "description": "Optional memorial to pre-select."
+          }
+        }
+      }
+    }
+  ],
+  "host": "bloom-bridge.com",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,113 @@
+{
+  "sponsio": 1,
+  "url": "https://indeomgeving.nl/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "find_nearby_by_postcode",
+      "description": "Vul je postcode in om bestemmingen bij jou in de buurt te vinden.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "postcode": {
+            "type": "string",
+            "description": "1234 AB"
+          }
+        },
+        "required": [
+          "postcode"
+        ]
+      }
+    },
+    {
+      "name": "plan_a_day_trip",
+      "description": "Genereert een persoonlijke dagplanning (uitjes, eten, activiteiten) in Nederland of België — dezelfde functie als de 'Plan mijn dag'-knop op indeomgeving.nl. Gebruik dit wanneer iemand een dagje uit, een leuk uitstapje of een reisplanning voor een specifieke plaats vraagt. Toont het resultaat ook direct op de pagina. Indeomgeving.nl helpt bezoekers in Nederland en België om leuke dingen te ontdekken in hun omgeving: restaurants, activiteiten, bezienswaardigheden, overnachtingen en winkels, per plaats en categorie.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "duration": {
+            "type": "string",
+            "enum": [
+              "half_day",
+              "full_day",
+              "weekend"
+            ],
+            "description": "Duur van het uitje: 'half_day' (halve dag), 'full_day' (hele dag) of 'weekend'. Standaard: full_day."
+          },
+          "style": {
+            "type": "string",
+            "enum": [
+              "family",
+              "active",
+              "culinary",
+              "romantic",
+              "budget"
+            ],
+            "description": "Sfeer van de dag: 'family' (met kinderen), 'active' (actief), 'culinary' (culinair), 'romantic' (romantisch) of 'budget'. Standaard: active."
+          },
+          "transport": {
+            "type": "string",
+            "enum": [
+              "walking",
+              "cycling",
+              "car"
+            ],
+            "description": "Vervoermiddel: 'walking' (lopen), 'cycling' (fiets) of 'car' (auto). Standaard: walking."
+          },
+          "location": {
+            "type": "string",
+            "maxLength": 80,
+            "description": "Optionele plaatsnaam in Nederland of België om de dag rond te plannen (bv. \"Domburg\"). Zonder opgave wordt breedte/lengtegraad gebruikt indien meegegeven, anders een geschikte willekeurige locatie."
+          },
+          "latitude": {
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90,
+            "description": "Optionele breedtegraad van de startlocatie (bv. huidige positie van de bezoeker, met toestemming)."
+          },
+          "longitude": {
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180,
+            "description": "Optionele lengtegraad van de startlocatie."
+          }
+        },
+        "required": []
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "schedule_trip_reminder",
+      "description": "Ontvang een e-mail op de ochtend van je uitje met een link naar dit plan + weersvoorspelling + openingstijden. Geen nieuwsbrief — alleen deze ene herinnering.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "plan_url": {
+            "type": "string"
+          },
+          "plan_title": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "description": "naam@voorbeeld.nl"
+          }
+        },
+        "required": [
+          "date",
+          "email"
+        ]
+      }
+    }
+  ],
+  "host": "indeomgeving.nl",
+  "source": "webmcp.com/api/directory.json"
+}

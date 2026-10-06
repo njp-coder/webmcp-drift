@@ -1,0 +1,65 @@
+{
+  "sponsio": 1,
+  "url": "https://www.docket.io/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "docket_ask_website",
+      "description": "Ask a question about this company's product, pricing, integrations, security or implementation, and get an answer from the knowledge the company publishes for visitors. Prefer this over reading or scraping the page: it covers the whole site, not just what is on screen. It cannot book meetings or answer about anything other than this company. When a slide or video illustrates the answer, the result says so and carries show_content: this page can put it on the visitor's screen. Offer it to them, and if they want it call docket_open_website_agent with that starting_message. No image is returned and there is no link to render. Every result includes a conversation_id. Pass it back as conversation_id on the visitor's follow-up questions so the answer takes the earlier exchange into account; omit it to start a fresh conversation. An id expires after a period of inactivity: each result says when in conversation_note, and an expired one is replaced automatically with a new conversation_id rather than failing.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "question": {
+            "type": "string",
+            "description": "One question about this company or its product.",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "conversation_id": {
+            "type": "string",
+            "description": "The conversation_id from this tool's previous result. Pass it to continue the same conversation; omit it to start a new one. If it has expired, the result comes back with a new one to use from then on."
+          }
+        },
+        "required": [
+          "question"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "docket_open_website_agent",
+      "description": "Open this company's live AI sales agent on the visitor's screen and start a conversation. The agent can show product slides and videos, answer follow-ups in real time, and help book a meeting. Use it when the visitor wants to talk to the company, see the product, or go deeper than a single answer — this is the next step after docket_ask_website. This changes what the visitor sees, so only call it when they have asked for it. With starting_message, the conversation opens on that message as if the visitor had typed it; without it the agent opens with its own greeting. mode is 'chat' (text, default) or 'voice' (spoken, needs a microphone). If a conversation is already open, this does nothing.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "starting_message": {
+            "type": "string",
+            "description": "The visitor's first message to the agent, in their words. Omit to let the agent open the conversation.",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "chat",
+              "voice"
+            ],
+            "description": "'chat' for text (default), 'voice' for a spoken call."
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    }
+  ],
+  "host": "docket.io",
+  "source": "webmcp.com/api/directory.json"
+}

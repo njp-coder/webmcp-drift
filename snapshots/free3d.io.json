@@ -1,0 +1,79 @@
+{
+  "sponsio": 1,
+  "url": "https://free3d.io/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "browse_categories",
+      "description": "List free3d.io catalog categories, optionally filtered by keyword. Returns ids and urls; pass an id to open_category to navigate. Site-wide keyword search is not available server-side, so browsing categories is the entry point into the catalog.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Optional keyword to filter category names, e.g. chair, kitchen, door"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum categories to return (default 100)"
+          }
+        }
+      }
+    },
+    {
+      "name": "get_model_public_card",
+      "description": "Fetch public JSON metadata for a model by 8-character hash (no download URL).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "model_id": {
+            "type": "string",
+            "description": "8-character hex model hash"
+          }
+        },
+        "required": [
+          "model_id"
+        ]
+      }
+    },
+    {
+      "name": "get_site_policy",
+      "description": "Return the machine-readable LLM agent policy and x402 payment instructions for free3d.io.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_x402_pricing",
+      "description": "Fetch x402 pricing.json with accepted networks, tokens, and API key plans.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "open_category",
+      "description": "Navigate to a category page by numeric category id.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category_id": {
+            "type": "integer",
+            "description": "Category id from sitemap or card metadata"
+          }
+        },
+        "required": [
+          "category_id"
+        ]
+      }
+    }
+  ],
+  "host": "free3d.io",
+  "source": "webmcp.com/api/directory.json"
+}

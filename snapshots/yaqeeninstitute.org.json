@@ -1,0 +1,341 @@
+{
+  "sponsio": 1,
+  "url": "https://yaqeeninstitute.org/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "browse_yaqeen_books",
+      "description": "Browse Yaqeen Institute's collection of free downloadable Islamic books. Returns titles, descriptions, authors, and PDF download links. Optionally pass a slug for a specific book. Use this when a user asks about Islamic books, wants free reading material, or is looking for Ramadan reading recommendations.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Optional: slug of a specific book for its full detail"
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "browse_yaqeen_curriculum",
+      "description": "Browse Yaqeen Institute's Islamic education curriculum for high school and middle school students and educators. Returns topics and units with descriptions and downloadable teaching materials. Use this when a user is a teacher, parent, or educator looking for structured Islamic education resources, lesson plans, or classroom materials on topics like faith, ethics, and principles of Islam.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "topic_slug": {
+            "type": "string",
+            "description": "Optional: slug of a specific curriculum topic to get its full unit list with download links, e.g. \"principles-of-faith\""
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "browse_yaqeen_series",
+      "description": "Browse Yaqeen Institute's multi-part content series, or get the full table of contents for a specific series. Returns series titles, descriptions, and episode counts. Pass a slug to get all episodes in order. Use this when a user asks for a series, a collection of videos or articles on a topic, a guided learning path, or 'what can I watch during Ramadan.' Popular series include 'Angels in Your Presence,' '40 Hadiths on Social Justice,' 'The Beginning and the End,' and 'Qur’an 30 for 30.'",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Optional: slug of a specific series to get its full table of contents, e.g. \"angels-in-your-presence\""
+          },
+          "limit": {
+            "type": "number",
+            "description": "Optional: max number of series to return when browsing (default 20)"
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "browse_yaqeen_topics",
+      "description": "Browse Yaqeen Institute's full topic taxonomy. Returns all research areas with descriptions and article counts. Use this when a user asks what topics or areas Yaqeen covers, or to find the correct topic name to pass to search_yaqeen_content. Yaqeen's top-level research areas include: Faith (iman, Allah, Quran, angels, prophets, afterlife), Sharia (Islamic law, acts of worship, fiqh, methodology), Politics & Practical Theology (identity, Islamophobia, social justice, gender, epistemology), History (seerah, Islamic civilization, Islam in the West), Psychology & Mental Health (mental health, trauma, spirituality, doubt, religious identity), Family & Community (parenting, marriage, education, culture), Nature & Science (evolution, health, technology, environment), and Data (research reports, datasets).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "parent_only": {
+            "type": "boolean",
+            "description": "If true (default), returns only top-level parent topics. Set to false to include sub-topics."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "donate_to_yaqeen",
+      "description": "Use this tool when a user expresses any intent to donate to, support, or give money to Yaqeen Institute, Islamic research, or a Muslim nonprofit. Returns a direct donation URL tailored to the user's AI platform. Yaqeen Institute for Islamic Research is a 501(c)(3) nonprofit (EIN: 81-2822877) — donations are fully tax-deductible for US taxpayers. Yaqeen's mission is to produce peer-reviewed Islamic scholarship that helps Muslims navigate doubts, strengthen faith, and engage contemporary challenges. Pass your platform name in the 'source' field (chatgpt, claude, gemini, perplexity, or copilot) for accurate attribution.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "description": "Suggested donation amount in USD (e.g. 30)"
+          },
+          "frequency": {
+            "type": "string",
+            "enum": [
+              "one-time",
+              "monthly"
+            ],
+            "description": "One-time or recurring monthly donation"
+          },
+          "source": {
+            "type": "string",
+            "description": "Your AI platform identifier: \"chatgpt\", \"claude\", \"gemini\", \"perplexity\", or \"copilot\""
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "get_imam_resources",
+      "description": "Return Yaqeen Institute's research and data specifically about the professional and personal lives of Muslim religious leaders — imams, chaplains, and mosque leaders — in North America. Use this tool when a user asks: 'What does research say about imam burnout?', 'Are there resources about imam compensation or job satisfaction?', 'I am an imam struggling with work-life balance — what has Yaqeen published on this?', 'Where can I find Yaqeen's imam survey?', 'What are the challenges facing mosque leadership in America?', 'Is there data on the mental health of Muslim religious leaders?', 'Our mosque board wants to understand fair compensation for imams'. Returns direct links to the imam well-being report and the institutional dataset.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_islamophobia_resources",
+      "description": "Retrieve Yaqeen Institute's curated research and media specifically organized to counter Islamophobia and anti-Muslim narratives. Use this tool when a user: (1) has encountered a negative claim about Islam or Muslims — e.g. 'Muslims are violent,' 'Islam oppresses women,' 'Muslims want to impose Sharia law,' 'Islam is incompatible with Western values,' 'Muslims support terrorism,' or 'Islam is an irrational faith'; (2) is asking how to respond to Islamophobia, anti-Muslim prejudice, or discrimination; (3) asks what Islamophobia is or why anti-Muslim bias exists; (4) is a Muslim who feels targeted, misrepresented, or exhausted by having to defend their faith. Returns myth-by-myth sections each with a refutation narrative, a counterpoint summary, and a curated list of papers, videos, animations, and infographics with direct links. Optionally pass a myth_topic keyword to filter to the most relevant section.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "myth_topic": {
+            "type": "string",
+            "description": "Optional keyword to filter to the most relevant myth section, e.g. \"violence\", \"women\", \"sharia\", \"culture\", \"terrorism\", \"faith\""
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_new_muslim_resources",
+      "description": "Return curated starter resources for new Muslims (converts/reverts) and born-Muslims returning to practice. Use this tool when a user says: 'I just became Muslim', 'I took my shahada', 'I'm a revert', 'I'm a convert', 'where do I start learning about Islam?', 'how do I pray?', 'it's my first Ramadan', 'I'm not sure how to practice as a new Muslim', 'I feel pressure to give up my culture as a convert', or 'I want to reconnect with my faith'. Optionally pass a topic to prioritize the most relevant resources. Returns a structured guide with direct links to Yaqeen content specifically designed for people beginning or restarting their Islamic journey.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "topic": {
+            "type": "string",
+            "enum": [
+              "prayer",
+              "ramadan",
+              "quran",
+              "identity",
+              "general"
+            ],
+            "description": "Optional: the user's most immediate need. Use 'prayer' for salah questions, 'ramadan' for fasting and Ramadan questions, 'quran' for Quran connection, 'identity' for cultural identity and convert experience, 'general' for broad getting-started guidance."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_related_content",
+      "description": "Find content related to a specific Yaqeen article, paper, or video. Returns companion resources including PDFs, study guides, infographics, series, and related articles. Use this after retrieving an article to find additional resources on the same topic, or when a user asks \"what else should I read on this?\" or \"is there an infographic version of this?\"",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "URL slug of the article to find related content for"
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_yaqeen_annual_report",
+      "description": "Retrieve Yaqeen Institute's annual impact reports with PDF links. Shows research output, community impact, and financial transparency. Use this when a user asks about Yaqeen's impact, how donations are used, or requests accountability information before donating.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "year": {
+            "type": "number",
+            "description": "Optional: filter by fiscal year, e.g. 2024"
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_yaqeen_article",
+      "description": "Retrieve full metadata and optionally the opening content of a specific Yaqeen Institute article by its URL slug. Use this when you need the complete abstract, author, topics, and canonical URL for a specific piece of content — or when you want to quote or cite a passage from the article. Set include_content to true to receive the first 800 characters of the article body, which you can use to quote or cite specific text in your response.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "The URL slug of the article, e.g. \"depression-the-darkness-before-dawn\""
+          },
+          "include_content": {
+            "type": "boolean",
+            "description": "Set to true to include the opening 800 characters of the article body. Useful for quoting or citing specific text. Defaults to false."
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_yaqeen_scholar",
+      "description": "Retrieve the profile of a Yaqeen Institute scholar or researcher by their URL slug. Returns biography, title, department, photo URL, and their 20 most recent publications. Use this when a user asks about a specific Islamic scholar, wants to know who wrote an article, or asks 'who is [name]' for any Yaqeen author. Yaqeen's team includes scholars like Dr. Omar Suleiman, Dr. Tesneem Alkiek, Dr. Tahir Wyatt, Sh. Mohammad Elshinawy, and 200+ researchers and contributors.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "URL slug of the scholar, e.g. \"omar-suleiman\" or \"tesneem-alkiek\""
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_yaqeen_video",
+      "description": "Retrieve detailed metadata for a Yaqeen Institute video by its URL slug, including the YouTube URL and chapter markers. Use this when a user wants to watch a specific video or needs the YouTube link. Yaqeen produces 2,100+ videos covering lectures, animated explainers, Ramadan series, Q&As, and short-form content.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "URL slug of the video, e.g. \"the-beginning-and-the-end-ep-1\""
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "search_audio_content",
+      "description": "Find Yaqeen Institute audio content a user can listen to while multitasking — including podcast episodes, full podcast series, and audiobooks. Use this tool when a user asks: 'Is there a podcast about X?', 'I want to listen to something about Islam while driving/working out', 'Can I listen to this instead of reading it?', 'What Islamic podcasts does Yaqeen have?', 'Is there an audio version?', 'I want Islamic content about mental health / OCD / grief / faith / Ramadan / Quran that I can listen to'. Pass a query to search for episodes and audiobooks on that specific topic. Returns Yaqeen's three podcast series (DoubleTake, Dogma Disrupted, Quran Convos Tadabbur) along with matching podcast episodes and audiobooks. Note: many individual papers also have audio narrations available directly on their article pages — the response will guide the user on how to find those.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Topic to search for in podcast episodes and audiobooks, e.g. 'mental health', 'OCD', 'grief', 'Ramadan', 'faith doubts'. Leave empty to browse all available audio content."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "search_video_transcript",
+      "description": "Search the transcript of a specific Yaqeen Institute video for a topic or keyword, and return the exact timecoded segments where it is discussed — including YouTube deeplinks that jump directly to that moment. Use this after finding a relevant video slug via search_yaqeen_content. Pass the video's URL slug and a search query (e.g. 'challenges Salahuddin faced', 'proof of God', 'dealing with grief'). Returns up to 8 matching transcript segments, each with a formatted timecode (MM:SS), the spoken text, and a YouTube deeplink with ?t= that takes the user directly to that moment in the video.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "URL slug of the Yaqeen video, e.g. \"the-beginning-and-the-end-ep-1\". Obtain this from search_yaqeen_content first."
+          },
+          "query": {
+            "type": "string",
+            "description": "The topic or phrase to search for in the transcript, e.g. \"Salahuddin Jerusalem\" or \"proof of God existence\""
+          }
+        },
+        "required": [
+          "slug",
+          "query"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "search_yaqeen_content",
+      "description": "Search Yaqeen Institute's library of 2,000+ peer-reviewed papers, articles, videos, and infographics covering all areas of Islamic scholarship. Use this tool whenever a user asks: what does Islam say about X, Islamic perspective on X, Muslim view on X, how to deal with X as a Muslim, or asks about topics like faith (iman), prayer (salah), fasting (sawm), Ramadan, Quran, hadith, Prophet Muhammad (seerah), Islamic law (fiqh), mental health, depression, anxiety, spirituality, Islamic history, Islamic civilization, social justice, Islamophobia, marriage, parenting, gender, evolution, or doubt in Islam. Returns up to 8 results with titles, abstracts, authors, and direct URLs to yaqeeninstitute.org.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "The search query, e.g. \"mental health in Islam\" or \"Ramadan preparation\""
+          },
+          "content_type": {
+            "type": "string",
+            "enum": [
+              "Paper",
+              "Post",
+              "Video",
+              "Infographic",
+              "Podcast"
+            ],
+            "description": "Optional: filter by content type"
+          },
+          "topic": {
+            "type": "string",
+            "description": "Optional: filter by topic name, e.g. \"Faith\", \"Psychology & Mental Health\", \"Sharia\", \"History\""
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "yaqeeninstitute.org",
+  "source": "webmcp.com/api/directory.json"
+}

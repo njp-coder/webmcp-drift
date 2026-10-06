@@ -1,0 +1,303 @@
+{
+  "sponsio": 1,
+  "url": "https://farmahigiene.es/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "addToCart",
+      "description": "Add a product (and optional variant) to the current shopping cart. Does NOT complete any purchase. The browser will ask the user to confirm.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "combinationId": {
+            "type": "integer",
+            "description": "Optional variant id",
+            "minimum": 1
+          },
+          "quantity": {
+            "type": "integer",
+            "default": 1,
+            "minimum": 1,
+            "maximum": 999
+          }
+        },
+        "required": [
+          "productId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "applyCoupon",
+      "description": "Apply a discount/voucher code to the cart. Returns whether it was accepted with the new totals.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          }
+        },
+        "required": [
+          "code"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "checkAvailability",
+      "description": "Check current stock availability and estimated delivery for a product or specific combination.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "combinationId": {
+            "type": "integer",
+            "description": "Optional combination/variant id",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "productId"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "getCart",
+      "description": "Get the current shopping cart: line items, subtotal, shipping, total. Read-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "getCategories",
+      "description": "Get the category tree (or a subtree) for navigation. Returns id, name, depth and children for each node.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "parentId": {
+            "type": "integer",
+            "description": "Root of the subtree. Defaults to store root.",
+            "minimum": 1
+          },
+          "depth": {
+            "type": "integer",
+            "description": "Maximum depth to traverse",
+            "default": 2,
+            "minimum": 1,
+            "maximum": 5
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "getProductDetails",
+      "description": "Get full details for a product: combinations/variants with stock and price, attributes, features, and images.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "integer",
+            "description": "Product id",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "productId"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "getShippingOptions",
+      "description": "Get available shipping carriers, costs and estimated delivery times for the current cart or a destination.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "countryIso": {
+            "type": "string",
+            "description": "ISO 3166-1 alpha-2 country code",
+            "maxLength": 2
+          },
+          "zipCode": {
+            "type": "string",
+            "description": "Postal code",
+            "maxLength": 16
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "getStoreInfo",
+      "description": "Get store metadata: name, supported languages and currencies, shipping countries, return policy summary, accepted payment method names (not credentials), and public contact info.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "initiateCheckout",
+      "description": "Prepare checkout and return the secure checkout URL for the human user to review and complete payment. NEVER processes payment.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "removeFromCart",
+      "description": "Remove a specific line from the cart.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "combinationId": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "productId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "searchProducts",
+      "description": "Search the store catalog by keyword with optional category and price filters. Returns matching products with id, name, price, currency, availability and product URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search keywords or phrase",
+            "maxLength": 200
+          },
+          "category": {
+            "type": "integer",
+            "description": "Category id to filter by",
+            "minimum": 1
+          },
+          "minPrice": {
+            "type": "number",
+            "description": "Minimum price (in store currency)",
+            "minimum": 0
+          },
+          "maxPrice": {
+            "type": "number",
+            "description": "Maximum price (in store currency)",
+            "minimum": 0
+          },
+          "inStockOnly": {
+            "type": "boolean",
+            "description": "Return only in-stock products",
+            "default": false
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Max number of results (capped server-side)",
+            "default": 12,
+            "minimum": 1,
+            "maximum": 50
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "searchProducts",
+      "description": "Search the store catalog by keyword and show matching products.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "s": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "updateCartItem",
+      "description": "Set the quantity of an existing line in the cart. Use quantity=0 to remove (or call removeFromCart).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "combinationId": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 999
+          }
+        },
+        "required": [
+          "productId",
+          "quantity"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "farmahigiene.es",
+  "source": "webmcp.com/api/directory.json"
+}

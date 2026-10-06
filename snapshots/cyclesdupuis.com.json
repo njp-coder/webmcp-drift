@@ -1,0 +1,180 @@
+{
+  "sponsio": 1,
+  "url": "https://www.cyclesdupuis.com/en/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "bookAppointment",
+      "description": "⚠️ Create an appointment booking. Do NOT call this tool until you have called previewBooking, presented the invoice and policies to the user, and received their explicit confirmation to proceed. Returns a tracking number and appointment ID on success. A confirmation email will be sent to the client.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "serviceId": {
+            "type": "number",
+            "description": "Service ID from getBookingCatalog"
+          },
+          "staffId": {
+            "type": "number",
+            "description": "Staff ID from getBookingCatalog. Use -1 for no preference (any available staff)."
+          },
+          "slotStart": {
+            "type": "string",
+            "description": "Appointment start time in 'YYYY-MM-DD HH:mm' format, as returned by getServiceAvailability"
+          },
+          "client": {
+            "type": "object",
+            "properties": {
+              "firstName": {
+                "type": "string"
+              },
+              "lastName": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string",
+                "description": "Client email — required to send the booking confirmation"
+              },
+              "mobilePhoneNumber": {
+                "type": "string",
+                "description": "Client phone in E.164 format (e.g. +15145551234). Optional but recommended for SMS reminders."
+              },
+              "additionalRequest": {
+                "type": "string",
+                "description": "Special instructions or notes for the merchant"
+              }
+            },
+            "required": [
+              "firstName",
+              "lastName",
+              "email"
+            ]
+          },
+          "lang": {
+            "type": "string",
+            "description": "Optional BCP-47 language code (e.g. 'fr', 'en'). If omitted, the user's browser language is used automatically. Only pass this to override the browser's detected locale."
+          }
+        },
+        "required": [
+          "serviceId",
+          "staffId",
+          "slotStart",
+          "client"
+        ]
+      }
+    },
+    {
+      "name": "getBookingCatalog",
+      "description": "Retrieve the merchant's bookable services, service categories, available staff, and valid service-staff combinations. Call this FIRST when the user wants to book. IMPORTANT: After calling this tool you MUST follow this sequence before calling getServiceAvailability: (1) Present the list of categories and services and ask the user to choose a service. (2) Once a service is chosen, look up its assigned staff from the assignments list and ask the user     whether they have a staff preference, showing the available staff names. (3) Only after both a service AND a staff choice (or explicit 'no preference') are confirmed,     call getServiceAvailability. Never pick a service or staff member on behalf of the user without their input.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "lang": {
+            "type": "string",
+            "description": "Optional BCP-47 language code for translated names (e.g. 'en', 'fr'). If omitted, the user's browser language is used automatically."
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "getServiceAvailability",
+      "description": "Get available appointment time slots for a specific service and staff member over a date range. Returned times are in the merchant's local timezone (provided in the response). If the returned slots array is empty, do NOT tell the user the booking is impossible. Instead, inform them that no slots were found for that service in that date range, and offer to: (1) search a different or wider date range, or (2) go back and select a different service. Once the user has chosen a slot, pass its start value directly to previewBooking.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "serviceId": {
+            "type": "number",
+            "description": "Service ID from getBookingCatalog"
+          },
+          "staffId": {
+            "type": "number",
+            "description": "Staff ID to check availability for. If the user selected a specific staff member, use their ID from the assignments list. If the user has no preference, do NOT pass -1: instead, pick the first staffId from the assignments list that is assigned to the chosen service and use that ID. Never pass -1 unless the assignments list is empty for the service."
+          },
+          "startDate": {
+            "type": "string",
+            "description": "Start of the search window in YYYY-MM-DD format"
+          },
+          "endDate": {
+            "type": "string",
+            "description": "End of the search window in YYYY-MM-DD format"
+          },
+          "lang": {
+            "type": "string",
+            "description": "Optional BCP-47 language code"
+          }
+        },
+        "required": [
+          "serviceId",
+          "staffId",
+          "startDate",
+          "endDate"
+        ]
+      }
+    },
+    {
+      "name": "previewBooking",
+      "description": "Validate a booking intent and fetch the invoice, price breakdown, and policy details. Call this after the user has selected a service, staff, time slot, and provided their name and contact info. Present the returned invoice total, duration, and cancellation/payment policies to the user. Only proceed to bookAppointment after the user explicitly confirms.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "serviceId": {
+            "type": "number",
+            "description": "Service ID from getBookingCatalog"
+          },
+          "staffId": {
+            "type": "number",
+            "description": "Staff ID from getBookingCatalog. Use -1 for no preference (any available staff)."
+          },
+          "slotStart": {
+            "type": "string",
+            "description": "Appointment start time in 'YYYY-MM-DD HH:mm' format, as returned by getServiceAvailability"
+          },
+          "client": {
+            "type": "object",
+            "properties": {
+              "firstName": {
+                "type": "string"
+              },
+              "lastName": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string",
+                "description": "Client email — required to send the booking confirmation"
+              },
+              "mobilePhoneNumber": {
+                "type": "string",
+                "description": "Client phone in E.164 format (e.g. +15145551234). Optional but recommended for SMS reminders."
+              },
+              "additionalRequest": {
+                "type": "string",
+                "description": "Special instructions or notes for the merchant"
+              }
+            },
+            "required": [
+              "firstName",
+              "lastName",
+              "email"
+            ]
+          },
+          "lang": {
+            "type": "string",
+            "description": "Optional BCP-47 language code (e.g. 'fr', 'en'). If omitted, the user's browser language is used automatically. Only pass this to override the browser's detected locale."
+          }
+        },
+        "required": [
+          "serviceId",
+          "staffId",
+          "slotStart",
+          "client"
+        ]
+      }
+    }
+  ],
+  "host": "cyclesdupuis.com",
+  "source": "webmcp.com/api/directory.json"
+}

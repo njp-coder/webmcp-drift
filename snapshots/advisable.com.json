@@ -1,0 +1,244 @@
+{
+  "sponsio": 1,
+  "url": "https://advisable.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_article",
+      "description": "Fetch one Advisable insight or news article by slug, as plain readable text.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "insight",
+              "news"
+            ],
+            "description": "Defaults to insight."
+          },
+          "language": {
+            "type": "string",
+            "enum": [
+              "en",
+              "el",
+              "es",
+              "fr",
+              "it",
+              "de"
+            ],
+            "description": "Language code. Defaults to the language of the current domain."
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "get_page_context",
+      "description": "Return what the visitor is currently looking at on the Advisable website: URL, path, page type and the language of this domain.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_clients",
+      "description": "List Advisable clients and case-study companies with industry, country and website.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "industry": {
+            "type": "string",
+            "description": "Optional industry filter."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 200
+          }
+        }
+      }
+    },
+    {
+      "name": "list_products",
+      "description": "List Advisable products (Ecommercen, SizeTheMarket, Findloom, e-Prescription, Recommendable).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "language": {
+            "type": "string",
+            "enum": [
+              "en",
+              "el",
+              "es",
+              "fr",
+              "it",
+              "de"
+            ],
+            "description": "Language code. Defaults to the language of the current domain."
+          }
+        }
+      }
+    },
+    {
+      "name": "list_seminars",
+      "description": "List upcoming Advisable Academy seminars with dates, times, venue, seats and pricing, plus the page to book them.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_services",
+      "description": "List Advisable services (digital agency, technology, AI services, venture studio) with slug, title and page URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "language": {
+            "type": "string",
+            "enum": [
+              "en",
+              "el",
+              "es",
+              "fr",
+              "it",
+              "de"
+            ],
+            "description": "Language code. Defaults to the language of the current domain."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 200,
+            "description": "Max services to return (default 50)."
+          }
+        }
+      }
+    },
+    {
+      "name": "navigate_to",
+      "description": "Navigate the browser to a page of the Advisable website. Use a relative path such as /academy, /insights or /contact.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Relative path starting with /."
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    },
+    {
+      "name": "prepare_contact_request",
+      "description": "Prefill the Advisable contact form with the visitor details and open it. The form is bot protected, so the visitor has to press submit themselves. This tool never sends the request on its own.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "company": {
+            "type": "string"
+          },
+          "interest": {
+            "type": "string",
+            "description": "For example: AI Services, Training, Technology, Digital Marketing."
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      }
+    },
+    {
+      "name": "prepare_seminar_interest",
+      "description": "Open the Advisable Academy page with a prefilled interest note for a seminar or corporate training. The visitor confirms and submits the form themselves.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "company": {
+            "type": "string"
+          },
+          "seminar_slug": {
+            "type": "string",
+            "description": "Slug from list_seminars, optional."
+          },
+          "notes": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      }
+    },
+    {
+      "name": "search_insights",
+      "description": "Search Advisable insights and news articles by keyword. Returns slug, title, excerpt, published date and the page URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Keyword to search titles and excerpts."
+          },
+          "language": {
+            "type": "string",
+            "enum": [
+              "en",
+              "el",
+              "es",
+              "fr",
+              "it",
+              "de"
+            ],
+            "description": "Language code. Defaults to the language of the current domain."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "advisable.com",
+  "source": "webmcp.com/api/directory.json"
+}

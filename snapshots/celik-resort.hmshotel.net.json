@@ -1,0 +1,113 @@
+{
+  "sponsio": 1,
+  "url": "https://celik-resort.hmshotel.net/en",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_hotel_info",
+      "description": "Tarayicida acik olan otelin kimlik bilgilerini dondurur: adi, sehri, ulkesi, satis para birimi, saat dilimi, desteklenen diller ve izin verilen en uzun konaklama suresi. Kullanici otelin neresi oldugunu ya da hangi para birimiyle satis yaptigini sordugunda kullanin. Oda fiyati ve musaitlik icin search_available_rooms kullanilir.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get_room_details",
+      "description": "Tek bir odanin ayrintilarini dondurur: aciklama, kapasite, yatak ve banyo sayisi, oda buyuklugu, ozellikler, gorseller ve verilen tarihlerdeki TUM pansiyon secenekleriyle fiyatlari. roomId degerini once search_available_rooms cagirarak alin; oda kimlikleri otele ozeldir. Fiyat tarihe gore degistigi icin bu arac da checkIn/checkOut ister.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "roomId": {
+            "type": "integer",
+            "description": "search_available_rooms sonucundaki roomId degeri."
+          },
+          "checkIn": {
+            "type": "string",
+            "description": "Giris (check-in) tarihi, YYYY-MM-DD biciminde. Gecmis bir tarih kabul edilmez."
+          },
+          "checkOut": {
+            "type": "string",
+            "description": "Cikis (check-out) tarihi, YYYY-MM-DD biciminde. checkIn tarihinden sonra olmali."
+          },
+          "adults": {
+            "type": "integer",
+            "description": "Yetiskin misafir sayisi (1-10). Belirtilmezse 2 kabul edilir."
+          },
+          "children": {
+            "type": "integer",
+            "description": "Cocuk misafir sayisi (0-10). Belirtilmezse 0 kabul edilir."
+          },
+          "childrenAges": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "description": "Her cocugun yasi (0-16), children sayisi kadar eleman. Cocuk fiyatlandirmasi yasa gore degistigi icin biliniyorsa mutlaka gonderin."
+          }
+        },
+        "required": [
+          "roomId",
+          "checkIn",
+          "checkOut"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "search_available_rooms",
+      "description": "Tarayicida acik olan otel icin verilen tarih ve misafir sayisina gore gercek zamanli musait odalari ve fiyatlari dondurur. Kullanici oda olup olmadigini veya bir konaklamanin kaca mal olacagini sordugunda kullanin. Oda basina ozet doner: kapasite, pansiyon ve KONAKLAMANIN TAMAMINA ait vergiler dahil toplam fiyat. Gorsel, ozellik ve diger pansiyonlar icin get_room_details cagirin. Bos liste, o tarihte musait oda yok demektir.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "description": "En fazla kac oda dondurulsun (1-25, varsayilan 10). Odalar en ucuzdan siralanir."
+          },
+          "checkIn": {
+            "type": "string",
+            "description": "Giris (check-in) tarihi, YYYY-MM-DD biciminde. Gecmis bir tarih kabul edilmez."
+          },
+          "checkOut": {
+            "type": "string",
+            "description": "Cikis (check-out) tarihi, YYYY-MM-DD biciminde. checkIn tarihinden sonra olmali."
+          },
+          "adults": {
+            "type": "integer",
+            "description": "Yetiskin misafir sayisi (1-10). Belirtilmezse 2 kabul edilir."
+          },
+          "children": {
+            "type": "integer",
+            "description": "Cocuk misafir sayisi (0-10). Belirtilmezse 0 kabul edilir."
+          },
+          "childrenAges": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "description": "Her cocugun yasi (0-16), children sayisi kadar eleman. Cocuk fiyatlandirmasi yasa gore degistigi icin biliniyorsa mutlaka gonderin."
+          }
+        },
+        "required": [
+          "checkIn",
+          "checkOut"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    }
+  ],
+  "host": "celik-resort.hmshotel.net",
+  "source": "webmcp.com/api/directory.json"
+}

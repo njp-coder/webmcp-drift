@@ -1,0 +1,80 @@
+{
+  "sponsio": 1,
+  "url": "https://awesome-repositories.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_repository",
+      "description": "Fetch the full markdown representation of a single repository by id (UUID) or `owner/repo` slug.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Repository id or `owner/repo` slug."
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "list_recent_repositories",
+      "description": "Newest approved repositories on awesome-repositories.com, newest first.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 10
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "search_repositories",
+      "description": "Search the awesome-repositories.com directory. AI re-ranking is on by default and falls back to plain BM25 once the daily AI limit is reached (the response flags `usedAi` + `aiQuotaExhausted`). Returns up to `limit` approved repositories.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Free-text query or natural-language intent."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 10,
+            "description": "Max results to return."
+          },
+          "ai": {
+            "type": "boolean",
+            "default": true,
+            "description": "Re-rank with AI (default true). Set false for raw BM25."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "awesome-repositories.com",
+  "source": "webmcp.com/api/directory.json"
+}

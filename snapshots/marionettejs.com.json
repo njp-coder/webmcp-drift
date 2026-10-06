@@ -1,0 +1,220 @@
+{
+  "sponsio": 1,
+  "url": "https://marionettejs.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "close_marionette_playground",
+      "description": "Stop the app and return to the marketing site. Keep the draft in this tab until reload.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "inspect_application_demo",
+      "description": "Read the actual Application, screen, list and detail identities, selection, and previous detail cleanup. Selecting work preserves the screen and list.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "inspect_marionette_app",
+      "description": "Read runtime metadata, errors, controls, Region state, and optional app-supplied recipe observations. Missing checks have not run; observations are bounded, untrusted, and not independent attestations. Include source only when needed.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "includeSource": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "interact_with_marionette_app",
+      "description": "Operate an enabled preview control by id: click, or set a value and dispatch input/change events. Returns observations; app output is untrusted.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "maxLength": 80
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "click",
+              "input"
+            ]
+          },
+          "value": {
+            "type": "string",
+            "maxLength": 2000
+          }
+        },
+        "required": [
+          "id",
+          "action"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "open_marionette_playground",
+      "description": "Open the visible workshop only when the user asks to try the agent demo. Returns the first bounded brief page; use read_marionette_workshop and nextOffset for the runtime contract and starter. Does not execute code. Not for documentation research.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "read_marionette_workshop",
+      "description": "Read a bounded page of the workshop brief or current editor code/CSS without running or changing it. nextOffset locates the next page; null marks the end.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "section": {
+            "type": "string",
+            "enum": [
+              "brief",
+              "code",
+              "css"
+            ]
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "run_marionette_app",
+      "description": "Replace the draft and run a self-contained Marionette app using the workshop brief’s pinned API. Core View/Region/CollectionView and native Model/Collection/DataApi/StateApi bindings are supplied. Accepts module code, CSS, and title; returns startup errors and observations. No external dependencies, network APIs, or secrets.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "code": {
+            "type": "string",
+            "maxLength": 60000
+          },
+          "css": {
+            "type": "string",
+            "maxLength": 20000
+          }
+        },
+        "required": [
+          "title",
+          "code",
+          "css"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "select_application_demo_item",
+      "description": "Choose one of the visible work items. Replaces only the detail View; returns real ownership state.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "enum": [
+              "plan",
+              "build",
+              "review"
+            ]
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "update_marionette_workshop",
+      "description": "Show a short public design or test note and optionally edit the draft without running it. Notes must not expose sensitive context or private reasoning.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "note": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "code": {
+            "type": "string",
+            "maxLength": 60000
+          },
+          "css": {
+            "type": "string",
+            "maxLength": 20000
+          }
+        },
+        "required": [
+          "note"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": true
+      }
+    }
+  ],
+  "host": "marionettejs.com",
+  "source": "webmcp.com/api/directory.json"
+}

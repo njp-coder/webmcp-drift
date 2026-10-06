@@ -1,0 +1,64 @@
+{
+  "sponsio": 1,
+  "url": "https://www.sorbe.bg/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_page_info",
+      "description": "Връща информация за страницата, която е отворена в момента в Sorbe.bg: заглавие, адрес и - ако е продуктова страница - име, цена и наличност от структурираните данни. Returns info about the currently open Sorbe.bg page, including product name, price and availability.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "navigate_to",
+      "description": "Отваря страница от Sorbe.bg (продукт, категория или информационна страница). Приема само адреси в рамките на sorbe.bg. Opens a page within Sorbe.bg; only same-site URLs are accepted.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "Пълен адрес в sorbe.bg или път, започващ с \"/\", напр. \"/feneri-aksesoari\"."
+          }
+        },
+        "required": [
+          "url"
+        ]
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Търси продукти в онлайн магазина Sorbe.bg по ключова дума. Връща име, цена в евро и линк към продукта. Search products in the Sorbe.bg online store by keyword; returns name, EUR price and product URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Ключова дума, напр. \"фенер\", \"градинска маса\", \"zorro\". Български или латиница."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Максимален брой резултати (1-15).",
+            "minimum": 1,
+            "maximum": 15
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "sorbe.bg",
+  "source": "webmcp.com/api/directory.json"
+}

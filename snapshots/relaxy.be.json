@@ -1,0 +1,80 @@
+{
+  "sponsio": 1,
+  "url": "https://www.relaxy.be/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "find_city",
+      "description": "Look up cities on Relaxy by name or postal code to resolve a location before searching. Returns matching cities with postal code, country and coordinates.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "City name or postal code."
+          },
+          "country": {
+            "type": "string",
+            "enum": [
+              "be",
+              "nl",
+              "fr",
+              "de"
+            ],
+            "description": "Restrict to a country."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "list_wellness_categories",
+      "description": "List the main wellness categories on Relaxy (sauna, massage, beauty, wellness stays, ...) with their browse URLs. Useful to orient before a search.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "search_wellness",
+      "description": "Search Relaxy, a wellness booking platform for Belgium and the Netherlands. Finds saunas, massages, wellness, beauty, last-minute deals and overnight wellness stays. Returns matching businesses, categories and offers with names, prices (EUR, VAT included) and booking URLs. Optionally narrow by city or postal code, and by date for last-minute offers.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "What to search for, e.g. \"massage\", \"private sauna\", a business name."
+          },
+          "city_or_postal_code": {
+            "type": "string",
+            "description": "City name or postal code to search near."
+          },
+          "country": {
+            "type": "string",
+            "enum": [
+              "be",
+              "nl",
+              "fr",
+              "de"
+            ],
+            "description": "Country code for the postal code (default be)."
+          },
+          "date": {
+            "type": "string",
+            "description": "Date for last-minute availability, format YYYY-MM-DD."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "relaxy.be",
+  "source": "webmcp.com/api/directory.json"
+}

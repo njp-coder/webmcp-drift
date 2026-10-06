@@ -1,0 +1,112 @@
+{
+  "sponsio": 1,
+  "url": "https://www.palmarosashop.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "add_to_cart",
+      "description": "Ajoute un produit au panier du visiteur (par handle produit, fourni par search_products). N'effectue JAMAIS le paiement — le client valide lui-même sa commande.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "handle": {
+            "type": "string",
+            "description": "Handle du produit, ex: \"cerave-creme-hydratante-454g\""
+          },
+          "quantity": {
+            "type": "number",
+            "description": "Quantité (défaut 1, max 5)"
+          }
+        },
+        "required": [
+          "handle"
+        ]
+      }
+    },
+    {
+      "name": "get_cart",
+      "description": "Contenu actuel du panier du visiteur (articles, quantités, total MAD).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_product_availability",
+      "description": "Prix et disponibilité en temps réel d'un produit par SKU.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sku": {
+            "type": "string",
+            "description": "SKU du produit (fourni par search_products)"
+          }
+        },
+        "required": [
+          "sku"
+        ]
+      }
+    },
+    {
+      "name": "open_page",
+      "description": "Ouvre une page du site pour le visiteur.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "string",
+            "enum": [
+              "home",
+              "cart",
+              "checkout",
+              "promotions",
+              "nouveautes",
+              "carte-cadeau",
+              "compte",
+              "product",
+              "search"
+            ]
+          },
+          "handle": {
+            "type": "string",
+            "description": "Pour page=product : handle du produit"
+          },
+          "query": {
+            "type": "string",
+            "description": "Pour page=search : termes de recherche"
+          }
+        },
+        "required": [
+          "page"
+        ]
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Recherche des produits sur Palmarosa Shop (parfums, maquillage, soins, parapharmacie). Retourne titre, marque, prix en MAD, SKU et URL de chaque produit.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Termes de recherche, ex: \"cerave creme hydratante\""
+          },
+          "limit": {
+            "type": "number",
+            "description": "Nombre max de résultats (défaut 5, max 10)"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "palmarosashop.com",
+  "source": "webmcp.com/api/directory.json"
+}

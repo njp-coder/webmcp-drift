@@ -1,0 +1,83 @@
+{
+  "sponsio": 1,
+  "url": "https://nano-gpt.com/chat",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "draft_chat_message",
+      "description": "Places text in the NanoGPT composer without sending it or starting a paid request. By default it refuses to replace an existing draft.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "Message text to place in the NanoGPT composer.",
+            "minLength": 1,
+            "maxLength": 10000
+          },
+          "replace_existing": {
+            "type": "boolean",
+            "description": "Set true only when the user asked to replace the current draft.",
+            "default": false
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "find_text_models",
+      "description": "Searches NanoGPT's public text-model catalog by model ID. Returns up to eight matching model IDs and does not change chat state.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Part of a model ID, such as claude, gemini, or glm.",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum results to return, from 1 to 8.",
+            "minimum": 1,
+            "maximum": 8,
+            "default": 5
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "get_chat_state",
+      "description": "Returns the current NanoGPT chat mode, selected model, and whether the composer contains a draft. It does not return conversation or draft text.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": false
+      }
+    }
+  ],
+  "host": "nano-gpt.com",
+  "source": "webmcp.com/api/directory.json"
+}

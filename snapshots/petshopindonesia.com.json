@@ -1,0 +1,212 @@
+{
+  "sponsio": 1,
+  "url": "https://petshopindonesia.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "add_to_cart",
+      "description": "Add a product or variation to the current Petshop Indonesia WooCommerce cart. For variable products, provide the selected variation attributes.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "WooCommerce product or variation ID."
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Quantity to add."
+          },
+          "variation": {
+            "type": "array",
+            "description": "Variation attributes, each with attribute and value.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "attribute": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "attribute",
+                "value"
+              ]
+            }
+          }
+        },
+        "required": [
+          "product_id",
+          "quantity"
+        ]
+      },
+      "annotations": {
+        "readOnly": false,
+        "consequential": true,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "create_flik_checkout_session",
+      "description": "Create a FLIK Fast Checkout session from the current non-empty Petshop Indonesia WooCommerce cart. This creates a FLIK checkout cart and returns the checkout URL. It does not calculate shipping options or create a final order/payment.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "open_checkout": {
+            "type": "boolean",
+            "description": "Whether the calling client should open the returned checkout URL after session creation."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": false,
+        "consequential": true,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "get_cart",
+      "description": "Get the current WooCommerce cart for the current Petshop Indonesia customer session. Returns items and cart totals. FLIK shipping/checkout details are not returned by this tool.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "get_current_page_context",
+      "description": "Read structured text and content context from the currently open Petshop Indonesia page. Works on product pages, product category pages, brand pages, tag pages, blog posts, blog archives, and normal pages. Returns clean structured page context: metadata, H1, breadcrumb, semantic headings, non-duplicated content sections, FAQ pairs, visible product cards, and AI-friendly page text. The content is extracted from the current page DOM after the page has loaded.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "max_chars": {
+            "type": "integer",
+            "minimum": 1000,
+            "maximum": 100000,
+            "default": 50000,
+            "description": "Maximum number of characters in the main page text."
+          },
+          "max_products": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100,
+            "default": 30,
+            "description": "Maximum number of visible product cards to return."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "get_product_stock",
+      "description": "Get current public stock information for a Petshop Indonesia WooCommerce product, including stock status and stock quantity when WooCommerce inventory management is enabled.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "WooCommerce product ID."
+          }
+        },
+        "required": [
+          "product_id"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "remove_from_cart",
+      "description": "Remove one item from the current Petshop Indonesia WooCommerce cart by cart item key. Use get_cart first when the cart item key is not known.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "cart_item_key": {
+            "type": "string",
+            "minLength": 1,
+            "description": "WooCommerce cart item key returned by get_cart."
+          }
+        },
+        "required": [
+          "cart_item_key"
+        ]
+      },
+      "annotations": {
+        "readOnly": false,
+        "consequential": true,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "search_petshop_products",
+      "description": "Search and filter published products on Petshop Indonesia. Supports keyword, brand, product category, minimum price, maximum price, and stock status. Use brand and category slugs such as royal-canin and makanan-kucing.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "keyword": {
+            "type": "string",
+            "description": "Search keyword such as Kitten, Renal, Puppy, or Royal Canin."
+          },
+          "brand": {
+            "type": "string",
+            "description": "Product brand slug, for example royal-canin."
+          },
+          "category": {
+            "type": "string",
+            "description": "Product category slug, for example makanan-kucing."
+          },
+          "min_price": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Minimum product price in the store currency."
+          },
+          "max_price": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Maximum product price in the store currency."
+          },
+          "in_stock": {
+            "type": "boolean",
+            "description": "If true, only return products currently in stock."
+          },
+          "per_page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "description": "Maximum number of products to return."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": false
+      }
+    }
+  ],
+  "host": "petshopindonesia.com",
+  "source": "webmcp.com/api/directory.json"
+}

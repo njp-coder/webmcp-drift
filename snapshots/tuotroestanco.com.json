@@ -1,0 +1,95 @@
+{
+  "sponsio": 1,
+  "url": "https://www.tuotroestanco.com/en/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "check_stock",
+      "description": "Unidades disponibles de un producto o de una de sus variedades en esta tienda.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "integer",
+            "description": "Identificador del producto."
+          },
+          "combination_id": {
+            "type": "integer",
+            "description": "Identificador de la variedad, opcional."
+          }
+        },
+        "required": [
+          "product_id"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_product",
+      "description": "Ficha completa de un producto de esta tienda: descripcion, precio, marca, EAN13, variedades y stock. Acepta product_id o reference.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "integer",
+            "description": "Identificador del producto."
+          },
+          "reference": {
+            "type": "string",
+            "description": "Referencia interna."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Buscar productos en el catalogo de esta tienda (papel de liar, filtros, tubos, encendedores, grinders, cachimbas, vapers y accesorios para fumador). Devuelve nombre, precio con IVA, disponibilidad y URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Texto a buscar, p. ej. \"papel OCB slim\"."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Numero maximo de resultados (1-20)."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "shipping_info",
+      "description": "Transportistas, plazos de entrega y condiciones de envio gratuito de esta tienda para un pais dado (ISO alfa-2, por defecto ES).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "country_code": {
+            "type": "string",
+            "description": "Codigo ISO 3166-1 alfa-2, p. ej. ES, FR, DE."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "tuotroestanco.com",
+  "source": "webmcp.com/api/directory.json"
+}

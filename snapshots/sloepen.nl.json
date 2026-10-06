@@ -1,0 +1,175 @@
+{
+  "sponsio": 1,
+  "url": "https://sloepen.nl/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "open_merkpagina",
+      "description": "Opent de merkpagina van een botenmerk op Sloepen.nl met het actuele aanbod, de modellen en informatie over het merk.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "merk": {
+            "type": "string",
+            "description": "Naam van het merk, bijvoorbeeld Maxima, Antaris of Primeur"
+          }
+        },
+        "required": [
+          "merk"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false
+      }
+    },
+    {
+      "name": "zoek_boten",
+      "description": "Zoekt boten in het aanbod van Sloepen.nl en opent de pagina met zoekresultaten. Filter op zoekterm (merk, type of model), soort boot, conditie (nieuw of gebruikt), prijs in euro, bouwjaar, elektrische aandrijving en video.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "zoekterm": {
+            "type": "string",
+            "description": "Merk, type of model van de boot, bijvoorbeeld Maxima, Antaris Connery of Interboat 650"
+          },
+          "soort": {
+            "type": "string",
+            "enum": [
+              "sloepen",
+              "tenders",
+              "motorboten",
+              "sportboten",
+              "zeilboten",
+              "buitenboordmotoren",
+              "boottrailers"
+            ],
+            "description": "Soort boot of rubriek (ook buitenboordmotoren en boottrailers); wordt genegeerd als er een zoekterm is"
+          },
+          "conditie": {
+            "type": "string",
+            "enum": [
+              "Nieuw",
+              "Gebruikt"
+            ],
+            "description": "Alleen nieuwe of alleen gebruikte boten"
+          },
+          "prijs_vanaf": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Minimale prijs in euro"
+          },
+          "prijs_tot": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Maximale prijs in euro"
+          },
+          "bouwjaar_van": {
+            "type": "integer",
+            "minimum": 1900,
+            "maximum": 2100,
+            "description": "Bouwjaar vanaf"
+          },
+          "bouwjaar_tot": {
+            "type": "integer",
+            "minimum": 1900,
+            "maximum": 2100,
+            "description": "Bouwjaar tot en met"
+          },
+          "elektrisch": {
+            "type": "boolean",
+            "description": "Alleen elektrisch aangedreven boten"
+          },
+          "met_video": {
+            "type": "boolean",
+            "description": "Alleen advertenties met video"
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false
+      }
+    },
+    {
+      "name": "zoek_boten_homepage",
+      "description": "Zoekt boten in het aanbod van Sloepen.nl op zoekterm, soort boot, staat, maximale prijs, bouwjaar en soort verkoper, en opent de pagina met zoekresultaten.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prijs_vanaf": {
+            "type": "string"
+          },
+          "zBrand": {
+            "type": "string",
+            "description": "Zoek op merk, type of model"
+          },
+          "soort": {
+            "type": "string",
+            "enum": [
+              "sloepen",
+              "tenders",
+              "motorboten",
+              "sportboten",
+              "zeilboten"
+            ]
+          },
+          "conditie": {
+            "type": "string",
+            "enum": [
+              "Nieuw",
+              "Gebruikt"
+            ]
+          },
+          "prijs_tot": {
+            "type": "string",
+            "enum": [
+              "99999999",
+              "15000",
+              "25000",
+              "50000",
+              "75000",
+              "150000"
+            ]
+          },
+          "bouwjaar_van": {
+            "type": "string",
+            "enum": [
+              "2024",
+              "2020",
+              "2015",
+              "2010",
+              "2000"
+            ]
+          },
+          "soortad": {
+            "type": "string",
+            "enum": [
+              "parti",
+              "zakelijk"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "zoek_boten_snel",
+      "description": "Zoekt boten in het aanbod van Sloepen.nl op merk, type of model en opent de pagina met zoekresultaten.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "zBrand": {
+            "type": "string",
+            "description": "Zoek op merk, type of model"
+          }
+        }
+      }
+    }
+  ],
+  "host": "sloepen.nl",
+  "source": "webmcp.com/api/directory.json"
+}

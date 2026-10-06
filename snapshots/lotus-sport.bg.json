@@ -1,0 +1,69 @@
+{
+  "sponsio": 1,
+  "url": "https://lotus-sport.bg/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "add_to_cart",
+      "description": "Добавя продукт в количката на посетителя. НЕ прави поръчка и не плаща - поръчката се потвърждава само от човек на страницата за плащане. Идентификаторът се взима от search_products.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "string",
+            "description": "Идентификаторът на продукта, както го връща search_products."
+          },
+          "quantity": {
+            "type": "integer",
+            "description": "Брой (по подразбиране 1).",
+            "minimum": 1,
+            "maximum": 99,
+            "default": 1
+          }
+        },
+        "required": [
+          "product_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_current_product",
+      "description": "Връща структурираните данни за продукта на текущо отворената страница: име, артикулен номер, марка, цена в евро, наличност, състав и каноничен адрес. Работи само на продуктова страница.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Търси продукти в каталога на lotus-sport.bg по дума или фраза (на български или английски, може и артикулен номер). Връща име, цена в евро, адрес на страницата и идентификатор на продукта.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Какво се търси, например \"маратонки Nike\" или артикулен номер \"HV0959-451\"."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Най-много колко резултата да се върнат (1-20).",
+            "minimum": 1,
+            "maximum": 20,
+            "default": 10
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "lotus-sport.bg",
+  "source": "webmcp.com/api/directory.json"
+}

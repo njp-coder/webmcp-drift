@@ -1,0 +1,83 @@
+{
+  "sponsio": 1,
+  "url": "https://farmertofridge.com.au/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get-discovery-resource",
+      "description": "Fetch a public Farmer to Fridge discovery document such as OpenAPI, Auth.md, sitemap, MCP server card, or agent skills index.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "resource": {
+            "type": "string",
+            "enum": [
+              "api-catalog",
+              "openapi",
+              "api-docs",
+              "auth",
+              "oauth-protected-resource",
+              "oauth-authorization-server",
+              "mcp-server-card",
+              "agent-skills",
+              "llms",
+              "sitemap"
+            ],
+            "description": "Discovery resource to fetch."
+          }
+        },
+        "required": [
+          "resource"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get-popular-searches",
+      "description": "Return public popular search terms from Farmer to Fridge.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "default": 10,
+            "description": "Maximum number of popular searches to return."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search-site",
+      "description": "Search Farmer to Fridge public navigation results without changing the current page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Search query for products, farms, guides, or public pages."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "default": 5,
+            "description": "Maximum number of results to return."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "farmertofridge.com.au",
+  "source": "webmcp.com/api/directory.json"
+}

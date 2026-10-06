@@ -1,0 +1,530 @@
+{
+  "sponsio": 1,
+  "url": "https://www.thaiworld.pl/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "contact_reception",
+      "description": "Open a phone call or email to reception using the selected location contact details.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "language": {
+            "type": "string",
+            "enum": [
+              "pl",
+              "en"
+            ],
+            "description": "Response language; defaults to the page language."
+          },
+          "location": {
+            "type": "string",
+            "enum": [
+              "warszawa",
+              "olsztyn"
+            ],
+            "description": "Thai World Spa city; defaults to the current page."
+          },
+          "locationSlug": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "channel": {
+            "type": "string",
+            "enum": [
+              "phone",
+              "email"
+            ]
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "consequential": false,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "create_voucher_payment",
+      "description": "Create a pending Thai World Spa voucher order with the current server price and published terms, then immediately open Paynow. The user completes the payment in Paynow.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "language": {
+            "type": "string",
+            "enum": [
+              "pl",
+              "en"
+            ],
+            "description": "Response language; defaults to the page language."
+          },
+          "location": {
+            "type": "string",
+            "enum": [
+              "warszawa",
+              "olsztyn"
+            ],
+            "description": "Thai World Spa city; defaults to the current page."
+          },
+          "voucherType": {
+            "type": "string",
+            "enum": [
+              "service",
+              "amount"
+            ]
+          },
+          "serviceId": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Timesheet serviceId returned by search_services or get_voucher_options."
+          },
+          "voucherAmount": {
+            "type": "number",
+            "minimum": 100,
+            "maximum": 10000,
+            "description": "Nominal value for an amount voucher in PLN."
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 8
+          },
+          "couples": {
+            "type": "boolean",
+            "description": "Double a service voucher for two people."
+          },
+          "buyerFirstName": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 100
+          },
+          "buyerLastName": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 100
+          },
+          "buyerPhone": {
+            "type": "string",
+            "minLength": 9,
+            "maxLength": 20
+          },
+          "buyerEmail": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 254
+          },
+          "dedicationHeading": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "dedicationMessage": {
+            "type": "string",
+            "maxLength": 800
+          },
+          "templateId": {
+            "type": "string",
+            "maxLength": 80
+          }
+        },
+        "required": [
+          "voucherType",
+          "buyerFirstName",
+          "buyerLastName",
+          "buyerPhone",
+          "buyerEmail"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "consequential": true,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "get_legal_document",
+      "description": "Return the current or a historical published Thai World Spa legal document from Timesheet.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "enum": [
+              "voucher_sales_terms",
+              "website_terms",
+              "website_privacy",
+              "mobile_terms",
+              "mobile_privacy"
+            ]
+          },
+          "language": {
+            "type": "string",
+            "enum": [
+              "pl",
+              "en"
+            ],
+            "description": "Response language; defaults to the page language."
+          },
+          "location": {
+            "type": "string",
+            "enum": [
+              "warszawa",
+              "olsztyn"
+            ],
+            "description": "Thai World Spa city; defaults to the current page."
+          },
+          "version": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "locationId": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "get_location_details",
+      "description": "Return contact, address, map and Booksy details for one Thai World Spa location.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "language": {
+            "type": "string",
+            "enum": [
+              "pl",
+              "en"
+            ],
+            "description": "Response language; defaults to the page language."
+          },
+          "location": {
+            "type": "string",
+            "enum": [
+              "warszawa",
+              "olsztyn"
+            ],
+            "description": "Thai World Spa city; defaults to the current page."
+          },
+          "locationSlug": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          }
+        },
+        "required": [
+          "locationSlug"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "get_mobile_app_info",
+      "description": "Return current website information about referrals, stamps, visits, vouchers, bookings, reception chat and the Android app.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "language": {
+            "type": "string",
+            "enum": [
+              "pl",
+              "en"
+            ],
+            "description": "Response language; defaults to the page language."
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "get_service_details",
+      "description": "Return details and the current Timesheet price for a service identifier returned by search_services.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "language": {
+            "type": "string",
+            "enum": [
+              "pl",
+              "en"
+            ],
+            "description": "Response language; defaults to the page language."
+          },
+          "location": {
+            "type": "string",
+            "enum": [
+              "warszawa",
+              "olsztyn"
+            ],
+            "description": "Thai World Spa city; defaults to the current page."
+          },
+          "publicServiceId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          }
+        },
+        "required": [
+          "publicServiceId"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "get_voucher_options",
+      "description": "Return current service or amount voucher choices, current Timesheet prices, templates and the published sales terms version.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "language": {
+            "type": "string",
+            "enum": [
+              "pl",
+              "en"
+            ],
+            "description": "Response language; defaults to the page language."
+          },
+          "location": {
+            "type": "string",
+            "enum": [
+              "warszawa",
+              "olsztyn"
+            ],
+            "description": "Thai World Spa city; defaults to the current page."
+          },
+          "voucherType": {
+            "type": "string",
+            "enum": [
+              "service",
+              "amount"
+            ]
+          },
+          "query": {
+            "type": "string",
+            "maxLength": 100,
+            "description": "Natural-language service name, effect or category."
+          },
+          "durationMinutes": {
+            "type": "number",
+            "minimum": 1,
+            "description": "Exact treatment duration in minutes."
+          },
+          "maxPrice": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "description": "Maximum current price in PLN."
+          },
+          "category": {
+            "type": "string",
+            "maxLength": 80,
+            "description": "Exact machine-readable service category."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 30,
+            "description": "Maximum number of matches."
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "list_locations",
+      "description": "List current Thai World Spa locations with addresses, opening hours and booking links.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "language": {
+            "type": "string",
+            "enum": [
+              "pl",
+              "en"
+            ],
+            "description": "Response language; defaults to the page language."
+          },
+          "location": {
+            "type": "string",
+            "enum": [
+              "warszawa",
+              "olsztyn"
+            ],
+            "description": "Thai World Spa city; defaults to the current page."
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "open_booking",
+      "description": "Open the verified Booksy booking page for a selected Thai World Spa location.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "language": {
+            "type": "string",
+            "enum": [
+              "pl",
+              "en"
+            ],
+            "description": "Response language; defaults to the page language."
+          },
+          "location": {
+            "type": "string",
+            "enum": [
+              "warszawa",
+              "olsztyn"
+            ],
+            "description": "Thai World Spa city; defaults to the current page."
+          },
+          "locationSlug": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "consequential": false,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "open_mobile_app_download",
+      "description": "Open the verified Thai World Spa Mobile page in Google Play.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "language": {
+            "type": "string",
+            "enum": [
+              "pl",
+              "en"
+            ],
+            "description": "Response language; defaults to the page language."
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "consequential": false,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "search_services",
+      "description": "Find current Thai World Spa services by city, duration, category, phrase and maximum price. Prices always come from the live Timesheet service.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "language": {
+            "type": "string",
+            "enum": [
+              "pl",
+              "en"
+            ],
+            "description": "Response language; defaults to the page language."
+          },
+          "location": {
+            "type": "string",
+            "enum": [
+              "warszawa",
+              "olsztyn"
+            ],
+            "description": "Thai World Spa city; defaults to the current page."
+          },
+          "query": {
+            "type": "string",
+            "maxLength": 100,
+            "description": "Natural-language service name, effect or category."
+          },
+          "durationMinutes": {
+            "type": "number",
+            "minimum": 1,
+            "description": "Exact treatment duration in minutes."
+          },
+          "maxPrice": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "description": "Maximum current price in PLN."
+          },
+          "category": {
+            "type": "string",
+            "maxLength": 80,
+            "description": "Exact machine-readable service category."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 30,
+            "description": "Maximum number of matches."
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": false
+      }
+    }
+  ],
+  "host": "thaiworld.pl",
+  "source": "webmcp.com/api/directory.json"
+}

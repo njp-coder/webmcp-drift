@@ -1,0 +1,115 @@
+{
+  "sponsio": 1,
+  "url": "https://campobroker.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_import_tax_rd",
+      "description": "Estima los impuestos de importación a la República Dominicana (DGA/DGII) de un vehículo a partir de su VIN y el lote de subasta. Resultado referencial.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "vin": {
+            "type": "string",
+            "description": "VIN de 17 caracteres"
+          },
+          "lot": {
+            "type": "string",
+            "description": "Número de lote de la subasta"
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "copart",
+              "iaai"
+            ],
+            "description": "Casa de subasta"
+          }
+        },
+        "required": [
+          "vin"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_lot_info",
+      "description": "Devuelve información de un lote de subasta (vendedor, si tiene reserva, si es aseguradora) por número de lote y fuente.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "lot": {
+            "type": "string",
+            "description": "Número de lote"
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "copart",
+              "iaai"
+            ],
+            "description": "Casa de subasta"
+          }
+        },
+        "required": [
+          "lot",
+          "source"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "search_lots",
+      "description": "Busca lotes/vehículos de subasta (Copart/IAAI) disponibles en Campo Broker por texto, marca, modelo, año o fuente. Devuelve resultados con precios y enlaces.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Texto libre, p. ej. \"Toyota Corolla 2019\""
+          },
+          "make": {
+            "type": "string",
+            "description": "Marca, p. ej. \"ford\""
+          },
+          "model": {
+            "type": "string",
+            "description": "Modelo, p. ej. \"transit\""
+          },
+          "year_from": {
+            "type": "integer",
+            "description": "Año mínimo"
+          },
+          "year_to": {
+            "type": "integer",
+            "description": "Año máximo"
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "copart",
+              "iaai"
+            ],
+            "description": "Casa de subasta"
+          },
+          "page": {
+            "type": "integer",
+            "description": "Página de resultados (1+)"
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "campobroker.com",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,85 @@
+{
+  "sponsio": 1,
+  "url": "https://arms-bg.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "arms_get_product",
+      "description": "Връща подробни данни за един продукт на arms-bg.com по slug (последният сегмент от URL-а на продукта) или по числово ID: цена, наличност, категории и описание.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug_or_id": {
+            "type": "string",
+            "description": "Например \"nozh-opinel-no-8-inox\" или \"12345\""
+          }
+        },
+        "required": [
+          "slug_or_id"
+        ]
+      }
+    },
+    {
+      "name": "arms_list_categories",
+      "description": "Връща продуктовите категории на arms-bg.com с ID, име и брой артикули. Използвайте ID-то като category_id в arms_search_products.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "parent_id": {
+            "type": "integer",
+            "description": "Върни само подкатегориите на тази категория; 0 = основните"
+          }
+        }
+      }
+    },
+    {
+      "name": "arms_search_products",
+      "description": "Търси продукти в каталога на arms-bg.com: ножове, тактическа екипировка, оптика, фенери, въздушно оръжие, арбалети, средства за оцеляване и самозащита. Връща име, SKU, цена, наличност и линк.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Ключова дума, например \"opinel\" или \"челник\""
+          },
+          "category_id": {
+            "type": "integer",
+            "description": "ID на категория от arms_list_categories"
+          },
+          "in_stock_only": {
+            "type": "boolean",
+            "description": "Само налични артикули",
+            "default": false
+          },
+          "on_sale_only": {
+            "type": "boolean",
+            "description": "Само намалени артикули",
+            "default": false
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "relevance",
+              "price_asc",
+              "price_desc",
+              "popularity",
+              "newest"
+            ],
+            "default": "relevance"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 10
+          }
+        }
+      }
+    }
+  ],
+  "host": "arms-bg.com",
+  "source": "webmcp.com/api/directory.json"
+}

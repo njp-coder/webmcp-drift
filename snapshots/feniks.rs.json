@@ -1,0 +1,124 @@
+{
+  "sponsio": 1,
+  "url": "https://feniks.rs/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "feniks_detalji",
+      "description": "Pribavlja sve tehnicke detalje i opis nekretnine preko internog ID-a ili javne sifre oglasa sa sajta.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Jedinstveni ID broj ili javna sifra nekretnine sa sajta (npr. '47' ili '10536-01')."
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "feniks_info_usluge",
+      "description": "Pruza zvanicne kontakt podatke agencije Feniks Real Estate (telefoni, adresa kancelarije, email), linkove ka stranicama 'O nama' i 'Ponudite nekretninu', kao i informacije o uslugama.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "upit_tip": {
+            "type": "string",
+            "enum": [
+              "kontakt",
+              "ponuda_stanova",
+              "usluge_i_provizija",
+              "opste_informacije"
+            ],
+            "description": "Tip informacije koju korisnik zeli."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "feniks_pretraga",
+      "description": "Pretrazuje bazu nekretnina na feniks.rs po tipu, akciji, lokaciji, strukturi i budzetu.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "akcija": {
+            "type": "string",
+            "enum": [
+              "Prodaja",
+              "Izdavanje"
+            ]
+          },
+          "tip": {
+            "type": "string",
+            "enum": [
+              "Stan",
+              "Kuca",
+              "Poslovni prostor",
+              "Plac",
+              "Garaza"
+            ]
+          },
+          "lokacija": {
+            "type": "string",
+            "enum": [
+              "Savski Venac",
+              "Sopot",
+              "Stari Grad",
+              "Surcin",
+              "Vozdovac",
+              "Vracar",
+              "Zemun",
+              "Zvezdara",
+              "Cukarica",
+              "Bar",
+              "Beocin",
+              "Danilovgrad",
+              "Herceg Novi",
+              "Indjija",
+              "Petrovaradin (Novi Sad)",
+              "Raska"
+            ]
+          },
+          "struktura": {
+            "type": "string",
+            "enum": [
+              "Garsonjera",
+              "1.0 - Jednosoban",
+              "1.5 - Jednoiposoban",
+              "2.0 - Dvosoban",
+              "2.5 - Dvoiposoban",
+              "3.0 - Trosoban",
+              "3.5 - Troiposoban",
+              "4.0 - Cetvorosoban",
+              "4.5+ - Cetvorosoban i veci"
+            ]
+          },
+          "budzet_do": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "akcija",
+          "tip"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "feniks.rs",
+  "source": "webmcp.com/api/directory.json"
+}

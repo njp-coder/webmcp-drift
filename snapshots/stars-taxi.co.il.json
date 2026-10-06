@@ -1,0 +1,57 @@
+{
+  "sponsio": 1,
+  "url": "https://stars-taxi.co.il/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_price_quote",
+      "description": "מחזיר מחיר נסיעת מונית מול נתב\"ג (שדה התעופה בן גוריון) לעיר נתונה — מחיר יום ולילה, בשני הכיוונים (אל השדה ומהשדה). read-only. מחיר בינעירוני אינו נתמך כאן ונקבע בטופס ההזמנה.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "city": {
+            "type": "string",
+            "description": "שם העיר בעברית, למשל \"תל אביב\""
+          },
+          "direction": {
+            "type": "string",
+            "enum": [
+              "to",
+              "from"
+            ],
+            "description": "to=אל נתב\"ג, from=מנתב\"ג. ללא ערך — שני הכיוונים."
+          }
+        },
+        "required": [
+          "city"
+        ]
+      }
+    },
+    {
+      "name": "get_service_info",
+      "description": "מידע כללי על מוניות הכוכבים — שם, טלפון, וואטסאפ, אתר, והשירותים המוצעים. read-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_cities",
+      "description": "רשימת הערים שיש להן מחיר נתב\"ג קבוע במוניות הכוכבים. אפשר לסנן עם query (מחרוזת חלקית).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "סינון לפי מחרוזת חלקית (אופציונלי)"
+          }
+        }
+      }
+    }
+  ],
+  "host": "stars-taxi.co.il",
+  "source": "webmcp.com/api/directory.json"
+}

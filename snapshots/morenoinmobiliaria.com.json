@@ -1,0 +1,422 @@
+{
+  "sponsio": 1,
+  "url": "https://www.morenoinmobiliaria.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "chat",
+      "description": "Chat with the real estate assistant. Sends a message and returns the assistant's reply.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "companyinfo",
+      "description": "Allows retrieving the company's contact details, including agency name, address, phone number, and email. Ideal for displaying institutional information or enabling the user to contact the agency.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "CompanyId": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Identifier of the company/agency to query (optional, defaults to the company’s internal one)."
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "creditcontact",
+      "description": "Submit a contact form to request additional information (e.g., mortgage, personal loan, car loan).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": "string",
+            "description": "User's name."
+          },
+          "Email": {
+            "type": "string",
+            "description": "User's email address (required if no phone number is provided)."
+          },
+          "Phone": {
+            "type": "string",
+            "description": "User's phone number (optional if email address is provided)."
+          },
+          "PhoneCountryCode": {
+            "type": "string",
+            "description": "Phone country code including the plus sign, e.g., \"+44\" for United Kingdom, \"+33\" for France, \"+49\" for Germany."
+          },
+          "Message": {
+            "type": "string",
+            "description": "Custom message from the user."
+          },
+          "CreditType": {
+            "type": "string",
+            "description": "Defines the type of credit associated with the contact request (e.g. mortgage, personal loan, car loan)."
+          },
+          "ScheduleType": {
+            "type": "string",
+            "description": "Defines the preferred contact time (any time, morning, afternoon, lunchtime)."
+          },
+          "Address": {
+            "type": "string",
+            "description": "Defines the address associated with the contact form."
+          }
+        },
+        "additionalProperties": true,
+        "required": [
+          "Name",
+          "Email"
+        ]
+      }
+    },
+    {
+      "name": "detail",
+      "description": "Retrieves detailed information about a real estate property.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "ListingId": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Property ID for contact."
+          },
+          "ListingReference": {
+            "type": "string",
+            "description": "Internal reference of the property used for identification."
+          },
+          "DevelopmentFractions": {
+            "type": "boolean",
+            "description": "Indicates whether the search should consider project units (e.g. apartments or retail units) instead of the project as a whole. When enabled, the results include only units associated with a project."
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "imicalculator",
+      "description": "Allows determining the value of the Municipal Property Tax (IMI) based on data provided by the user. This service validates the indicated municipality, identifies the applicable coefficient, processes the Taxable Patrimonial Value (VPT), number of dependents, and the nature of the property (urban or rural), returning the final IMI amount to be paid according to current fiscal rules in Portugal.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "TownName": {
+            "type": "string",
+            "description": "Name of the municipality where the property is located. This field is required for geographic identification and IMI rate determination. Example: \"Lisbon\", \"Porto\", \"Sintra\", \"Albufeira\"."
+          },
+          "TaxableValue": {
+            "type": "number",
+            "format": "decimal",
+            "description": "Taxable patrimonial value of the property (VPT), as registered with the Portuguese Tax Authority. This is the official fiscal value used as the basis for calculating IMI. Must be a positive decimal value expressed in euros. Example: \"185000.00\"."
+          },
+          "DependentsNumber": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Number of dependants in the taxpayer’s household for the relevant tax year. This includes children, elderly parents or other legally recognised dependants that may qualify for IMI reductions or exemptions. Valid values: integer ≥ 0. Example: \"2\"."
+          },
+          "IsUrban": {
+            "type": "boolean",
+            "description": "Indicates whether the property is classified as urban or rural. Urban properties are subject to IMI, while rural properties may be subject to different taxation rules. Example: true/false."
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "lead",
+      "description": "Submit a contact form for a specific listing.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "ListingId": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Property ID for contact."
+          },
+          "ListingReference": {
+            "type": "string",
+            "description": "Internal reference of the property used for identification."
+          },
+          "Name": {
+            "type": "string",
+            "description": "User's name."
+          },
+          "Email": {
+            "type": "string",
+            "description": "User's email address (required if no phone number is provided)."
+          },
+          "Phone": {
+            "type": "string",
+            "description": "User's phone number (optional if email address is provided)."
+          },
+          "PhoneCountryCode": {
+            "type": "string",
+            "description": "Phone country code including the plus sign, e.g., \"+44\" for United Kingdom, \"+33\" for France, \"+49\" for Germany."
+          },
+          "Message": {
+            "type": "string",
+            "description": "Custom message from the user."
+          }
+        },
+        "additionalProperties": true,
+        "required": [
+          "Name",
+          "Email"
+        ]
+      }
+    },
+    {
+      "name": "leadexclusive",
+      "description": "Registers an exclusive lead for the agency.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "loancalculator",
+      "description": "Calculates financing values for a property, including monthly payments, IMT tax, total loan duration in months, and the total applied interest rate. This endpoint allows customization of parameters such as property value, loan amount, bank spread, Euribor, loan term in years, and whether it is a permanent own residence.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "PropertyValue": {
+            "type": "number",
+            "format": "double",
+            "description": "Total purchase price of the property in euros. Used as the basis for IMT and Stamp Duty calculations."
+          },
+          "LoanAmount": {
+            "type": "number",
+            "format": "double",
+            "description": "Total amount to be borrowed from the bank (capital). Must be less than or equal to the property value."
+          },
+          "Spread": {
+            "type": "number",
+            "format": "double",
+            "description": "The bank's profit margin (spread) as a percentage. Combined with Euribor, it forms the total interest rate (TAN)."
+          },
+          "EuriborRateMaturity": {
+            "type": "string",
+            "description": "Maturity period of the Euribor applied to the loan. Possible values: 1M (1 month: rate revised monthly), 3M (3 months: rate revised quarterly), 6M (6 months: rate revised semi-annually), 12M (12 months: rate revised annually)."
+          },
+          "LoanTermYears": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Loan duration in years. Usually between 5 and 40 years depending on the applicant’s age."
+          },
+          "IsPermanentHousing": {
+            "type": "boolean",
+            "description": "Indicates if the property is for Own Permanent Housing. Affects IMT tax brackets and exemptions in Portugal."
+          },
+          "Name": {
+            "type": "string",
+            "description": "User's name."
+          },
+          "Email": {
+            "type": "string",
+            "description": "User's email address (required if no phone number is provided)."
+          },
+          "Phone": {
+            "type": "string",
+            "description": "User's phone number (optional if email address is provided)."
+          },
+          "PhoneCountryCode": {
+            "type": "string",
+            "description": "Phone country code including the plus sign, e.g., \"+44\" for United Kingdom, \"+33\" for France, \"+49\" for Germany."
+          }
+        },
+        "additionalProperties": true,
+        "required": [
+          "PropertyValue",
+          "LoanAmount",
+          "Spread",
+          "EuriborRateMaturity",
+          "LoanTermYears",
+          "IsPermanentHousing",
+          "Name",
+          "Email"
+        ]
+      }
+    },
+    {
+      "name": "rasorinfo",
+      "description": "Allows retrieving the real estate consultant's contact details, including name, phone, email, and address. Ideal for displaying the consultant's contact information or enabling the user to contact them.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "RasorName": {
+            "type": "string",
+            "description": "Name of the real estate consultant for whom detailed information is requested."
+          },
+          "StateName": {
+            "type": "string",
+            "description": "Allows searching for consultants by district."
+          },
+          "TownName": {
+            "type": "string",
+            "description": "Allows searching for consultants by municipality."
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "search",
+      "description": "Search real estate listings using filters such as location, price, type, and condition.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "BusinessType": {
+            "type": "string",
+            "description": "Defines or returns the identifier of the property's business type"
+          },
+          "CountryName": {
+            "type": "string",
+            "description": "Name of the country used as a filtering criteria. This field must remain empty when the country is not identified."
+          },
+          "StateName": {
+            "type": "string",
+            "description": "Name of the region (district) for the property (required in search if municipality is not specified)."
+          },
+          "TownName": {
+            "type": "string",
+            "description": "Name of the municipality for the property (required in search if district is not specified)."
+          },
+          "NeighborhoodName": {
+            "type": "string",
+            "description": "Name or ID of the parish (neighborhood) where the property is located."
+          },
+          "ZoneName": {
+            "type": "string",
+            "description": "Geographic zone identifier used for filtering in searches."
+          },
+          "MasterCategoryIds": {
+            "type": "array",
+            "description": "IDs of one or more main property category groups (e.g., apartments, houses, warehouses, land, hotels). At least one is required if a specific property type is not specified.",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "CategoryIds": {
+            "type": "array",
+            "description": "IDs of one or more specific property categories (e.g., apartment, house, warehouse, land, hotel).",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "Condition": {
+            "type": "string",
+            "description": "Condition status."
+          },
+          "MinPrice": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Minimum price in euros. Fill in when the user specifies a minimum budget or lower price limit."
+          },
+          "MaxPrice": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Maximum price in euros. Fill in when the user specifies a maximum budget or upper price limit."
+          },
+          "MinBedrooms": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Minimum number of bedrooms to filter by"
+          },
+          "MaxBedrooms": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Maximum number of bedrooms to filter by"
+          },
+          "Bathrooms": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Minimum number of bathrooms."
+          },
+          "ListingReference": {
+            "type": "string",
+            "description": "Internal reference of the property used for identification."
+          },
+          "DevelopmentName": {
+            "type": "string",
+            "description": "Development name."
+          },
+          "DevelopmentFractions": {
+            "type": "boolean",
+            "description": "Indicates whether the search should consider project units (e.g. apartments or retail units) instead of the project as a whole. When enabled, the results include only units associated with a project."
+          },
+          "DevelopmentTags": {
+            "type": "array",
+            "description": "Development tags used to filter the search.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "WithVideos": {
+            "type": "boolean",
+            "description": "Searches only for properties with available videos. Apply when the user mentions expressions such as 'with video', 'with videos', 'has video', 'has videos', 'view property video', 'watch video online', etc."
+          },
+          "WithBluePrints": {
+            "type": "boolean",
+            "description": "Searches only for properties that have available floor plans (blueprints). Apply when the user mentions 'with floor plan', 'has plans', 'house plans', 'property map', 'floor layout', 'see plan', etc."
+          },
+          "WithVirtualVisits": {
+            "type": "boolean",
+            "description": "Searches only for properties with virtual tours available. Apply when the user mentions 'with virtual visit', 'has virtual visit', 'virtual tour', '3D tour', 'interactive tour', 'virtual walkthrough', 'virtual viewing', 'virtual experience', 'view virtual tour online'."
+          },
+          "With360Photos": {
+            "type": "boolean",
+            "description": "Searches only for properties with available 360º photos. Apply when the user mentions 'with 360º photos', 'has 360º photos', 'with panoramic photos', 'has panoramic photos', 'view 360º photos online', etc."
+          },
+          "FeaturesNames": {
+            "type": "array",
+            "description": "Property features, including amenities, services, nearby points of interest, and types of views to provide a complete and detailed description of the property",
+            "items": {
+              "type": "string"
+            }
+          },
+          "Page": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Page number to return in the search results."
+          }
+        },
+        "additionalProperties": true,
+        "required": [
+          "CountryName",
+          "StateName"
+        ]
+      }
+    },
+    {
+      "name": "servicesinfo",
+      "description": "Description of the endpoint providing complete information about the services available for a customer profile.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "CompanyId": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Identifier of the company/agency to query (optional, defaults to the company’s internal one)."
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  ],
+  "host": "morenoinmobiliaria.com",
+  "source": "webmcp.com/api/directory.json"
+}

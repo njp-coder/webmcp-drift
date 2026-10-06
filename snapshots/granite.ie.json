@@ -1,0 +1,107 @@
+{
+  "sponsio": 1,
+  "url": "https://www.granite.ie/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_page_markdown",
+      "description": "Fetch the clean Markdown representation of a granite.ie page (its build-time .md twin). Accepts a full URL or a path.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "minLength": 1,
+            "description": "A granite.ie page URL or path (e.g. 'https://www.granite.ie/case-studies/foo/' or '/specialisms/')."
+          }
+        },
+        "required": [
+          "url"
+        ]
+      }
+    },
+    {
+      "name": "get_specialism",
+      "description": "Get one Granite specialism by slug: title, summary, description, the services it groups, and public URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The specialism slug, e.g. 'web-development' (from list_specialisms)."
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "list_industries",
+      "description": "List the industries/sectors Granite has published sector-specific experience for, with slug and public URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_specialisms",
+      "description": "List Granite's published specialisms (services offered), with slug, summary, and public URL. Use get_specialism for detail on one.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "search_case_studies",
+      "description": "Search Granite's published client case studies by keyword and/or sector. Returns title, summary, sectors, and public URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Free-text search across case study titles and content."
+          },
+          "sector": {
+            "type": "string",
+            "description": "Filter to a sector/industry, matched against the case study's categories (name or slug, case-insensitive)."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "description": "Maximum number of case studies to return (default 10)."
+          }
+        }
+      }
+    },
+    {
+      "name": "search_news",
+      "description": "Search Granite's published news articles and insights by keyword. Returns title, summary, categories, date, and public URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Free-text search across news article titles and content."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "description": "Maximum number of articles to return (default 10)."
+          }
+        }
+      }
+    }
+  ],
+  "host": "granite.ie",
+  "source": "webmcp.com/api/directory.json"
+}

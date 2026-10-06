@@ -1,0 +1,126 @@
+{
+  "sponsio": 1,
+  "url": "https://twitterviewer.net/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_tweet",
+      "description": "Get one tweet with text, author, stats, media download URLs (mp4 variants) and replies. Accepts a tweet ID or a twitter.com/x.com status URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tweet": {
+            "type": "string",
+            "description": "Tweet ID or full status URL"
+          },
+          "cursor": {
+            "type": "string",
+            "description": "Pagination cursor for more replies"
+          }
+        },
+        "required": [
+          "tweet"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get_user_media",
+      "description": "List a Twitter/X user's photo and video posts with media URLs, cursor-paginated.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_]{1,15}$"
+          },
+          "cursor": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "username"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get_user_profile",
+      "description": "Get a Twitter/X user's public profile and latest tweets by handle, no login required. Paginate with cursor; do not poll.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "handle": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_]{1,15}$",
+            "description": "Username without @"
+          },
+          "cursor": {
+            "type": "string",
+            "description": "Pagination cursor from a previous call"
+          }
+        },
+        "required": [
+          "handle"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "open_page",
+      "description": "Navigate this Twitter Viewer tab to a profile or tweet page to show it to the user.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "pattern": "^/",
+            "description": "Site-relative path, e.g. /nasa or /nasa/status/123"
+          }
+        },
+        "required": [
+          "path"
+        ]
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "search_users",
+      "description": "Search Twitter/X accounts by display name or partial handle; returns candidates with follower counts for disambiguation.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    }
+  ],
+  "host": "twitterviewer.net",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,79 @@
+{
+  "sponsio": 1,
+  "url": "https://avukatmurataydar.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_contact_info",
+      "description": "Aydar Hukuk Bürosu'nun telefon, WhatsApp, e-posta, adres ve çalışma saati bilgilerini döndürür.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_legal_article",
+      "description": "Belirtilen yazının tam metnini döndürür. Slug veya tam URL verilebilir; slug bilinmiyorsa önce search_legal_articles kullanılmalıdır.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Yazının slug'ı (ör. 'reddi-miras-nasil-yapilir') veya tam URL'si."
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "list_practice_areas",
+      "description": "Aydar Hukuk Bürosu'nun hizmet verdiği hukuk alanlarını (boşanma, nafaka, velayet, mal paylaşımı, miras vb.) bağlantılarıyla listeler.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "search_legal_articles",
+      "description": "Aydar Hukuk Bürosu sitesindeki Türkçe hukuk rehberlerini (boşanma, nafaka, velayet, mal paylaşımı, miras) anahtar kelimeyle arar ve başlık, özet ve bağlantılarını döndürür.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Aranacak hukuki konu, ör. 'reddi miras süresi' veya 'nafaka artırımı'."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Döndürülecek en fazla sonuç sayısı (1-20, varsayılan 8).",
+            "minimum": 1,
+            "maximum": 20
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "avukatmurataydar.com",
+  "source": "webmcp.com/api/directory.json"
+}

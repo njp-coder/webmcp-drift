@@ -1,0 +1,225 @@
+{
+  "sponsio": 1,
+  "url": "https://dogechain.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "find",
+      "description": "Works out whether a string is a Dogecoin block height, block hash, transaction id or address, and which tool to call next. Use it when unsure.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "query": {
+            "description": "A block height, block hash, transaction id or address.",
+            "maxLength": 100,
+            "type": "string"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "type": "object"
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_address",
+      "description": "A Dogecoin address: balance (with its dollar value), totals received and sent, transaction count, its mining-pool name if any, rank among the largest holders, lookalike warnings, and its history newest first, 10 a page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "address": {
+            "description": "A Dogecoin address, e.g. D8AXXiGEZeZnMKTKnC9AWB3YUU4jfMAmYU.",
+            "type": "string"
+          },
+          "page": {
+            "description": "Page, from 1 (default 1).",
+            "minimum": 1,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "address"
+        ],
+        "type": "object"
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_block",
+      "description": "A Dogecoin block: when it was found, who mined it (pool name and payout address), reward and fees, size, confirmations, and its transactions as one-line stories, 25 a page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "block": {
+            "description": "A height, a 64-hex block hash, or \"latest\".",
+            "type": "string"
+          },
+          "page": {
+            "description": "Page, from 1 (default 1).",
+            "minimum": 1,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "block"
+        ],
+        "type": "object"
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_chart",
+      "description": "A Dogecoin chart series over time, oldest first: e.g. tx_count, fees_median, hashrate, difficulty, supply, price_usd, block_interval, active_addresses, pool_share, holder_share.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "interval": {
+            "description": "Default day. minute is for tx_per_min only; pool_share, transfers and holder_share come by day or hour.",
+            "enum": [
+              "minute",
+              "hour",
+              "day",
+              "week",
+              "month"
+            ],
+            "type": "string"
+          },
+          "last": {
+            "description": "How many of the latest points (default 30).",
+            "maximum": 500,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "series": {
+            "enum": [
+              "tx_count",
+              "block_size",
+              "active_addresses",
+              "new_addresses",
+              "transfers",
+              "transfers_sent",
+              "fees_median",
+              "fees_total",
+              "hashrate",
+              "difficulty",
+              "block_interval",
+              "pool_share",
+              "lookalikes",
+              "lookalike_senders",
+              "supply",
+              "price_usd",
+              "holder_share",
+              "tx_per_min"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "series"
+        ],
+        "type": "object"
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_fees",
+      "description": "What it costs to send DOGE right now: the least a payment can pay, what people actually paid lately, next-block fee rates and how many transactions are waiting.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {},
+        "required": [],
+        "type": "object"
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_network",
+      "description": "The Dogecoin network now: the newest block, the mempool and next-block fees, hashrate, difficulty, the latest blocks and the biggest recent transfers.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {},
+        "required": [],
+        "type": "object"
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_rich_list",
+      "description": "The 1,000 addresses holding the most DOGE, 100 a page, with how concentrated holdings are. Big holders are often exchanges.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "page": {
+            "description": "Page 1 to 10 (default 1).",
+            "maximum": 10,
+            "minimum": 1,
+            "type": "integer"
+          }
+        },
+        "required": [],
+        "type": "object"
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_supply",
+      "description": "How many DOGE exist, how many are added each day and year (10,000 per block, no maximum), and inflation now and ahead.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {},
+        "required": [],
+        "type": "object"
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_transaction",
+      "description": "A Dogecoin transaction in plain English: who paid whom, how much, the likely change, the fee, its confirmations, every input and output, and any address-poisoning (lookalike) warning.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "txid": {
+            "description": "The transaction id: 64 hex characters.",
+            "pattern": "^[0-9a-fA-F]{64}$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "txid"
+        ],
+        "type": "object"
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "dogechain.com",
+  "source": "webmcp.com/api/directory.json"
+}

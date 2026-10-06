@@ -1,0 +1,120 @@
+{
+  "sponsio": 1,
+  "url": "https://craftwork.design/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_public_asset",
+      "description": "Get public metadata for one published Craftwork asset by its exact slug. This tool does not authenticate, purchase, or download files.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "description": "Exact asset slug from a craftwork.design/asset/{slug} URL."
+          }
+        },
+        "required": [
+          "slug"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "list_public_products",
+      "description": "List published Craftwork marketplace products. Returns a bounded set of public catalog cards and never performs purchases or downloads.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "default": 5,
+            "description": "Maximum number of products to return."
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 10000,
+            "default": 0,
+            "description": "Number of products to skip."
+          },
+          "price": {
+            "type": "string",
+            "enum": [
+              "free",
+              "paid",
+              "all"
+            ],
+            "default": "all",
+            "description": "Filter products by price."
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "trending",
+              "popular",
+              "recent"
+            ],
+            "default": "trending",
+            "description": "Catalog ordering."
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "search_public_assets",
+      "description": "Search Craftwork's published design assets. Returns public metadata and preview URLs only; it never returns protected source-file download URLs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "description": "Focused search text for the asset catalog."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "default": 5,
+            "description": "Maximum number of matching assets to return."
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000,
+            "default": 1,
+            "description": "Catalog page to return."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    }
+  ],
+  "host": "craftwork.design",
+  "source": "webmcp.com/api/directory.json"
+}

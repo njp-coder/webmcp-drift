@@ -1,0 +1,155 @@
+{
+  "sponsio": 1,
+  "url": "https://www.sakura-clinic.jp/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_clinic_info",
+      "description": "選択した院の公開済み住所、電話番号、診療時間、公式ページを返します。",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "clinicId": {
+            "type": "string",
+            "enum": [
+              "anjo",
+              "tokyo",
+              "osaka",
+              "sapporo"
+            ],
+            "description": "院を識別するIDです。"
+          }
+        },
+        "required": [
+          "clinicId"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "get_public_faq",
+      "description": "選択したFAQ IDに対応する公開済みの質問と回答を返します。診断は行いません。",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "faqId": {
+            "type": "string",
+            "enum": [
+              "clinic_information_01",
+              "clinic_information_02",
+              "clinic_information_03",
+              "clinic_information_04",
+              "clinic_information_05",
+              "reservation_visit_01",
+              "reservation_visit_02",
+              "reservation_visit_03",
+              "reservation_visit_04",
+              "reservation_visit_05",
+              "medical_care_01",
+              "medical_care_02",
+              "medical_care_03",
+              "medical_care_04",
+              "medical_care_05",
+              "medical_care_06",
+              "medical_care_07",
+              "medical_care_08",
+              "medical_care_09",
+              "medical_care_10"
+            ],
+            "description": "公開FAQを識別するIDです。"
+          }
+        },
+        "required": [
+          "faqId"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "list_clinics",
+      "description": "咲くらクリニックの公開中の院名、住所、公式ページを一覧で返します。",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "list_public_faqs",
+      "description": "選択したカテゴリにある公開FAQの質問と参照IDを一覧で返します。",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "categoryId": {
+            "type": "string",
+            "enum": [
+              "clinic_information",
+              "reservation_visit",
+              "medical_care"
+            ],
+            "description": "FAQカテゴリを識別するIDです。"
+          }
+        },
+        "required": [
+          "categoryId"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "search_public_treatments",
+      "description": "公開中の診療・施術メニュー名を短いキーワードで文字検索します。診断や施術の推奨は行いません。",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 40,
+            "description": "施術名、症状名、お悩み名の短い検索語です。個人情報は入力しません。"
+          },
+          "limit": {
+            "type": "integer",
+            "enum": [
+              3,
+              5,
+              8
+            ],
+            "description": "返す結果の上限件数です。"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    }
+  ],
+  "host": "sakura-clinic.jp",
+  "source": "webmcp.com/api/directory.json"
+}

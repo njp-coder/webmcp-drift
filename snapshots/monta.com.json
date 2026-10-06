@@ -1,0 +1,60 @@
+{
+  "sponsio": 1,
+  "url": "https://monta.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "search_monta_content",
+      "description": "Search published pages and blog posts on this Monta site.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "search": {
+            "type": "string",
+            "description": "Search term to match against page and post content."
+          },
+          "post_types": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "post",
+                "page",
+                "press",
+                "case-studies",
+                "podcast",
+                "downloadables",
+                "events"
+              ]
+            },
+            "uniqueItems": true,
+            "default": [
+              "post",
+              "page"
+            ],
+            "description": "Post types to include. Allowed values: post, page, press, case-studies, podcast, downloadables, events. Defaults to [\"post\", \"page\"]."
+          },
+          "per_page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 10,
+            "description": "Number of results to return (1-100)."
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1,
+            "description": "Page number for pagination."
+          }
+        },
+        "required": [
+          "search"
+        ]
+      }
+    }
+  ],
+  "host": "monta.com",
+  "source": "webmcp.com/api/directory.json"
+}

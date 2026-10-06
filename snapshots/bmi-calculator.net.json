@@ -1,0 +1,380 @@
+{
+  "sponsio": 1,
+  "url": "https://www.bmi-calculator.net/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "calculate_bmi",
+      "description": "Calculate Body Mass Index (BMI) from height and weight. Returns BMI value and WHO category (underweight, normal, overweight, obese class I/II/III).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "weight_kg": {
+            "type": "number",
+            "description": "Weight in kilograms. Provide either weight_kg or weight_lbs."
+          },
+          "weight_lbs": {
+            "type": "number",
+            "description": "Weight in pounds."
+          },
+          "height_cm": {
+            "type": "number",
+            "description": "Height in centimeters. Provide either height_cm or height_feet+height_inches."
+          },
+          "height_feet": {
+            "type": "number",
+            "description": "Height feet component (e.g., 5 for 5'10\")."
+          },
+          "height_inches": {
+            "type": "number",
+            "description": "Height inches component (e.g., 10 for 5'10\")."
+          }
+        }
+      }
+    },
+    {
+      "name": "calculate_bmr",
+      "description": "Calculate Basal Metabolic Rate (BMR) - the calories your body needs at complete rest. Supports multiple formulas.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "weight_kg": {
+            "type": "number",
+            "description": "Weight in kilograms. Provide either weight_kg or weight_lbs."
+          },
+          "weight_lbs": {
+            "type": "number",
+            "description": "Weight in pounds."
+          },
+          "height_cm": {
+            "type": "number",
+            "description": "Height in centimeters. Provide either height_cm or height_feet+height_inches."
+          },
+          "height_feet": {
+            "type": "number",
+            "description": "Height feet component."
+          },
+          "height_inches": {
+            "type": "number",
+            "description": "Height inches component."
+          },
+          "age": {
+            "type": "number",
+            "description": "Age in years."
+          },
+          "gender": {
+            "type": "string",
+            "enum": [
+              "male",
+              "female"
+            ],
+            "description": "Biological sex."
+          },
+          "formula": {
+            "type": "string",
+            "enum": [
+              "mifflin",
+              "harris",
+              "revised_harris",
+              "schofield",
+              "oxford"
+            ],
+            "description": "Formula to use. Default: mifflin (Mifflin-St Jeor, most accurate for most people)."
+          }
+        },
+        "required": [
+          "age",
+          "gender"
+        ]
+      }
+    },
+    {
+      "name": "calculate_body_fat",
+      "description": "Estimate body fat percentage using the US Navy method from neck, waist, and hip measurements.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "gender": {
+            "type": "string",
+            "enum": [
+              "male",
+              "female"
+            ],
+            "description": "Biological sex."
+          },
+          "waist_cm": {
+            "type": "number",
+            "description": "Waist circumference in cm. Provide cm or inches."
+          },
+          "waist_inches": {
+            "type": "number",
+            "description": "Waist circumference in inches."
+          },
+          "neck_cm": {
+            "type": "number",
+            "description": "Neck circumference in cm."
+          },
+          "neck_inches": {
+            "type": "number",
+            "description": "Neck circumference in inches."
+          },
+          "hip_cm": {
+            "type": "number",
+            "description": "Hip circumference in cm (required for females)."
+          },
+          "hip_inches": {
+            "type": "number",
+            "description": "Hip circumference in inches (required for females)."
+          },
+          "height_cm": {
+            "type": "number",
+            "description": "Height in cm. Provide cm or feet+inches."
+          },
+          "height_feet": {
+            "type": "number",
+            "description": "Height feet component."
+          },
+          "height_inches": {
+            "type": "number",
+            "description": "Height inches component."
+          }
+        },
+        "required": [
+          "gender"
+        ]
+      }
+    },
+    {
+      "name": "calculate_bsa",
+      "description": "Calculate Body Surface Area (BSA) using multiple formulas. Used in medical dosing calculations.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "weight_kg": {
+            "type": "number",
+            "description": "Weight in kg. Provide kg or lbs."
+          },
+          "weight_lbs": {
+            "type": "number",
+            "description": "Weight in pounds."
+          },
+          "height_cm": {
+            "type": "number",
+            "description": "Height in cm. Provide cm or feet+inches."
+          },
+          "height_feet": {
+            "type": "number",
+            "description": "Height feet component."
+          },
+          "height_inches": {
+            "type": "number",
+            "description": "Height inches component."
+          }
+        }
+      }
+    },
+    {
+      "name": "calculate_calories_burned",
+      "description": "Estimate calories burned during physical activity using MET (Metabolic Equivalent of Task) values.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "weight_kg": {
+            "type": "number",
+            "description": "Body weight in kg. Provide kg or lbs."
+          },
+          "weight_lbs": {
+            "type": "number",
+            "description": "Body weight in pounds."
+          },
+          "met_value": {
+            "type": "number",
+            "description": "MET value of the activity. Common values: walking(3.5), running(8-12), cycling(6-10), swimming(6-8), yoga(2.5), weight training(3-6)."
+          },
+          "duration_minutes": {
+            "type": "number",
+            "description": "Duration of activity in minutes."
+          }
+        },
+        "required": [
+          "met_value",
+          "duration_minutes"
+        ]
+      }
+    },
+    {
+      "name": "calculate_ideal_weight",
+      "description": "Calculate ideal body weight using multiple formulas (Devine, Robinson, Miller, Hamwi, Broca, Lemmens). Returns results from all formulas for comparison.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "gender": {
+            "type": "string",
+            "enum": [
+              "male",
+              "female"
+            ],
+            "description": "Biological sex."
+          },
+          "height_cm": {
+            "type": "number",
+            "description": "Height in cm. Provide cm or feet+inches."
+          },
+          "height_feet": {
+            "type": "number",
+            "description": "Height feet component."
+          },
+          "height_inches": {
+            "type": "number",
+            "description": "Height inches component."
+          }
+        },
+        "required": [
+          "gender"
+        ]
+      }
+    },
+    {
+      "name": "calculate_tdee",
+      "description": "Calculate Total Daily Energy Expenditure (TDEE) - total calories burned per day including activity. Based on BMR multiplied by activity factor.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "weight_kg": {
+            "type": "number",
+            "description": "Weight in kilograms. Provide either weight_kg or weight_lbs."
+          },
+          "weight_lbs": {
+            "type": "number",
+            "description": "Weight in pounds."
+          },
+          "height_cm": {
+            "type": "number",
+            "description": "Height in centimeters. Provide either height_cm or height_feet+height_inches."
+          },
+          "height_feet": {
+            "type": "number",
+            "description": "Height feet component."
+          },
+          "height_inches": {
+            "type": "number",
+            "description": "Height inches component."
+          },
+          "age": {
+            "type": "number",
+            "description": "Age in years."
+          },
+          "gender": {
+            "type": "string",
+            "enum": [
+              "male",
+              "female"
+            ],
+            "description": "Biological sex."
+          },
+          "activity_level": {
+            "type": "string",
+            "enum": [
+              "sedentary",
+              "light",
+              "moderate",
+              "very_active",
+              "extra_active"
+            ],
+            "description": "Activity level. sedentary=office job, light=1-3 days/week, moderate=3-5 days/week, very_active=6-7 days/week, extra_active=athlete/physical job."
+          }
+        },
+        "required": [
+          "age",
+          "gender",
+          "activity_level"
+        ]
+      }
+    },
+    {
+      "name": "calculate_waist_to_height_ratio",
+      "description": "Calculate Waist-to-Height Ratio (WHtR) - the strongest single predictor of cardiovascular risk. A ratio under 0.5 indicates healthy.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "waist_cm": {
+            "type": "number",
+            "description": "Waist circumference in cm."
+          },
+          "waist_inches": {
+            "type": "number",
+            "description": "Waist circumference in inches."
+          },
+          "height_cm": {
+            "type": "number",
+            "description": "Height in cm."
+          },
+          "height_feet": {
+            "type": "number",
+            "description": "Height feet component."
+          },
+          "height_inches": {
+            "type": "number",
+            "description": "Height inches component."
+          }
+        }
+      }
+    },
+    {
+      "name": "calculate_waist_to_hip_ratio",
+      "description": "Calculate Waist-to-Hip Ratio (WHR) to assess fat distribution and cardiovascular health risk.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "gender": {
+            "type": "string",
+            "enum": [
+              "male",
+              "female"
+            ],
+            "description": "Biological sex."
+          },
+          "waist_cm": {
+            "type": "number",
+            "description": "Waist circumference in cm."
+          },
+          "waist_inches": {
+            "type": "number",
+            "description": "Waist circumference in inches."
+          },
+          "hip_cm": {
+            "type": "number",
+            "description": "Hip circumference in cm."
+          },
+          "hip_inches": {
+            "type": "number",
+            "description": "Hip circumference in inches."
+          }
+        },
+        "required": [
+          "gender"
+        ]
+      }
+    },
+    {
+      "name": "list_calculators",
+      "description": "List all available calculators on BMI-Calculator.net with descriptions and URLs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    }
+  ],
+  "host": "bmi-calculator.net",
+  "source": "webmcp.com/api/directory.json"
+}

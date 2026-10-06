@@ -1,0 +1,131 @@
+{
+  "sponsio": 1,
+  "url": "https://www.perspexonline.com.au/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_cut_to_size_quote",
+      "description": "Instant price for a custom-cut plastic panel. Requires a PIM SKU (get one from search_products). Returns the cut-to-size price including any machine/cutting fees, ex- and inc-GST (AUD).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sku": {
+            "type": "string",
+            "description": "PIM SKU from search_products, e.g. 'SH-AC-CLR-6MM-2440x1220'."
+          },
+          "width_mm": {
+            "type": "number",
+            "description": "Cut width in millimetres."
+          },
+          "height_mm": {
+            "type": "number",
+            "description": "Cut height in millimetres."
+          },
+          "quantity": {
+            "type": "number",
+            "description": "Number of pieces. Default 1."
+          },
+          "shape": {
+            "type": "string",
+            "description": "Optional cut shape: rectangle (default), circle, ring, hexagon, archway, parallelogram, star."
+          }
+        },
+        "required": [
+          "sku",
+          "width_mm",
+          "height_mm"
+        ]
+      }
+    },
+    {
+      "name": "get_shipping_quote",
+      "description": "Live freight quotes for the items currently in the cart, to an Australian suburb + postcode. Returns the cheapest option and all services. Items must already be in the cart (add them on the site first).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "suburb": {
+            "type": "string",
+            "description": "Delivery suburb, e.g. 'Burleigh Heads'."
+          },
+          "postcode": {
+            "type": "string",
+            "description": "4-digit Australian postcode, e.g. '4220'."
+          }
+        },
+        "required": [
+          "suburb",
+          "postcode"
+        ]
+      }
+    },
+    {
+      "name": "inspect_image_c2pa",
+      "description": "Fetch a single image (by CSS selector or URL) and return its fully decoded C2PA manifest store: every manifest's claim, assertions (e.g. c2pa.actions edit history, schema.org authorship), and the COSE signature details (algorithm and signing-certificate identity). Provide exactly one of `selector` or `url`. Note: the signature is decoded but NOT cryptographically verified.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "selector": {
+            "type": "string",
+            "maxLength": 8192,
+            "description": "CSS selector for an <img> element on the page."
+          },
+          "url": {
+            "type": "string",
+            "maxLength": 8192,
+            "description": "Image URL (absolute, or relative to the current page) to fetch and inspect."
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "scan_images_c2pa",
+      "description": "Scan every <img> on the current page for C2PA Content Credentials (content provenance metadata) and return a per-image summary: whether a manifest is present, the claim generator (the tool that produced or edited the image), the title, and the signer name. Use this to find which images on a page carry provenance data. Note: provenance is decoded but NOT cryptographically verified.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 25,
+            "description": "Maximum number of images to fetch and scan (default 25, max 100)."
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Search the Perspex Online catalogue of cut-to-size plastics (acrylic/Perspex, polycarbonate, HDPE, PVC, nylon, acetal, PTFE and more). Returns matching products and priced variants with their SKU, name, price and product-page URL. Use this first to get a SKU before pricing a cut.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Free text, e.g. '6mm clear acrylic', 'polycarbonate sheet', 'nylon rod 20mm'."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "view_cart",
+      "description": "Return the current shopping cart: each line item's description, unit price (ex-GST) and quantity, plus the subtotal (ex-GST) and the GST-inclusive total in AUD.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    }
+  ],
+  "host": "perspexonline.com.au",
+  "source": "webmcp.com/api/directory.json"
+}

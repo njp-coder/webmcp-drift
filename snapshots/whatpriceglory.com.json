@@ -1,0 +1,77 @@
+{
+  "sponsio": 1,
+  "url": "https://whatpriceglory.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_product",
+      "description": "Fetch full detail for a single product by its numeric catalogue id or its SKU code.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Product catalogue id (digits) or SKU code"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_store_info",
+      "description": "Store name, description, website, policy page links (shipping, returns, privacy, terms, FAQ, contact), and the timestamp of the catalogue snapshot.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "list_categories",
+      "description": "List the store's main (top-level) product categories with their page URLs. Sub-categories are not listed separately; each product's own full category list is returned by search_products and get_product.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Search the store catalogue by keyword. Every term must appear (AND), matching is case-insensitive substring across product name, SKU, category and description. Returns price, availability, description and the product page URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search terms, e.g. 'us m1938 tanker goggles'. Up to 8 terms are used."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Max results (1-25, default 10)"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "whatpriceglory.com",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,82 @@
+{
+  "sponsio": 1,
+  "url": "https://passportivity.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_program",
+      "description": "Full details for one program by slug: summary, key facts, minimum investment, processing time, and the page URL in each published language.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Program slug, e.g. \"grenada\" or \"greece-golden-visa\""
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "open_consultation",
+      "description": "Open the Passportivity consultation page in the current tab so the user can request advice. Opens the page only — it never fills or submits the form on the user's behalf.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "programSlug": {
+            "type": "string",
+            "description": "Optional program slug — opens that program page, whose form is scoped to it"
+          },
+          "language": {
+            "type": "string",
+            "enum": [
+              "en",
+              "ru",
+              "fa",
+              "ar"
+            ],
+            "default": "en"
+          }
+        }
+      }
+    },
+    {
+      "name": "search_programs",
+      "description": "Search the citizenship-by-investment and residence-by-investment programs Passportivity advises on. Returns name, country, minimum investment, processing time and the page URL for each match.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "citizenship",
+              "residence"
+            ],
+            "description": "Restrict to one program type"
+          },
+          "country": {
+            "type": "string",
+            "description": "Country name, full or partial"
+          },
+          "query": {
+            "type": "string",
+            "description": "Free-text match over name, country and summary"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 10
+          }
+        }
+      }
+    }
+  ],
+  "host": "passportivity.com",
+  "source": "webmcp.com/api/directory.json"
+}

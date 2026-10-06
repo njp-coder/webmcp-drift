@@ -1,0 +1,176 @@
+{
+  "sponsio": 1,
+  "url": "https://datarootlabs.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_case",
+      "description": "Read the documented problem, solution and outcomes of a published technical case. Use an exact slug from search_cases. Missing evidence remains unspecified.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "maxLength": 200,
+            "description": "Exact case slug returned by search_cases."
+          }
+        },
+        "required": [
+          "slug"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get_engagement_models",
+      "description": "Compare research partnership, product co-building and a dedicated R&D team: the client question, DRL's role, expected deliverable and scope.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get_lab",
+      "description": "Read one laboratory's published specializations, research directions and system focus. Includes the full Markdown profile and project-evidence links.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "lab_id": {
+            "type": "string",
+            "enum": [
+              "agentic",
+              "learning",
+              "engineering"
+            ],
+            "description": "Laboratory ID returned by list_labs."
+          }
+        },
+        "required": [
+          "lab_id"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "list_labs",
+      "description": "List DRL's three published laboratories and their main specializations. Use get_lab with a returned ID for research directions and systems.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "prepare_inquiry",
+      "description": "Fill the enquiry form on the current page with the user's email and request type for review. The user can edit and press Send request. Returns prepared, not submitted.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 254,
+            "description": "Email address provided by the user for a reply."
+          },
+          "request_type": {
+            "type": "string",
+            "enum": [
+              "build-product",
+              "improve-system",
+              "research",
+              "partnership",
+              "media",
+              "other"
+            ],
+            "description": "build-product, improve-system, research, partnership, media or other."
+          }
+        },
+        "required": [
+          "email",
+          "request_type"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "consequential": false,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "search_cases",
+      "description": "Search published DRL technical case studies using short keywords and an optional laboratory. Results are stable and paginated. Featured Outrider/Moxie references are at /#work.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "maxLength": 120,
+            "description": "Short keywords, for example robotics, voice or retrieval. Empty returns recent cases."
+          },
+          "lab_id": {
+            "type": "string",
+            "enum": [
+              "agentic",
+              "learning",
+              "engineering"
+            ],
+            "description": "Laboratory ID returned by list_labs."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5,
+            "default": 3,
+            "description": "Number of cases per page, from 1 to 5."
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 1,
+            "description": "Result page, starting at 1."
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    }
+  ],
+  "host": "datarootlabs.com",
+  "source": "webmcp.com/api/directory.json"
+}

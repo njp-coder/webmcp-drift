@@ -1,0 +1,74 @@
+{
+  "sponsio": 1,
+  "url": "https://www.getcargo.ai/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "book_demo",
+      "description": "Return the calendar URL for a Cargo demo with sales. A person has to pick a time; this tool does not book. Pass email only if they gave an address, never a guess. Use this when someone asks to talk to sales, book a demo, or meet the team. Do not use this to sign in; that is quickstart.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Work email to prefill the calendar form. Omit if the person did not give an address; never a guess."
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "list_pages",
+      "description": "Return the llms.txt sitemap: every page of www.getcargo.ai with a one-line description. Use this to discover what pages exist before calling read_page, or to answer questions about what the site covers.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "open_app",
+      "description": "Open the Cargo web app in the browser so a person can create a workspace. Pass email only if they gave an address, never a guess. New accounts get free credits and need no card. Do not use this to set up Cargo from a terminal; that is quickstart.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "quickstart",
+      "description": "Return the commands to set up Cargo from a terminal: install, sign in (which creates the account), and confirm the workspace. Includes the browser-free --email path. Use this when the caller is an agent or developer in a shell. Do not use this to open the web app; that is the open_app form on the homepage.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "read_page",
+      "description": "Read a prose page of www.getcargo.ai as markdown instead of HTML. Use this to answer a question from the site's own words. The home page, blog posts, customer stories and the legal pages answer markdown; product and pricing pages do not, and the tool says so rather than returning their markup. Use list_pages to see what's available.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Path on www.getcargo.ai, for example \"/blog/some-post\". Use \"/\" for the home page, which returns the curated site index."
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    }
+  ],
+  "host": "getcargo.ai",
+  "source": "webmcp.com/api/directory.json"
+}

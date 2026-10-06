@@ -1,0 +1,141 @@
+{
+  "sponsio": 1,
+  "url": "https://www.harunyahya.info/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_content",
+      "description": "Fetch one public content item by type and slug (article, book, image, other, quote, video, voice). Use the slug returned by search_works or list_works.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "article",
+              "book",
+              "image",
+              "other",
+              "quote",
+              "video",
+              "voice"
+            ]
+          },
+          "slug": {
+            "type": "string",
+            "minLength": 1
+          },
+          "lang": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "slug"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "list_works",
+      "description": "List this site's public works with optional content-type, search, and pagination filters. work_index can be books, articles, videos, voices, images, quotes, or other.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "lang": {
+            "type": "string",
+            "description": "Language code, e.g. tr, en."
+          },
+          "search": {
+            "type": "string"
+          },
+          "work_index": {
+            "type": "string",
+            "enum": [
+              "books",
+              "articles",
+              "videos",
+              "voices",
+              "images",
+              "quotes",
+              "other"
+            ]
+          },
+          "from": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "size": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "navigate_to",
+      "description": "Navigate the user's browser to a page on this site (e.g. a URL returned by search_works, list_works, or get_content).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Site-relative path starting with \"/\", e.g. \"/makaleler/some-article\"."
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "search_works",
+      "description": "Search this site's public works (books, articles, videos, audio, quotes, images) by text and return matching titles with URLs. Use lang=tr for Turkish or another supported language code.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search text.",
+            "minLength": 1
+          },
+          "lang": {
+            "type": "string",
+            "description": "Language code, e.g. tr, en."
+          },
+          "size": {
+            "type": "integer",
+            "description": "Max number of results.",
+            "minimum": 1,
+            "maximum": 50
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "harunyahya.info",
+  "source": "webmcp.com/api/directory.json"
+}

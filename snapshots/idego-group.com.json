@@ -1,0 +1,161 @@
+{
+  "sponsio": 1,
+  "url": "https://idego-group.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "getCompanyInfo",
+      "description": "Get factual information about Idego Group: legal name, founding year, founders, headquarters address, services offered, supported locales, and social links.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "getRecentBlogPosts",
+      "description": "List the most recent Idego blog posts sorted by date. Returns title, excerpt, category, date, and URL. Supports pagination via limit (max 50) and offset.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 10
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "listCaseStudies",
+      "description": "List Idego case studies, optionally filtered by industry, service, or technology. Returns title, description, industry, country, services, technologies, and URL. Supports pagination.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "industry": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "service": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "technology": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 10
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "navigateTo",
+      "description": "Navigate the browser to an internal path on idego-group.com. Only relative paths starting with / are accepted; external URLs, /api/ paths, and path traversal are rejected.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "path"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "searchBlog",
+      "description": "Search Idego blog posts by keyword across title, excerpt, category, and full content. Returns matching posts with a snippet showing the matched context. Supports pagination.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "query"
+        ],
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 200
+          },
+          "category": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 10
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "submitContactForm",
+      "description": "Fill the Idego contact form with the provided email, message, and optional phone, then scroll the submit button into view. The user must click submit themselves — this tool only prepares the form.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "email",
+          "message",
+          "consent"
+        ],
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "message": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 5000
+          },
+          "phone": {
+            "type": "string",
+            "maxLength": 32
+          },
+          "consent": {
+            "type": "boolean",
+            "const": true
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "idego-group.com",
+  "source": "webmcp.com/api/directory.json"
+}

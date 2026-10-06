@@ -1,0 +1,86 @@
+{
+  "sponsio": 1,
+  "url": "https://www.gasquebec.ca/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "find_cheapest_gas_stations",
+      "description": "Find gas stations near a coordinate in Quebec, Canada, ranked by value (price plus a detour penalty). Prices in Canadian ¢/L.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "lat": {
+            "type": "number",
+            "description": "Latitude (Quebec: 44–63)"
+          },
+          "lng": {
+            "type": "number",
+            "description": "Longitude (Quebec: -80 to -57)"
+          },
+          "fuel_type": {
+            "type": "string",
+            "enum": [
+              "ordinaire",
+              "super",
+              "diesel"
+            ],
+            "description": "ordinaire = regular, super = premium"
+          },
+          "radius_km": {
+            "type": "number",
+            "description": "Search radius in km, default 10, max 30"
+          }
+        },
+        "required": [
+          "lat",
+          "lng"
+        ]
+      }
+    },
+    {
+      "name": "get_fill_up_verdict",
+      "description": "Fair-price assessment and fill-up-now/wait verdict for a Quebec city, based on 30-day price history.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "city_slug": {
+            "type": "string",
+            "description": "City slug from search_locations, e.g. \"montreal\""
+          }
+        },
+        "required": [
+          "city_slug"
+        ]
+      }
+    },
+    {
+      "name": "search_locations",
+      "description": "Search Quebec cities, regions, and gas stations by name. Returns citySlug values used by the other tools.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Place or station name"
+          },
+          "lang": {
+            "type": "string",
+            "enum": [
+              "fr",
+              "en"
+            ],
+            "description": "Result language, default fr"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "gasquebec.ca",
+  "source": "webmcp.com/api/directory.json"
+}

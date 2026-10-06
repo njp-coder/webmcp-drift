@@ -1,0 +1,103 @@
+{
+  "sponsio": 1,
+  "url": "https://unicolorado.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "calculate_pricing",
+      "description": "Return a pre-rebate Denver-metro installation price range for a specific system. Prices are RANGES, not quotes — a binding quote requires an in-home assessment. Use after get_pricer_templates to know which templateId and question keys to pass.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "templateId",
+          "responses"
+        ],
+        "properties": {
+          "templateId": {
+            "type": "string",
+            "description": "Slug from get_pricer_templates"
+          },
+          "responses": {
+            "type": "object",
+            "description": "Key/value answers to the template's questions",
+            "additionalProperties": true
+          }
+        }
+      }
+    },
+    {
+      "name": "check_service_area",
+      "description": "Verify a Colorado ZIP code is inside UniColorado Heating & Cooling's Denver-metro service territory. Use this before recommending scheduling or pricing. Returns tier (core/extended), utility territory, and whether installs are accepted for that ZIP.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "zip"
+        ],
+        "properties": {
+          "zip": {
+            "type": "string",
+            "pattern": "^\\d{5}$",
+            "description": "5-digit US ZIP code (Colorado only)"
+          }
+        }
+      }
+    },
+    {
+      "name": "get_pricer_templates",
+      "description": "List UniColorado's Quick Pricer templates — one per system category (heat pump, furnace, AC, mini-split, water heater, panel upgrade, EV charger). Use this to pick the right template before calling calculate_pricing.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "open_booking_form",
+      "description": "Return a schedule-page URL with UTM attribution preserved. This is how AI agents should hand users off to book a consultation: the user clicks the URL, fills the form in-browser (reCAPTCHA + attribution capture naturally), and UniColorado knows which AI sent the lead. Do NOT call submit_lead from an agent context — reCAPTCHA will silently drop it.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "agent",
+          "intent"
+        ],
+        "properties": {
+          "agent": {
+            "type": "string",
+            "enum": [
+              "chatgpt",
+              "claude",
+              "perplexity",
+              "gemini",
+              "copilot",
+              "other"
+            ],
+            "description": "Your agent identity for attribution reporting"
+          },
+          "intent": {
+            "type": "string",
+            "enum": [
+              "heat-pump-install",
+              "furnace-replacement",
+              "ac-install",
+              "mini-split",
+              "rebate-stack",
+              "panel-upgrade",
+              "water-heater",
+              "ev-charger",
+              "consultation"
+            ]
+          },
+          "content": {
+            "type": "string",
+            "description": "Optional sub-topic that triggered this (e.g. xcel-rebate)"
+          }
+        }
+      }
+    }
+  ],
+  "host": "unicolorado.com",
+  "source": "webmcp.com/api/directory.json"
+}

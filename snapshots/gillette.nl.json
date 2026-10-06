@@ -1,0 +1,95 @@
+{
+  "sponsio": 1,
+  "url": "https://gillette.nl/nl-nl",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "searchtool",
+      "description": "Search Gillette IT for products, articles, and keyword suggestions. Read-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "The search term or phrase."
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "all",
+              "products",
+              "articles"
+            ],
+            "description": "\"products\" – product results only. \"articles\" – article results only. \"all\" (default) – products, articles, and keyword suggestions.",
+            "default": "all"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "viewArticle",
+      "description": "Retrieves article details for a Gillette IT article. Provide articleUrl to look up a specific article, or omit it to read the article on the current page. Returns title, short description, read time, author, jump links, related products, related articles, conclusion, and social sharing links. Read-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "articleUrl": {
+            "type": "string",
+            "description": "Optional article URL path (e.g. \"/nl-nl/consigli-per-la-rasatura/il-meglio-di-un-uomo\"). Omit to use the article on the current page."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "viewProduct",
+      "description": "Retrieves product details for a Gillette IT product. Provide productUrl to look up a specific product, or omit it to read the product on the current page. Returns name, descriptions (short/full), rating, review count, variants, related articles, and related products. Read-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "productUrl": {
+            "type": "string",
+            "description": "Optional product URL path (e.g. \"/nl-nl/prodotti/rasoi/rasoio-barra-integrata\"). Omit to use the product on the current page."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "viewReviews",
+      "description": "Retrieves product reviews and ratings for a Gillette IT product. Provide productUrl to look up a specific product, or omit it to read the product on the current page. Returns rating statistics and customer reviews. Read-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "productUrl": {
+            "type": "string",
+            "description": "Optional product URL path (e.g. \"/nl-nl/prodotti/rasoi/rasoio-barra-integrata\"). Omit to use the product on the current page."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    }
+  ],
+  "host": "gillette.nl",
+  "source": "webmcp.com/api/directory.json"
+}

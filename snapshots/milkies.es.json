@@ -1,0 +1,324 @@
+{
+  "sponsio": 1,
+  "url": "https://milkies.es/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "milkies_add_to_cart",
+      "description": "Add the product on the current page to the customer's cart, with the options currently selected. Refuses if a required configurator group is still unanswered and reports exactly what is missing. This prepares a purchase: confirm the choices with the customer first. Payment always stays with the customer at checkout.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "quantity": {
+            "type": "integer",
+            "description": "Quantity, default 1."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "milkies_apply_coupon",
+      "description": "Apply a discount code the customer already has, and report whether the shop accepted it and what it changed. Never invent a code: use only one the customer gave you or one shown on this shop.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "The discount code."
+          }
+        },
+        "required": [
+          "code"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "milkies_browse_chapter",
+      "description": "List the products of one Circle of Life chapter, optionally narrowed to a kind of jewellery (necklace, bracelet, ring, earrings, charm, set). Use it when the customer knows the occasion - \"something for my dog\", \"a wedding keepsake\" - rather than a product name.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chapter": {
+            "type": "string",
+            "description": "Chapter key or name from milkies_list_chapters."
+          },
+          "kind": {
+            "type": "string",
+            "description": "Optional kind of jewellery to narrow to."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "How many products to return (1-30, default 12)."
+          }
+        },
+        "required": [
+          "chapter"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "milkies_compare_products",
+      "description": "Put two or three products side by side: price, availability, what the description says and which categories they belong to. Use it when the customer is deciding between pieces.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_ids": {
+            "type": "array",
+            "description": "Two or three product ids from search or browse results.",
+            "items": {
+              "type": "integer"
+            }
+          }
+        },
+        "required": [
+          "product_ids"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "milkies_find_by_keepsake",
+      "description": "Start from what the customer has kept and wants preserved - breast milk, a baby's hair, an umbilical cord stump, placenta, a hand or foot print, an ultrasound image, a heartbeat trace, pet fur, pet ashes, a paw print, flowers from a bouquet, wedding fabric, sand or shells from a trip, ashes of a loved one. Returns the chapter that covers it and the products made for it. This is usually the fastest way to help someone who does not know what our pieces are called.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "keepsake": {
+            "type": "string",
+            "description": "What the customer kept, in their own words, any language."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "How many products to return (1-30, default 12)."
+          }
+        },
+        "required": [
+          "keepsake"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "milkies_find_topic_page",
+      "description": "Find this shop's own page about one kind of keepsake or question - preserving a wedding bouquet, jewellery with dog fur, an ultrasound engraving, ring sizing, how to send breast milk in. Returns real pages of this shop with their URLs. Open the page and read it instead of answering from memory: these pages carry our actual instructions, prices and terms.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "topic": {
+            "type": "string",
+            "description": "The subject, in the language of the shop or the customer's own words."
+          }
+        },
+        "required": [
+          "topic"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "milkies_get_product",
+      "description": "Full details of one product by id: price, availability, description and categories. Use it for a product the customer is not currently looking at.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "integer",
+            "description": "Product id."
+          }
+        },
+        "required": [
+          "product_id"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "milkies_how_it_works",
+      "description": "How ordering a keepsake piece works in this shop: whether a collection kit is posted first, how the customer sends their keepsake in, production time, delivery and returns. Returns this shop's own pages on the subject. Read them before answering - never state delivery times or terms from memory.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "milkies_list_chapters",
+      "description": "List the Circle of Life chapters this shop actually carries. Every piece belongs to a stage of life - breastfeeding, motherhood, pets, journeys, wedding, memorial and others - and each chapter groups the products made for it. Call this before browsing, so you name a chapter that exists here.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "milkies_list_kinds",
+      "description": "List the kinds of jewellery this shop sells - necklaces, bracelets, rings, earrings, charms, sets, kits, extras - with how many products each holds. Use it together with a chapter to narrow a search.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "milkies_page_context",
+      "description": "Read what the customer is currently looking at in this shop: page type, language, currency, and - on a product page - the product name, price, every configurator option group (setting colour, chain length, medallion size, engraving, kit contents) with the available choices, their surcharges, what is already selected and which required groups are still missing. Some groups are conditional: they stay hidden (visible=false) until an earlier choice reveals them, so call this again after every selection to see what the customer still has to answer. Call this first on any product page, before selecting options or adding to cart.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "milkies_read_cart",
+      "description": "Read the customer's current cart: items with the configurator options they chose, quantities, totals, applied discounts and the checkout link.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "milkies_search_products",
+      "description": "Search this shop's catalogue in the language the customer is browsing. Returns name, price, availability and the product URL. Use it to find a keepsake piece - necklace, ring, bracelet, medallion, charm, DIY kit - before opening a product page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search phrase, in the language of the shop."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "How many products to return (1-20, default 8)."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "milkies_select_option",
+      "description": "On the current product page, choose one option inside a configurator group - setting colour \"Silver\", chain length \"45 cm\", medallion size \"18 mm\", ring size, kit contents, or a product variant such as metal colour. Match by the group title and the option label shown on the page. The choice goes through the normal shop interface, so price and validation update exactly as they would for the customer.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "group": {
+            "type": "string",
+            "description": "Title of the option group, e.g. \"Setting's colour\"."
+          },
+          "option": {
+            "type": "string",
+            "description": "Label of the option to select, e.g. \"Silver\"."
+          }
+        },
+        "required": [
+          "group",
+          "option"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "milkies_set_text_option",
+      "description": "Fill in a text field of the configurator on the current product page - typically an engraving (a name, a date, coordinates). Respects the character limit shown on the page and reports it if the text is too long.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "group": {
+            "type": "string",
+            "description": "Title of the field group, e.g. \"Engraving\"."
+          },
+          "text": {
+            "type": "string",
+            "description": "Text to enter."
+          }
+        },
+        "required": [
+          "group",
+          "text"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "milkies_site_links",
+      "description": "Canonical URLs of this shop for the language the customer is browsing: shop, cart, checkout, customer account, FAQ, contact. Use these instead of guessing a URL when pointing the customer somewhere.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "milkies_size_guide",
+      "description": "Sizing help: the ring sizes, chain lengths and bracelet lengths actually offered on the product the customer is looking at, with whatever measurements the shop states (circumference, diameter, US and UK equivalents). Reads the live product so the answer matches what can be bought.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "milkies.es",
+  "source": "webmcp.com/api/directory.json"
+}

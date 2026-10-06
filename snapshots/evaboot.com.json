@@ -1,0 +1,201 @@
+{
+  "sponsio": 1,
+  "url": "https://evaboot.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "convert_sales_navigator_url",
+      "description": "Convert one LinkedIn Sales Navigator lead or company URL into the public linkedin.com URL. Accepts linkedin.com links whose path contains /sales/lead/, /sales/people/, or /sales/company/. Runs in the browser and does not call the network. When the converter form is on the page, the converted URL is shown there too.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "url": {
+            "type": "string",
+            "maxLength": 2000,
+            "description": "A Sales Navigator lead or company URL."
+          }
+        },
+        "required": [
+          "url"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "find_email",
+      "description": "Find one professional email from a person's full name and company domain, using Evaboot's free email finder. Pass a first and last name, and a domain such as acme.com. Returns that one email and its validity, or an error when no address is found. One person per call. This does not search in bulk, export a list, or use a Sales Navigator seat. When the email finder form is on the page, the result is shown there too.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "full_name": {
+            "type": "string",
+            "maxLength": 120,
+            "description": "Person's full name, first and last, such as Ada Lovelace."
+          },
+          "company_domain": {
+            "type": "string",
+            "maxLength": 253,
+            "description": "Company domain, such as acme.com or acme.co.uk. A URL is reduced to its host."
+          }
+        },
+        "required": [
+          "full_name",
+          "company_domain"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "find_email",
+      "description": "Find one professional email from a person's full name and company domain.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "full_name": {
+            "type": "string",
+            "description": "John Doe"
+          },
+          "company_domain": {
+            "type": "string",
+            "description": "acme.com"
+          }
+        }
+      }
+    },
+    {
+      "name": "generate_linkedin_boolean",
+      "description": "Turn a plain-language audience description into LinkedIn boolean search strings, using Evaboot's free boolean generator. search_type lead returns job title and keyword booleans to paste into a people search; account returns one company boolean. Returns needs_detail with a message when the description is too vague. When needs_detail is true, ask for the missing detail and call this tool again. Do not invent filters the user did not ask for. Can take about a minute. Does not run the search or export results. When the boolean form is on the page, the strings are shown there too.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "maxLength": 2000,
+            "description": "Plain-language audience, such as heads of marketing at fintech companies."
+          },
+          "search_type": {
+            "type": "string",
+            "enum": [
+              "lead",
+              "account"
+            ],
+            "description": "lead searches for people. account searches for companies."
+          }
+        },
+        "required": [
+          "prompt",
+          "search_type"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "generate_sales_navigator_url",
+      "description": "Build one LinkedIn Sales Navigator search URL from a plain-language audience description, using Evaboot's free URL generator. search_type lead is a people search; account is a company search. Returns a Sales Navigator URL, or needs_detail with a message when the description is too vague. When needs_detail is true, ask for the missing detail and call this tool again. Do not invent filters the user did not ask for. Can take up to two minutes. Does not export leads, save a list, or require a Sales Navigator seat. When the generator form is on the page, the URL is shown there too.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "maxLength": 2000,
+            "description": "Plain-language audience, such as sales managers at SaaS companies in France."
+          },
+          "search_type": {
+            "type": "string",
+            "enum": [
+              "lead",
+              "account"
+            ],
+            "description": "lead searches for people. account searches for companies."
+          }
+        },
+        "required": [
+          "prompt",
+          "search_type"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get_demo_file",
+      "description": "Get Evaboot's demo export: a sample CSV of Sales Navigator leads as Evaboot delivers them, with verified emails, email status, filter match, and company data. Returns the download URL, the column names, and the full CSV text. Use it to show what an Evaboot export contains before signing up. The rows are sample data, not a real search.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {},
+        "required": []
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "verify_email",
+      "description": "Check whether one email address is safe to send to, using Evaboot's free email verifier. Returns the address with a status of safe, riskier, or invalid. One address per call, not a bulk list. When the verifier form is on the page, the result is shown there too.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "email": {
+            "type": "string",
+            "maxLength": 320,
+            "description": "The email address to verify, such as ada@acme.com."
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "verify_email",
+      "description": "Check whether one email address is safe to send to.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "john.doe@company.com"
+          }
+        }
+      }
+    }
+  ],
+  "host": "evaboot.com",
+  "source": "webmcp.com/api/directory.json"
+}

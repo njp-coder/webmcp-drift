@@ -1,0 +1,679 @@
+{
+  "sponsio": 1,
+  "url": "https://www.smartphonechecker.co.uk/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_deal",
+      "description": "Get current details for one deal returned by search_device_deals or search_sim_only_deals. All costs are in GBP; a stored total cost may span a device payment term longer than the airtime contract. Review existingCustomerOnly, pricing.adjustments, scheduledIncreases, pricing payment components, legalText, promotionDetails and chargeableExtras before recommending a deal. A null allowance is unknown unless its corresponding unlimited flag is true; null monetary values are unknown, not zero; discount method=unknown means the requirements are unknown. An unknown valueUnit means the recorded value cannot safely be interpreted as GBP or a percentage. If detailsTruncated is true, use the dealUrl to review complete terms and extras before making a recommendation.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "dealId": {
+            "type": "string",
+            "description": "Opaque deal identifier returned by search_device_deals or search_sim_only_deals.",
+            "minLength": 1,
+            "maxLength": 200
+          }
+        },
+        "required": [
+          "dealId"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get_device",
+      "description": "Get a device's recorded specifications, average review score out of 5, review count and recorded variants using a versionId from search_devices. The average review score is null when there are no reviews. Missing specifications are unknown, not proof a feature is absent. allVariants contains every colour/storage pair recorded for this device in our catalogue, including variants without current eligible deals; this is not a complete manufacturer catalogue or proof of availability. availableVariants contains only pairs with current eligible contract, upgrade or SIM-free deals. Both lists are capped at 100 pairs; detailsTruncated=true signals incomplete details. Reviews appear once in device. Specifications use typed nullable values; null means unknown. Deal filter metadata belongs to page one of search_device_deals for the requested dealType. Use search_device_deals for live prices.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "versionId": {
+            "type": "integer",
+            "description": "Exact device identifier returned by search_devices.",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "versionId"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get_device_price_history",
+      "description": "Read recorded device price history using a versionId from search_devices. Omit specifier to discover a paginated scopeCatalog; follow nextPage. Use advertised scope specifiers, including historical networks that may have no current deals. get_networks describes current eligibility, not historical coverage. Scoped calls omit the catalog unless includeScopeCatalog=true. Default results are lightweight lifetime summaries; request includePoints=true for up to maxPoints daily values (maximum 366). History requires a 7-day inclusive calendar span, not seven observations. Calendar dates use UK dates; daily prices represent recorded intervals, not a capture every day. plausibleMinValueGbp/plausibleMaxValueGbp exclude values outside 0.25 to 4 times the series median; consult statisticsPolicy and statisticsPeriod. These are recorded-scope statistics, not an all-time market low or current offer. unlimited-data and no-upfront-cost have separately recorded scopes across networks; never infer those lows from overall/network history. Only storage/colour and contracts/term composite scopes are supported. Other scopes cannot be combined; gifts and bad-credit-specific history are unsupported. hasHistory=false does not prove a deal never existed.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "versionId": {
+            "type": "integer",
+            "description": "Device versionId from search_devices.",
+            "minimum": 1
+          },
+          "specifier": {
+            "type": "string",
+            "description": "Optional history scope. Prefer an exact specifier from the response scopeCatalog.items list for this device. Use unlimited-data for unlimited-data deals or no-upfront-cost for zero-upfront deals (each across networks). Other scopes: a network slug from scopeCatalog.items; storage (256gb, 2tb); colour (silver); storage/colour (2tb/silver); contracts; sim-free; pay-as-you-go; upgrades; refurbished; 100gb-data (phones only); contracts/24-months; contracts/36-months. Network plus data/upfront combinations are not supported. Omit for overall device history. Gift scopes are not supported. Each slug is lowercase and at most 80 characters. No full URLs, query strings or arbitrary combinations.",
+            "minLength": 1,
+            "maxLength": 161
+          },
+          "includePoints": {
+            "type": "boolean",
+            "description": "Include bounded daily price detail. Default false returns lifetime summaries without daily points.",
+            "default": false
+          },
+          "maxPoints": {
+            "type": "integer",
+            "description": "Maximum daily points per series, only valid with includePoints=true. Defaults to 366 when detail is requested.",
+            "minimum": 1,
+            "maximum": 366
+          },
+          "includeScopeCatalog": {
+            "type": "boolean",
+            "description": "Include the paginated scope catalog on a scoped request. Discovery without specifier includes it automatically.",
+            "default": false
+          },
+          "scopePage": {
+            "type": "integer",
+            "description": "One-based scope-catalog page. Follow scopeCatalog.nextPage; requires catalog inclusion, implicit for discovery or explicit for a scoped request. At the 100-page cap paginationLimited=true means coverage is incomplete.",
+            "minimum": 1,
+            "maximum": 100
+          }
+        },
+        "required": [
+          "versionId"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get_networks",
+      "description": "Discover network brands with currently eligible deals and their underlying carrier, using the recorded catalogue relationships. Filter underlyingNetwork by carrier name or slug (for example EE). Choose dealType from all (default), device_contract, device_upgrade, sim_phone or sim_data. Optionally provide versionId for device categories; all with a versionId means all applicable device categories. SIM categories do not accept versionId. Pass returned name values to search_device_deals or search_sim_only_deals as networkBrands. A carrier operating its own brand reports itself as its underlying network. An empty list means no eligible deals match; shared carrier does not imply identical features or service terms.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "dealType": {
+            "type": "string",
+            "description": "Eligible deal category. all includes every applicable category; a versionId restricts all to device categories. SIM-free purchases have no network.",
+            "enum": [
+              "all",
+              "device_contract",
+              "device_upgrade",
+              "sim_phone",
+              "sim_data"
+            ],
+            "default": "all"
+          },
+          "underlyingNetwork": {
+            "type": "string",
+            "description": "Optional underlying carrier name or slug, case-insensitive; use EE, O2, Three or Vodafone, or discover carriers by omitting this filter.",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "versionId": {
+            "type": "integer",
+            "description": "Optional exact device identifier from search_devices. Valid with all, device_contract or device_upgrade; restricts results to that device.",
+            "minimum": 1
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get_sim_only_price_history",
+      "description": "Read recorded monthly GBP history for 30-day rolling phone SIM deals; data-only SIMs and longer commitments are not represented. Omit specifier to discover stored networks through paginated scopeCatalog, including networks without current deals. Scoped calls omit the catalog unless includeScopeCatalog=true. Optionally select dataBand; availableDataBands describes reportable bands for the selected network (or all networks). Finite bands mean at least the allowance and may include unlimited tariffs. Default results are lightweight lifetime summaries; includePoints=true adds up to maxPoints daily values (maximum 366). History requires an inclusive calendar span of at least 7 days, not seven observations. Dates use UK calendar dates; daily values represent recorded intervals. plausibleMinValueGbp/plausibleMaxValueGbp exclude values outside 0.25 to 4 times the series median; consult statisticsPolicy and statisticsPeriod. These are recorded-scope statistics, not an all-time market low or evidence of current availability. Network plus dataBand is supported. hasHistory=false does not prove a deal never existed.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "specifier": {
+            "type": "string",
+            "description": "Optional exact network specifier from scopeCatalog.items returned by this tool. Do not derive historical availability from current get_networks results. Omit for history across all networks.",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "dataBand": {
+            "type": "string",
+            "description": "Optional stored SIM-only band: 5gb, 20gb, 50gb, 100gb, 200gb, 300gb, 500gb, 750gb, 1000gb or unlimited. Finite bands mean at least that allowance. May be combined with a network specifier. Omit for all available lines.",
+            "enum": [
+              "5gb",
+              "20gb",
+              "50gb",
+              "100gb",
+              "200gb",
+              "300gb",
+              "500gb",
+              "750gb",
+              "1000gb",
+              "unlimited"
+            ]
+          },
+          "includePoints": {
+            "type": "boolean",
+            "description": "Include bounded daily price detail. Default false returns lifetime summaries without daily points.",
+            "default": false
+          },
+          "maxPoints": {
+            "type": "integer",
+            "description": "Maximum daily points per series, only valid with includePoints=true. Defaults to 366 when detail is requested.",
+            "minimum": 1,
+            "maximum": 366
+          },
+          "includeScopeCatalog": {
+            "type": "boolean",
+            "description": "Include the paginated scope catalog on a scoped request. Discovery without specifier includes it automatically.",
+            "default": false
+          },
+          "scopePage": {
+            "type": "integer",
+            "description": "One-based scope-catalog page. Follow scopeCatalog.nextPage; requires catalog inclusion, implicit for discovery or explicit for a scoped request. At the 100-page cap paginationLimited=true means coverage is incomplete.",
+            "minimum": 1,
+            "maximum": 100
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "search_device_deals",
+      "description": "Find live contract, SIM-free purchase or upgrade deals for one exact device version using the versionId returned by search_devices. Select dealType: contract (default), sim_free or upgrade. SIM-free purchases exclude PAYG bundles and do not accept airtime/network filters; use maxUpfrontGbp for purchase cost. Upgrades require existing-customer eligibility checks with the retailer. unlimitedData=true requires unlimited data and cannot be combined with minDataGb greater than zero. networkBrands filters the advertised tariff network brand, which may differ from the underlying network that carries the service. Use get_networks to discover brands on a requested underlying carrier. All costs are in GBP. A stored total cost may span a device payment term longer than the recorded airtime commitment. pricing.contractMonths comes from the recorded tariff; airtimeCostedMonths and totalCostHorizonMonths describe the stored calculation. Inspect pricing.adjustments before quoting a price: codes or redemption may be required. priceConditionsTruncated=true means read get_deal for full requirements. Cashback filters apply to tariff/deal cashback; separate device promotional cashback may remain and is included in returned pricing. Cashback values mean: none excludes tariff/deal cashback, automatic_or_none allows automatic cashback or no cashback, and manual_or_none allows redemption cashback or no cashback. The first page includes availableFilters for the versionId and dealType, even when no deals match the other filters. Start with just versionId to discover deals and valid choices together, then refine. Pass colours as names, slugs or recorded colour groups (for example Blue or natural-titanium); exact names/slugs take precedence, otherwise a group matches all its available variants. Pass network names as networkBrands, retailers[].id as retailerId, and storageGb/contractMonths as listed. Multiple values within a list are alternatives; different filters must all match. Omitted limits and empty lists impose no restriction. Results contain 10 deals per page; follow nextPage, and narrow filters if paginationLimited=true. Page-one availableFilters describe the device/dealType regardless of the remaining search filters. Choices do not guarantee every combination has deals; empty choices mean none available and truncated=true means lists were capped at 100 choices each. Later pages return availableFilters=null.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "dealType": {
+            "type": "string",
+            "description": "Deal category: new contract, SIM-free purchase (no PAYG bundle), or existing-customer upgrade.",
+            "enum": [
+              "contract",
+              "sim_free",
+              "upgrade"
+            ],
+            "default": "contract"
+          },
+          "unlimitedData": {
+            "type": "boolean",
+            "description": "Require an unlimited data tariff. Do not combine with minDataGb greater than zero. Not supported for SIM-free purchases.",
+            "default": false
+          },
+          "versionId": {
+            "type": "integer",
+            "description": "Exact device version identifier returned by search_devices.",
+            "minimum": 1
+          },
+          "networkBrands": {
+            "type": "array",
+            "description": "Advertised tariff network brand names to include, matched case-insensitively to canonical names; these can differ from the underlying carrier network.",
+            "items": {
+              "type": "string",
+              "description": "One canonical advertised network brand name.",
+              "minLength": 1,
+              "maxLength": 80
+            },
+            "maxItems": 10,
+            "uniqueItems": true
+          },
+          "minDataGb": {
+            "type": "number",
+            "description": "Minimum monthly data allowance in decimal GB (1000 MB), to a maximum of three decimal places; unlimited tariffs also qualify. Use unlimitedData=true for unlimited-only queries.",
+            "minimum": 0,
+            "maximum": 1000,
+            "multipleOf": 0.001
+          },
+          "minMinutes": {
+            "type": "integer",
+            "description": "Minimum included monthly call minutes.",
+            "minimum": 0,
+            "maximum": 1000000
+          },
+          "maxMonthlyGbp": {
+            "type": "number",
+            "description": "Maximum monthly charge in GBP, to a maximum of two decimal places.",
+            "minimum": 0,
+            "maximum": 100000,
+            "multipleOf": 0.01
+          },
+          "maxUpfrontGbp": {
+            "type": "number",
+            "description": "Maximum upfront charge in GBP, to a maximum of two decimal places.",
+            "minimum": 0,
+            "maximum": 100000,
+            "multipleOf": 0.01
+          },
+          "contractMonths": {
+            "type": "array",
+            "description": "Allowed airtime contract lengths in months from page-one availableFilters; 1 represents a 30-day rolling contract, not a fixed long-term commitment.",
+            "items": {
+              "type": "integer",
+              "description": "One airtime contract length in months.",
+              "minimum": 1,
+              "maximum": 120
+            },
+            "maxItems": 10,
+            "uniqueItems": true
+          },
+          "storageGb": {
+            "type": "array",
+            "description": "Allowed device storage capacities in GB.",
+            "items": {
+              "type": "integer",
+              "description": "One device storage capacity in GB.",
+              "minimum": 1,
+              "maximum": 16384
+            },
+            "maxItems": 10,
+            "uniqueItems": true
+          },
+          "colours": {
+            "type": "array",
+            "description": "Device colour names, hyphenated slugs or recorded groups, case-insensitive. Exact names/slugs take precedence; otherwise a group such as Blue matches all its available variants (for example Glacier). See page-one availableFilters.colours[].name and .group; appliedFilters.colours returns resolved manufacturer names. Unknown values return INVALID_ARGUMENT; empty lists impose no restriction.",
+            "items": {
+              "type": "string",
+              "description": "One colour name, slug or group.",
+              "minLength": 1,
+              "maxLength": 80
+            },
+            "maxItems": 10,
+            "uniqueItems": true
+          },
+          "retailerId": {
+            "type": "integer",
+            "description": "Retailer ID from page-one availableFilters.retailers for the same device/dealType or simType.",
+            "minimum": 1
+          },
+          "condition": {
+            "type": "string",
+            "description": "Device condition: any condition, new devices only, or refurbished devices only.",
+            "enum": [
+              "any",
+              "new",
+              "refurbished"
+            ],
+            "default": "any"
+          },
+          "cashback": {
+            "type": "string",
+            "description": "Tariff/deal cashback filter: any; none; automatic cashback or none; or manual redemption cashback or none. Separate device promotional cashback may remain.",
+            "enum": [
+              "any",
+              "none",
+              "automatic_or_none",
+              "manual_or_none"
+            ],
+            "default": "any"
+          },
+          "networkDirectOnly": {
+            "type": "boolean",
+            "description": "When true, include only deals sold directly by a network rather than third-party retailers.",
+            "default": false
+          },
+          "requires5gTariff": {
+            "type": "boolean",
+            "description": "When true, include only tariffs explicitly marked as supporting 5G.",
+            "default": false
+          },
+          "freeGiftOnly": {
+            "type": "boolean",
+            "description": "When true, include only deals with a free gift.",
+            "default": false
+          },
+          "sort": {
+            "type": "string",
+            "description": "Result order: total recorded cost or average monthly cost. For SIM-free purchases total_cost orders by purchase cost.",
+            "enum": [
+              "total_cost",
+              "average_monthly_cost"
+            ],
+            "default": "total_cost"
+          },
+          "page": {
+            "type": "integer",
+            "description": "One-based results page number.",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 1
+          }
+        },
+        "required": [
+          "versionId"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "search_devices",
+      "description": "Discover supported devices by name or structured filters. Query is optional: browse by device type, manufacturer, operating system, release year, screen size, height, width, depth (thickness), storage, review score and deal budget. Measurement limits are inclusive; screen size is diagonal inches and physical dimensions are recorded height x width x depth in millimetres. Devices with unknown or ambiguous measurements are excluded when those filters are used. Reviews are out of 5 and missing reviews are unknown. Price filters require eligible deals matching the selected variant specifications; without dealType they default to contracts. Select a precise candidate and pass its versionId to the other device tools. Results contain up to 20 devices per page. Follow nextPage; at the 100-page cap paginationLimited=true means more matches exist and filters must be narrowed. Without dealType or a price filter, devices without current deals may be returned. Correct obvious spelling or simplify a text query if no matches are found.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Optional manufacturer/model text, 2–120 characters when supplied. Omit for structured discovery.",
+            "minLength": 2,
+            "maxLength": 120
+          },
+          "productType": {
+            "type": "string",
+            "description": "Optional device category.",
+            "enum": [
+              "phone",
+              "tablet",
+              "smartwatch",
+              "mifi",
+              "usb_modem",
+              "home_router"
+            ]
+          },
+          "manufacturer": {
+            "type": "string",
+            "description": "Optional manufacturer name, matched case-insensitively.",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "operatingSystem": {
+            "type": "string",
+            "description": "Optional operating-system text, such as Android or iOS, matched case-insensitively within recorded specifications.",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "minReleaseYear": {
+            "type": "integer",
+            "description": "Earliest recorded release year, inclusive. Unknown release years do not match; catalogue-added dates are not release dates. Set both year bounds equal for one year.",
+            "minimum": 1990,
+            "maximum": 2100
+          },
+          "maxReleaseYear": {
+            "type": "integer",
+            "description": "Latest recorded release year, inclusive. Devices with unknown release years do not match.",
+            "minimum": 1990,
+            "maximum": 2100
+          },
+          "minScreenSizeInches": {
+            "type": "number",
+            "description": "Minimum screen diagonal in inches, inclusive. Unknown or ambiguous measurements do not match.",
+            "minimum": 0.01,
+            "maximum": 100,
+            "multipleOf": 0.01
+          },
+          "maxScreenSizeInches": {
+            "type": "number",
+            "description": "Maximum screen diagonal in inches, inclusive. Unknown or ambiguous measurements do not match.",
+            "minimum": 0.01,
+            "maximum": 100,
+            "multipleOf": 0.01
+          },
+          "minHeightMm": {
+            "type": "number",
+            "description": "Minimum device height in millimetres, inclusive. Unknown or ambiguous measurements do not match.",
+            "minimum": 0.01,
+            "maximum": 2000,
+            "multipleOf": 0.01
+          },
+          "maxHeightMm": {
+            "type": "number",
+            "description": "Maximum device height in millimetres, inclusive. Unknown or ambiguous measurements do not match.",
+            "minimum": 0.01,
+            "maximum": 2000,
+            "multipleOf": 0.01
+          },
+          "minWidthMm": {
+            "type": "number",
+            "description": "Minimum device width in millimetres, inclusive. Unknown or ambiguous measurements do not match.",
+            "minimum": 0.01,
+            "maximum": 2000,
+            "multipleOf": 0.01
+          },
+          "maxWidthMm": {
+            "type": "number",
+            "description": "Maximum device width in millimetres, inclusive. Unknown or ambiguous measurements do not match.",
+            "minimum": 0.01,
+            "maximum": 2000,
+            "multipleOf": 0.01
+          },
+          "minDepthMm": {
+            "type": "number",
+            "description": "Minimum device depth (thickness) in millimetres, inclusive. Unknown or ambiguous measurements do not match.",
+            "minimum": 0.01,
+            "maximum": 2000,
+            "multipleOf": 0.01
+          },
+          "maxDepthMm": {
+            "type": "number",
+            "description": "Maximum device depth (thickness) in millimetres, inclusive. Unknown or ambiguous measurements do not match.",
+            "minimum": 0.01,
+            "maximum": 2000,
+            "multipleOf": 0.01
+          },
+          "minStorageGb": {
+            "type": "integer",
+            "description": "Minimum recorded storage capacity in GB.",
+            "minimum": 1,
+            "maximum": 16384
+          },
+          "minReviewScore": {
+            "type": "number",
+            "description": "Minimum average review score out of 5, to one decimal place; devices without reviews are excluded.",
+            "minimum": 0,
+            "maximum": 5,
+            "multipleOf": 0.1
+          },
+          "dealType": {
+            "type": "string",
+            "description": "Optional requirement for eligible contract, SIM-free or upgrade deals. Price filters default to contracts when this is omitted.",
+            "enum": [
+              "contract",
+              "sim_free",
+              "upgrade"
+            ]
+          },
+          "maxMonthlyGbp": {
+            "type": "number",
+            "description": "Maximum monthly deal price in GBP; applies to contract or upgrade discovery. For SIM-free use maxUpfrontGbp.",
+            "minimum": 0,
+            "maximum": 100000,
+            "multipleOf": 0.01
+          },
+          "maxUpfrontGbp": {
+            "type": "number",
+            "description": "Maximum upfront price in GBP; the purchase budget for SIM-free discovery.",
+            "minimum": 0,
+            "maximum": 100000,
+            "multipleOf": 0.01
+          },
+          "sort": {
+            "type": "string",
+            "description": "Order by relevance (eligible offers first), newest release year, or highest average review score.",
+            "enum": [
+              "relevance",
+              "newest",
+              "review_score"
+            ],
+            "default": "relevance"
+          },
+          "page": {
+            "type": "integer",
+            "description": "One-based page of up to 20 devices.",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 1
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "search_sim_only_deals",
+      "description": "Find live SIM-only deals without a device versionId. SIM rows have device=null and an explicit simType. Choose phone SIMs or data-only SIMs with simType. Network brands are advertised tariff brands, not underlying carriers. unlimitedData=true requires unlimited data and cannot be combined with minDataGb greater than zero. The first page includes availableFilters with eligible network names, retailer IDs and contractMonths for the selected simType, regardless of the remaining search filters. Start with simType alone to discover deals and choices together, then refine. Choices do not guarantee every combination has deals; empty choices mean none available and truncated=true means lists were capped at 100 choices each. Later pages return availableFilters=null. Use get_networks for underlying-carrier relationships and select entries with dealTypes=sim_phone or sim_data accordingly. Multiple values within a list are alternatives; different filters must all match. Omitted limits and empty lists impose no restriction. Costs are GBP. Inspect pricing.adjustments for code/redemption requirements; priceConditionsTruncated=true requires get_deal for full conditions. Cashback modes: any, none (no tariff/deal cashback), automatic_or_none, manual_or_none. Results contain 10 deals per page; follow nextPage, and narrow filters if paginationLimited=true.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "simType": {
+            "type": "string",
+            "description": "SIM type: phone for calls/texts/data, or data for data-only SIMs.",
+            "enum": [
+              "phone",
+              "data"
+            ],
+            "default": "phone"
+          },
+          "unlimitedData": {
+            "type": "boolean",
+            "description": "Require an unlimited data tariff. Do not combine with minDataGb greater than zero. Not supported for SIM-free purchases.",
+            "default": false
+          },
+          "networkBrands": {
+            "type": "array",
+            "description": "Advertised tariff network brand names to include, matched case-insensitively to canonical names; these can differ from the underlying carrier network.",
+            "items": {
+              "type": "string",
+              "description": "One canonical advertised network brand name.",
+              "minLength": 1,
+              "maxLength": 80
+            },
+            "maxItems": 10,
+            "uniqueItems": true
+          },
+          "minDataGb": {
+            "type": "number",
+            "description": "Minimum monthly data allowance in decimal GB (1000 MB), to a maximum of three decimal places; unlimited tariffs also qualify. Use unlimitedData=true for unlimited-only queries.",
+            "minimum": 0,
+            "maximum": 1000,
+            "multipleOf": 0.001
+          },
+          "minMinutes": {
+            "type": "integer",
+            "description": "Minimum included monthly call minutes.",
+            "minimum": 0,
+            "maximum": 1000000
+          },
+          "maxMonthlyGbp": {
+            "type": "number",
+            "description": "Maximum monthly charge in GBP, to a maximum of two decimal places.",
+            "minimum": 0,
+            "maximum": 100000,
+            "multipleOf": 0.01
+          },
+          "maxUpfrontGbp": {
+            "type": "number",
+            "description": "Maximum upfront charge in GBP, to a maximum of two decimal places.",
+            "minimum": 0,
+            "maximum": 100000,
+            "multipleOf": 0.01
+          },
+          "contractMonths": {
+            "type": "array",
+            "description": "Allowed airtime contract lengths in months from page-one availableFilters; 1 represents a 30-day rolling contract, not a fixed long-term commitment.",
+            "items": {
+              "type": "integer",
+              "description": "One airtime contract length in months.",
+              "minimum": 1,
+              "maximum": 120
+            },
+            "maxItems": 10,
+            "uniqueItems": true
+          },
+          "retailerId": {
+            "type": "integer",
+            "description": "Retailer ID from page-one availableFilters.retailers for the same device/dealType or simType.",
+            "minimum": 1
+          },
+          "cashback": {
+            "type": "string",
+            "description": "Tariff/deal cashback filter: any; none; automatic cashback or none; or manual redemption cashback or none. Separate device promotional cashback may remain.",
+            "enum": [
+              "any",
+              "none",
+              "automatic_or_none",
+              "manual_or_none"
+            ],
+            "default": "any"
+          },
+          "networkDirectOnly": {
+            "type": "boolean",
+            "description": "When true, include only deals sold directly by a network rather than third-party retailers.",
+            "default": false
+          },
+          "requires5gTariff": {
+            "type": "boolean",
+            "description": "When true, include only tariffs explicitly marked as supporting 5G.",
+            "default": false
+          },
+          "freeGiftOnly": {
+            "type": "boolean",
+            "description": "When true, include only deals with a free gift.",
+            "default": false
+          },
+          "sort": {
+            "type": "string",
+            "description": "Result order: total recorded cost or average monthly cost. For SIM-free purchases total_cost orders by purchase cost.",
+            "enum": [
+              "total_cost",
+              "average_monthly_cost"
+            ],
+            "default": "total_cost"
+          },
+          "page": {
+            "type": "integer",
+            "description": "One-based results page number.",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 1
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    }
+  ],
+  "host": "smartphonechecker.co.uk",
+  "source": "webmcp.com/api/directory.json"
+}

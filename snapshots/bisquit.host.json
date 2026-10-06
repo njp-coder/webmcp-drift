@@ -1,0 +1,158 @@
+{
+  "sponsio": 1,
+  "url": "https://bisquit.host/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_hosting_plans",
+      "description": "Get current public plans, hardware limits, locations, prices and stock for game, cloud (VDS), or bot hosting. Prices are integers in minor currency units: 22900 means 229.00 RUB. Data is cached server-side for up to one hour.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "enum": [
+              "game",
+              "cloud",
+              "bot"
+            ]
+          }
+        },
+        "required": [
+          "category"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_wiki_article",
+      "description": "Read a complete wiki article as Markdown, including links to related articles. Article content is in Russian. Does not navigate the current tab.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Article slug, such as services/faq.",
+            "maxLength": 200
+          }
+        },
+        "required": [
+          "slug"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "list_site_pages",
+      "description": "Discover Bisquit hosting, app download and developer pages. Returns paths, descriptions and URLs in the current locale. For documentation, use list_wiki_articles.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "list_wiki_articles",
+      "description": "List all Bisquit wiki articles with slugs, titles, sections and URLs. Use this to browse documentation topics before reading an article.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "navigate_to_page",
+      "description": "Open a public Bisquit page or wiki article in the current browser tab, preserving the current locale. Use a path from list_site_pages or /wiki/<slug> from wiki results. This changes the visible page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "maxLength": 200,
+            "description": "Local page path, such as /game or /wiki/services/faq. No external URLs."
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "read_site_page",
+      "description": "Read a public site page as Markdown without navigating. For live prices use get_hosting_plans; for wiki content use get_wiki_article. Page summaries are in English.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "enum": [
+              "/",
+              "/game",
+              "/vds",
+              "/bot-hosting",
+              "/download",
+              "/komam",
+              "/developers"
+            ]
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "search_wiki",
+      "description": "Search Bisquit documentation in Russian or English. Returns matching article slugs, links and excerpts. Read a match with get_wiki_article.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120,
+            "description": "Search words, such as backups or установка плагинов."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "bisquit.host",
+  "source": "webmcp.com/api/directory.json"
+}

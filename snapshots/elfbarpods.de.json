@@ -1,0 +1,99 @@
+{
+  "sponsio": 1,
+  "url": "https://elfbarpods.de/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "add_product_to_cart",
+      "description": "Add one in-stock simple product or exact variation returned by search_products to this browser session. Changes only the cart; never checks out, pays or reads orders.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "product_ref": {
+            "type": "string",
+            "pattern": "^(prod|var)-[1-9][0-9]*$",
+            "description": "Opaque product reference returned by search_products."
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "default": 1
+          }
+        },
+        "required": [
+          "product_ref",
+          "quantity"
+        ]
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get_product_details",
+      "description": "Read public details for one search result. When cart_eligible is true, pass its product_ref to add_product_to_cart. Does not read accounts or orders.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "product_ref": {
+            "type": "string",
+            "pattern": "^(prod|var)-[1-9][0-9]*$",
+            "description": "Opaque product reference returned by search_products."
+          }
+        },
+        "required": [
+          "product_ref"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Search the public ElfbarPods catalog. Each result includes a product_ref. When cart_eligible is true, pass that reference to add_product_to_cart.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 80,
+            "description": "Product name, brand, flavor or other public catalog term."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5,
+            "default": 5
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 20,
+            "default": 0,
+            "description": "Zero-based result page. Refine the query when more than 21 pages are needed."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    }
+  ],
+  "host": "elfbarpods.de",
+  "source": "webmcp.com/api/directory.json"
+}

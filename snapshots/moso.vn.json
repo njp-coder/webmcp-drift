@@ -1,0 +1,416 @@
+{
+  "sponsio": 1,
+  "url": "https://moso.vn/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "compare_listings",
+      "description": "So sánh 2–5 tin trên MOSO theo cùng một bộ tiêu chí: giá, giá/m² đất, diện tích đất/sử dụng, số phòng, số tầng, pháp lý, đường vào. Trả kèm cảnh báo cách đọc giá/m². Compares 2–5 listings side by side with a derived price per m² of land.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "urls": {
+            "type": "string",
+            "description": "Danh sách 2–5 link hoặc slug moso.vn, cách nhau bằng dấu phẩy (VD: \"ban-nha-quan-7-abc,ban-nha-quan-4-xyz\"). Lấy từ trường url của search_listings."
+          },
+          "format": {
+            "type": "string",
+            "enum": [
+              "json",
+              "markdown"
+            ],
+            "default": "json",
+            "description": "markdown = bảng so sánh gọn cho LLM; json = dữ liệu có cấu trúc"
+          }
+        },
+        "required": [
+          "urls"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "explore_projects",
+      "description": "Điều hướng tới trang tra cứu dự án bất động sản: pháp lý, tiến độ, bảng giá.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "find_real_estate_agent",
+      "description": "Điều hướng tới danh bạ môi giới bất động sản đã xác thực chứng chỉ hành nghề trên MOSO.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "post_listing",
+      "description": "Điều hướng tới trang đăng tin bán bất động sản (xác thực theo tiêu chuẩn 3 THẬT).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "read_page",
+      "description": "Chuyển bất kỳ trang moso.vn thành markdown gọn (tiết kiệm ~80% token so với HTML) — dùng để đọc chi tiết một tin đăng, dự án, hoặc bài viết. Reads any MOSO URL as clean markdown.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Đường dẫn tương đối trên moso.vn, bắt đầu bằng \"/\" (VD: \"/ban-nha-quan-7-abc\")"
+          }
+        },
+        "required": [
+          "path"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "request_contact",
+      "description": "Gửi yêu cầu xem nhà hoặc yêu cầu tư vấn cho một tin cụ thể trên MOSO — thao tác DUY NHẤT ghi dữ liệu. Chuyên viên MOSO gọi lại số điện thoại đã cung cấp để xác nhận; tool này KHÔNG chốt lịch hẹn. Chỉ gọi khi người dùng đã đồng ý để lại tên và số điện thoại thật của họ. Gọi lại cùng số điện thoại cho cùng một tin trong 24 giờ sẽ trả về đúng yêu cầu cũ, không tạo bản ghi mới. Submits a viewing or consultation request for one listing; MOSO staff call back to confirm.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 120,
+            "description": "Họ tên người cần liên hệ (bắt buộc)"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Số di động Việt Nam 10 số, đầu 03/05/07/08/09 (hoặc dạng +84...). Bắt buộc."
+          },
+          "listing": {
+            "type": "string",
+            "description": "Link hoặc slug tin trên moso.vn mà người dùng muốn xem. Bỏ trống = yêu cầu tư vấn chung."
+          },
+          "intent": {
+            "type": "string",
+            "enum": [
+              "viewing",
+              "consult"
+            ],
+            "default": "consult",
+            "description": "viewing = muốn đi xem nhà; consult = muốn được tư vấn"
+          },
+          "preferredTime": {
+            "type": "string",
+            "maxLength": 120,
+            "description": "Thời gian mong muốn, dạng văn bản tự do (VD: \"chiều thứ 7\", \"sau 18h các ngày trong tuần\")"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email liên hệ (không bắt buộc)"
+          },
+          "message": {
+            "type": "string",
+            "maxLength": 1000,
+            "description": "Nội dung người dùng muốn nhắn cho môi giới"
+          }
+        },
+        "required": [
+          "name",
+          "phone"
+        ]
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "search_agents",
+      "description": "Trả về dữ liệu môi giới đang hoạt động trên MOSO: kinh nghiệm, thị trường chuyên, khu vực, khoảng giá xử lý, chứng chỉ đã xác minh, điểm đánh giá, MOSO Score, link hồ sơ. Xếp hạng theo MOSO Score giống trang danh bạ, nên chỉ phân trang được trong nhóm 50 người dẫn đầu. Returns verified broker profiles ranked exactly as the public directory ranks them.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Tên môi giới, công ty, hoặc từ khóa hồ sơ"
+          },
+          "area": {
+            "type": "string",
+            "description": "Khu vực hoạt động, khớp một phần tên (VD: \"Bình Thạnh\", \"Thủ Đức\")"
+          },
+          "focusMarket": {
+            "type": "string",
+            "enum": [
+              "secondary_house",
+              "secondary_apartment",
+              "primary_project",
+              "rent",
+              "industrial"
+            ],
+            "description": "Thị trường chuyên môn của môi giới"
+          },
+          "minPrice": {
+            "type": "number",
+            "description": "Giá BĐS tối thiểu, VND — trả về môi giới có dải giá xử lý phủ được mức này"
+          },
+          "maxPrice": {
+            "type": "number",
+            "description": "Giá BĐS tối đa, VND — trả về môi giới có dải giá xử lý phủ được mức này"
+          },
+          "verifiedOnly": {
+            "type": "boolean",
+            "description": "true = chỉ môi giới đã xác minh chứng chỉ hành nghề"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "default": 10,
+            "description": "Số kết quả (tối đa 20)"
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Bỏ qua N kết quả đầu (tối đa 50)"
+          },
+          "format": {
+            "type": "string",
+            "enum": [
+              "json",
+              "markdown"
+            ],
+            "default": "json",
+            "description": "markdown = bảng gọn cho LLM; json = dữ liệu có cấu trúc"
+          }
+        },
+        "required": []
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "search_listings",
+      "description": "Trả về dữ liệu tin bán/cho thuê đã xác thực trên MOSO: giá, diện tích, phòng ngủ, khu vực, link. Dùng tool này thay vì mở trang khi cần đọc/so sánh/tính toán. Returns structured listing data (price, area, bedrooms, address, url) — read this instead of scraping HTML.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Đặc điểm bất động sản, KHÔNG phải khu vực (VD: \"nhà hẻm xe hơi\", \"sổ hồng riêng\"). Tên tỉnh/quận/phường phải đặt vào tham số location — để ở đây sẽ khớp nhầm sang khu vực trùng chữ."
+          },
+          "location": {
+            "type": "string",
+            "description": "Tên tỉnh/quận/phường, nhiều giá trị cách nhau bằng dấu phẩy (VD: \"Bình Thạnh\" hoặc \"Quận 7,Nhà Bè\"). Khớp chính xác theo cấp hành chính, không nhầm sang khu vực trùng chữ. Ghi đủ tên — \"Bình Thạnh\" đúng, \"1\" thì mơ hồ giữa Quận 1 và Phường 1. Khớp cả tên trước và sau sáp nhập 2025, nên \"Hồ Chí Minh\" bao gồm cả Bình Dương và Bà Rịa – Vũng Tàu cũ; trường address của kết quả có thể vẫn ghi tên tỉnh cũ."
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "sale",
+              "rent"
+            ],
+            "description": "sale = bán, rent = cho thuê"
+          },
+          "minPrice": {
+            "type": "number",
+            "description": "Giá tối thiểu, VND (rent: giá thuê/tháng)"
+          },
+          "maxPrice": {
+            "type": "number",
+            "description": "Giá tối đa, VND (rent: giá thuê/tháng)"
+          },
+          "minArea": {
+            "type": "number",
+            "description": "Diện tích sử dụng tối thiểu, m² (khớp trường usableArea)"
+          },
+          "maxArea": {
+            "type": "number",
+            "description": "Diện tích sử dụng tối đa, m² (khớp trường usableArea)"
+          },
+          "bedrooms": {
+            "type": "integer",
+            "description": "Số phòng ngủ tối thiểu"
+          },
+          "propertyType": {
+            "type": "string",
+            "enum": [
+              "detached_house",
+              "apartment",
+              "serviced_apartment",
+              "residential_land",
+              "frontage",
+              "office",
+              "room",
+              "workspace"
+            ],
+            "description": "Loại hình bất động sản"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "default": 10,
+            "description": "Số kết quả (tối đa 20)"
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Bỏ qua N kết quả đầu (phân trang)"
+          },
+          "format": {
+            "type": "string",
+            "enum": [
+              "json",
+              "markdown"
+            ],
+            "default": "json",
+            "description": "markdown = bảng gọn cho LLM; json = dữ liệu có cấu trúc"
+          }
+        },
+        "required": []
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "search_projects",
+      "description": "Trả về dữ liệu dự án đã công bố trên MOSO: chủ đầu tư, loại hình căn, giai đoạn bán, khoảng giá mỗi căn, khoảng diện tích căn, quy mô, tiến độ, pháp lý, link. Dùng tool này thay vì mở trang khi cần đọc/so sánh. Returns structured project data (investor, unit types, sale stage, unit price band, progress, legal).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Tên dự án hoặc từ khóa (VD: \"Vinhomes Grand Park\"). Không đặt tỉnh/thành ở đây — dùng location."
+          },
+          "location": {
+            "type": "string",
+            "description": "Tỉnh/thành, nhiều giá trị cách nhau bằng dấu phẩy (VD: \"Hồ Chí Minh,Bình Dương\"). Chỉ cấp tỉnh/thành — quận/phường không lọc được ở tool này."
+          },
+          "unitType": {
+            "type": "string",
+            "enum": [
+              "apartment",
+              "shophouse",
+              "penthouse",
+              "duplex",
+              "villa",
+              "townhouse",
+              "land_plot",
+              "resort"
+            ],
+            "description": "Loại hình căn trong dự án (khớp nếu dự án có bán loại này)"
+          },
+          "saleStatus": {
+            "type": "string",
+            "enum": [
+              "upcoming",
+              "booking_open",
+              "open",
+              "delivered",
+              "closed"
+            ],
+            "description": "Giai đoạn bán: upcoming = sắp mở bán, booking_open = nhận booking, open = đang mở bán"
+          },
+          "minUnitPrice": {
+            "type": "number",
+            "description": "Giá mỗi căn tối thiểu, VND — giá TỔNG của một căn, không phải giá/m²"
+          },
+          "maxUnitPrice": {
+            "type": "number",
+            "description": "Giá mỗi căn tối đa, VND — giá TỔNG của một căn, không phải giá/m²"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "default": 10,
+            "description": "Số kết quả (tối đa 20)"
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Bỏ qua N kết quả đầu (phân trang)"
+          },
+          "format": {
+            "type": "string",
+            "enum": [
+              "json",
+              "markdown"
+            ],
+            "default": "json",
+            "description": "markdown = bảng gọn cho LLM; json = dữ liệu có cấu trúc"
+          }
+        },
+        "required": []
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "search_properties_for_rent",
+      "description": "Điều hướng trình duyệt tới danh sách bất động sản cho thuê. Có từ khóa → mở trang tìm kiếm tự do, kết quả gồm cả tin bán lẫn cho thuê. Muốn đúng tin cho thuê thì gọi search_listings với type=rent.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "keyword": {
+            "type": "string",
+            "description": "Từ khóa tìm kiếm (khu vực, dự án, loại hình...) / search keyword"
+          }
+        },
+        "required": []
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "search_properties_for_sale",
+      "description": "Điều hướng trình duyệt tới danh sách bất động sản đang bán (có từ khóa → tìm theo từ khóa). Chỉ dùng khi người dùng muốn XEM trang; cần dữ liệu thì gọi search_listings.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "keyword": {
+            "type": "string",
+            "description": "Từ khóa tìm kiếm (khu vực, dự án, loại hình...) / search keyword"
+          }
+        },
+        "required": []
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    }
+  ],
+  "host": "moso.vn",
+  "source": "webmcp.com/api/directory.json"
+}

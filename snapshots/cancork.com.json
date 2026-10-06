@@ -1,0 +1,150 @@
+{
+  "sponsio": 1,
+  "url": "https://www.cancork.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "add_to_cart",
+      "description": "Add a buyer-selected product or variation to the cart. This prepares a cart and does not place an order.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1
+          }
+        },
+        "required": [
+          "product_id"
+        ]
+      }
+    },
+    {
+      "name": "get_cart",
+      "description": "Get the buyer cart and current totals. Prices use currency_minor_unit.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_checkout_link",
+      "description": "Return the normal checkout link where the buyer confirms delivery, final total, and payment.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_current_product",
+      "description": "Get current product data from the live catalog.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_shipping_quote",
+      "description": "Estimate selected items for a delivery destination without changing the buyer cart. Quote amounts are decimal major currency units and can be cached for 120 seconds; shipping options and final totals must be confirmed at checkout.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 10,
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "quantity": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 50
+                }
+              },
+              "required": [
+                "id",
+                "quantity"
+              ]
+            }
+          },
+          "shipping_address": {
+            "type": "object",
+            "properties": {
+              "country": {
+                "type": "string"
+              },
+              "state": {
+                "type": "string"
+              },
+              "postcode": {
+                "type": "string"
+              },
+              "city": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "country",
+              "postcode"
+            ]
+          }
+        },
+        "required": [
+          "items",
+          "shipping_address"
+        ]
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Search Cancork. Prices are integer minor units; use currency_minor_unit. Confirm purchase units and coverage on each product page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 10
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "cancork.com",
+  "source": "webmcp.com/api/directory.json"
+}

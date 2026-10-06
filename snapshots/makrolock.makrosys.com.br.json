@@ -1,0 +1,68 @@
+{
+  "sponsio": 1,
+  "url": "https://makrolock.makrosys.com.br/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "calcular_preco_makrolock",
+      "description": "Calcula o preço do MakroLock para uma quantidade de computadores e abre o WhatsApp com a mensagem pronta para falar com o comercial. Acima de 150 computadores, escolha a opção de consulta.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "phone": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "plano": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    {
+      "name": "get_plan_price",
+      "description": "Calcula o preço estimado do plano MakroLock para uma quantidade de computadores, sem alterar a página ou abrir o WhatsApp. Ex: quantidade 20, instalacao \"local\", cobranca \"monthly\". Acima de 150 computadores o preço é sob consulta.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "quantidade": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Número de computadores a monitorar."
+          },
+          "instalacao": {
+            "type": "string",
+            "enum": [
+              "local",
+              "cloud"
+            ],
+            "default": "local",
+            "description": "Instalação local na rede da empresa ou na nuvem MakroLock."
+          },
+          "cobranca": {
+            "type": "string",
+            "enum": [
+              "monthly",
+              "annual"
+            ],
+            "default": "monthly",
+            "description": "Cobrança mensal ou anual (com desconto sobre o valor mensal)."
+          }
+        },
+        "required": [
+          "quantidade"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": false
+      }
+    }
+  ],
+  "host": "makrolock.makrosys.com.br",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,89 @@
+{
+  "sponsio": 1,
+  "url": "https://www.artcomputer.ch/b2c_fr/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "add_to_cart",
+      "description": "Add a product to the cart by its numeric product id (the id field returned by search_catalog). Works for simple products. For configurable products (type_id \"configurable\") the variant must be chosen on the product page — use open_page with the product url instead and tell the user to pick the options.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "product_id"
+        ],
+        "properties": {
+          "product_id": {
+            "type": "integer",
+            "description": "Product id from search_catalog."
+          },
+          "qty": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1
+          }
+        }
+      }
+    },
+    {
+      "name": "get_cart",
+      "description": "Get the current shopping cart contents: line items with sku, name, qty, unit price, selected options and item_id, plus item count and subtotal. Works on any page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "open_page",
+      "description": "Navigate the browser to a page of this store (a product url from search_catalog, a category, the cart page, etc.). Only same-origin store URLs are allowed. When this tool succeeds the browser is ALREADY navigating to the page — do not navigate again and do not tell the user to click links; just answer referencing the url.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "url"
+        ],
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "Absolute store URL or path, e.g. \"/checkout/cart\"."
+          }
+        }
+      }
+    },
+    {
+      "name": "proceed_to_checkout",
+      "description": "Go to checkout. Verifies the cart is not empty, then navigates the browser to the checkout page. When this tool succeeds the browser is ALREADY navigating to checkout — do not navigate again and do not tell the user to click a checkout button.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "search_catalog",
+      "description": "Search the store catalog for products. Returns products with id, sku, name, url, image, price (incl. tax), price_excl_tax, original_price (when discounted), in_stock and type_id. Does NOT modify the cart; use add_to_cart for that. To show a product to the user, call open_page with the product url.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "query"
+        ],
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search query, e.g. a product name or SKU."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "default": 8
+          }
+        }
+      }
+    }
+  ],
+  "host": "artcomputer.ch",
+  "source": "webmcp.com/api/directory.json"
+}

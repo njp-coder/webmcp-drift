@@ -1,0 +1,93 @@
+{
+  "sponsio": 1,
+  "url": "https://www.vroomvroomvroom.com.au/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_search_state",
+      "description": "Read the current state of the vehicle search form: pickup/return locations, dates, times, driver age and residency.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "set_dates",
+      "description": "Set pickup/return dates (yyyy-MM-dd) and times (HH:mm, 24h) of the vehicle search form. All fields optional, set any subset.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "pickupDate": {
+            "type": "string",
+            "description": "Pickup date as yyyy-MM-dd, e.g. \"2026-09-10\"."
+          },
+          "pickupTime": {
+            "type": "string",
+            "description": "Pickup time as 24h HH:mm, e.g. \"09:30\"."
+          },
+          "returnDate": {
+            "type": "string",
+            "description": "Return date as yyyy-MM-dd."
+          },
+          "returnTime": {
+            "type": "string",
+            "description": "Return time as 24h HH:mm."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "set_location",
+      "description": "Set the pickup or return location of the vehicle search form by place name (e.g. \"Sydney Airport\", \"Melbourne\").",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "locationName": {
+            "type": "string",
+            "description": "Airport, city, station or suburb name, e.g. \"Sydney Airport\" or \"Melbourne\"."
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "pickup",
+              "return"
+            ],
+            "description": "Which end of the hire to set."
+          }
+        },
+        "required": [
+          "locationName",
+          "type"
+        ]
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "submit_search",
+      "description": "Submit the vehicle search form with its current state. Navigates the page to the search results on success.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    }
+  ],
+  "host": "vroomvroomvroom.com.au",
+  "source": "webmcp.com/api/directory.json"
+}

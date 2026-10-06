@@ -1,0 +1,144 @@
+{
+  "sponsio": 1,
+  "url": "https://energy-cities.eu/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_content",
+      "description": "get_content: récupère du contenu (CPT WordPress) par type, avec pagination et recherche.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "countries",
+              "country_trans",
+              "cities",
+              "members",
+              "projects",
+              "best_practices",
+              "publications",
+              "events",
+              "policies",
+              "inspiring-minds",
+              "webinar",
+              "presse",
+              "jobs"
+            ],
+            "description": "Type de contenu à récupérer"
+          },
+          "per_page": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 100,
+            "description": "Nombre d'éléments par page (1–100, défaut: 10)"
+          },
+          "page": {
+            "type": "number",
+            "minimum": 1,
+            "description": "Numéro de page pour la pagination (défaut: 1)"
+          },
+          "search": {
+            "type": "string",
+            "description": "Texte de recherche dans les titres et contenus"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "search_site",
+      "description": "Effectue une recherche globale sur tout le site Energy Cities (projets, pays, membres, publications, événements, etc.).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Mots-clés à rechercher sur tout le site"
+          },
+          "per_page": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 20,
+            "description": "Nombre de résultats à retourner (défaut: 5)"
+          },
+          "page": {
+            "type": "number",
+            "minimum": 1,
+            "description": "Numéro de page (défaut: 1)"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "subscribe_newsletter",
+      "description": "Inscrire l'utilisateur à la newsletter Energy Cities pour recevoir les actualités sur les villes et l'énergie.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Adresse email pour l'inscription"
+          },
+          "first_name": {
+            "type": "string",
+            "description": "Prénom de l'utilisateur (optionnel)"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "subscribe_newsletter",
+      "description": "subscribe_newsletter: inscrit un email à la newsletter Energy Cities.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "minLength": 6,
+            "maxLength": 254,
+            "description": "Adresse email pour l'inscription"
+          },
+          "first_name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80,
+            "description": "Prénom (optionnel)"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "energy-cities.eu",
+  "source": "webmcp.com/api/directory.json"
+}

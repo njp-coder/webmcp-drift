@@ -1,0 +1,108 @@
+{
+  "sponsio": 1,
+  "url": "https://www.pillar.estate/en/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_agency_info",
+      "description": "Return the real-estate agency name, languages, public email, and listing page URLs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "search_listings",
+      "description": "Search properties for sale or rent by city, postal code, type, price, and bedrooms. Navigates to the listing results page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "goal": {
+            "type": "string",
+            "enum": [
+              "sale",
+              "rent"
+            ],
+            "description": "sale (for sale) or rent (for rent)"
+          },
+          "city": {
+            "type": "string",
+            "description": "City name"
+          },
+          "zip": {
+            "type": "string",
+            "description": "Postal code"
+          },
+          "type": {
+            "type": "string",
+            "description": "Property type WebID if known"
+          },
+          "pricemin": {
+            "type": "number",
+            "description": "Minimum price"
+          },
+          "pricemax": {
+            "type": "number",
+            "description": "Maximum price"
+          },
+          "bedrooms": {
+            "type": "number",
+            "description": "Minimum bedrooms"
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "search_projects",
+      "description": "Open the new-build / project list, optionally filtered by city.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "city": {
+            "type": "string",
+            "description": "City name used in the project list URL"
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "switch_language",
+      "description": "Switch the current page to another site language (nl, fr, or en). Listing and project pages use short URLs that redirect to the translated page. Other pages go to that language's homepage because marketing slugs differ per language.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "lang": {
+            "type": "string",
+            "enum": [
+              "nl",
+              "fr",
+              "en"
+            ],
+            "description": "Target language code"
+          }
+        },
+        "required": [
+          "lang"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "pillar.estate",
+  "source": "webmcp.com/api/directory.json"
+}

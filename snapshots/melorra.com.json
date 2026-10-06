@@ -1,0 +1,158 @@
+{
+  "sponsio": 1,
+  "url": "https://www.melorra.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_collection_products",
+      "description": "List the products in one Melorra collection, 20 per page, using the season code and collection slug from list_collections.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "season": {
+            "type": "string",
+            "pattern": "^[A-Za-z][0-9]{2}$",
+            "description": "Season code, e.g. W26."
+          },
+          "collection": {
+            "type": "string",
+            "pattern": "^[a-z0-9&-]+$",
+            "description": "Collection slug from list_collections, e.g. belt-charms."
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 1
+          }
+        },
+        "required": [
+          "season",
+          "collection"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_product",
+      "description": "Get full details of one Melorra product by its SKU, including price in INR, offer, all images and the product page link.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sku": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Product SKU, as returned by search_products."
+          }
+        },
+        "required": [
+          "sku"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "list_collections",
+      "description": "List Melorra's seasonal jewellery collections. Without a season, returns the seasons (e.g. W26 = Autumn/Winter 2026). With a season, returns that season's collections and the slug to pass to get_collection_products.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "season": {
+            "type": "string",
+            "pattern": "^[A-Za-z][0-9]{2}$",
+            "description": "Season code from a previous call, e.g. W26."
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Find jewellery on Melorra (Indian online store for lightweight gold, diamond and gemstone jewellery) by category, material, gender and price in INR. Returns 20 products per page with prices and product links. There is no free-text search; combine the filters instead.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "enum": [
+              "Earrings",
+              "Rings",
+              "Pendants",
+              "Necklaces",
+              "Bracelets",
+              "Bangles",
+              "Chains",
+              "Nose Pins",
+              "Waist Chains",
+              "Charms",
+              "Coins"
+            ],
+            "description": "Jewellery type."
+          },
+          "material": {
+            "type": "string",
+            "enum": [
+              "Gold",
+              "Diamond",
+              "Gemstone"
+            ],
+            "description": "Primary material."
+          },
+          "gender": {
+            "type": "string",
+            "enum": [
+              "women",
+              "men",
+              "unisex"
+            ]
+          },
+          "min_price": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Minimum selling price in INR."
+          },
+          "max_price": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Maximum selling price in INR."
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "recommended",
+              "price_low_to_high",
+              "price_high_to_low",
+              "popular"
+            ],
+            "default": "recommended"
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 1
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "melorra.com",
+  "source": "webmcp.com/api/directory.json"
+}

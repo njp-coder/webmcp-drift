@@ -1,0 +1,82 @@
+{
+  "sponsio": 1,
+  "url": "https://www.isbul.net/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get-calculator",
+      "description": "Get an isbul.net Turkish payroll/severance/tax calculator: its purpose, page URL and the inputs it needs (e.g. \"maas-hesaplama\", \"tazminat-hesaplama\", \"gelir-vergisi-hesaplama\"). Omit calculatorSlug to list every available calculator.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "calculatorSlug": {
+            "type": "string",
+            "description": "Calculator slug (e.g. \"maas-hesaplama\"). Leave empty to list all calculators."
+          }
+        }
+      }
+    },
+    {
+      "name": "get-job-detail",
+      "description": "Fetch the full detail of a single isbul.net job listing — description, company, location, salary, requirements and application URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "jobId": {
+            "type": "string",
+            "description": "The job id or slug returned by search-jobs (e.g. \"senior-yazilim-gelistirici-istanbul-123456\")."
+          }
+        },
+        "required": [
+          "jobId"
+        ]
+      }
+    },
+    {
+      "name": "search-companies",
+      "description": "Search employer company profiles (firma pages) on isbul.net. Returns company name and profile URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Company name to search for."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "search-jobs",
+      "description": "Search active job listings on isbul.net, Turkey's leading job board. Returns matching jobs with title, company, city, salary and a direct URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search keyword in Turkish or English (e.g. \"yazılım geliştirici\", \"muhasebe\", \"sales manager\")."
+          },
+          "city": {
+            "type": "string",
+            "description": "City name or slug to filter by (e.g. \"istanbul\", \"ankara\", \"izmir\")."
+          },
+          "sector": {
+            "type": "string",
+            "description": "Sector to filter by (e.g. \"bilişim\", \"sağlık\", \"inşaat\")."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "isbul.net",
+  "source": "webmcp.com/api/directory.json"
+}

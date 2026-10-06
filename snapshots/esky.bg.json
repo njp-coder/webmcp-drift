@@ -1,0 +1,170 @@
+{
+  "sponsio": 1,
+  "url": "https://www.esky.bg/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "search_hotels",
+      "description": "Search for Хотели on the Hotels search form.  Builds the search and moves the user to the results page - it does not return offers or prices itself; read those from the results page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "place": {
+            "type": "string",
+            "description": "Exactly one destination or specific hotel name as the user said it, e.g. \"Crete\" or \"Blue Lagoon Resort\"."
+          },
+          "exactDates": {
+            "type": "object",
+            "description": "The fixed hotel stay dates. Hotel search does not support flexible date windows.",
+            "properties": {
+              "checkin": {
+                "type": "string",
+                "description": "Check-in date in ISO YYYY-MM-DD format."
+              },
+              "checkout": {
+                "type": "string",
+                "description": "Check-out date in ISO YYYY-MM-DD format."
+              }
+            },
+            "required": [
+              "checkin",
+              "checkout"
+            ],
+            "additionalProperties": false
+          },
+          "rooms": {
+            "type": "array",
+            "description": "Defaults to one room, two adults, when omitted.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "adults": {
+                  "type": "number"
+                },
+                "childrenAges": {
+                  "type": "array",
+                  "items": {
+                    "type": [
+                      "number",
+                      "null"
+                    ]
+                  },
+                  "description": "Each child's age. Every child needs an age - do not call with a missing one."
+                }
+              },
+              "required": [
+                "adults"
+              ]
+            }
+          }
+        },
+        "required": [
+          "place",
+          "exactDates"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "search_portfolio",
+      "description": "Search for Полет+Хотел on the Portfolio search form.  Builds the search and moves the user to the results page - it does not return offers or prices itself; read those from the results page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "destinations": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Destination names as the user said them, e.g. [\"Crete\", \"Rhodes\"]. Omit or send an empty list when the user wants any destination."
+          },
+          "departures": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Departure city/airport names as the user said them. Omit for no departure restriction."
+          },
+          "exactDates": {
+            "type": "object",
+            "description": "Use ONLY when the user knows the real travel dates, e.g. \"out on 12 June, back on the 19th\". The form may represent this as two calendar dates or as a departure date plus the derived stay length. Never use this to express a period to search inside - for that use searchWindow.",
+            "properties": {
+              "outbound": {
+                "type": "string",
+                "description": "ISO YYYY-MM-DD. The day the traveller actually flies out."
+              },
+              "inbound": {
+                "type": "string",
+                "description": "ISO YYYY-MM-DD. The day they actually fly back. On departure-date forms this is used to derive the stay length. Omit if only the outbound day is fixed - then give nights."
+              }
+            },
+            "required": [
+              "outbound"
+            ]
+          },
+          "searchWindow": {
+            "type": "object",
+            "description": "Use whenever the user described a PERIOD rather than dates: \"sometime in November\", \"all of November\", \"the first two weeks of July\", \"anytime this summer\". These are the bounds of the period to search inside, NOT the trip itself - the trip is shorter and floats within them. Always pair with nights. If the user gave any period at all, send it here - do not drop the dates because they are not exact.",
+            "properties": {
+              "from": {
+                "type": "string",
+                "description": "ISO YYYY-MM-DD. Earliest day the trip may start."
+              },
+              "to": {
+                "type": "string",
+                "description": "ISO YYYY-MM-DD. Latest day the trip may end."
+              }
+            },
+            "required": [
+              "from",
+              "to"
+            ]
+          },
+          "nights": {
+            "type": "number",
+            "description": "How many nights the trip lasts (\"5 nights\" = 5, \"a week\" = 7, \"a fortnight\" = 14). Required with searchWindow. Never derive it from the length of searchWindow - a one-month window is not a one-month trip. With exactDates it may replace an omitted inbound date; when both are supplied, the explicit nights value controls stay-length selectors."
+          },
+          "nightsMax": {
+            "type": "number",
+            "description": "Upper bound when the user gave a range of nights, e.g. nights: 7, nightsMax: 10 for \"1-1.5 weeks\"."
+          },
+          "rooms": {
+            "type": "array",
+            "description": "Defaults to one room, two adults, when omitted.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "adults": {
+                  "type": "number"
+                },
+                "childrenAges": {
+                  "type": "array",
+                  "items": {
+                    "type": [
+                      "number",
+                      "null"
+                    ]
+                  },
+                  "description": "Each child's age. Every child needs an age - do not call with a missing one."
+                }
+              },
+              "required": [
+                "adults"
+              ]
+            }
+          }
+        }
+      },
+      "annotations": {
+        "untrustedContent": true
+      }
+    }
+  ],
+  "host": "esky.bg",
+  "source": "webmcp.com/api/directory.json"
+}

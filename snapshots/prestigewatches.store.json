@@ -1,0 +1,300 @@
+{
+  "sponsio": 1,
+  "url": "https://prestigewatches.store/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_brand_directory",
+      "description": "Read the current published brand directory, including sourcing distinctions stated by the store.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "offset": {
+            "type": "integer",
+            "description": "Text offset for continuation.",
+            "minimum": 0,
+            "maximum": 80000
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get_repair_services",
+      "description": "Read the store’s current repair intake and service information; no diagnosis or guaranteed quote.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "offset": {
+            "type": "integer",
+            "description": "Text offset for continuation.",
+            "minimum": 0,
+            "maximum": 80000
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get_site_capabilities",
+      "description": "Discover enabled shopping tool groups, page-specific availability, destinations, and manual-only boundaries.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get_store_info",
+      "description": "Read current public contact/showroom information directly from the store contact page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "offset": {
+            "type": "integer",
+            "description": "Text offset for the next passage.",
+            "minimum": 0,
+            "maximum": 80000
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get_store_policy",
+      "description": "Read current returns, terms, privacy, customer help or authentication policy, with source and continuation.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "policy": {
+            "type": "string",
+            "description": "Published policy page.",
+            "enum": [
+              "returns-exchanges",
+              "terms-conditions",
+              "privacy-policy",
+              "customer-help",
+              "how-we-authenticate"
+            ]
+          },
+          "offset": {
+            "type": "integer",
+            "description": "Text offset for the next passage.",
+            "minimum": 0,
+            "maximum": 80000
+          }
+        },
+        "required": [
+          "policy"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "open_store_section",
+      "description": "Open a named native store section. Never accepts arbitrary URLs or performs checkout/submission actions.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "section": {
+            "type": "string",
+            "description": "Published destination from get_site_capabilities.",
+            "enum": [
+              "home",
+              "catalog",
+              "cart",
+              "checkout",
+              "myaccount",
+              "find-a-watch",
+              "watch-repair",
+              "customer-help",
+              "contact-us",
+              "terms-conditions",
+              "privacy-policy",
+              "returns-exchanges",
+              "how-we-authenticate",
+              "brands",
+              "authorized-new-brands",
+              "pre-owned-brands",
+              "order-tracking",
+              "blog",
+              "about"
+            ]
+          }
+        },
+        "required": [
+          "section"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "read_site_content",
+      "description": "Read a passage from a published page or journal ID returned by search.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "content_id": {
+            "type": "integer",
+            "description": "Published product ID from catalog search.",
+            "minimum": 1,
+            "maximum": 2147483647
+          },
+          "offset": {
+            "type": "integer",
+            "description": "Text offset for continuation.",
+            "minimum": 0,
+            "maximum": 80000
+          }
+        },
+        "required": [
+          "content_id"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "search_site_content",
+      "description": "Search published store pages and watch journal entries. Does not search customers, orders or private repairs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "search": {
+            "type": "string",
+            "description": "Public content search text.",
+            "minLength": 2,
+            "maxLength": 120
+          },
+          "page": {
+            "type": "integer",
+            "description": "Page number, starting at 1.",
+            "minimum": 1,
+            "maximum": 100
+          }
+        },
+        "required": [
+          "search"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "search_watch_journal",
+      "description": "Search only published watch journal articles, with source URLs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "search": {
+            "type": "string",
+            "description": "Public content search text.",
+            "minLength": 2,
+            "maxLength": 120
+          },
+          "page": {
+            "type": "integer",
+            "description": "Page number, starting at 1.",
+            "minimum": 1,
+            "maximum": 100
+          }
+        },
+        "required": [
+          "search"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "select_shopping_tools",
+      "description": "Activate a focused shopping tool group. Keeps only a small, relevant set registered; does not change cart or account data.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "group": {
+            "type": "string",
+            "description": "Enabled group from get_site_capabilities.",
+            "enum": [
+              "knowledge",
+              "catalog",
+              "watch",
+              "analysis",
+              "shortlist",
+              "cart",
+              "checkout",
+              "forms"
+            ]
+          }
+        },
+        "required": [
+          "group"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    }
+  ],
+  "host": "prestigewatches.store",
+  "source": "webmcp.com/api/directory.json"
+}

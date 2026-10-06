@@ -1,0 +1,248 @@
+{
+  "sponsio": 1,
+  "url": "https://ggn.bg/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "ggn_compare_plans",
+      "description": "Compare two or three current plans for one town and customer type.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "town_id": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 999999
+          },
+          "plan_ids": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 3,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "enum": [
+                "limited1",
+                "limited2",
+                "unlimited1",
+                "unlimited2",
+                "unlimited3",
+                "unlimited4",
+                "unlimited5"
+              ]
+            }
+          },
+          "customer_type": {
+            "type": "string",
+            "enum": [
+              "home",
+              "business"
+            ],
+            "default": "home"
+          },
+          "lang": {
+            "type": "string",
+            "enum": [
+              "bg",
+              "en"
+            ],
+            "default": "bg"
+          }
+        },
+        "required": [
+          "town_id",
+          "plan_ids"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "ggn_find_towns",
+      "description": "Find a town or village with its municipality; use the returned ID to avoid namesakes.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 80
+          },
+          "lang": {
+            "type": "string",
+            "enum": [
+              "bg",
+              "en"
+            ],
+            "default": "bg"
+          }
+        },
+        "required": [
+          "q"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "ggn_get_help",
+      "description": "Read published support instructions and diagrams. Never unplug optical connectors, press reset, or substitute passive PoE ports.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "topic": {
+            "type": "string",
+            "maxLength": 60,
+            "pattern": "^[a-z0-9-]*$"
+          },
+          "lang": {
+            "type": "string",
+            "enum": [
+              "bg",
+              "en"
+            ],
+            "default": "bg"
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "ggn_get_plans",
+      "description": "Read current monthly EUR prices, speeds, coverage caveats and included support. Unknown installation/contract terms must not be invented.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "town_id": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 999999
+          },
+          "customer_type": {
+            "type": "string",
+            "enum": [
+              "home",
+              "business"
+            ],
+            "default": "home"
+          },
+          "lang": {
+            "type": "string",
+            "enum": [
+              "bg",
+              "en"
+            ],
+            "default": "bg"
+          }
+        },
+        "required": [
+          "town_id"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "ggn_payment_options",
+      "description": "Explain how a human can pay. Does NOT create orders, access subscriber data, accept card details or authorize payment. A previously issued invoice/order short link must be opened by the human.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "lang": {
+            "type": "string",
+            "enum": [
+              "bg",
+              "en"
+            ],
+            "default": "bg"
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "ggn_prepare_enquiry",
+      "description": "Prepare a human-review link for a selected current plan. Does NOT submit a request or store personal details. The human enters/reviews address and contacts, completes CAPTCHA and sends the form. Repeat calls cannot create duplicate enquiries.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "town_id": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 999999
+          },
+          "plan_id": {
+            "type": "string",
+            "enum": [
+              "limited1",
+              "limited2",
+              "unlimited1",
+              "unlimited2",
+              "unlimited3",
+              "unlimited4",
+              "unlimited5"
+            ]
+          },
+          "customer_type": {
+            "type": "string",
+            "enum": [
+              "home",
+              "business"
+            ],
+            "default": "home"
+          },
+          "lang": {
+            "type": "string",
+            "enum": [
+              "bg",
+              "en"
+            ],
+            "default": "bg"
+          }
+        },
+        "required": [
+          "town_id",
+          "plan_id"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": false
+      }
+    }
+  ],
+  "host": "ggn.bg",
+  "source": "webmcp.com/api/directory.json"
+}

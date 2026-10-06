@@ -1,0 +1,135 @@
+{
+  "sponsio": 1,
+  "url": "https://pracasport.pl/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "search_companies",
+      "description": "Search the public PracaSport company directory by company name or city and optional category, region, or organization type. This works from any PracaSport page, returns up to 10 public matches, and opens the directory with the same filters.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "description": "Filters for the public PracaSport company directory. Omit a filter that should not be used.",
+        "properties": {
+          "phrase": {
+            "type": "string",
+            "description": "Company name or city.",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "tag": {
+            "type": "string",
+            "description": "Public company category slug.",
+            "enum": [
+              "administracja",
+              "akrobatyka-gimnastyka",
+              "bieganie",
+              "esport",
+              "fitness",
+              "fizjoterapia",
+              "inne",
+              "it",
+              "kolarstwo",
+              "koszykowka",
+              "lekkoatletyka",
+              "marketing",
+              "media",
+              "opiekun-animator",
+              "pilka-nozna",
+              "plywanie",
+              "siatkowka",
+              "social-media",
+              "sporty-walki-mma",
+              "sporty-zimowe",
+              "sprzedaz",
+              "taniec",
+              "tenis-sporty-rakietowe",
+              "zaklady-bukmacherskie",
+              "zeglarstwo-sporty-wodne",
+              "zuzel"
+            ]
+          },
+          "region": {
+            "type": "string",
+            "description": "Polish voivodeship name.",
+            "enum": [
+              "dolnośląskie",
+              "kujawsko-pomorskie",
+              "lubelskie",
+              "lubuskie",
+              "łódzkie",
+              "małopolskie",
+              "mazowieckie",
+              "opolskie",
+              "podkarpackie",
+              "podlaskie",
+              "pomorskie",
+              "śląskie",
+              "świętokrzyskie",
+              "warmińsko-mazurskie",
+              "wielkopolskie",
+              "zachodniopomorskie"
+            ]
+          },
+          "kind": {
+            "type": "string",
+            "description": "Type of sports organization.",
+            "enum": [
+              "CLUB",
+              "ACADEMY",
+              "FITNESS",
+              "SCHOOL",
+              "VENUE",
+              "FEDERATION",
+              "BUSINESS"
+            ]
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum number of matches returned by the tool. The page still shows all matches.",
+            "minimum": 1,
+            "maximum": 10,
+            "default": 5
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "start_candidate_registration",
+      "description": "Open the PracaSport candidate registration form and prefill the candidate name and email. This does not create an account. The candidate must enter a password, accept the terms, and submit the form themselves.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Imię i nazwisko kandydata.",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "email": {
+            "type": "string",
+            "description": "Adres e-mail kandydata.",
+            "format": "email",
+            "maxLength": 320
+          }
+        },
+        "required": [
+          "name",
+          "email"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "pracasport.pl",
+  "source": "webmcp.com/api/directory.json"
+}

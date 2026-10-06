@@ -1,0 +1,65 @@
+{
+  "sponsio": 1,
+  "url": "https://discoveredlabs.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "book_intro_call",
+      "description": "Get the Discovered Labs intro call booking details. Returns the live Calendly scheduling URL, event name, duration, and instructions for booking a free strategy call with the team.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "calculate_eval_sample_size",
+      "description": "Calculate the statistically valid number of prompts and API calls for an LLM brand-mention evaluation. Call when planning an eval; pass confidence (default 95), margin_of_error_pct (default 2), resamples_per_prompt (default 3), var_between and var_within. Returns unique_prompts and total_api_calls.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "confidence": {
+            "type": "number",
+            "description": "Statistical confidence level as a percentage (default 95)",
+            "minimum": 80,
+            "maximum": 99,
+            "default": 95
+          },
+          "margin_of_error_pct": {
+            "type": "number",
+            "description": "Acceptable margin of error as a percentage (default 2)",
+            "minimum": 0.5,
+            "maximum": 5,
+            "default": 2
+          },
+          "resamples_per_prompt": {
+            "type": "number",
+            "description": "Number of times to resample each prompt to reduce within-question noise (default 3)",
+            "minimum": 1,
+            "maximum": 20,
+            "default": 3
+          },
+          "var_between": {
+            "type": "number",
+            "description": "Between-question variance — how much brand mention rates differ across different questions (default 0.02)",
+            "minimum": 0,
+            "maximum": 0.1,
+            "default": 0.02
+          },
+          "var_within": {
+            "type": "number",
+            "description": "Within-question variance — how much the model wobbles when answering the same question (default 0.05)",
+            "minimum": 0,
+            "maximum": 0.2,
+            "default": 0.05
+          }
+        },
+        "required": []
+      }
+    }
+  ],
+  "host": "discoveredlabs.com",
+  "source": "webmcp.com/api/directory.json"
+}

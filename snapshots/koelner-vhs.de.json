@@ -1,0 +1,67 @@
+{
+  "sponsio": 1,
+  "url": "https://www.koelner-vhs.de/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "formular-ausfuellen",
+      "description": "Fuellt Felder eines Formulars dieser Seite aus. Sendet NICHT ab -- das muss die Nutzerin selbst bestaetigen. Gibt zurueck, was gesetzt wurde und welche Pflichtfelder noch fehlen. Feldnamen vorher mit \"formulare-auflisten\" ermitteln.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "formular": {
+            "type": "string",
+            "description": "Kennung oder Name des Formulars. Weglassen, wenn die Seite nur ein Formular hat."
+          },
+          "werte": {
+            "type": "object",
+            "description": "Feldname zu Wert. Bei Auswahlfeldern ist auch der sichtbare Text erlaubt. Bei Ankreuzfeldern true oder false.",
+            "additionalProperties": {
+              "type": [
+                "string",
+                "number",
+                "boolean"
+              ]
+            }
+          }
+        },
+        "required": [
+          "werte"
+        ]
+      }
+    },
+    {
+      "name": "formulare-auflisten",
+      "description": "Listet die Formulare dieser Seite mit ihren Feldern auf: Beschriftung, Art, Pflichtfeld und bei Auswahlfeldern die moeglichen Werte. Nur lesend. Vor dem Ausfuellen aufrufen, damit die Feldnamen bekannt sind.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "kurse-suchen",
+      "description": "Sucht Kurse dieser Einrichtung nach einem Stichwort und gibt die Treffer mit Titel und Adresse zurueck. Mit \"oeffnen\": true wird stattdessen die Trefferseite im Browser geoeffnet.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "stichwort": {
+            "type": "string",
+            "description": "Suchbegriff, zum Beispiel ein Kursthema."
+          },
+          "oeffnen": {
+            "type": "boolean",
+            "description": "Trefferseite im Browser oeffnen statt Daten zurueckgeben."
+          }
+        },
+        "required": [
+          "stichwort"
+        ]
+      }
+    }
+  ],
+  "host": "koelner-vhs.de",
+  "source": "webmcp.com/api/directory.json"
+}

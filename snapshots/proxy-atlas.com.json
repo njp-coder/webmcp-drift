@@ -1,0 +1,59 @@
+{
+  "sponsio": 1,
+  "url": "https://proxy-atlas.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_provider",
+      "description": "Read a listed provider profile, dated service status, source links and reporting periods.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "maxLength": 100,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          }
+        },
+        "required": [
+          "slug"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "search_providers",
+      "description": "Search public proxy providers by name, description and proxy type. Returns dated provider-reported status with sources, not live benchmarks.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "all",
+              "Residential",
+              "Datacenter",
+              "ISP",
+              "Mobile"
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "proxy-atlas.com",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,357 @@
+{
+  "sponsio": 1,
+  "url": "https://web.autocad.com/login",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "acad_analyze_da_job",
+      "description": "Fetches the activity log files from a Design Automation job by job ID and returns their full content for root cause analysis. Use this when a job has issues and help diagnose why.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "job_id": {
+            "type": "string",
+            "description": "The Design Automation activity job ID to fetch logs for."
+          }
+        },
+        "required": [
+          "job_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "acad_assign_blocks_to_category",
+      "description": "Assigns one or more blocks on the active Blocks palette tab to categories using AI. Use when the user asks to put a block into a specific category.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "assignments": {
+            "type": "array",
+            "description": "Block-to-category assignments to apply.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "block_name": {
+                  "type": "string",
+                  "description": "Exact block name on the active palette tab."
+                },
+                "category": {
+                  "type": "string",
+                  "description": "Target category name."
+                }
+              },
+              "required": [
+                "block_name",
+                "category"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 1
+          },
+          "instructions": {
+            "type": "string",
+            "description": "Optional natural-language guidance for the assignment (e.g. move the chair into Furniture because it is seating)."
+          }
+        },
+        "required": [
+          "assignments"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "acad_check_block_resize",
+      "description": "Call this BEFORE acad_generate_block when a block already exists in this conversation and the user asks to resize it to explicit numbers on both axes (e.g. 'make it 40 x 40', 'change it to 8 by 5 feet'). Generates nothing and costs nothing. Resizing preserves the block's shape, so numbers with different proportions than the block currently has cannot be satisfied exactly — this tool works out whether that is the case and, if so, returns a question to put to the user. Follow its reply exactly: it either tells you to go ahead, or gives you a question and the two options to offer. Do not call it for relative resizes ('make it bigger'), single-axis resizes, or a first-time generation — none of those can change the block's shape.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "width": {
+            "type": "number",
+            "description": "First stated number (X axis)."
+          },
+          "height": {
+            "type": "number",
+            "description": "Second stated number (Y axis)."
+          },
+          "unit": {
+            "type": "string",
+            "enum": [
+              "mm",
+              "drawing"
+            ],
+            "description": "Use 'mm' when a real unit was stated, converting the values to millimetres yourself (1 in = 25.4, 1 ft = 304.8, 1 cm = 10, 1 m = 1000). Use 'drawing' for bare numbers with no unit at all, left unconverted. Never guess a unit."
+          }
+        },
+        "required": [
+          "width",
+          "height",
+          "unit"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "acad_clear_block_categorization",
+      "description": "Clears AI block categorization for the active Blocks palette tab, restoring the original flat block list. Use when the user asks to reverse or undo block categorization.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "acad_execute_lisp",
+      "description": "Execute an AutoCAD LISP expression in the current drawing.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "The LISP code to evaluate."
+          }
+        },
+        "required": [
+          "code"
+        ]
+      }
+    },
+    {
+      "name": "acad_generate_block",
+      "description": "Requires an open drawing. ALWAYS call acad_get_current_file_name FIRST, every time before calling this tool -- including for a follow-up on a block already being discussed -- because the user may have switched away from the drawing since the last call. If it returns 'Not Available', do NOT call this tool; tell the user to open a drawing first instead. Generate a new AutoCAD block from a natural-language description, or refine the block already being discussed in this conversation, and show an interactive preview the user can insert into the current drawing. Call this tool again for ANY follow-up on that block, including a size-only change (e.g. 'make it 400 x 200', 'make it a little bigger') — a size-only follow-up is detected automatically and just resizes the existing preview without regenerating the image, so it is fast and safe to call once the drawing is confirmed open. Do not tell the user resizing isn't supported or suggest the SCALE command as an alternative; just call this tool with their instruction. ONE exception to calling this straight away: if a block already exists in this conversation and the user asks to resize it to explicit numbers on BOTH axes (e.g. 'make it 40 x 40'), call acad_check_block_resize FIRST and follow what it says. It is cheap, generates nothing, and tells you whether those numbers would change the block's shape — which needs the user's decision before anything is generated. Skip it for relative resizes ('make it bigger'), single-axis resizes ('make it 50 wide'), and first-time generations. A SECOND exception: if the user names a layer to place the block on ('put it in layer 3', 'on the furniture layer'), call acad_set_block_layer FIRST and follow what it says. It is cheap and generates nothing, and the layer may need the user's decision — naming one that does not quite exist is common. Never put the layer in `prompt`: a layer is not describable geometry, so it risks the request being rejected as off-topic or the words being drawn into the block. Send prompt 'a queen bed', not 'a queen bed on the furniture layer'.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "description": "On the first call, a description of the block to generate, e.g. 'an office chair'. On a follow-up, the user's refinement instruction as they stated it (e.g. 'add a drawer', 'make it red') — pass it close to verbatim rather than rewriting it into a full re-description of the object. For a RESIZE, name the object and state the unit even if the user did not: send 'make the dining table 30 x 20 drawing units', not a bare 'make it 30 x 20'. Naming the object is safe — it is still treated as a size-only change — and both the object and the unit are needed to interpret the request correctly. Say 'drawing units' when the user gave bare numbers with no unit."
+          },
+          "sizeIntent": {
+            "type": "string",
+            "enum": [
+              "fit",
+              "reshape"
+            ],
+            "description": "Only set this when relaying the user's answer to a proportions question that acad_check_block_resize asked. 'fit' keeps the block's current shape and scales it to fit inside the requested size (fast — no image regeneration). 'reshape' generates a new block actually shaped to the requested proportions (slower). Never guess this on the user's behalf."
+          }
+        },
+        "required": [
+          "prompt"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "acad_get_block_generation",
+      "description": "Internal: called by the AutoCAD block preview app. Do not call directly. Returns the current state of a block generation.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "requestId": {
+            "type": "string",
+            "description": "Id returned by acad_generate_block."
+          }
+        },
+        "required": [
+          "requestId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "acad_get_current_file_name",
+      "description": "Returns the name of the currently opened file in the AutoCAD Web editor. If no file is open, returns 'Not Available'.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "acad_insert_generated_block",
+      "description": "Internal: called by the AutoCAD block preview app. Do not call directly. Inserts a generated block into the current drawing.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "requestId": {
+            "type": "string",
+            "description": "Id returned by acad_generate_block."
+          }
+        },
+        "required": [
+          "requestId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "acad_list_palette_blocks",
+      "description": "Lists blocks on the active Blocks palette tab with their current AI category and tags when organized. Use this to resolve block names before assigning or recategorizing blocks.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "search": {
+            "type": "string",
+            "description": "Optional filter to match block names, categories, or tags."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "acad_list_recent_files",
+      "description": "Returns a list of recently accessed drawings in AutoCAD Web. Each entry includes the file name, unique ID, provider, path, and last access time. Use this to help the user find and open a drawing.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "number",
+            "description": "Maximum number of recent files to return. Defaults to 20."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "acad_open_drawing",
+      "description": "Opens a recent drawing in the AutoCAD Web editor. Requires the file details returned by acad_list_recent_files. The user should first call acad_list_recent_files to get the file list, then use this tool with the chosen file's details.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique ID of the file from acad_list_recent_files."
+          },
+          "file_name": {
+            "type": "string",
+            "description": "The file name from acad_list_recent_files."
+          },
+          "provider": {
+            "type": "string",
+            "description": "The provider name from acad_list_recent_files (e.g. 'adsk_drive', 'onedrive_business')."
+          },
+          "provider_details": {
+            "type": "object",
+            "description": "The provider_details object from acad_list_recent_files.",
+            "properties": {
+              "provider_id": {
+                "type": "string"
+              },
+              "provider_secondary_id": {
+                "type": "string"
+              },
+              "provider_file_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "provider_id",
+              "provider_secondary_id",
+              "provider_file_id"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "file_name",
+          "provider",
+          "provider_details"
+        ]
+      }
+    },
+    {
+      "name": "acad_recategorize_palette_blocks",
+      "description": "Runs AI categorization on all blocks in the active Blocks palette tab. Use when the user asks to recategorize or reorganize blocks with AI.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "instructions": {
+            "type": "string",
+            "description": "Optional natural-language guidance for how blocks should be categorized (e.g. group all furniture together, separate plumbing fixtures)."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "acad_set_block_layer",
+      "description": "Choose the AutoCAD layer generated blocks are inserted onto. Call this BEFORE acad_generate_block whenever the user names a layer ('generate a bed and put it in layer 3'), and again later if they ask to move the block to a different layer. Generates nothing and costs nothing. Follow its reply exactly: it either confirms the layer and tells you to go ahead, or gives you a question and the options to offer — a named layer very often does not exist under quite that spelling, and only the user can say what they meant. Do not call acad_generate_block until it has confirmed a layer, and once it has, do not call this again for the same layer: refinements of the same block keep it automatically.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "layer": {
+            "type": "string",
+            "description": "The layer name exactly as the user gave it."
+          },
+          "confirmed": {
+            "type": "boolean",
+            "description": "Set to true only when relaying the user's explicit answer to a layer question — they agreed to create a layer that does not exist, or to thaw/turn on one that is frozen or off. Never guess this on the user's behalf; without it those cases ask again rather than acting."
+          }
+        },
+        "required": [
+          "layer"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "acad_show_block_preview",
+      "description": "Show the user a fresh preview panel, with a working Insert button, for the block already generated in this conversation. Call this when they want to place that block again — most often after changing its layer, since the copy already in the drawing keeps the layer it was placed on, but also for a plain second copy. Inserts nothing itself and regenerates nothing: it re-offers the block that already exists, so it is instant and free. Do not use it to show a block that has never been inserted — that preview is already on screen.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "acad_start_new_block_conversation",
+      "description": "Start a new block conversation, discarding the previous one. Call this when the user asks for a different object rather than a change to the one already generated — for example \"now make a table\" after iterating on a chair. Without it the next generation is treated as another revision of the previous block.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "acad_submit_block_feedback",
+      "description": "Internal: called by the AutoCAD block preview app. Do not call directly. Records whether a generated block was useful.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "requestId": {
+            "type": "string",
+            "description": "Id returned by acad_generate_block."
+          },
+          "useful": {
+            "type": "boolean",
+            "description": "True for thumbs up, false for thumbs down."
+          }
+        },
+        "required": [
+          "requestId",
+          "useful"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "web.autocad.com",
+  "source": "webmcp.com/api/directory.json"
+}

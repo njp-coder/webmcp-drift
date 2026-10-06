@@ -1,0 +1,363 @@
+{
+  "sponsio": 1,
+  "url": "https://www.seychellesbookings.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "add_trip_to_cart",
+      "description": "Put a trip from search_trips into the booking cart for the given passengers (for a round trip pass the outbound idavailability plus return_idavailability from return_results). Returns the cart, the passenger details that are still required (passenger_requirements) and the checkout status.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "idavailability": {
+            "type": "integer",
+            "description": "idavailability of the outbound trip."
+          },
+          "return_idavailability": {
+            "type": "integer",
+            "description": "idavailability of the return trip (round trips only)."
+          },
+          "adults": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 1,
+            "description": "Number of adult passengers."
+          },
+          "children": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Number of children (the age band is shown on the site)."
+          },
+          "infants": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Number of infants (usually free, still need a name)."
+          },
+          "seniors": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Number of seniors — only on sites whose booking context lists the senior passenger type as enabled."
+          }
+        },
+        "required": [
+          "idavailability"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_cart",
+      "description": "Show the current booking cart: items, total, which contact/passenger details are still required (passenger_requirements with the exact slot ids for set_passenger_details) and whether checkout is possible.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "list_locations",
+      "description": "List the bookable origins and destinations (ports, islands, hotels/areas) on this website. Returns id, name, type and parent_id per location; use the ids as `from`/`to` in search_trips. Sub-locations (parent_id set) can also be given as \"parentId_childId\".",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "proceed_to_checkout",
+      "description": "Final step. Checks that the cart is complete and (by default) opens the confirmation page where the CUSTOMER reviews the booking, accepts the terms and pays. Payment can only be completed by the customer — never attempt to accept the terms or enter payment details on their behalf. If the cart is not ready the result lists what is missing.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "navigate": {
+            "type": "boolean",
+            "default": true,
+            "description": "Open the confirmation page in this tab once the cart is ready."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "remove_from_cart",
+      "description": "Remove an item from the cart by its `key` as listed by get_cart. Dependent items (transfers, other passenger types of the same trip) are removed with it.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "description": "The item key from get_cart."
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_trips",
+      "description": "Search available ferry / fast boat / transfer trips between two locations on a date. Returns trips with idavailability, company, departure/arrival time, seats left and the total price for the given passengers. For a round trip pass type=\"return\" and a return date; the return leg options come back as return_results. Next step: add_trip_to_cart with the chosen idavailability (and return_idavailability).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "description": "Origin location id from list_locations."
+          },
+          "to": {
+            "type": "string",
+            "description": "Destination location id from list_locations."
+          },
+          "departure": {
+            "type": "string",
+            "description": "Departure date, YYYY-MM-DD."
+          },
+          "return": {
+            "type": "string",
+            "description": "Return date, YYYY-MM-DD (round trips only)."
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "one_way",
+              "return",
+              "island_hopping"
+            ],
+            "default": "one_way"
+          },
+          "adults": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 1,
+            "description": "Number of adult passengers."
+          },
+          "children": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Number of children (the age band is shown on the site)."
+          },
+          "infants": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Number of infants (usually free, still need a name)."
+          },
+          "seniors": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Number of seniors — only on sites whose booking context lists the senior passenger type as enabled."
+          }
+        },
+        "required": [
+          "from",
+          "to",
+          "departure"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "search_trips_form",
+      "description": "Search form for ferry, fast boat and transfer trips on this website: choose the trip type (one-way or return), origin, destination, departure (and return) date as dd/mm/yyyy and the number of adults/children/infants, then submit to open the results page where every trip has a \"Book\" button. For structured JSON results use the search_trips tool instead.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "boolean"
+          },
+          "from": {
+            "type": "string",
+            "enum": [
+              "65",
+              "63",
+              "64"
+            ]
+          },
+          "to": {
+            "type": "string",
+            "enum": [
+              "65",
+              "63",
+              "64"
+            ]
+          },
+          "departure": {
+            "type": "string",
+            "description": "dd/mm/yyyy"
+          },
+          "return": {
+            "type": "string",
+            "description": "dd/mm/yyyy"
+          },
+          "adults": {
+            "type": "string",
+            "enum": [
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8",
+              "9",
+              "10",
+              "11",
+              "12",
+              "13",
+              "14",
+              "15",
+              "16",
+              "17",
+              "18",
+              "19"
+            ]
+          },
+          "children": {
+            "type": "string",
+            "enum": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8",
+              "9",
+              "10",
+              "11",
+              "12",
+              "13",
+              "14",
+              "15",
+              "16",
+              "17",
+              "18"
+            ]
+          },
+          "infants": {
+            "type": "string",
+            "enum": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8",
+              "9",
+              "10",
+              "11",
+              "12",
+              "13",
+              "14",
+              "15",
+              "16",
+              "17",
+              "18"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "set_passenger_details",
+      "description": "Provide the booking contact (email, optionally phone) and the details of each passenger in the cart. Call get_cart first: passenger_requirements lists every passenger slot with the fields it needs (name, nationality as ISO 3166-1 alpha-2 code, and where asked date_of_birth / passport details / title / gender) plus any additional_fields such as flight numbers. Ask the customer for real names as written in their passports — never invent them. Values already provided are kept; you may send only the changed slots. Validation errors come back per field with the slot they belong to.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Email address the confirmation and e-tickets are sent to."
+          },
+          "phone": {
+            "type": "string",
+            "description": "Mobile number for travel updates (required on some sites)."
+          },
+          "passengers": {
+            "type": "array",
+            "description": "One entry per passenger slot from passenger_requirements.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "slot": {
+                  "type": "string",
+                  "description": "Slot id from passenger_requirements (e.g. \"1234__1\")."
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Full name (first and last) as in the passport."
+                },
+                "nationality": {
+                  "type": "string",
+                  "description": "ISO 3166-1 alpha-2 country code, e.g. GB."
+                },
+                "date_of_birth": {
+                  "type": "string",
+                  "description": "YYYY-MM-DD — only when the slot lists it."
+                },
+                "title": {
+                  "type": "string",
+                  "description": "MR, MRS, MS, MISS or MSTR — only when the slot lists it."
+                },
+                "passport_number": {
+                  "type": "string",
+                  "description": "Only when the slot lists it."
+                },
+                "passport_expiry_date": {
+                  "type": "string",
+                  "description": "YYYY-MM-DD — only when the slot lists it."
+                },
+                "gender": {
+                  "type": "string",
+                  "description": "male, female or other — only when the slot lists it."
+                }
+              },
+              "required": [
+                "slot"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "additional_fields": {
+            "type": "object",
+            "description": "Values for entries of passenger_requirements.additional_fields, keyed by their name.",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "seychellesbookings.com",
+  "source": "webmcp.com/api/directory.json"
+}

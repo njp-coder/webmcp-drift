@@ -1,0 +1,309 @@
+{
+  "sponsio": 1,
+  "url": "https://kyun.sh/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "kyun_confirm_order",
+      "description": "Confirm and execute a Kyun draft order.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "orderId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "orderId"
+        ]
+      }
+    },
+    {
+      "name": "kyun_create_add_ip_order",
+      "description": "Create a draft order for allocating an additional IPv4 address.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "serviceType": {
+            "type": "string",
+            "enum": [
+              "danbo",
+              "mesa"
+            ]
+          },
+          "serviceId": {
+            "type": "string"
+          },
+          "idempotencyKey": {
+            "type": "string",
+            "description": "Optional idempotency key. Kyun generates one in the browser when omitted."
+          }
+        },
+        "required": [
+          "serviceType",
+          "serviceId"
+        ]
+      }
+    },
+    {
+      "name": "kyun_create_resize_order",
+      "description": "Create a draft order for resizing a Danbo or Mesa VM service.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "serviceType": {
+            "type": "string",
+            "enum": [
+              "danbo",
+              "mesa"
+            ]
+          },
+          "serviceId": {
+            "type": "string"
+          },
+          "idempotencyKey": {
+            "type": "string",
+            "description": "Optional idempotency key. Kyun generates one in the browser when omitted."
+          },
+          "cores": {
+            "type": "integer"
+          },
+          "ram": {
+            "type": "number"
+          },
+          "disk": {
+            "type": "integer"
+          },
+          "allowRestart": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "serviceType",
+          "serviceId",
+          "cores",
+          "ram",
+          "disk"
+        ]
+      }
+    },
+    {
+      "name": "kyun_create_service_order",
+      "description": "Create a draft order for a Danbo, Mesa, or Brick service.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "serviceType": {
+            "type": "string",
+            "enum": [
+              "danbo",
+              "mesa",
+              "bricks"
+            ]
+          },
+          "idempotencyKey": {
+            "type": "string",
+            "description": "Optional idempotency key. Kyun generates one in the browser when omitted."
+          },
+          "body": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "serviceType",
+          "body"
+        ]
+      }
+    },
+    {
+      "name": "kyun_create_unsuspend_order",
+      "description": "Create a draft order to pay outstanding balance and unsuspend a service.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "serviceType": {
+            "type": "string",
+            "enum": [
+              "danbo",
+              "mesa",
+              "bricks"
+            ]
+          },
+          "serviceId": {
+            "type": "string"
+          },
+          "idempotencyKey": {
+            "type": "string",
+            "description": "Optional idempotency key. Kyun generates one in the browser when omitted."
+          }
+        },
+        "required": [
+          "serviceType",
+          "serviceId"
+        ]
+      }
+    },
+    {
+      "name": "kyun_get_account",
+      "description": "Return the authenticated Kyun account summary.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "kyun_get_service",
+      "description": "Get canonical details for one owned Kyun service.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "serviceType": {
+            "type": "string",
+            "enum": [
+              "danbo",
+              "mesa",
+              "bricks"
+            ]
+          },
+          "serviceId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "serviceType",
+          "serviceId"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "kyun_list_docs",
+      "description": "Return the Kyun v2 documentation and OpenAPI URLs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "kyun_list_services",
+      "description": "List owned Kyun services of a given type.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "serviceType": {
+            "type": "string",
+            "enum": [
+              "danbo",
+              "mesa",
+              "bricks"
+            ]
+          },
+          "search": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "serviceType"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "kyun_power_service",
+      "description": "Start, stop, shut down, or reboot a Danbo or Mesa VM service.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "serviceType": {
+            "type": "string",
+            "enum": [
+              "danbo",
+              "mesa"
+            ]
+          },
+          "serviceId": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "start",
+              "stop",
+              "shutdown",
+              "reboot"
+            ]
+          }
+        },
+        "required": [
+          "serviceType",
+          "serviceId",
+          "action"
+        ]
+      }
+    },
+    {
+      "name": "kyun_v2_get_operation",
+      "description": "Return full details for one Kyun v2 OpenAPI operation by operationId, including method, path, and input schema.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "operationId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "operationId"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "kyun_v2_search_operations",
+      "description": "Search the current Kyun v2 OpenAPI operation catalog. Use this to discover less-common v2 endpoints, then call the API directly.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Optional case-insensitive search across operation id, method, path, summary, description, and tags."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "description": "Maximum operations to return. Defaults to 25."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "kyun.sh",
+  "source": "webmcp.com/api/directory.json"
+}

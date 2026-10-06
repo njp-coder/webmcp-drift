@@ -1,0 +1,126 @@
+{
+  "sponsio": 1,
+  "url": "https://datacampus.fr/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "datacampus_estimate_configuration",
+      "description": "Estime un dimensionnement et un tarif Datacampus pour un projet, avec empreinte CO2 et eau.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "product",
+          "usage"
+        ],
+        "properties": {
+          "product": {
+            "type": "string",
+            "enum": [
+              "vps",
+              "cloud",
+              "colocation"
+            ]
+          },
+          "usage": {
+            "type": "string",
+            "description": "Type d'usage (wordpress, nextcloud, gitlab, api...)"
+          },
+          "users": {
+            "type": "integer",
+            "description": "Utilisateurs simultanes"
+          },
+          "storage_gb": {
+            "type": "integer"
+          },
+          "options": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "backup",
+                "ha",
+                "varnish",
+                "monitoring"
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "datacampus_get_company_info",
+      "description": "Informations corporate Datacampus : raison sociale, mission, certifications, datacenter, equipe.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "datacampus_get_offering_details",
+      "description": "Detaille une offre Datacampus identifiee par son slug.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "offering_id"
+        ],
+        "properties": {
+          "offering_id": {
+            "type": "string",
+            "description": "Slug de l'offre"
+          }
+        }
+      }
+    },
+    {
+      "name": "datacampus_list_offerings",
+      "description": "Liste les offres d'hebergement Datacampus (VPS, Cloud, applications open source, colocation).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "enum": [
+              "vps",
+              "cloud",
+              "applications",
+              "colocation",
+              "services"
+            ],
+            "description": "Filtre par categorie"
+          }
+        }
+      }
+    },
+    {
+      "name": "datacampus_recommend_offering",
+      "description": "Recommande l'offre Datacampus la plus adaptee a un besoin decrit en langage naturel.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "description"
+        ],
+        "properties": {
+          "description": {
+            "type": "string",
+            "description": "Description libre du besoin"
+          },
+          "team_size": {
+            "type": "integer",
+            "description": "Taille de l'equipe / nombre d'utilisateurs"
+          },
+          "managed": {
+            "type": "boolean",
+            "description": "Preference pour de l'infogere"
+          }
+        }
+      }
+    }
+  ],
+  "host": "datacampus.fr",
+  "source": "webmcp.com/api/directory.json"
+}

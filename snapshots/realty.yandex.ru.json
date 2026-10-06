@@ -1,0 +1,179 @@
+{
+  "sponsio": 1,
+  "url": "https://realty.yandex.ru/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "GetOffersData",
+      "description": "Получает подробные данные по списку объявлений: характеристики, описание, фотографии, планировки и другие\nдоступные сведения. Используй для изучения или сравнения конкретных объявлений.\n\nПередавай offer_ids — массив строковых ID объявлений (не более 20 за один вызов).\nБери ID из result.response.topOfferIds ответа search, из ссылок на объявления /offer/<id>/ на странице или из\nссылок пользователя.\nНе придумывай ID и не подставляй вместо них ID ЖК, гео-объектов или AI-фильтра.\nНе преобразовывай ID в числа: это может привести к потере точности.\n\nВозвращает полный ответ GetOffersData без изменения структуры:\n- При result.$case = \"response\" в result.response.offersData находится массив Markdown-текстов с подробностями\nобъявлений.\n- При result.$case = \"emptyResponse\" сообщение находится в result.emptyResponse.message.\nСтраницу не меняет. Для поиска объявлений по условиям используй search.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "offer_ids": {
+            "description": "ID объявлений из ссылок /offer/<id>/. Передавай строками, без преобразования в число.",
+            "items": {
+              "pattern": "^[1-9][0-9]{0,19}$",
+              "type": "string"
+            },
+            "maxItems": 20,
+            "minItems": 1,
+            "type": "array",
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "offer_ids"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "ResolveEntities",
+      "description": "Нормализует гео-объекты перед вызовом search: города, регионы, районы, улицы, дома, ЖК, застройщиков, метро,\nлинии метро, шоссе, ж/д станции, топонимы и границы (МКАД, КАД), POI и ориентиры (парки, ТЦ, школы).\nВозвращает варианты с названиями, адресами, типами, scope и searchParams. Страницу не меняет.\n\nПередавай массив requests. В каждом объекте:\n- text — название гео-объекта или ориентира из запроса пользователя;\n- types — возможные типы сущности (необязательно, без ограничения — все типы);\n- rgid — известный ID региона (необязательно, без него поиск по всем регионам).\n\nТипы для поиска:\n- GEO — регионы, города, районы, топонимы, неформальные гео-объекты и границы;\n- METRO — станции и линии метро, включая строящиеся станции;\n- HIGHWAY — шоссе;\n- STREET — улицы;\n- HOUSE — дома;\n- NEWBUILDING — жилые комплексы;\n- DEVELOPER — застройщики;\n- RAILWAY_STATION — ж/д станции и вокзалы;\n- POI — конкретные места: парки, ТЦ, школы, памятники, достопримечательности.\n\nСначала нормализуй город или регион отдельным запросом без rgid и получи его rgid из searchParams.\nЗатем ищи остальные объекты с этим rgid. Не придумывай ID и не подставляй ID Яндекс.Карт вместо ID Недвижимости.\nПри известном регионе не добавляй его в text: «улица Ленина» с rgid Санкт-Петербурга,\nа не «улица Ленина, Санкт-Петербург».\n\nВозвращает полный ответ ResolveEntitiesV2 без изменения структуры. responses соответствует requests по порядку.\nВ каждом элементе responses находится result:\n- При result.$case = \"response\" варианты находятся в result.response.entries.\n- При result.$case = \"emptyResponse\" сообщение находится в result.emptyResponse.message.\nИз entries выбери не более одного варианта для каждого пользовательского гео-объекта: наиболее подходящий\nили ничего. При неоднозначности уточни у пользователя. Не смешивай варианты разных одноимённых объектов.\n\nПереноси значения из searchParams выбранного варианта в инструмент search:\n- rgid — в параметр rgid верхнего уровня;\n- остальные поля (districtId, toponymId, metroGeoId, metroLineId, directionId, railwayStationId,\n  newbuildingId, developerId и другие) — в логическое выражение query;\n- unifiedAddress — для поиска именно на указанной улице или в доме;\n- nearBoundingBox вместе с nearBoundingBoxKm — для поиска рядом с улицей, домом или ориентиром.\nСтроковые значения с пробелами и специальными символами заключай в кавычки по правилам query инструмента search.\nИспользуй значения из ответа без изменения идентификаторов и координат.",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "requests": {
+            "description": "Гео-объекты для нормализации. Ответы возвращаются в том же порядке.",
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "rgid": {
+                  "description": "Известный ID региона. Если не передан, поиск производится по всем регионам.",
+                  "pattern": "^[1-9][0-9]{0,18}$",
+                  "type": "string"
+                },
+                "text": {
+                  "description": "Название объекта. Не добавляй название региона, если передаёшь rgid.",
+                  "maxLength": 1000,
+                  "minLength": 1,
+                  "pattern": "\\S",
+                  "type": "string"
+                },
+                "types": {
+                  "description": "Возможные типы объекта. Если не переданы, поиск по всем типам.",
+                  "items": {
+                    "enum": [
+                      "GEO",
+                      "METRO",
+                      "HIGHWAY",
+                      "STREET",
+                      "HOUSE",
+                      "NEWBUILDING",
+                      "DEVELOPER",
+                      "RAILWAY_STATION",
+                      "POI"
+                    ],
+                    "type": "string"
+                  },
+                  "maxItems": 9,
+                  "type": "array",
+                  "uniqueItems": true
+                }
+              },
+              "required": [
+                "text"
+              ],
+              "type": "object"
+            },
+            "maxItems": 20,
+            "minItems": 1,
+            "type": "array"
+          }
+        },
+        "required": [
+          "requests"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "search",
+      "description": "Ищет недвижимость по гибкому логическому выражению и открывает страницу результатов в текущей вкладке. Возвращает\nполный ответ GetSearchQuerySummary в camelCase без изменения структуры, добавляя url выдачи. Создаёт сохранённый\nAI-фильтр. Фильтры\nтекущей страницы заменяются параметрами этого поиска. Регион текущей страницы используется, если rgid не передан.\n\n# Ответ\nНа верхнем уровне находятся dateTime, result и url.\n- При result.$case = \"response\" данные находятся в result.response: count, searchQuery, aiFilterId,\n  topOfferIds и stats со всеми вложенными полями.\n- При result.$case = \"emptyResponse\" данные находятся в result.emptyResponse: message, searchQuery,\n  aiFilterId и emptySearchSuggests.\nresult.response.topOfferIds можно передать в GetOffersData, чтобы получить подробности объявлений.\n\n# СТРОГИЕ ПРАВИЛА JSON (CRITICAL):\nНа верхнем уровне JSON-объекта разрешены ТОЛЬКО эти ключи:\n1. offer_type\n2. category\n3. rent_time\n4. rgid\n5. sort\n6. query\n7. search_title\n\nЛЮБЫЕ другие параметры (yandexRent, price, area, newFlat, withPets и т.д.) ЗАПРЕЩЕНО писать отдельными ключами\nJSON. Они ОБЯЗАНЫ быть записаны внутри строки \"query\" в формате \"key operator value\".\n\n# Параметры (ключи верхнего уровня)\noffer_type (обязательный, string): Тип сделки.\n- SELL — продажа\n- RENT — аренда\ncategory (обязательный, string): Категория недвижимости.\n- APARTMENT — квартира\n- ROOMS — комната\n- HOUSE — загородный дом с участком\n- LOT — участок без дома (для домов с участками нужно использовать HOUSE)\n- COMMERCIAL — коммерческая недвижимость\n- GARAGE — гараж, машиноместо\nrent_time (обязательный при offer_type=RENT, string): Длительность аренды.\n- RENT_TIME_SHORT - краткосрочная/суточная аренда\n- RENT_TIME_LARGE - долгосрочная аренда (используется по умолчанию)\nrgid (опциональный, string): ID региона Недвижимости. По умолчанию — регион текущей страницы. Не придумывай ID\nрегионов, метро, районов и ЖК. Получай их через ResolveEntities: rgid из searchParams передавай на верхнем\nуровне, остальные гео-параметры — внутри query.\nsort (опциональный, string): Параметр сортировки.\nquery (опциональный, string): Строка с логическим выражением для детальной фильтрации. **Большинство фильтров\nуказываются именно здесь**. См. подробную инструкцию ниже.\nsearch_title (ОБЯЗАТЕЛЬНЫЙ, string): Краткое человекочитаемое описание поискового запроса на русском — то, что\nпользователь ищет, одной строкой. Собирай его из ключевых параметров: комнатность, локация, бюджет, важные фильтры.\nБез технических ID и латинских имён полей.\n- Например: \"2-комнатная квартира в Санкт-Петербурге до 45 000 без депозита\"\n- Например: \"Новостройка в пределах МКАД до 30 млн в ипотеку\"\n\n# Инструкция по формированию query (Язык поисковых запросов)\nЭто самый важный параметр для точного поиска. Внимательно следуй этим правилам.\n\n**Золотые правила** query\n1. Синтаксис фильтра: имя_поля оператор значение. Например: price >= 10000000.\n2. Операторы в фильтрах: =, !=, >, <, >=, <=, IN, NOT IN (ОЧЕНЬ ВАЖНО - не все фильтры поддерживают полный список\nоператоров).\n3. Логические операторы: Фильтры объединяются с помощью AND, OR, NOT.\n4. ПРАВИЛО СКОБОК (САМОЕ ВАЖНОЕ!): Если в запросе используется оператор OR, **вся группа с OR ДОЛЖНА быть заключена\nв круглые скобки** (...). Это правило абсолютно и не имеет исключений.\n- Неправильно: roomsTotal = 1 OR roomsTotal = 2 AND price <= 15000000\n- Правильно: (roomsTotal = 1 OR roomsTotal = 2) AND price <= 15000000\n- Правильно: (buildingClass = BUSINESS OR buildingClass = COMFORT_PLUS)\n- Правильно: price <= 20000000 AND (buildingType = BRICK OR buildingType = MONOLIT)\n5. Приоритет операторов: ( ) -> NOT -> AND -> OR.\n6. Значения нужно брать в кавычки, если в них есть пробелы или специальные символы:\n- Например: name = 'JOHN SMITH'\n\nКРИТИЧЕСКИ ВАЖНОЕ ПРАВИЛО СИНТАКСИСА:\n\nЛюбая конструкция с OR должна быть ИЗОЛИРОВАНА скобками.\nЗАПРЕЩЕНО: A AND B OR C AND D\nРАЗРЕШЕНО: (A AND B) OR (C AND D)\n  \nЕсли есть сомнения — ставь ЛИШНИЕ скобки.\n(A AND B AND C) — лучше, чем просто A AND B AND C.\n\nРАЗРЕШЕННЫЕ ОПЕРАТОРЫ В ФИЛЬТРАХ:\nДля фильтров: area, price, kitchenSpace, livingSpace, lotArea, ceilingHeight, floor, floors, builtYear, roomsTotal,\ncreateTime разрешены все операторы.\nДля фильтра metroTransport разрешен только оператор =.\nДля фильтра timeToMetro разрешен только оператор <=.\nДля фильтра nearBoundingBox и nearBoundingBoxKm разрешен только оператор =.\nДля всех остальных фильтров разрешены операторы: =, !=, IN, NOT IN.\n\n# СПРАВОЧНИК ДОСТУПНЫХ ФИЛЬТРОВ ДЛЯ **query**. Эти параметры могут использоваться ТОЛЬКО внутри выражения \"query\"\n## 1. Основные (Цена, Площадь, Комнаты)\n\n- price (float): цена в рублях.\n- area (float): общая площадь в кв. метрах.\n- livingSpace (float): жилая площадь в кв. метрах.\n- kitchenSpace (float): площадь кухни в кв. метрах.\n- roomsTotal (string): Количество комнат.\n- studio (string): Является ли квартира студией? YES или NO.\n- apartments (string): Апартаменты? YES или NO.\n   \n## 2. Расположение и География\n\n- districtId (long): ID района.\n- toponymId (long): ID топонима. Фильтрует объявления по принадлежности к территории топонима — т.е. объект\nнаходится внутри/в пределах данного топонима. Топонимами могут быть: микрорайоны, кварталы, кольцевые дороги (МКАД,\nТТК, КАД) и другие именованные географические области. Используй только известный ID топонима; не придумывай его.\n- rgid можно использовать здесь, если нужно комбинировать с OR (хотя это редкий случай).\n- metroGeoId (int): ID станции метро.\n- metroLineId (string): ID ветки метро.\n- timeToMetro (int): Время до метро пешком в минутах.\n- metroTransport: (string): Тип расчёта времени до метро: ON_FOOT (пешком), ON_TRANSPORT (на транспорте).\n- directionId (long): ID шоссе.\n- railwayStationId (long): ID ж/д станции.\n- nearbyPoiType (string): Наличие объекта инфраструктуры поблизости. Значения: POLYCLINIC (поликлиника), SCHOOL\n(школа), KINDERGARTEN (детский сад), GYM (тренажерный/фитнес зал),\nPOOL (бассейн), PHARMACY (аптека), POINT_OF_DELIVERY (пункт выдачи заказов), SUPERMARKET (магазин), PLAYGROUND\n(детская площадка), PUBLIC_TRANSPORT_STOP (остановки общественного транспорта)\n- hasPark (string): есть ли рядом парк?  YES / NO.\n- hasPond (string): есть ли рядом водоем?  YES / NO.\n- unifiedAddress (string): Конкретный (ЭТО ВАЖНО) адрес дома или улицы в строковом формате. Не использовать это\nфильтр для адресов чего-то, отличного от дома или улицы!\n- nearBoundingBox (string): Bounding box для поиска рядом. Формат: 'minLon, minLat, maxLon, maxLat'.\n- nearBoundingBoxKm (int): Параметр для расширения nearBoundingBox на нужное расстояние.\n\n## 3. Характеристики Здания и Квартиры\n\n- builtYear (int): год постройки.\n- floors (int): Количество этажей в доме.\n- floor (int): этаж квартиры.\n- lastFloor (string): Квартира на последнем этаже? YES или NO.\n- buildingType (string): Материал стен. Значения: BRICK (кирпичный), MONOLIT (монолитный),\nMONOLIT_BRICK (блочно-монолитный), PANEL (панельный), WOOD (деревянный),\nBLOCK (блочный), METAL (металлический), FERROCONCRETE (железобетонный)\n- buildingClass (string): Класс ЖК. Значения: ECONOM, COMFORT, COMFORT_PLUS, BUSINESS, ELITE.\n- buildingEpoch (string): Эпоха постройки. Значения: STALIN (сталинка), KHRUSHCHEV (хрущевка), BREZHNEV (брежневка).\n- ceilingHeight (float): Высота потолков в метрах.\n- renovation (string): Тип ремонта. Значения: COSMETIC_DONE (косметический), DESIGNER_RENOVATION (дизайнерский),\nEURO (евроремонт). Фильтр по типу ремонта актуален для квартир вторички. Для первичной продажи нужно использовать\nфильтр decoration (отделка).\n- hasRenovation (string): YES (есть ремонт/отделка) / NO (без ремонта/отделки). Фильтр можно использовать для любых\nквартир (вторичка/новостройка).\n- decoration (string): ROUGH (черновая), PRE_CLEAN (предчистовая), CLEAN (чистовая). Фильтр используется только для\nквартир в новостройке. Для квартир во вторичке используется фильтр renovation (ремонт).\n- bathroomUnit (string): Санузел. Значения: MATCHED (смежный), SEPARATED (раздельный), TWO_AND_MORE (2 и более).\n- balcony (string): Балкон/лоджия. Значения: BALCONY, LOGGIA.\n\n## 4. Удобства и Особенности\n\nhasFurniture (string): Есть мебель? YES / NO.\nhasInternet (string): Есть интернет? YES / NO.\nhasRefrigerator (string): Есть холодильник? YES / NO.\nhasWashingMachine (string): Есть стиральная машина? YES / NO.\nhasTelevision (string): есть ли телевизор. Возможные значения: YES, NO.\nhasDishwasher (string): есть ли посудомоечная машина. Возможные значения: YES, NO.\nhasAirConditioner (string): есть ли кондиционер. Возможные значения: YES, NO.\nparkingType (string): Тип парковки. Значения: OPEN, CLOSED, UNDERGROUND.\nhasPhoto (string): Есть фотографии? YES / NO.\nhasVirtualTour (string): Есть 3D-тур? YES / NO.\nhasGasSupply (string): Есть ли газоснабжение? YES / NO.\nhasHeatingSupply (string): Есть ли отопление? YES / NO. \nhasElectricitySupply (string): Есть электричество? YES / NO. \nhasLift (string): Есть ли в доме лифт? YES / NO.\n\n## 5. Параметры Сделки и Объявления\n\n- createTime (string): время создания объявления (формат: YYYY-MM-DD HH:MM:SS).\n- newbuildingId (long): ID новостройки/ЖК.\n- developerId (long): ID застройщика.\n- hasInstallment (string): Есть рассрочка? YES / NO.\n- yandexRent (string): Объявление от Яндекс.Аренды? YES / NO.\n- tag (long): Поиск по ID тега из описания. Про список тэгов ниже.\n\n## 6. Фильтры для конкретных категорий и типов сделок\n\nДля offer_type: SELL и category: APARTMENT:\n- newFlat (string): Новостройка (YES) или вторичка (NO). Важный параметр для продажи квартир (type=SELL и\ncategory=APARTMENT)! Если пользователь уточняет, что ему нужна вторичка или новостройка, то обязательно используй\nфильтр newFlat.\n\nДля offer_type: RENT\n- withPets (string): Можно с животными? YES / NO.\n- withChildren (string): Можно с детьми? YES / NO.\n- hasAgentFee (string): Есть комиссия агенту? YES / NO.\n- rentPledge (string): Есть залог? YES / NO.\n- agents (string): Объявление от агента? YES / NO.\n\nДля category: HOUSE и category: LOT\n- lotArea (float): Площадь участка в сотках.\n\nДля category: HOUSE\n- houseType (string): Тип дома. Значения: HOUSE, TOWNHOUSE, DUPLEX.\n\nДля category: COMMERCIAL\n- commercialType (string): Тип коммерческой недвижимости. Значения: OFFICE, RETAIL, WAREHOUSE и т.д.\n\nДля category: GARAGE\n- garageType (string): Тип гаража. Значения: GARAGE, BOX, PARKING_PLACE.\n\nСписок тэгов (tag) в формате id - название:\n1794253 - дача\n1794384 - сад\n4178343 - спортплощадка\n1996639 - кровать\n2961860 - прописка\n1794425 - торг\n1794349 - ванна\n1794254 - коттедж\n1794322 - у реки\n1794367 - камин\n1794368 - бассейн\n1794315 - у моря\n1794332 - возле берега\n1794345 - баня\n1794320 - у пруда\n4178351 - возле набережной\n1794375 - техника\n1794357 - гардероб\n1794331 - у озера\n1794346 - сауна\n1794369 - терраса\n1794463 - лофт\n1794266 - деревня\n4178356 - кухня-гостиная\n1794355 - подвал\n4178492 - кабинет\n1794376 - цоколь\n4178427 - стадион\n1794407 - обмен\n1794354 - кладовая\n1794359 - шумоизоляция\n1794351 - веранда\n2961912 - брус\n1996590 - джакузи\n1794335 - залив\n1794427 - субаренда\n1794382 - душевая\n4178445 - библиотека\n1794567 - пентхаус\n1794365 - паркет\n1794372 - мансарда\n1794370 - чердак\n1794356 - погреб\n1794350 - беседка\n1794366 - причал\n4178469 - лобби\n1794314 - колодец\n4178439 - ламинат\n4178497 - керамогранит",
+      "kind": "imperative",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "category": {
+            "description": "Квартира, комната, дом с участком, участок без дома, коммерческая недвижимость, гараж.",
+            "enum": [
+              "APARTMENT",
+              "ROOMS",
+              "HOUSE",
+              "LOT",
+              "COMMERCIAL",
+              "GARAGE"
+            ],
+            "type": "string"
+          },
+          "offer_type": {
+            "description": "SELL — продажа, RENT — аренда.",
+            "enum": [
+              "SELL",
+              "RENT"
+            ],
+            "type": "string"
+          },
+          "query": {
+            "description": "Логическое выражение по правилам из описания инструмента.",
+            "maxLength": 10000,
+            "type": "string"
+          },
+          "rent_time": {
+            "description": "Только для RENT. SHORT — посуточно, LARGE — долгосрочно (по умолчанию).",
+            "enum": [
+              "RENT_TIME_SHORT",
+              "RENT_TIME_LARGE"
+            ],
+            "type": "string"
+          },
+          "rgid": {
+            "description": "ID региона Недвижимости. Если не указан, используется регион текущей страницы. Не придумывай ID.",
+            "pattern": "^[1-9][0-9]{0,19}$",
+            "type": "string"
+          },
+          "search_title": {
+            "description": "Краткое название поиска на русском: локация, бюджет, комнаты, важные условия. Без технических ID.",
+            "maxLength": 500,
+            "minLength": 1,
+            "pattern": "\\S",
+            "type": "string"
+          },
+          "sort": {
+            "description": "Передавай только если пользователь явно попросил сортировку.",
+            "enum": [
+              "RELEVANCE",
+              "PRICE_ASC",
+              "PRICE_DESC",
+              "PRICE_PER_SQUARE_ASC",
+              "PRICE_PER_SQUARE_DESC",
+              "CREATION_DATE_ASC",
+              "CREATION_DATE_DESC",
+              "AREA_ASC",
+              "AREA_DESC",
+              "FLOOR_ASC",
+              "FLOOR_DESC",
+              "LOT_AREA_ASC",
+              "LOT_AREA_DESC",
+              "LIVING_SPACE_ASC",
+              "LIVING_SPACE_DESC",
+              "KITCHEN_SPACE_ASC",
+              "KITCHEN_SPACE_DESC"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "offer_type",
+          "category",
+          "search_title"
+        ],
+        "type": "object"
+      }
+    }
+  ],
+  "host": "realty.yandex.ru",
+  "source": "webmcp.com/api/directory.json"
+}

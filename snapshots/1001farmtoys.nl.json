@@ -1,0 +1,258 @@
+{
+  "sponsio": 1,
+  "url": "https://1001farmtoys.nl/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "addToCart",
+      "description": "Add a product to THIS shopper's 1001FarmToys cart by product id. Asks the shopper to confirm before adding anything, and returns the updated cart. Does not check out.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "integer",
+            "description": "Numeric product id from searchProducts/getProductDetails."
+          },
+          "quantity": {
+            "type": "integer",
+            "description": "Quantity to add, 1-99 (default 1)."
+          }
+        },
+        "required": [
+          "productId"
+        ]
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "getCartContents",
+      "description": "Return the items in THIS shopper's cart (name, chosen quantity, price incl. VAT), the item count, the subtotal, any automatic discounts that currently apply (e.g. the 'Speelgoed actie' quantity discount for 2+ Siku/Bruder items) and the discounted subtotal. May also include 'offers' nudges (e.g. add one more Siku/Bruder item, or spend a little more, to unlock a promo). Excludes shipping, which is calculated at checkout. Session-scoped; contains no personal data.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "getCheckoutUrl",
+      "description": "Return the URL where the shopper completes checkout on 1001FarmToys (the site's own checkout page), plus the current cart summary. Use this to hand the shopper off to finish their order themselves — this tool does NOT check out and collects no address or payment details.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "getFilterOptions",
+      "description": "Describe the filters searchProducts accepts (age bands, part-count bands, price range, in-stock) and their allowed values.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "getNewArrivals",
+      "description": "List the newest 1001FarmToys products, newest first. Optionally pass a 'category' (a toy section from the enum, e.g. LEGO, Playmobil, Bruder, Siku) to scope to that section and all its sub-categories; omit it for the whole toy shop.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "enum": [
+              "Algemeen",
+              "Brightz",
+              "Brightz LED Light Fun",
+              "Britains",
+              "Britains / Ertl",
+              "Bruder",
+              "DUPLO",
+              "Gebouw Kids Globe",
+              "Gebouwen / Toebehoren",
+              "John",
+              "Kinder",
+              "Kinder Gereedschap",
+              "Klein",
+              "Knuffels",
+              "LEGO",
+              "Peg-Perego",
+              "Playmobil",
+              "Rolly Toys",
+              "Siku",
+              "Skip-Hop",
+              "Toddys by Siku",
+              "Uitverkoop",
+              "Wiking"
+            ],
+            "description": "Toy category or sub-category to scope to. Omit for the whole shop."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Max products, 1-24 (default 24)."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "getProductDetails",
+      "description": "Get full details for one 1001FarmToys product, looked up by numeric productId, model code, or EAN barcode. Returns price, model, mpn, EAN, availability, description and link. productId and model are unique to 1001FarmToys, so each identifies exactly one product. EAN is the global barcode (GTIN) and is usually unique but can occasionally be shared across listings — when shared, the primary match is returned. The response also includes the manufacturer part number (mpn), but mpn is NOT a lookup key here because manufacturer part numbers can collide across brands.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "integer",
+            "description": "Numeric product id (unique to 1001FarmToys)."
+          },
+          "model": {
+            "type": "string",
+            "description": "1001FarmToys model code, e.g. 'LE60304' (unique to this shop)."
+          },
+          "ean": {
+            "type": "string",
+            "description": "EAN / barcode (GTIN), digits only, e.g. '4006485928927'."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "getStoreInfo",
+      "description": "Get orientation facts about the 1001FarmToys store: what it specialises in (LEGO and Playmobil — complete collection in stock; Siku & Bruder scale tractors/trucks/cars; Rolly Toys & Peg-Perego outdoor toys), that it's a webshop with next-day delivery AND a physical store in Beesd, NL (next to the A2 motorway, free parking, full collection on display with toy dioramas), plus currency, homepage URL, current promotions and policy links. Read-only; no personal data.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "listCategories",
+      "description": "Browse the 1001FarmToys category tree. With no argument it returns the shop's top-level sections (LEGO, Playmobil, Bruder, Siku, ...); pass a category id as 'parent' to list its sub-categories. Each result has id, name and has_children (whether you can drill in further). Use a category id as the 'category' filter in searchProducts.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "parent": {
+            "type": "integer",
+            "description": "Category id to list children of. Omit for the top-level sections."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "searchProducts",
+      "description": "Search the 1001FarmToys catalog (LEGO, Playmobil and farm toys). Returns matching products with price (EUR incl. VAT), EAN, stock availability (in_stock/out_of_stock) and a link. Narrow with the optional filters, order with 'sort' (relevance/price/newest), and page through results with 'offset' (the response's 'more_available' flag says whether another page exists).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search keywords, e.g. 'lego city politie'."
+          },
+          "category": {
+            "type": "integer",
+            "description": "categories_id from listCategories (optional)."
+          },
+          "age": {
+            "type": "integer",
+            "enum": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ],
+            "description": "Age band: 0=1-2, 1=3-5, 2=6-8, 3=9-11, 4=12+."
+          },
+          "parts": {
+            "type": "integer",
+            "enum": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "description": "Part-count band (see getFilterOptions)."
+          },
+          "min_price": {
+            "type": "number",
+            "description": "Minimum price in EUR incl. VAT."
+          },
+          "max_price": {
+            "type": "number",
+            "description": "Maximum price in EUR incl. VAT."
+          },
+          "in_stock": {
+            "type": "boolean",
+            "description": "If true, only return in-stock products."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Max results, 1-24 (default 12)."
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "relevance",
+              "price_asc",
+              "price_desc",
+              "newest"
+            ],
+            "description": "Result order (default relevance)."
+          },
+          "offset": {
+            "type": "integer",
+            "description": "Skip this many results for pagination, 0-240 (default 0)."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "siteSearch",
+      "description": "Open the 1001FarmToys search results page for a keyword, so the shopper sees the live, filterable listing (LEGO, Playmobil, Bruder, Siku, Rolly Toys). This navigates the browser to the results page. To get structured product data back - price, EAN, stock availability - call searchProducts instead.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "keyword": {
+            "type": "string",
+            "description": "Waar ben je naar op zoek?"
+          }
+        }
+      }
+    }
+  ],
+  "host": "1001farmtoys.nl",
+  "source": "webmcp.com/api/directory.json"
+}

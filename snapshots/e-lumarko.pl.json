@@ -1,0 +1,259 @@
+{
+  "sponsio": 1,
+  "url": "https://e-lumarko.pl/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "do_darmowej_dostawy",
+      "description": "Sprawdza sume I WAGE koszyka. Darmowa dostawa obejmuje jedna przesylke do 30 kg - powyzej tego klient doplaca wedlug cennika wagowego.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prog_pln": {
+            "type": "number",
+            "description": "Prog darmowej dostawy w PLN (opcjonalnie)"
+          }
+        },
+        "required": []
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "dodaj_do_koszyka",
+      "description": "Dodaje produkt do koszyka klienta. Podaj id produktu (z szukaj_produktow) i ilosc. WAZNE: to akcja modyfikujaca koszyk — wykonaj po potwierdzeniu przez klienta.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id_produktu": {
+            "type": "string",
+            "description": "Id produktu (pole id z szukaj_produktow)"
+          },
+          "ilosc": {
+            "type": "integer",
+            "description": "Ilosc sztuk (domyslnie 1)"
+          }
+        },
+        "required": [
+          "id_produktu"
+        ]
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "pokaz_koszyk",
+      "description": "Zwraca aktualna zawartosc koszyka klienta: pozycje, ilosci, ceny i sume.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "pokaz_opinie",
+      "description": "Zwraca opinie/oceny klientow dla produktu (social proof). Podaj URL produktu.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "URL produktu"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "pokaz_produkt",
+      "description": "Pobiera szczegoly produktu po jego adresie URL (z wyniku szukaj_produktow): nazwa, cena, dostepnosc, opis, parametry/wymiary, zdjecia.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "Pelny adres URL strony produktu (pole url z szukaj_produktow)"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "polec_produkty",
+      "description": "Zwraca produkty powiazane i polecane do danego produktu (cross-sell / up-sell), aby podniesc wartosc koszyka. Podaj URL produktu.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "URL produktu, do ktorego szukamy polecanych"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "powiadom_o_dostepnosci",
+      "description": "Kieruje klienta do formularza powiadomienia o powrocie produktu na stan. Podaj URL produktu i e-mail.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "URL produktu"
+          },
+          "email": {
+            "type": "string",
+            "description": "E-mail klienta"
+          }
+        },
+        "required": [
+          "url",
+          "email"
+        ]
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "przejdz_do_kasy",
+      "description": "Zwraca link do koszyka/kasy. Nie finalizuje zakupu.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "szukaj_produktow",
+      "description": "Wyszukuje produkty w katalogu sklepu po frazie (np. 'fotel biurowy', 'mop'). Zwraca liste: id, nazwa, cena w PLN, link i zdjecie. Uzyj gdy klient szuka produktu lub pyta czy cos macie.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "fraza": {
+            "type": "string",
+            "description": "Szukana fraza / nazwa produktu"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Ile wynikow zwrocic (domyslnie 8, max 24)"
+          }
+        },
+        "required": [
+          "fraza"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "zapytanie_hurtowe",
+      "description": "Dla klientow hurtowych: zbiera zapytanie o wieksza ilosc i kieruje do dzialu handlowego Lumarko.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "produkt": {
+            "type": "string",
+            "description": "Produkt lub lista produktow"
+          },
+          "ilosc": {
+            "type": "string",
+            "description": "Szacowana ilosc"
+          },
+          "kontakt": {
+            "type": "string",
+            "description": "E-mail lub telefon klienta"
+          }
+        },
+        "required": [
+          "produkt",
+          "kontakt"
+        ]
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "zastosuj_kod_rabatowy",
+      "description": "Probuje zastosowac kod rabatowy/promocyjny do koszyka.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "kod": {
+            "type": "string",
+            "description": "Kod rabatowy"
+          }
+        },
+        "required": [
+          "kod"
+        ]
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "zmien_ilosc",
+      "description": "Zmienia ilosc danej pozycji w koszyku (itemId z pokaz_koszyk). Ilosc 0 usuwa pozycje.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id_pozycji": {
+            "type": "string",
+            "description": "itemId pozycji koszyka"
+          },
+          "ilosc": {
+            "type": "integer",
+            "description": "Nowa ilosc (0 = usun)"
+          }
+        },
+        "required": [
+          "id_pozycji",
+          "ilosc"
+        ]
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    }
+  ],
+  "host": "e-lumarko.pl",
+  "source": "webmcp.com/api/directory.json"
+}

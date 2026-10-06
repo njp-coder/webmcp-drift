@@ -1,0 +1,61 @@
+{
+  "sponsio": 1,
+  "url": "https://soccerxpert.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "getDrillDetails",
+      "description": "Get the full details of a SoccerXpert soccer drill by its URL slug (e.g. \"4-corners-shooting\"). Returns name, description, setup image, step-by-step instructions, categories, and age groups as JSON.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "The drill URL slug, from searchDrills results or a /drills/details/{slug} URL."
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "listDrillCategories",
+      "description": "List all SoccerXpert drill categories (drill types), age groups, and their browse-page URLs. Use the returned names as searchDrills filters.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "searchDrills",
+      "description": "Search SoccerXpert soccer drills by keyword, drill type, and/or age group. Returns a JSON list of matching drills with name, URL slug, objective, and metadata. Use getDrillDetails with a returned slug for full instructions.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Keyword(s) to search drill names and descriptions for, e.g. \"passing square\"."
+          },
+          "drillType": {
+            "type": "string",
+            "description": "Optional drill type filter. One of: Dribbling, Passing, Receiving / Turning, Heading, Crossing/Finishing, Fitness, Possession, Defending, Attacking, Shooting, Goalkeeping, Warm-Up, Fun."
+          },
+          "ageGroup": {
+            "type": "string",
+            "description": "Optional age group filter. One of: u6-u8, u10-u12, u14-u16, u17+."
+          },
+          "page": {
+            "type": "integer",
+            "description": "Result page number, starting at 1 (12 drills per page)."
+          }
+        }
+      }
+    }
+  ],
+  "host": "soccerxpert.com",
+  "source": "webmcp.com/api/directory.json"
+}

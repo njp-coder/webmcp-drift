@@ -1,0 +1,225 @@
+{
+  "sponsio": 1,
+  "url": "https://steamgpt.net/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "steam_bans",
+      "description": "Steam ban status of a player: VACBanned, NumberOfVACBans, NumberOfGameBans, DaysSinceLastBan, CommunityBanned, EconomyBan - fields exactly as Steam reports them. First thing to check when reviewing a cheating report. Unresolvable ids or an unavailable upstream return an error result, never guessed data.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "any SteamID format: steamid64 (17 digits), STEAM_1:0:x, STEAM_0:0:x, [U:1:x], hex, steam:hex, a 32-bit account id, a steamcommunity.com link or a vanity name"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "steam_batch",
+      "description": "Up to 100 Steam profiles in one call. When you need several players, ALWAYS use this instead of per-player calls - one batch of 100 costs one request. Accepts any SteamID format as STRINGS - steamid64, STEAM_1:0:x, STEAM_0:0:x, [U:1:x], hex, steam:hex, a 32-bit account id or a /profiles/ link. Never send them as JSON numbers (a 17-digit number loses precision and points at another account) and note that vanity names are not supported here - resolve those with steam_identity first. Players unknown to the platform come back in not_found - fetch those with steam_profile. include can add FACEIT (one query for the batch) and Steam bans (one upstream call for the batch) - the cheapest way to review a full match roster.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 100,
+            "description": "steamid64 list, max 100 - prefer one batch over per-player calls"
+          },
+          "include": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "faceit",
+                "bans"
+              ]
+            },
+            "description": "extra blocks per player: faceit level/ELO, Steam ban status"
+          }
+        },
+        "required": [
+          "ids"
+        ]
+      }
+    },
+    {
+      "name": "steam_compare",
+      "description": "Two players side by side: identity, account age, visibility, Steam bans, FACEIT and shared friends (compared over the full friend lists). HEAVIEST tool - it builds two summaries plus both friend graphs; for a single player prefer steam_summary.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id1": {
+            "type": "string",
+            "description": "any SteamID format: steamid64 (17 digits), STEAM_1:0:x, STEAM_0:0:x, [U:1:x], hex, steam:hex, a 32-bit account id, a steamcommunity.com link or a vanity name"
+          },
+          "id2": {
+            "type": "string",
+            "description": "any SteamID format: steamid64 (17 digits), STEAM_1:0:x, STEAM_0:0:x, [U:1:x], hex, steam:hex, a 32-bit account id, a steamcommunity.com link or a vanity name"
+          }
+        },
+        "required": [
+          "id1",
+          "id2"
+        ]
+      }
+    },
+    {
+      "name": "steam_convert",
+      "description": "SteamID converter: turns one identifier into EVERY other form, instantly. Accepts steamid64, STEAM_1:0:x, STEAM_0:0:x, [U:1:x], hex (110000...), steam:hex (FiveM), a 32-bit account id or a steamcommunity.com/profiles/ link. Returns steamid64 (dec and hex), SteamID, legacy STEAM_0 form, SteamID3, account id, steam:hex and the profile URL. CHEAPEST TOOL - prefer it over steam_identity whenever you only need format conversion. Vanity names (steamcommunity.com/id/name) are not a computable format: use steam_identity for those.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "steamid64 (17 digits), STEAM_1:0:x, STEAM_0:0:x, [U:1:x], hex, steam:hex, a 32-bit account id or a /profiles/ link. NOT a vanity name"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "steam_faceit",
+      "description": "FACEIT player object (nickname, country, per-game skill level and ELO) plus known FACEIT bans. Players without a FACEIT account return an error result saying so - absence of FACEIT data is reported explicitly, never silently.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "any SteamID format: steamid64 (17 digits), STEAM_1:0:x, STEAM_0:0:x, [U:1:x], hex, steam:hex, a 32-bit account id, a steamcommunity.com link or a vanity name"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "steam_friends",
+      "description": "Known friends of a player from the platform's snapshot of the public Steam friend graph (cache only, no live Steam call; the snapshot can be partial). detail picks token cost: short - steamid64 array, medium - steamid64 + personaname, full - raw Steam objects. Use short unless you need names.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "any SteamID format: steamid64 (17 digits), STEAM_1:0:x, STEAM_0:0:x, [U:1:x], hex, steam:hex, a 32-bit account id, a steamcommunity.com link or a vanity name"
+          },
+          "detail": {
+            "type": "string",
+            "enum": [
+              "short",
+              "medium",
+              "full"
+            ],
+            "description": "response detail level, default full"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5000,
+            "description": "max friends to return, default 100"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "steam_identity",
+      "description": "Pure identifier resolver: steamid64, SteamID (STEAM_1:0:x), SteamID3 ([U:1:x]), steam hex, vanity name and profile URL. No profile data - fewest tokens. If the id cannot be resolved, returns an error result with a machine-readable message - never a partial guess.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "any SteamID format: steamid64 (17 digits), STEAM_1:0:x, STEAM_0:0:x, [U:1:x], hex, steam:hex, a 32-bit account id, a steamcommunity.com link or a vanity name"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "steam_profile",
+      "description": "Steam summary only (raw GetPlayerSummaries object + SteamID conversions). Cheapest profile tool; data no older than 48 hours, unknown profiles are fetched live from Steam. Private profiles return the public subset of fields (not an error); unresolvable ids return an error result.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "any SteamID format: steamid64 (17 digits), STEAM_1:0:x, STEAM_0:0:x, [U:1:x], hex, steam:hex, a 32-bit account id, a steamcommunity.com link or a vanity name"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "steam_summary",
+      "description": "Steam player overview in one call. presets: include=[] equals full; for competitive checks pass include [\"faceit\",\"bans\"]. Responses carry provenance.fresh and sources/partial - branch on them. Overview: Steam summary, Steam ban status (VAC/game/community), SteamID conversions, FACEIT stats and the first 100 friends. include LIMITS the response to the blocks you list: omit it for everything, [\"steam\"] for the Steam block only (cheapest), [\"bans\"] for a ban check only, [\"faceit\",\"bans\"] to drop the friend list. friends_limit caps the friend list (default 100).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "any SteamID format: steamid64 (17 digits), STEAM_1:0:x, STEAM_0:0:x, [U:1:x], hex, steam:hex, a 32-bit account id, a steamcommunity.com link or a vanity name"
+          },
+          "include": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "steam",
+                "faceit",
+                "friends",
+                "bans"
+              ]
+            },
+            "description": "restricts the response to the listed blocks; omit for bans+faceit+friends. Example: [\"bans\"] returns the Steam summary plus ban status only"
+          },
+          "friends_limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5000,
+            "description": "max friends in the response, default 100"
+          },
+          "friends_detail": {
+            "type": "string",
+            "enum": [
+              "short",
+              "medium",
+              "full"
+            ],
+            "description": "friend entry shape, default full; short/medium are much smaller"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    }
+  ],
+  "host": "steamgpt.net",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,86 @@
+{
+  "sponsio": 1,
+  "url": "https://www.rotaniciz.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "rota_list_calculators",
+      "description": "Rota OS üzerinde bulunan YKS puan hesaplama araçlarının listesini döndürür (TYT, AYT, YKS, OBP).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "rota_navigate",
+      "description": "Rota OS sitesinde bilinen bir sayfaya yönlendirir. Geçerli yollar SEO registrysinde tanımlı olanlardır (örn. /yks-puan-hesaplama, /blog, /veliler-icin).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Hedef sayfa yolu, \"/\" ile başlar (örn. /yks-puan-hesaplama)."
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    },
+    {
+      "name": "rota_open_download",
+      "description": "Rota OS uygulamasının indirme sayfasını (/indir) açar: App Store bağlantısı, ekran görüntüleri, kurulum adımları ve Android bekleme listesi. Kullanıcı uygulamayı indirmek veya denemek istediğinde bunu kullan.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "trigger": {
+            "type": "string",
+            "description": "Kaynak etiketi (örn. agent kelime veya ilgili sayfa adı). /indir?ref=webmcp:<trigger> olarak iletilir."
+          }
+        }
+      }
+    },
+    {
+      "name": "rota_open_waitlist",
+      "description": "Rota OS uygulama modalını açar: iOS'ta App Store bağlantısı, Android'de bekleme listesi, masaüstünde QR kod + linki e-postaya gönderme.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "trigger": {
+            "type": "string",
+            "description": "Kaynak etiketi (örn. agent kelime veya ilgili sayfa adı)."
+          }
+        }
+      }
+    },
+    {
+      "name": "rota_search_blog",
+      "description": "Rota OS blog posts (Turkish) hakkında anahtar kelimeyle arama yapar. YKS taktikleri, deneme analizi, net artırma konularında yazı bulur.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Aranacak anahtar kelime veya konu (Türkçe veya İngilizce)."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "default": 5
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "rotaniciz.com",
+  "source": "webmcp.com/api/directory.json"
+}

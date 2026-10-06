@@ -1,0 +1,187 @@
+{
+  "sponsio": 1,
+  "url": "https://netstate.co/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_site_info",
+      "description": "What Netstate is, its pricing plans, API endpoints, FAQ and usage restrictions. Call this to learn what the site offers before using the data tools.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "list_jurisdictions",
+      "description": "The taxonomy for building queries: countries with regions (and cities when a country+region is given), industries, statuses, and total company count. Call this first to find valid slugs for the other tools.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "country": {
+            "type": "string",
+            "description": "Limit to one country slug"
+          },
+          "region": {
+            "type": "string",
+            "description": "Also list the cities of this region (requires country)"
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "register_agent",
+      "description": "Self-register as an agent and receive a working Netstate API key in the response — no human step. The key authenticates the REST API at /v1: send it as the x-api-key header. Search and taxonomy are free; premium endpoints (e.g. court records) spend 1 credit per company and need a paid plan (from $15/mo, see /pricing) — new keys start with no credits. Idempotent per email: registering the same email again returns a fresh key.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Contact email for the agent's account"
+          },
+          "agent_name": {
+            "type": "string",
+            "description": "A name identifying your agent (optional, for your own reference)"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "search_companies",
+      "description": "Full-text search across 128 million registered companies in official US and Canadian state registers — by legal name, officer or director name, phone number, email or website. Contact-shaped queries (phone/email/website) resolve through the official records carrying that exact value; the response's matched_by field says which channel matched. Filters mirror the website's facet rail; the response carries up to 25 matching profiles plus facet counts. Facet counts describe every name match (not just the filtered set), so they show which filter values would widen or narrow the search. Records are for human review — not for automated decisions covered by the FCRA.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Company name or name fragment, an officer/director name, or an exact phone number, email or website"
+          },
+          "state": {
+            "type": "string",
+            "description": "Registration jurisdiction slug: \"us-\" or \"ca-\" plus the two-letter state/province code, e.g. \"us-ca\", \"us-de\", \"ca-on\""
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "inactive",
+              "dissolved",
+              "suspended",
+              "revoked",
+              "withdrawn",
+              "canceled",
+              "merged",
+              "expired",
+              "pending",
+              "unknown",
+              "other"
+            ],
+            "description": "Registry status"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "llc",
+              "corporation",
+              "nonprofit",
+              "lp",
+              "llp",
+              "professional_corporation",
+              "professional_llc",
+              "other"
+            ],
+            "description": "Entity type"
+          },
+          "naics": {
+            "type": "string",
+            "enum": [
+              "11",
+              "21",
+              "22",
+              "23",
+              "31-33",
+              "42",
+              "44-45",
+              "48-49",
+              "51",
+              "52",
+              "53",
+              "54",
+              "55",
+              "56",
+              "61",
+              "62",
+              "71",
+              "72",
+              "81",
+              "92"
+            ],
+            "description": "Two-digit NAICS sector"
+          },
+          "year": {
+            "type": "string",
+            "enum": [
+              "2020s",
+              "2010s",
+              "2000s",
+              "1990s",
+              "1980s",
+              "pre-1980"
+            ],
+            "description": "Formation decade"
+          },
+          "has": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "officers",
+                "ein",
+                "naics",
+                "phone",
+                "email",
+                "website",
+                "revenue"
+              ]
+            },
+            "description": "Only companies with this data on file (multi-select)"
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "relevance",
+              "newest",
+              "oldest",
+              "name",
+              "revenue"
+            ],
+            "description": "Result order"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "netstate.co",
+  "source": "webmcp.com/api/directory.json"
+}

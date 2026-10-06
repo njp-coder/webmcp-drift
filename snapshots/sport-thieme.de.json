@@ -1,0 +1,75 @@
+{
+  "sponsio": 1,
+  "url": "https://www.sport-thieme.de/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_product_details",
+      "description": "Get detailed information about a single Sport-Thieme product by its article number, including description, available variants, price, availability and ratings.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "articleNumber": {
+            "type": "string",
+            "description": "The article (variant) number of the product, as returned by search_products."
+          }
+        },
+        "required": [
+          "articleNumber"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "navigate_to_product",
+      "description": "Open the product detail page for a given article number in the current browser tab. Use this when the user wants to view or buy a specific product.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "articleNumber": {
+            "type": "string",
+            "description": "The article (variant) number of the product to open, as returned by search_products."
+          }
+        },
+        "required": [
+          "articleNumber"
+        ]
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Search the Sport-Thieme product catalog by free-text keyword (for example \"football\", \"gym mat\") or by article number. Returns a list of matching products including name, brand, price, availability and a link to the product page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "searchTerm": {
+            "type": "string",
+            "description": "The keyword or article number to search for."
+          },
+          "limit": {
+            "type": "number",
+            "description": "Maximum number of products to return (1 to 24, defaults to 8)."
+          }
+        },
+        "required": [
+          "searchTerm"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    }
+  ],
+  "host": "sport-thieme.de",
+  "source": "webmcp.com/api/directory.json"
+}

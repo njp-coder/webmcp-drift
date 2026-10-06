@@ -1,0 +1,160 @@
+{
+  "sponsio": 1,
+  "url": "https://shareit.kr/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "search_spaces",
+      "description": "조건(키워드, 이용 날짜, 지역, 인원, 가격, 정렬)으로 쉐어잇 공간을 검색해 목록을 반환한다. 현재 사용자는 업무공간(회의실·오피스 등) 화면을 보고 있으며 검색은 이 축으로 고정된다. 특정 좌표 주변을 찾을 때는 search_spaces_nearby 를 쓴다.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "keyword": {
+            "type": "string",
+            "maxLength": 100,
+            "description": "공간명·지역·특징 검색어. 예: \"강남 회의실\""
+          },
+          "searchDate": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+            "description": "이용하려는 날짜(YYYY-MM-DD). 해당 날짜에 예약 가능한 공간만 걸러낸다."
+          },
+          "addressCode": {
+            "type": "string",
+            "description": "행정구역 법정동 코드. 사용자가 지역명만 말했다면 이 값 대신 keyword 를 쓴다. addressLevel 과 함께 넘긴다."
+          },
+          "addressLevel": {
+            "type": "integer",
+            "enum": [
+              0,
+              1,
+              2
+            ],
+            "description": "addressCode 의 행정구역 단위. 0=시도, 1=시군구, 2=읍면동"
+          },
+          "minPeople": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "수용 가능해야 하는 최소 인원"
+          },
+          "minPrice": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "최소 가격(원)"
+          },
+          "maxPrice": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "최대 가격(원)"
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "popularity",
+              "latest",
+              "interest",
+              "lowPrice",
+              "highPrice",
+              "viewCount",
+              "review",
+              "rating"
+            ],
+            "description": "정렬 기준. 생략하면 popularity"
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "search_spaces_nearby",
+      "description": "기준 좌표(위도·경도) 주변의 쉐어잇 공간을 가까운 순으로 검색해 목록을 반환한다. 현재 사용자는 업무공간(회의실·오피스 등) 화면을 보고 있으며 검색은 이 축으로 고정된다. 좌표 없이 지역명·키워드로 찾을 때는 search_spaces 를 쓴다.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "centerLat": {
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90,
+            "description": "검색 기준 좌표의 위도"
+          },
+          "centerLng": {
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180,
+            "description": "검색 기준 좌표의 경도"
+          },
+          "keyword": {
+            "type": "string",
+            "maxLength": 100,
+            "description": "공간명·지역·특징 검색어. 예: \"강남 회의실\""
+          },
+          "searchDate": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+            "description": "이용하려는 날짜(YYYY-MM-DD). 해당 날짜에 예약 가능한 공간만 걸러낸다."
+          },
+          "addressCode": {
+            "type": "string",
+            "description": "행정구역 법정동 코드. 사용자가 지역명만 말했다면 이 값 대신 keyword 를 쓴다. addressLevel 과 함께 넘긴다."
+          },
+          "addressLevel": {
+            "type": "integer",
+            "enum": [
+              0,
+              1,
+              2
+            ],
+            "description": "addressCode 의 행정구역 단위. 0=시도, 1=시군구, 2=읍면동"
+          },
+          "minPeople": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "수용 가능해야 하는 최소 인원"
+          },
+          "minPrice": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "최소 가격(원)"
+          },
+          "maxPrice": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "최대 가격(원)"
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "popularity",
+              "latest",
+              "interest",
+              "lowPrice",
+              "highPrice",
+              "viewCount",
+              "review",
+              "rating"
+            ],
+            "description": "정렬 기준. 생략하면 popularity"
+          }
+        },
+        "required": [
+          "centerLat",
+          "centerLng"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": false
+      }
+    }
+  ],
+  "host": "shareit.kr",
+  "source": "webmcp.com/api/directory.json"
+}

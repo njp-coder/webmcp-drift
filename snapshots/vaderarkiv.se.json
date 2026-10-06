@@ -1,0 +1,50 @@
+{
+  "sponsio": 1,
+  "url": "https://vaderarkiv.se/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_weather_schema",
+      "description": "Get Swedish weather observation views, columns, units and SQL examples. Use before unfamiliar queries. Data contains observations, not forecasts. Interpret relative dates in Europe/Stockholm and report exact dates and units.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "query_weather_sql",
+      "description": "Run one analytical DuckDB SELECT over Swedish weather observation views. Call get_weather_schema first for unfamiliar queries. Resolve ambiguous stations, check missing observations and truncated results, and report exact dates and units. Observations only, not forecasts. Query budget: 10 seconds.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sql": {
+            "type": "string",
+            "minLength": 1,
+            "description": "One analytical DuckDB SELECT query over weather views"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 500,
+            "default": 100
+          }
+        },
+        "required": [
+          "sql"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "vaderarkiv.se",
+  "source": "webmcp.com/api/directory.json"
+}

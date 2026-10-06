@@ -1,0 +1,337 @@
+{
+  "sponsio": 1,
+  "url": "https://subastae.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "navigate_site",
+      "description": "Navigate to a main public Subastae section such as auctions, map, alerts, guides, news, or support.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "destination"
+        ],
+        "properties": {
+          "destination": {
+            "type": "string",
+            "enum": [
+              "home",
+              "auctions",
+              "map",
+              "alerts",
+              "guides",
+              "news",
+              "support"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "open_auction_search",
+      "description": "Open Subastae's auction results page with public search filters applied.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "query": {
+            "type": "string",
+            "maxLength": 200,
+            "description": "Free-text search term for public auction results."
+          },
+          "search": {
+            "type": "string",
+            "maxLength": 200,
+            "description": "Alias for query."
+          },
+          "province": {
+            "oneOf": [
+              {
+                "type": "string",
+                "maxLength": 80
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "maxLength": 80
+                },
+                "maxItems": 2
+              }
+            ],
+            "description": "Province slug, name, or INE code."
+          },
+          "municipality": {
+            "oneOf": [
+              {
+                "type": "string",
+                "maxLength": 120
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "maxLength": 120
+                },
+                "maxItems": 5
+              }
+            ],
+            "description": "Municipality slug or INE code."
+          },
+          "asset_type": {
+            "type": "string",
+            "maxLength": 80
+          },
+          "min_price": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 10000000
+          },
+          "max_price": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 10000000
+          },
+          "min_discount": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "hide_occupied": {
+            "type": "boolean"
+          },
+          "exact_location_only": {
+            "type": "boolean"
+          },
+          "has_bids": {
+            "type": "boolean"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "UPCOMING",
+              "FINISHED",
+              "CONCLUDED",
+              "SUSPENDED",
+              "ALL"
+            ]
+          },
+          "min_deposit": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 10000000
+          },
+          "max_deposit": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 10000000
+          },
+          "end_date_range": {
+            "type": "string",
+            "enum": [
+              "today",
+              "tomorrow",
+              "next_24h",
+              "next_48h",
+              "next_week",
+              "next_month"
+            ]
+          },
+          "pub_date_range": {
+            "type": "string",
+            "enum": [
+              "today",
+              "last_24h",
+              "last_48h",
+              "last_week",
+              "last_month"
+            ]
+          },
+          "origin": {
+            "type": "string",
+            "enum": [
+              "BOE",
+              "SS"
+            ]
+          },
+          "sort_by": {
+            "type": "string",
+            "enum": [
+              "ending_soon",
+              "newest",
+              "price_asc"
+            ]
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000,
+            "default": 1
+          }
+        }
+      }
+    },
+    {
+      "name": "search_auctions",
+      "description": "Search public Subastae property auction summaries and return canonical URLs for inspection on the site.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "query": {
+            "type": "string",
+            "maxLength": 200,
+            "description": "Free-text search term for public auction results."
+          },
+          "search": {
+            "type": "string",
+            "maxLength": 200,
+            "description": "Alias for query."
+          },
+          "province": {
+            "oneOf": [
+              {
+                "type": "string",
+                "maxLength": 80
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "maxLength": 80
+                },
+                "maxItems": 2
+              }
+            ],
+            "description": "Province slug, name, or INE code."
+          },
+          "municipality": {
+            "oneOf": [
+              {
+                "type": "string",
+                "maxLength": 120
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "maxLength": 120
+                },
+                "maxItems": 5
+              }
+            ],
+            "description": "Municipality slug or INE code."
+          },
+          "asset_type": {
+            "type": "string",
+            "maxLength": 80
+          },
+          "min_price": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 10000000
+          },
+          "max_price": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 10000000
+          },
+          "min_discount": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "hide_occupied": {
+            "type": "boolean"
+          },
+          "exact_location_only": {
+            "type": "boolean"
+          },
+          "has_bids": {
+            "type": "boolean"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "UPCOMING",
+              "FINISHED",
+              "CONCLUDED",
+              "SUSPENDED",
+              "ALL"
+            ]
+          },
+          "min_deposit": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 10000000
+          },
+          "max_deposit": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 10000000
+          },
+          "end_date_range": {
+            "type": "string",
+            "enum": [
+              "today",
+              "tomorrow",
+              "next_24h",
+              "next_48h",
+              "next_week",
+              "next_month"
+            ]
+          },
+          "pub_date_range": {
+            "type": "string",
+            "enum": [
+              "today",
+              "last_24h",
+              "last_48h",
+              "last_week",
+              "last_month"
+            ]
+          },
+          "origin": {
+            "type": "string",
+            "enum": [
+              "BOE",
+              "SS"
+            ]
+          },
+          "sort_by": {
+            "type": "string",
+            "enum": [
+              "ending_soon",
+              "newest",
+              "price_asc"
+            ]
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000,
+            "default": 1
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "default": 5
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    }
+  ],
+  "host": "subastae.com",
+  "source": "webmcp.com/api/directory.json"
+}

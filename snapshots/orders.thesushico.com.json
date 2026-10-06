@@ -1,0 +1,72 @@
+{
+  "sponsio": 1,
+  "url": "https://orders.thesushico.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "add_to_basket",
+      "description": "Add a menu item to the current basket by its id (as returned by search_menu).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "string",
+            "description": "The item id returned by search_menu."
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "How many to add. Defaults to 1."
+          }
+        },
+        "required": [
+          "itemId"
+        ]
+      }
+    },
+    {
+      "name": "get_store_info",
+      "description": "Get the current store name, address, phone number, supported order occasions and opening hours.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "search_menu",
+      "description": "Search the current restaurant menu by keyword and return matching items with their id, name and price.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Words to match against item names and descriptions."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "start_checkout",
+      "description": "Return the checkout URL for the current basket so the customer can review and pay.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    }
+  ],
+  "host": "orders.thesushico.com",
+  "source": "webmcp.com/api/directory.json"
+}

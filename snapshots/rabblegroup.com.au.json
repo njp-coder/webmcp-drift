@@ -1,0 +1,149 @@
+{
+  "sponsio": 1,
+  "url": "https://www.rabblegroup.com.au/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_menu",
+      "description": "A venue's current menu with prices (AUD), descriptions and dietary tags (vegetarian, vegan, gluten free). Optionally filter to one section, e.g. \"desserts\" or \"cocktails\".",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "venue": {
+            "type": "string",
+            "description": "Venue name or slug, e.g. \"Assembly\", \"corella\", \"Local Burleigh\"."
+          },
+          "section": {
+            "type": "string",
+            "description": "Optional section or menu name to filter to."
+          }
+        },
+        "required": [
+          "venue"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_venue",
+      "description": "One venue's address, phone, structured opening hours (for 'is it open now'), booking method with the booking link, menu link and map link.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "venue": {
+            "type": "string",
+            "description": "Venue name or slug, e.g. \"Assembly\", \"corella\", \"Local Burleigh\"."
+          }
+        },
+        "required": [
+          "venue"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "list_venues",
+      "description": "All Rabble venues in Canberra and Burleigh Heads: type, suburb, hours and how to book (online, walk-in or enquiry).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "open_page",
+      "description": "Show the guest a page on this site: a venue, its menu, what's on, functions or bookings.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "string",
+            "enum": [
+              "venue",
+              "menu",
+              "whats-on",
+              "functions",
+              "book"
+            ]
+          },
+          "venue": {
+            "type": "string",
+            "description": "Venue slug for venue/menu pages, e.g. \"assembly\"."
+          }
+        },
+        "required": [
+          "page"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "start_booking",
+      "description": "How to book a table at a venue. Returns the booking link (with the guest's date and party size filled in where the provider supports it) for the guest to choose a time and confirm, or explains that the venue is walk-in or enquiry only. Does not make a booking itself.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "venue": {
+            "type": "string",
+            "description": "Venue name or slug, e.g. \"Assembly\", \"corella\", \"Local Burleigh\"."
+          },
+          "date": {
+            "type": "string",
+            "description": "Optional YYYY-MM-DD."
+          },
+          "party": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Optional number of guests."
+          }
+        },
+        "required": [
+          "venue"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "whats_on",
+      "description": "Upcoming gigs, events and specials across the venues (or one venue), with dates, start times, entry and ticket links.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "venue": {
+            "type": "string",
+            "description": "Optional: limit to one venue."
+          },
+          "from": {
+            "type": "string",
+            "description": "Optional start date, YYYY-MM-DD (default today)."
+          },
+          "to": {
+            "type": "string",
+            "description": "Optional end date, YYYY-MM-DD."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "rabblegroup.com.au",
+  "source": "webmcp.com/api/directory.json"
+}

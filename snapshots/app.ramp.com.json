@@ -1,0 +1,1872 @@
+{
+  "sponsio": 1,
+  "url": "https://app.ramp.com/sign-in",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "clear_table_filter",
+      "description": "Remove one filter category from a visible table. If a call returns table_missing, table_hidden, or table_read_only, follow recovery_guidance and the live available_tables snapshot rather than repeating discovery or the failed call. Never substitute another dataset without user confirmation. Rebuild a call at most once after the target becomes available; if it fails again, explain the blocker.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "table_key": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The tableKey of a currently visible table. Available table keys are included in the message context and from list_page_tables."
+          },
+          "category_key": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Filter category key to clear."
+          }
+        },
+        "required": [
+          "table_key",
+          "category_key"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "clear_table_filters",
+      "description": "Remove all user-applied filters from a visible table (locked filters are preserved). Sort, grouping, and columns are unchanged. If a call returns table_missing, table_hidden, or table_read_only, follow recovery_guidance and the live available_tables snapshot rather than repeating discovery or the failed call. Never substitute another dataset without user confirmation. Rebuild a call at most once after the target becomes available; if it fails again, explain the blocker.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "table_key": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The tableKey of a currently visible table. Available table keys are included in the message context and from list_page_tables."
+          }
+        },
+        "required": [
+          "table_key"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "edit_procurement_report",
+      "description": "Edit sections of the live procurement report draft WITHOUT saving. Requires execution_id and expected_editor_revision from get_procurement_report_editor. Apply at most 20 edits per call; read again before each additional batch. Update only the requested sections; omitted header/body fields and all other sections are preserved. Preserve source citations and links. Put section headings in header, not body_markdown. Insert after a stable ID, or at the start with after_stable_id=null. Remove deletes only that section. Edits apply atomically and fail if the user changed the draft since your read. Read again after a conflict. Never claim changes are saved; the user reviews the editor and clicks Save.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "execution_id": {
+            "type": "string"
+          },
+          "expected_editor_revision": {
+            "type": "string"
+          },
+          "edits": {
+            "minItems": 1,
+            "maxItems": 20,
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "action": {
+                      "type": "string",
+                      "const": "update"
+                    },
+                    "stable_id": {
+                      "type": "string"
+                    },
+                    "header": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "body_markdown": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "action",
+                    "stable_id"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "action": {
+                      "type": "string",
+                      "const": "insert"
+                    },
+                    "after_stable_id": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "header": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "level": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 6
+                    },
+                    "body_markdown": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "action",
+                    "after_stable_id",
+                    "header",
+                    "level",
+                    "body_markdown"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "action": {
+                      "type": "string",
+                      "const": "remove"
+                    },
+                    "stable_id": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "action",
+                    "stable_id"
+                  ],
+                  "additionalProperties": false
+                }
+              ]
+            }
+          }
+        },
+        "required": [
+          "execution_id",
+          "expected_editor_revision",
+          "edits"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get_current_page_context",
+      "description": "Read the page the user is currently viewing in Ramp: path, title, context_version, functional_client_tools, and any capabilities currently registered by that page. Use this again after navigation or after a table/form tool reports that its target is unavailable. Leave kinds and ids blank to get all registered page capabilities.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "kinds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Only return page capabilities with one of these kinds. Leave blank to get all registered page capabilities."
+          },
+          "ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Only return page capabilities with one of these ids. Leave blank to get all registered page capabilities."
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get_form_schema",
+      "description": "Read the schema of a form open on the user's screen: fields with labels, kinds, current values, validation errors, and selectable options (option tokens). A form is open ONLY when it is listed as a `form` surface in the current page context (the page_capabilities hint sent with the message, or get_current_page_context). If no `form` surface is listed, no form is open — there is nothing to read, so do not call this. Call it before filling a listed form. Omit form_id only for initial discovery when exactly one form is open and no intended form_id is already known. Keep using the intended form_id after failures; never omit or replace it to recover from a closed-form error.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "form_id": {
+            "type": "string",
+            "description": "The open form to target, from get_current_page_context form capabilities. Optional only for initial discovery when exactly one form is open and no intended form_id is already known. Keep using the intended form_id once known; never omit or replace it to recover from a closed-form error."
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get_procurement_report_editor",
+      "description": "Read the procurement report open in the fullscreen editor, including unsaved changes, section stable IDs, and editor_revision. Read before editing. The execution_id comes from the procurement_agent_report_editor page capability. This is the report, not the agent instructions or request fields.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "execution_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "execution_id"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get_skill_editor_state",
+      "description": "Read the live state of the skill editor open on the user's screen: editor kind, name, description, read-only reference material, and the full document as markdown, including unsaved edits. Call this before editing so you work with the user's current draft rather than the last saved version.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get_spend_program_editor_state",
+      "description": "Read the live state of the spend program editor open on the user's screen: program shape, every settings section in the shape set_spend_program_settings accepts, the names and available choices behind referenced ids (policies, merchant categories, accounting coding), approval and change request workflow pointers, custom request form questions (intake) and change order form questions (change_request_intake, purchase order programs only) with their ids, and editor_revision. Includes unsaved edits. Call this before the first write and again after a revision conflict.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get_table_state",
+      "description": "Get the current state of a visible table: active filters, sort, grouping, column order/visibility, plus the valid sort keys, group-by fields, and columns for this table. Call this before changing table config. Only works on operable tables (isOperable: true from list_page_tables); read-only tables have no config to inspect — use read_table_rows for their data. If a call returns table_missing, table_hidden, or table_read_only, follow recovery_guidance and the live available_tables snapshot rather than repeating discovery or the failed call. Never substitute another dataset without user confirmation. Rebuild a call at most once after the target becomes available; if it fails again, explain the blocker.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "table_key": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The tableKey of a currently visible table. Available table keys are included in the message context and from list_page_tables."
+          }
+        },
+        "required": [
+          "table_key"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "group_table",
+      "description": "Group a visible table's rows by a field. Valid fields come from get_table_state availableGroupByFields. If a call returns table_missing, table_hidden, or table_read_only, follow recovery_guidance and the live available_tables snapshot rather than repeating discovery or the failed call. Never substitute another dataset without user confirmation. Rebuild a call at most once after the target becomes available; if it fails again, explain the blocker.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "table_key": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The tableKey of a currently visible table. Available table keys are included in the message context and from list_page_tables."
+          },
+          "field": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Group-by field from get_table_state."
+          },
+          "order": {
+            "type": "string",
+            "enum": [
+              "asc",
+              "desc"
+            ]
+          }
+        },
+        "required": [
+          "table_key",
+          "field",
+          "order"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "list_page_tables",
+      "description": "List the data tables mounted on the page the user is viewing, with their table keys, labels, and row counts. isVisible: false means the table is not currently rendered (on a hidden tab or collapsed section) — reading or changing it is refused until the user brings it into view, so ask them to switch to it first. isOperable: false means the table is read-only (no toolbar): read_table_rows still works, but filter/sort/group/column tools are refused. Use a returned tableKey with the other table tools. If a call returns table_missing, table_hidden, or table_read_only, follow recovery_guidance and the live available_tables snapshot rather than repeating discovery or the failed call. Never substitute another dataset without user confirmation. Rebuild a call at most once after the target becomes available; if it fails again, explain the blocker.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "list_table_filter_options",
+      "description": "Search the available options for one listbox filter category (e.g. merchants, users, departments). Use before set_table_filter when the option set is not inline in list_table_filters. If a call returns table_missing, table_hidden, or table_read_only, follow recovery_guidance and the live available_tables snapshot rather than repeating discovery or the failed call. Never substitute another dataset without user confirmation. Rebuild a call at most once after the target becomes available; if it fails again, explain the blocker.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "table_key": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The tableKey of a currently visible table. Available table keys are included in the message context and from list_page_tables."
+          },
+          "category_key": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Filter category key from list_table_filters."
+          },
+          "query": {
+            "type": "string",
+            "description": "Optional search text to narrow options."
+          }
+        },
+        "required": [
+          "table_key",
+          "category_key"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "list_table_filters",
+      "description": "List the filter categories available on a visible table: key, label, kind (listbox, date_range, currency, free_text, amount_form, locked), selection type, whether exclude is supported, inline options for closed sets, and current values. If a call returns table_missing, table_hidden, or table_read_only, follow recovery_guidance and the live available_tables snapshot rather than repeating discovery or the failed call. Never substitute another dataset without user confirmation. Rebuild a call at most once after the target becomes available; if it fails again, explain the blocker.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "table_key": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The tableKey of a currently visible table. Available table keys are included in the message context and from list_page_tables."
+          }
+        },
+        "required": [
+          "table_key"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "prepare_spend_program_workflow_edit",
+      "description": "Save current questions as a draft before using them in Blank Canvas workflow conditions. Requires expected_editor_revision from a fresh get_spend_program_editor_state read. Use form=\"request\" for approval workflows and form=\"change_request\" for dedicated change request workflows. Change request preparation saves the request form first. Await success, then pass the returned template_id and custom_form_collection_log_entry_uuid to GetBlankCanvasConditionFields and ApplyBlankCanvasWorkflowEdits. The template_id is resolved after preparation; use it instead of earlier editor or autosave pointers. Prepare again after question edits; discard cached condition fields when the returned revision changes. On failure, reread the editor and prepare again rather than falling back to published questions. Does not save or publish the program or edit the workflow.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "form": {
+            "default": "request",
+            "type": "string",
+            "enum": [
+              "request",
+              "change_request"
+            ]
+          },
+          "expected_editor_revision": {
+            "description": "The editor_revision returned by get_spend_program_editor_state that this update was computed from. The update is rejected if the editor changed since that read.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "expected_editor_revision"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "read_table_rows",
+      "description": "Read the rows currently displayed on the table page (current page only, visible columns only, values formatted the way the user sees them). Use this to answer questions about the data the user is looking at. Works on any visible table, including read-only (isOperable: false) tables with no toolbar. The only optional row-count field is \"max_rows\" (1-50); never send limit, offset, count, page_size, cursor, or pagination aliases. Results are capped; check \"truncated\". If a call returns table_missing, table_hidden, or table_read_only, follow recovery_guidance and the live available_tables snapshot rather than repeating discovery or the failed call. Never substitute another dataset without user confirmation. Rebuild a call at most once after the target becomes available; if it fails again, explain the blocker.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "table_key": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The tableKey of a currently visible table. Available table keys are included in the message context and from list_page_tables."
+          },
+          "max_rows": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "description": "Maximum rows to return (default and cap: 50)."
+          }
+        },
+        "required": [
+          "table_key"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "reset_table_columns",
+      "description": "Reset a visible table's columns to their default visibility and order. If a call returns table_missing, table_hidden, or table_read_only, follow recovery_guidance and the live available_tables snapshot rather than repeating discovery or the failed call. Never substitute another dataset without user confirmation. Rebuild a call at most once after the target becomes available; if it fails again, explain the blocker.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "table_key": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The tableKey of a currently visible table. Available table keys are included in the message context and from list_page_tables."
+          }
+        },
+        "required": [
+          "table_key"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "reset_table_filters",
+      "description": "Reset a visible table's filters to their configured defaults — the same state as when the page first loads. If a call returns table_missing, table_hidden, or table_read_only, follow recovery_guidance and the live available_tables snapshot rather than repeating discovery or the failed call. Never substitute another dataset without user confirmation. Rebuild a call at most once after the target becomes available; if it fails again, explain the blocker.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "table_key": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The tableKey of a currently visible table. Available table keys are included in the message context and from list_page_tables."
+          }
+        },
+        "required": [
+          "table_key"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "search_field_options",
+      "description": "Search the selectable options of a select or multiselect field on a form listed as a `form` surface in the current page context. Use this to resolve a real option token when the inline options in get_form_schema were truncated or did not match. When has_more_options is true, refine the query until the intended option is returned.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "form_id": {
+            "type": "string",
+            "description": "The open form to target, from get_current_page_context form capabilities. Optional only for initial discovery when exactly one form is open and no intended form_id is already known. Keep using the intended form_id once known; never omit or replace it to recover from a closed-form error."
+          },
+          "field_name": {
+            "type": "string",
+            "description": "The field name from get_form_schema."
+          },
+          "query": {
+            "type": "string",
+            "description": "Search text to match option labels."
+          }
+        },
+        "required": [
+          "field_name",
+          "query"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "set_form_fields",
+      "description": "Fill fields on a form open on the user's screen. Only usable when a `form` surface is listed in the current page context; read it first with get_form_schema. Values must match the field kind from get_form_schema; select fields take an option token and multiselect fields take an array of option tokens. Returns validation errors so you can self-correct. Changed fields are highlighted for the user and can be undone. Never claim to submit the form — ask the user to review the highlighted fields and submit.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "form_id": {
+            "type": "string",
+            "description": "The open form to target, from get_current_page_context form capabilities. Optional only for initial discovery when exactly one form is open and no intended form_id is already known. Keep using the intended form_id once known; never omit or replace it to recover from a closed-form error."
+          },
+          "values": {
+            "type": "object",
+            "description": "Map of field name (from get_form_schema) to new value. Use option tokens for select fields and arrays of option tokens for multiselect fields.",
+            "additionalProperties": true
+          }
+        },
+        "required": [
+          "values"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "set_skill_editor_fields",
+      "description": "Edit the skill editor open on the user's screen. Sets the name (when is_skill_name_editable), description, and/or replaces the document body markdown in the live editor WITHOUT saving. Content replaces require the editor_revision from a fresh get_skill_editor_state read and are rejected if the user edited in between. Never claim to have saved — ask the user to review the editor and save.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "skill_name": {
+            "type": "string",
+            "description": "New name for the skill or agent being edited. Only accepted when get_skill_editor_state reports is_skill_name_editable, and expected whenever it reports a skill_name_hint. For editor_kind ask_ramp_skill this is only settable while creating a new skill and must be lowercase alphanumeric with hyphens as separators; for editor_kind procurement_agent it is the free-text agent title."
+          },
+          "description": {
+            "type": "string",
+            "description": "New one-line description."
+          },
+          "content_markdown": {
+            "type": "string",
+            "description": "Replacement markdown for the full document body. Replaces the entire live document, so include unchanged parts. Do not open it with the skill or agent name as an H1: the name is a separate field set with skill_name, and a leading H1 is moved into that field. Requires expected_editor_revision."
+          },
+          "expected_editor_revision": {
+            "type": "string",
+            "description": "The editor_revision returned by get_skill_editor_state that this update was computed from. Required with content_markdown; the update is rejected if the user has edited the draft since that read."
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "set_spend_program_change_request_selection",
+      "description": "Set how change requests to approved requests are approved in the spend program editor open on the user's screen: reuse the approval workflow (\"same-as-spend-request\") or point at a dedicated Blank Canvas change request workflow (\"custom\") after a server tool created it. Requires the editor_revision from a fresh get_spend_program_editor_state read and is rejected if the editor changed since. Applies to the live editor WITHOUT saving.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "selection": {
+            "description": "same-as-spend-request: change requests reuse the approval workflow of the original request. custom: change requests use their own Blank Canvas workflow.",
+            "type": "string",
+            "enum": [
+              "same-as-spend-request",
+              "custom"
+            ]
+          },
+          "workflow_id": {
+            "description": "Required for custom: Blank Canvas workflow id of the change request workflow, as returned by the server tool that created it. The workflow must exist and approve change requests (protected_workflow_identifier SPEND_REQUEST_CHANGE_ORDER_APPROVALS); other ids are rejected.",
+            "type": "string"
+          },
+          "draft_template_id": {
+            "description": "For custom: draft template id of that workflow when it has unsaved draft edits. Omitting it leaves the current draft pointer unchanged when workflow_id matches the workflow already selected; when workflow_id selects a different workflow, omitting it points at that workflow with no draft.",
+            "type": "string"
+          },
+          "expected_editor_revision": {
+            "description": "The editor_revision returned by get_spend_program_editor_state that this update was computed from. The update is rejected if the editor changed since that read.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "selection",
+          "expected_editor_revision"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "set_spend_program_intake_questions",
+      "description": "Create, name, rename, or remove request form sections and add, update, or remove custom questions in the spend program editor open on the user's screen WITHOUT saving. Requesting programs only. form selects the target: request (default) edits the request form and takes ids from intake.sections; change_request edits the change order form requesters fill in when changing an approved request and takes ids from change_request_intake.sections, which only purchase order programs have. Read the target form from get_spend_program_editor_state first: it lists every question with its id, and built-in fields you must not duplicate. Section operations are only supported for form=request. add_section names the sole untitled section if present, preserving its questions, or appends a new section. update_section names or renames an existing section by section_id while preserving its id, questions, and conditions. remove_section deletes the section and all its questions and clears dependent visibility or required-when rules, including change order rules. A section containing a protected question cannot be removed. Removing the last section leaves a fresh empty untitled section. Create sections first, then use created_section_ids from the result as section_id when adding questions. If the request form uses sections, every section must have a meaningful, nonblank title and at least one question before saving or publishing. When organizing a form into sections, use update_section to name any existing unnamed sections. A sole section with title=null is the default unsectioned form and may remain unnamed and empty, including after removing the last section. Leave new question descriptions blank unless the user explicitly requests them; do not repeat the question title. Only add question types listed in that form's available_question_types; other types are rejected for this program. Select choices carry ids: when replacing a question's choices, pass { id, label } for every choice you keep or rename so visibility rules that depend on it keep working, and a bare string only for new choices. Operations apply in order; a visibility rule may only reference an earlier BOOLEAN or select question by id, so add controlling questions first and use the ids this tool returns. Requires the editor_revision from a fresh read. Returns the merged questions with ids and the form's validation errors. Never claim to have saved.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "form": {
+            "description": "Which form to edit. request: the request form (ids from intake.sections). change_request: the change order form requesters fill in when changing an approved request (ids from change_request_intake.sections); only purchase order programs have one.",
+            "default": "request",
+            "type": "string",
+            "enum": [
+              "request",
+              "change_request"
+            ]
+          },
+          "operations": {
+            "description": "Applied in order. Create sections first, then use their returned ids to add questions. Add a controlling question in one call and reference its returned id before adding dependent questions.",
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "operation": {
+                      "type": "string",
+                      "const": "add_section"
+                    },
+                    "title": {
+                      "description": "Section heading for the request form only. Names the sole untitled section if one exists, preserving its questions; otherwise appends a new section. Use the returned created_section_ids to add questions in a subsequent call. Every section needs at least one question before saving or publishing.",
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "operation",
+                    "title"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "operation": {
+                      "type": "string",
+                      "const": "update_section"
+                    },
+                    "section_id": {
+                      "description": "Section id from intake.sections in get_spend_program_editor_state.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "description": "Name or rename a request form section, preserving its id, questions, and conditions.",
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "operation",
+                    "section_id",
+                    "title"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "operation": {
+                      "type": "string",
+                      "const": "remove_section"
+                    },
+                    "section_id": {
+                      "description": "Section id from intake.sections. Removes the request form section and all its questions. Rejected if any contained question cannot be deleted. Rules depending on deleted questions are cleared, including change order rules. Removing the last section leaves a fresh empty untitled section.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "operation",
+                    "section_id"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "operation": {
+                      "type": "string",
+                      "const": "add_question"
+                    },
+                    "title": {
+                      "description": "Question shown to requesters. Unique per type within a section.",
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "ADDRESS",
+                        "BOOLEAN",
+                        "CONTACT",
+                        "DATE",
+                        "DEPARTMENT",
+                        "EMAIL",
+                        "FILE_UPLOAD",
+                        "LINK",
+                        "MERCHANT",
+                        "MERCHANT_CATEGORY",
+                        "NUMBER",
+                        "PARAGRAPH",
+                        "TEXT",
+                        "TEXT_MULTI_SELECT",
+                        "TEXT_SINGLE_SELECT",
+                        "USER",
+                        "VENDOR"
+                      ]
+                    },
+                    "description": {
+                      "description": "Helper text under the question. Leave blank unless the user explicitly requests it; do not repeat the title.",
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "required": {
+                      "description": "Defaults to false.",
+                      "type": "boolean"
+                    },
+                    "choices": {
+                      "description": "Choice labels, in order. Only for TEXT_SINGLE_SELECT and TEXT_MULTI_SELECT.",
+                      "minItems": 1,
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    },
+                    "visible_when": {
+                      "description": "Show this question only when an earlier answer matches.",
+                      "type": "object",
+                      "properties": {
+                        "question_id": {
+                          "description": "id of an EARLIER question of type BOOLEAN, TEXT_SINGLE_SELECT, or TEXT_MULTI_SELECT that controls whether this question is shown.",
+                          "type": "string"
+                        },
+                        "equals": {
+                          "description": "For a BOOLEAN controlling question: show when the answer equals this value.",
+                          "type": "boolean"
+                        },
+                        "is_one_of": {
+                          "description": "For a select controlling question: show when the answer is one of these choice labels.",
+                          "minItems": 1,
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "required": [
+                        "question_id"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "section_id": {
+                      "description": "Section to add to, from the target form (intake.sections or change_request_intake.sections) in get_spend_program_editor_state. Defaults to the first section.",
+                      "type": "string"
+                    },
+                    "position": {
+                      "description": "Zero-based index within the section. Defaults to the end.",
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    }
+                  },
+                  "required": [
+                    "operation",
+                    "title",
+                    "type"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "operation": {
+                      "type": "string",
+                      "const": "update_question"
+                    },
+                    "question_id": {
+                      "description": "id from the target form (intake.sections or change_request_intake.sections) in get_spend_program_editor_state.",
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "required": {
+                      "type": "boolean"
+                    },
+                    "choices": {
+                      "description": "Replacement choices, in order. Pass { id, label } with an id from the target form's sections to keep or rename an existing choice so visibility and required-when rules that depend on it keep working; pass a bare string to add a new choice. Existing choices left out are removed; removal is rejected when another question's or section's rule depends on the choice. The type cannot change.",
+                      "minItems": 1,
+                      "type": "array",
+                      "items": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "minLength": 1
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "description": "Choice id from the target form (intake.sections or change_request_intake.sections) in get_spend_program_editor_state. Ids change when the user saves, so read them from the same editor_revision you write against.",
+                                "type": "string"
+                              },
+                              "label": {
+                                "type": "string",
+                                "minLength": 1
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "label"
+                            ],
+                            "additionalProperties": false
+                          }
+                        ]
+                      }
+                    },
+                    "visible_when": {
+                      "description": "Replace the visibility rule; null always shows the question.",
+                      "anyOf": [
+                        {
+                          "description": "Show this question only when an earlier answer matches.",
+                          "type": "object",
+                          "properties": {
+                            "question_id": {
+                              "description": "id of an EARLIER question of type BOOLEAN, TEXT_SINGLE_SELECT, or TEXT_MULTI_SELECT that controls whether this question is shown.",
+                              "type": "string"
+                            },
+                            "equals": {
+                              "description": "For a BOOLEAN controlling question: show when the answer equals this value.",
+                              "type": "boolean"
+                            },
+                            "is_one_of": {
+                              "description": "For a select controlling question: show when the answer is one of these choice labels.",
+                              "minItems": 1,
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "required": [
+                            "question_id"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "operation",
+                    "question_id"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "operation": {
+                      "type": "string",
+                      "const": "remove_question"
+                    },
+                    "question_id": {
+                      "description": "id from the target form (intake.sections or change_request_intake.sections) in get_spend_program_editor_state.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "operation",
+                    "question_id"
+                  ],
+                  "additionalProperties": false
+                }
+              ]
+            }
+          },
+          "expected_editor_revision": {
+            "description": "The editor_revision returned by get_spend_program_editor_state that this update was computed from. The update is rejected if the editor changed since that read.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "operations",
+          "expected_editor_revision"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "set_spend_program_settings",
+      "description": "Edit settings of the spend program editor open on the user's screen WITHOUT saving. Send one or more complete sections as read from get_spend_program_editor_state with your changes applied; fields left out keep their current value. Requires the editor_revision from a fresh read and is rejected if the editor changed since. Returns applied fields, fields that could not be applied for this program shape, and the form's validation errors so you can self-correct. Never claim to have saved.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "identity": {
+            "description": "Name, description, and icon.",
+            "type": "object",
+            "properties": {
+              "name": {
+                "description": "Program name shown to requesters and admins.",
+                "type": "string"
+              },
+              "description": {
+                "description": "What the program is for and when to use it.",
+                "type": "string"
+              },
+              "icon": {
+                "description": "Icon id. Must be one of available_icons from get_spend_program_editor_state.",
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          },
+          "access": {
+            "description": "Who can request or automatically receive the program.",
+            "type": "object",
+            "properties": {
+              "allow_all_users_requestable": {
+                "description": "Requesting programs: every employee may submit requests. When true, overrides requesting_rules, including an empty list.",
+                "type": "boolean"
+              },
+              "requesting_rules": {
+                "description": "Requesting programs: who may submit requests when not everyone. Ignored when allow_all_users_requestable is true. Otherwise, replaces the rules and turns allow_all_users_requestable off; an empty list removes the rules.",
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "user",
+                        "department",
+                        "location",
+                        "entity",
+                        "user-custom-field",
+                        "dynamic-user-group"
+                      ]
+                    },
+                    "id": {
+                      "description": "Ramp id of the user, department, location, business entity, user custom field value, or custom user group.",
+                      "type": "string"
+                    },
+                    "name": {
+                      "description": "Display name. Returned on read; ignored on write.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "id"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "automatic_issuance_enabled": {
+                "description": "Issuing programs and fixed-amount funds programs: issue funds automatically to matching employees instead of on request.",
+                "type": "boolean"
+              },
+              "allow_all_users_automatic": {
+                "description": "When automatic issuance is enabled: issue to every employee.",
+                "type": "boolean"
+              },
+              "automatic_issuance_rules": {
+                "description": "Who receives funds automatically when not everyone. Requires a FIXED funds amount. A non-empty list turns automatic issuance on; an empty list turns it off.",
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "user",
+                        "department",
+                        "location",
+                        "entity",
+                        "user-custom-field",
+                        "dynamic-user-group"
+                      ]
+                    },
+                    "id": {
+                      "description": "Ramp id of the user, department, location, business entity, user custom field value, or custom user group.",
+                      "type": "string"
+                    },
+                    "name": {
+                      "description": "Display name. Returned on read; ignored on write.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "id"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "additionalProperties": false
+          },
+          "program_rules": {
+            "description": "Program-level rules that apply regardless of outcome.",
+            "type": "object",
+            "properties": {
+              "allowed_overage_percent": {
+                "description": "Percent a requester may exceed the approved amount by; null disables overage.",
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "default_entity_id": {
+                "description": "Business entity id requests default to, from available_entities in get_spend_program_editor_state; null means no default.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "custom_payee_group_id": {
+                "description": "Purchase order and approval-only programs: restrict payees to this vendor group id; null allows any payee.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "allow_new_payees_for_custom_payee_groups": {
+                "description": "When a vendor group is set: let requesters propose payees outside the group.",
+                "type": "boolean"
+              },
+              "allows_intake_accounting_coding": {
+                "description": "Funds programs: ask requesters for accounting coding on the request form.",
+                "type": "boolean"
+              }
+            },
+            "additionalProperties": false
+          },
+          "funds_settings": {
+            "description": "Money settings for the funds the program issues. Applies to funds programs and purchase order programs with a spend limit payment method. Not available for approval-only programs.",
+            "type": "object",
+            "properties": {
+              "spend_allocation_spend_intent_type": {
+                "description": "FIXED: admin sets amount and interval. CUSTOM_AMOUNT_FIXED_FREQUENCY: requester chooses the amount, admin fixes the interval. CUSTOM_AMOUNT_AND_FREQUENCY: requester chooses both.",
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "FIXED",
+                      "CUSTOM_AMOUNT_FIXED_FREQUENCY",
+                      "CUSTOM_AMOUNT_AND_FREQUENCY"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "amount": {
+                "description": "Fund limit in major currency units. Required when the type is FIXED.",
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "interval": {
+                "description": "How often the limit resets. TOTAL is a one-time total; CUSTOM lets the requester choose. Required unless the type is CUSTOM_AMOUNT_AND_FREQUENCY.",
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "ANNUAL",
+                      "CUSTOM",
+                      "DAILY",
+                      "MONTHLY",
+                      "QUARTERLY",
+                      "TERTIARY",
+                      "TOTAL",
+                      "WEEKLY",
+                      "YEARLY"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "currency": {
+                "description": "ISO 4217 currency code, e.g. USD.",
+                "type": "string"
+              },
+              "requestable_frequency_once": {
+                "description": "Each employee may receive these funds only once.",
+                "type": "boolean"
+              },
+              "permitted_spend_types": {
+                "description": "How the funds can be spent. At least one must stay enabled.",
+                "type": "object",
+                "properties": {
+                  "virtual_card_enabled": {
+                    "type": "boolean"
+                  },
+                  "primary_card_enabled": {
+                    "type": "boolean"
+                  },
+                  "reimbursements_enabled": {
+                    "type": "boolean"
+                  }
+                },
+                "additionalProperties": false
+              },
+              "is_shareable": {
+                "description": "Fund can be shared with other employees.",
+                "type": "boolean"
+              },
+              "transaction_amount_limit": {
+                "description": "Maximum single transaction amount; null means no per-transaction limit.",
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "rollover_enabled": {
+                "description": "Roll unused permanent allowance into the next interval; resets annually.",
+                "type": "boolean"
+              },
+              "rollover_caps": {
+                "description": "Total balance cap used to calculate rollovers when rollover is enabled.",
+                "type": "object",
+                "properties": {
+                  "accrual": {
+                    "description": "Maximum balance including rollovers. Required when enabled; must be positive and at least the base amount.",
+                    "anyOf": [
+                      {
+                        "type": "number",
+                        "exclusiveMinimum": 0
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "additionalProperties": false
+              },
+              "issue_physical_card_if_needed": {
+                "description": "Ship a physical card to employees who do not have one.",
+                "type": "boolean"
+              },
+              "start_date": {
+                "description": "YYYY-MM-DD. Only allow spend on or after this date; must be before lock_date when one is set. null allows spend as soon as funds are issued.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "lock_date": {
+                "description": "YYYY-MM-DD. Do not allow spend on or after this date; must be after start_date and after today. Changing it clears relative_lock_duration_count, so change only one of the two per call; null removes a fixed lock date.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "relative_lock_duration_count": {
+                "description": "Lock the funds this many days after they are issued. Changing it clears lock_date, so change only one of the two per call; null never auto-locks by duration.",
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 9007199254740991
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "is_exempt_from_policy_agent": {
+                "description": "Skip the expense policy agent review for spend from these funds.",
+                "type": "boolean"
+              },
+              "merchant_restrictions": {
+                "description": "Allow or block specific merchants.",
+                "type": "object",
+                "properties": {
+                  "gate_type": {
+                    "description": "none removes the restriction; whitelist allows only the listed; blacklist blocks the listed.",
+                    "type": "string",
+                    "enum": [
+                      "none",
+                      "whitelist",
+                      "blacklist"
+                    ]
+                  },
+                  "merchant_ids": {
+                    "description": "Ramp merchant ids, e.g. from a merchant search.",
+                    "type": "array",
+                    "items": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    }
+                  }
+                },
+                "additionalProperties": false
+              },
+              "category_restrictions": {
+                "description": "Allow or block merchant categories.",
+                "type": "object",
+                "properties": {
+                  "gate_type": {
+                    "description": "none removes the restriction; whitelist allows only the listed; blacklist blocks the listed.",
+                    "type": "string",
+                    "enum": [
+                      "none",
+                      "whitelist",
+                      "blacklist"
+                    ]
+                  },
+                  "category_ids": {
+                    "description": "Merchant category ids from available_merchant_categories in get_spend_program_editor_state.",
+                    "type": "array",
+                    "items": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    }
+                  }
+                },
+                "additionalProperties": false
+              },
+              "accounting_rules": {
+                "description": "Default accounting coding for spend on these funds, one entry per tracking category to change. Categories not listed keep their current coding.",
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "tracking_category_id": {
+                      "description": "From funds_details.accounting_rules in get_spend_program_editor_state.",
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "option_id": {
+                      "description": "Tracking category option id to code spend with; null clears the rule.",
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": -9007199254740991,
+                          "maximum": 9007199254740991
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "option_name": {
+                      "description": "Option name, code, or label to search for when option_id is unknown. The match must be exact.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "tracking_category_id"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "accounting_auto_mark_ready_rule_enabled": {
+                "description": "Mark transactions ready for accounting once the default coding is applied.",
+                "type": "boolean"
+              },
+              "submission_policy_id": {
+                "description": "From available_submission_policies in get_spend_program_editor_state.",
+                "type": "string"
+              },
+              "post_spend_approval_policy_id": {
+                "description": "From available_post_spend_approval_policies in get_spend_program_editor_state.",
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          },
+          "purchase_order_settings": {
+            "description": "Purchase order outcome settings. Only for purchase order programs.",
+            "type": "object",
+            "properties": {
+              "purchase_order_number_prefix": {
+                "description": "Prefix for generated PO numbers: uppercase letters, digits, and dashes only, no trailing dash.",
+                "type": "string"
+              },
+              "three_way_match_enabled": {
+                "description": "Require bills to match the PO and receipt before payment.",
+                "type": "boolean"
+              },
+              "default_payment_method": {
+                "description": "PURCHASE_ORDER pays by bill; SPEND_LIMIT pays with funds on a card.",
+                "type": "string",
+                "enum": [
+                  "PURCHASE_ORDER",
+                  "SPEND_LIMIT"
+                ]
+              },
+              "allow_requester_to_choose_payment_method": {
+                "description": "Requesters may pick the payment method instead of using the default.",
+                "type": "boolean"
+              },
+              "auto_create_fund_on_request_approval": {
+                "description": "Issue funds as soon as the request is approved.",
+                "type": "boolean"
+              },
+              "auto_create_fund_if_payee_accepts_card": {
+                "description": "Issue funds automatically when the payee accepts card payments.",
+                "type": "boolean"
+              },
+              "create_contracts_post_approval": {
+                "description": "Create a contract record when a request is approved.",
+                "type": "boolean"
+              },
+              "allow_requestors_to_specify_savings": {
+                "description": "Let requesters record negotiated savings on the request.",
+                "type": "boolean"
+              },
+              "allows_purchase_order_accounting_coding": {
+                "description": "Ask for accounting coding at the purchase order level.",
+                "type": "boolean"
+              },
+              "allows_line_item_accounting_coding": {
+                "description": "Ask for accounting coding on each line item.",
+                "type": "boolean"
+              }
+            },
+            "additionalProperties": false
+          },
+          "default_questions": {
+            "description": "Built-in request form questions. Only for purchase order and approval-only programs; custom questions are edited with the intake form tools.",
+            "type": "object",
+            "properties": {
+              "amount_config": {
+                "description": "The \"How much?\" question.",
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "description": "Question title shown to requesters.",
+                    "type": "string"
+                  },
+                  "description": {
+                    "description": "Helper text under the question.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "is_required": {
+                    "type": "boolean"
+                  },
+                  "should_show_question": {
+                    "description": "Whether the question appears on the request form.",
+                    "type": "boolean"
+                  },
+                  "uses_line_items": {
+                    "description": "Collect the amount as line items.",
+                    "type": "boolean"
+                  },
+                  "is_start_date_required": {
+                    "type": "boolean"
+                  },
+                  "is_end_date_required": {
+                    "type": "boolean"
+                  },
+                  "dates_visible_by_default": {
+                    "type": "boolean"
+                  },
+                  "is_retainage_required": {
+                    "type": "boolean"
+                  },
+                  "retainage_visible_by_default": {
+                    "type": "boolean"
+                  }
+                },
+                "additionalProperties": false
+              },
+              "frequency_config": {
+                "description": "The \"Is it one-time or recurring?\" question.",
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "description": "Question title shown to requesters.",
+                    "type": "string"
+                  },
+                  "description": {
+                    "description": "Helper text under the question.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "is_required": {
+                    "type": "boolean"
+                  },
+                  "should_show_question": {
+                    "description": "Whether the question appears on the request form.",
+                    "type": "boolean"
+                  },
+                  "should_show_frequency": {
+                    "description": "Show the one-time vs recurring choice.",
+                    "type": "boolean"
+                  }
+                },
+                "additionalProperties": false
+              },
+              "funds_config": {
+                "description": "The virtual card payment question.",
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "description": "Question title shown to requesters.",
+                    "type": "string"
+                  },
+                  "description": {
+                    "description": "Helper text under the question.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "is_required": {
+                    "type": "boolean"
+                  },
+                  "should_show_question": {
+                    "description": "Whether the question appears on the request form.",
+                    "type": "boolean"
+                  }
+                },
+                "additionalProperties": false
+              },
+              "request_name_config": {
+                "description": "The request name question.",
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "description": "Question title shown to requesters.",
+                    "type": "string"
+                  },
+                  "description": {
+                    "description": "Helper text under the question.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "is_required": {
+                    "type": "boolean"
+                  },
+                  "should_show_question": {
+                    "description": "Whether the question appears on the request form.",
+                    "type": "boolean"
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "additionalProperties": false
+          },
+          "approval_settings": {
+            "description": "Request-approval settings for requesting programs. Update these in the program editor, not through workflow edits.",
+            "type": "object",
+            "properties": {
+              "default_deadline_days": {
+                "description": "Default SLA in whole days (1–99) for a custom blank canvas approval policy; null disables it. Per-step overrides are unchanged.",
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 99
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "allow_self_approvals": {
+                "description": "False enforces separation of duties; true lets requesters approve their own requests.",
+                "type": "boolean"
+              },
+              "sod_fallback_absolute_group_uuid": {
+                "description": "Resolved absolute approval group UUID for separation-of-duties fallback; null uses all admins. Requires separation of duties to be enabled.",
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000)$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "additionalProperties": false
+          },
+          "change_request_approval_settings": {
+            "description": "Change-request settings for requesting purchase order programs with a custom change-request policy. When using the request policy, edit approval_settings instead.",
+            "type": "object",
+            "properties": {
+              "default_deadline_days": {
+                "description": "Default SLA in whole days (1–99) for a custom blank canvas approval policy; null disables it. Per-step overrides are unchanged.",
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 99
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "allow_self_approvals": {
+                "description": "False enforces separation of duties; true lets requesters approve their own requests.",
+                "type": "boolean"
+              },
+              "sod_fallback_absolute_group_uuid": {
+                "description": "Resolved absolute approval group UUID for separation-of-duties fallback; null uses all admins. Requires separation of duties to be enabled.",
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000)$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "additionalProperties": false
+          },
+          "expected_editor_revision": {
+            "description": "The editor_revision returned by get_spend_program_editor_state that this update was computed from. The update is rejected if the editor changed since that read.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "expected_editor_revision"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "set_table_column_order",
+      "description": "Set the full display order of a visible table's columns. If a call returns table_missing, table_hidden, or table_read_only, follow recovery_guidance and the live available_tables snapshot rather than repeating discovery or the failed call. Never substitute another dataset without user confirmation. Rebuild a call at most once after the target becomes available; if it fails again, explain the blocker.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "table_key": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The tableKey of a currently visible table. Available table keys are included in the message context and from list_page_tables."
+          },
+          "column_order": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1,
+            "description": "Full ordered list of column keys."
+          }
+        },
+        "required": [
+          "table_key",
+          "column_order"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "set_table_column_visibility",
+      "description": "Show or hide one column on a visible table. If a call returns table_missing, table_hidden, or table_read_only, follow recovery_guidance and the live available_tables snapshot rather than repeating discovery or the failed call. Never substitute another dataset without user confirmation. Rebuild a call at most once after the target becomes available; if it fails again, explain the blocker.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "table_key": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The tableKey of a currently visible table. Available table keys are included in the message context and from list_page_tables."
+          },
+          "column_key": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Column key from get_table_state."
+          },
+          "visible": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "table_key",
+          "column_key",
+          "visible"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "set_table_filter",
+      "description": "Apply one filter to a visible, operable table. First call list_table_filters for this exact table_key and use its category_key and valueHint. For a listbox with searchable options, then call list_table_filter_options and pass returned labels in \"values\"; do not use value, filter_value, or option IDs. The parameters depend on the category's \"kind\": listbox → \"values\" (add \"exclude\" only where supported). date_range → \"start_date\"/\"end_date\" (YYYY-MM-DD, either alone for open-ended) or \"last_period\". amount_form (e.g. Amount) → \"min\" and/or \"max\" as plain numbers in major currency units: \"over $3k\" = min 3000, \"under $500\" = max 500. free_text → \"text\". currency → \"text\" with the currency code. If a call returns table_missing, table_hidden, or table_read_only, follow recovery_guidance and the live available_tables snapshot rather than repeating discovery or the failed call. Never substitute another dataset without user confirmation. Rebuild a call at most once after the target becomes available; if it fails again, explain the blocker.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "table_key": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The tableKey of a currently visible table. Available table keys are included in the message context and from list_page_tables."
+          },
+          "category_key": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Filter category key from list_table_filters."
+          },
+          "values": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1,
+            "maxItems": 25,
+            "description": "Option labels for listbox categories."
+          },
+          "start_date": {
+            "type": "string",
+            "description": "Calendar date (YYYY-MM-DD) for date_range categories."
+          },
+          "end_date": {
+            "type": "string",
+            "description": "Calendar date (YYYY-MM-DD) for date_range categories."
+          },
+          "last_period": {
+            "type": "object",
+            "properties": {
+              "amount": {
+                "type": "number"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "day",
+                  "week",
+                  "month",
+                  "quarter",
+                  "year"
+                ]
+              }
+            },
+            "required": [
+              "amount",
+              "unit"
+            ],
+            "additionalProperties": false,
+            "description": "Relative range, e.g. {\"amount\": 30, \"unit\": \"day\"} = last 30 days."
+          },
+          "text": {
+            "type": "string",
+            "description": "Value for free_text or currency categories."
+          },
+          "min": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Minimum amount for amount_form categories, in major currency units (e.g. 3000 for $3,000). Omit for no minimum."
+          },
+          "max": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Maximum amount for amount_form categories, in major currency units. Omit for no maximum."
+          },
+          "exclude": {
+            "type": "boolean",
+            "description": "Invert the filter to exclude the given values (listbox categories that support it)."
+          }
+        },
+        "required": [
+          "table_key",
+          "category_key"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "sort_table",
+      "description": "Sort a visible table by a field. Valid sort keys come from get_table_state; invalid keys return the valid set. If a call returns table_missing, table_hidden, or table_read_only, follow recovery_guidance and the live available_tables snapshot rather than repeating discovery or the failed call. Never substitute another dataset without user confirmation. Rebuild a call at most once after the target becomes available; if it fails again, explain the blocker.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "table_key": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The tableKey of a currently visible table. Available table keys are included in the message context and from list_page_tables."
+          },
+          "sort_key": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Sort key from get_table_state availableSortKeys."
+          },
+          "direction": {
+            "type": "string",
+            "enum": [
+              "asc",
+              "desc"
+            ]
+          }
+        },
+        "required": [
+          "table_key",
+          "sort_key",
+          "direction"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "undo_table_changes",
+      "description": "Undo everything this assistant changed on a visible table in this page visit, restoring the state before the first assistant change. Use when the user asks to undo or revert table changes. If a call returns table_missing, table_hidden, or table_read_only, follow recovery_guidance and the live available_tables snapshot rather than repeating discovery or the failed call. Never substitute another dataset without user confirmation. Rebuild a call at most once after the target becomes available; if it fails again, explain the blocker.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "table_key": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The tableKey of a currently visible table. Available table keys are included in the message context and from list_page_tables."
+          }
+        },
+        "required": [
+          "table_key"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": true
+      }
+    }
+  ],
+  "host": "app.ramp.com",
+  "source": "webmcp.com/api/directory.json"
+}

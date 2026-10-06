@@ -1,0 +1,254 @@
+{
+  "sponsio": 1,
+  "url": "https://gobike.au/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "addToCart",
+      "description": "Add a product to the customer's cart. Call getProductDetails first if you don't already have the product's slug (and variationId, for products with variations).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "The product's URL slug"
+          },
+          "variationId": {
+            "type": "string",
+            "description": "For products with variations (size/color/etc.), the specific variation id from getProductDetails. Omit for simple products."
+          },
+          "quantity": {
+            "type": "number",
+            "description": "How many to add. Defaults to 1.",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "browseCategory",
+      "description": "List products in a GoBike category, or navigate the browser to that category page. Use navigate=true when the user asks to be taken to/shown a category; omit categorySlug to browse everything.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "categorySlug": {
+            "type": "string",
+            "description": "Category slug from listProductCategories. Omit to list all active products."
+          },
+          "navigate": {
+            "type": "boolean",
+            "description": "When true, moves the browser to the category page instead of returning product data. Defaults to false."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "emptyCart",
+      "description": "Remove every item from the customer's cart.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "getCart",
+      "description": "Get the current shopping cart's contents — line items with product name, quantity, price, and totals.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "getProductDetails",
+      "description": "Get full details (price, stock, description, rating, variations) for one GoBike product by its URL slug, or navigate the browser to its product page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "The product's URL slug, e.g. \"gobike-16-inch-electric-balance-bike\" — from searchProducts' or browseCategory's results"
+          },
+          "navigate": {
+            "type": "boolean",
+            "description": "When true, moves the browser to the product page instead of returning product data. Defaults to false."
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "listProductCategories",
+      "description": "List GoBike Australia's product categories (bike sizes, spare parts, apparel) available in the shop.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "proceedToCheckout",
+      "description": "Navigate the browser to checkout with the customer's current cart. Does not place the order — the customer completes payment themselves on the checkout page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "consequential": true
+      }
+    },
+    {
+      "name": "searchProducts",
+      "description": "Search GoBike Australia's product catalog (kids electric bikes, spare parts, apparel) by keyword.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search keywords, e.g. \"16 inch battery\" or \"kids electric bike\""
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "searchShopPoliciesAndFaqs",
+      "description": "Get facts about GoBike's policies, FAQs, or contact details. Set policyTypes to fetch a specific policy page (refund, shipping, privacy, terms_of_service, contact, warranty); leave it unset for general FAQ questions.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "A natural-language question. Searches FAQ questions/answers by keyword when policyTypes is omitted."
+          },
+          "policyTypes": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "refund",
+                "shipping",
+                "privacy",
+                "terms_of_service",
+                "contact",
+                "warranty"
+              ]
+            },
+            "description": "Policy page(s) to fetch directly instead of searching FAQs, e.g. [\"refund\"] for \"what is your return policy\"."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "subscribeNewsletter",
+      "description": "Subscribe an email address to the GoBike Australia newsletter and giveaway",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "subscriber_email": {
+            "type": "string",
+            "description": "email@address.com"
+          }
+        },
+        "required": [
+          "subscriber_email"
+        ]
+      }
+    },
+    {
+      "name": "trackOrder",
+      "description": "Check a GoBike order's delivery status by Booking ID and delivery postcode (both required — same verification the public tracking page uses).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "bookingId": {
+            "type": "string",
+            "description": "The numeric Booking ID from the order confirmation email"
+          },
+          "postcode": {
+            "type": "string",
+            "description": "The delivery postcode, used to verify the requester owns this order"
+          }
+        },
+        "required": [
+          "bookingId",
+          "postcode"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "updateCartLine",
+      "description": "Change the quantity of an item already in the cart, or remove it. Get the item's key from getCart first.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "description": "The cart line key from getCart"
+          },
+          "quantity": {
+            "type": "number",
+            "description": "New absolute quantity for this line (not a delta). 0 removes the item.",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "key",
+          "quantity"
+        ]
+      }
+    },
+    {
+      "name": "viewOrderHistory",
+      "description": "Navigate the browser to the customer's order history. Prompts sign-in first if they aren't already logged in.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    }
+  ],
+  "host": "gobike.au",
+  "source": "webmcp.com/api/directory.json"
+}

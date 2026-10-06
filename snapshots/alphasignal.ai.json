@@ -1,0 +1,80 @@
+{
+  "sponsio": 1,
+  "url": "https://alphasignal.ai/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "list_latest_news",
+      "description": "List the most recent AlphaSignal items from the last 7 days, optionally filtered to one topic. Returns one line per item with title, URL, publish time and a short preview.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "topic": {
+            "type": "string",
+            "description": "Topic slug as it appears in /topic/<slug>, for example llms or computer-vision."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "description": "Number of items, default 10."
+          }
+        }
+      }
+    },
+    {
+      "name": "navigate",
+      "description": "Open an AlphaSignal page in this tab: a topic hub, company hub, author hub, article, or a search results page. Returns the URL that was opened.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "topic",
+              "company",
+              "author",
+              "article",
+              "search"
+            ]
+          },
+          "slug": {
+            "type": "string",
+            "description": "Topic slug, company or author username, article slug, or the search query."
+          }
+        },
+        "required": [
+          "kind",
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "search_news",
+      "description": "Search AlphaSignal's AI news, papers, models and repos by keyword. Returns one line per result with title, URL, publish time and a short preview.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Free-text search query."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "description": "Number of results, default 10."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "alphasignal.ai",
+  "source": "webmcp.com/api/directory.json"
+}

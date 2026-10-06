@@ -1,0 +1,116 @@
+{
+  "sponsio": 1,
+  "url": "https://buffaloburger.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_menu",
+      "description": "The full menu grouped by category, with offers first. Each item has a VAT-inclusive starting price, a slug for get_menu_item / get_offer, and its page url.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "branch_slug": {
+            "default": "all",
+            "description": "Branch slug from list_branches. Defaults to \"all\", the country-wide catalogue.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        }
+      }
+    },
+    {
+      "name": "get_menu_item",
+      "description": "Full detail for one menu item: sizes, required and optional choices with their price effect, and defaults.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "description": "Item slug from get_menu, e.g. \"cholos\"."
+          },
+          "branch_slug": {
+            "default": "all",
+            "description": "Branch slug from list_branches. Defaults to \"all\", the country-wide catalogue.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "get_offer",
+      "description": "Full detail for one offer (bundle): fixed price plus the slots to fill — mains, fries, drinks, free items — and any upgrade costs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "description": "Offer slug from get_menu, e.g. \"big-bacon\"."
+          },
+          "branch_slug": {
+            "default": "all",
+            "description": "Branch slug from list_branches. Defaults to \"all\", the country-wide catalogue.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "list_branches",
+      "description": "All live restaurant branches with address, coordinates and which order types they accept.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "open_page",
+      "description": "Navigate this browser tab to a menu item or offer so the customer can customise and order it. Use the slug and kind returned by get_menu.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "menu-item",
+              "offer"
+            ]
+          },
+          "slug": {
+            "type": "string",
+            "description": "Item or offer slug from get_menu."
+          }
+        },
+        "required": [
+          "kind",
+          "slug"
+        ]
+      }
+    }
+  ],
+  "host": "buffaloburger.com",
+  "source": "webmcp.com/api/directory.json"
+}

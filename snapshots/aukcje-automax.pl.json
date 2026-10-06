@@ -1,0 +1,155 @@
+{
+  "sponsio": 1,
+  "url": "https://aukcje-automax.pl/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "find_vehicle_by_vin",
+      "description": "Sprawdza, czy w katalogu AUTOMAX jest pojazd o podanym 17-znakowym numerze VIN i zwraca jego dane (tytuł, rok, cena Kup Teraz, przebieg, ocena stanu, lokalizacja) oraz bezpośredni link do oferty. Użyj, gdy użytkownik podaje konkretny VIN.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "vin": {
+            "type": "string",
+            "minLength": 11,
+            "maxLength": 17,
+            "description": "Numer VIN pojazdu (zwykle 17 znaków)."
+          }
+        },
+        "required": [
+          "vin"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_automax_info",
+      "description": "Zwraca podstawowe informacje o AUTOMAX: czym jest usługa, jak przebiega import auta z aukcji w USA do Polski, stała prowizja, orientacyjne koszty oraz dane kontaktowe. Użyj, gdy użytkownik pyta o firmę, zasady, prowizję, czas realizacji lub kontakt.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "search_vehicles",
+      "description": "Wyszukuje pojazdy z aukcji USA w katalogu AUTOMAX (oferty Kup Teraz). Zwraca liczbę dopasowań oraz listę najlepszych wyników (marka/model/rok, cena Kup Teraz, przebieg, lokalizacja, link do oferty) wraz z adresem pełnej, przefiltrowanej listy. Użyj, gdy użytkownik szuka auta po marce, modelu, roczniku, cenie, nadwoziu, paliwie, napędzie itp.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Fraza tekstowa szukana w tytule oferty, np. \"Audi A5 S line\". Wszystkie słowa muszą wystąpić."
+          },
+          "make": {
+            "type": "string",
+            "description": "Marka, np. \"Toyota\", \"BMW\", \"Ford\"."
+          },
+          "model": {
+            "type": "string",
+            "description": "Model, np. \"Mustang\", \"X5\"."
+          },
+          "year_min": {
+            "type": "integer",
+            "description": "Rocznik od (włącznie)."
+          },
+          "year_max": {
+            "type": "integer",
+            "description": "Rocznik do (włącznie)."
+          },
+          "price_min": {
+            "type": "number",
+            "description": "Minimalna cena Kup Teraz w USD."
+          },
+          "price_max": {
+            "type": "number",
+            "description": "Maksymalna cena Kup Teraz w USD."
+          },
+          "body": {
+            "type": "string",
+            "enum": [
+              "sedan",
+              "suv",
+              "bigsuv",
+              "pickup",
+              "coupe",
+              "cabrio",
+              "muscle"
+            ],
+            "description": "Typ nadwozia."
+          },
+          "fuel": {
+            "type": "string",
+            "enum": [
+              "benzyna",
+              "diesel",
+              "hybryda",
+              "elektryczny"
+            ],
+            "description": "Rodzaj paliwa."
+          },
+          "drive": {
+            "type": "string",
+            "enum": [
+              "awd",
+              "rwd",
+              "fwd"
+            ],
+            "description": "Napęd."
+          },
+          "damage": {
+            "type": "string",
+            "enum": [
+              "normal",
+              "front",
+              "rear",
+              "side",
+              "hail",
+              "vandalism",
+              "water"
+            ],
+            "description": "Rodzaj uszkodzenia (\"normal\" = bez większych uszkodzeń)."
+          },
+          "title_status": {
+            "type": "string",
+            "enum": [
+              "clean",
+              "salvage",
+              "rebuilt"
+            ],
+            "description": "Status dokumentu (tytułu)."
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "price_asc",
+              "price_desc",
+              "grade_desc",
+              "score_desc",
+              "created_at,DESC"
+            ],
+            "description": "Sortowanie wyników. Domyślnie price_asc."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 24,
+            "description": "Ile najlepszych wyników zwrócić w odpowiedzi (domyślnie 8)."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "aukcje-automax.pl",
+  "source": "webmcp.com/api/directory.json"
+}

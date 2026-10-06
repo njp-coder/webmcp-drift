@@ -1,0 +1,157 @@
+{
+  "sponsio": 1,
+  "url": "https://dynastysuites.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "check_room_availability",
+      "description": "Check a selected room’s current rate and availability for guest-confirmed arrival, nights and occupancy. Rates may be cached for 120 seconds. No booking or hold. Never infer missing guest choices.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "room",
+          "checkIn",
+          "nights",
+          "adults",
+          "children"
+        ],
+        "properties": {
+          "room": {
+            "type": "string",
+            "enum": [
+              "deluxe-queen",
+              "deluxe-king",
+              "deluxe-two-queen",
+              "deluxe-queen-ada",
+              "deluxe-two-queen-ada",
+              "suite-with-hot-tub",
+              "presidential-suite",
+              "executive-king"
+            ],
+            "description": "Guest-selected room ID. Get room names and capacity using get_hotel_info."
+          },
+          "checkIn": {
+            "type": "string",
+            "format": "date",
+            "description": "Arrival YYYY-MM-DD in America/Los_Angeles; ask if ambiguous, especially after midnight."
+          },
+          "nights": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 31
+          },
+          "adults": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 6,
+            "description": "Guest-confirmed adult count; also subject to the selected room limit."
+          },
+          "children": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 4,
+            "description": "Guest-confirmed child count; do not silently assume zero."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get_hotel_info",
+      "description": "Get public Dynasty Suites Redlands facts or room IDs and capacity limits. No personal, administrative or reservation data. Use check_in for arrival policies.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "topic"
+        ],
+        "properties": {
+          "topic": {
+            "type": "string",
+            "enum": [
+              "rooms",
+              "overview",
+              "check_in",
+              "amenities",
+              "cancellation",
+              "hot_tubs"
+            ]
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "prepare_booking_link",
+      "description": "Prepare, but do not open, a Direct Book link with the guest-selected room, dates and occupancy. Does not check availability, reserve, hold, charge or confirm anything. Guest completes booking in Direct Book.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "room",
+          "checkIn",
+          "nights",
+          "adults",
+          "children"
+        ],
+        "properties": {
+          "room": {
+            "type": "string",
+            "enum": [
+              "deluxe-queen",
+              "deluxe-king",
+              "deluxe-two-queen",
+              "deluxe-queen-ada",
+              "deluxe-two-queen-ada",
+              "suite-with-hot-tub",
+              "presidential-suite",
+              "executive-king"
+            ],
+            "description": "Guest-selected room ID. Get room names and capacity using get_hotel_info."
+          },
+          "checkIn": {
+            "type": "string",
+            "format": "date",
+            "description": "Arrival YYYY-MM-DD in America/Los_Angeles; ask if ambiguous, especially after midnight."
+          },
+          "nights": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 31
+          },
+          "adults": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 6,
+            "description": "Guest-confirmed adult count; also subject to the selected room limit."
+          },
+          "children": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 4,
+            "description": "Guest-confirmed child count; do not silently assume zero."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": false
+      }
+    }
+  ],
+  "host": "dynastysuites.com",
+  "source": "webmcp.com/api/directory.json"
+}

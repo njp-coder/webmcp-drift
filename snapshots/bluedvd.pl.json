@@ -1,0 +1,57 @@
+{
+  "sponsio": 1,
+  "url": "https://bluedvd.pl/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "bluedvd_produkty_na_liscie",
+      "description": "Odczytuje produkty widoczne na aktualnie otwartej stronie BlueDVD.pl (strona główna, katalog lub kategoria): nazwę, adres, cenę, format i dostępność. Nie zmienia strony, filtrów ani sortowania. Tylko odczyt.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "description": "Ile produktów zwrócić (1–24).",
+            "minimum": 1,
+            "maximum": 24,
+            "default": 24
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "bluedvd_szukaj_produktow",
+      "description": "Wyszukuje filmy (Blu-ray, 4K UHD, DVD) w sklepie BlueDVD.pl zwykłą wyszukiwarką sklepu. Zwraca maksymalnie 10 opublikowanych produktów: nazwę, adres, cenę, format i dostępność. Tylko odczyt.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "fraza": {
+            "type": "string",
+            "description": "Tytuł filmu, aktor, reżyser lub inne słowo kluczowe.",
+            "minLength": 2,
+            "maxLength": 80
+          }
+        },
+        "required": [
+          "fraza"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": true
+      }
+    }
+  ],
+  "host": "bluedvd.pl",
+  "source": "webmcp.com/api/directory.json"
+}

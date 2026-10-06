@@ -1,0 +1,76 @@
+{
+  "sponsio": 1,
+  "url": "https://www.chambre-enfant-bebe.fr/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_product",
+      "description": "Return the complete public details for one Le Jurassien product using its SKU, including prices, product URL, gallery images, full description and structured attributes.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sku": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64,
+            "description": "Exact Le Jurassien product SKU returned by search_products."
+          }
+        },
+        "required": [
+          "sku"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Search the public Le Jurassien catalogue for baby and children's bedroom furniture. Returns real products, prices, URLs, images and structured attributes. Use French search terms when possible.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 100,
+            "description": "Product search query, preferably in French. Example: lit cabane."
+          },
+          "bed_size": {
+            "type": "string",
+            "maxLength": 30,
+            "description": "Optional exact bed or mattress size. Example: 80x160."
+          },
+          "max_price": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "description": "Optional maximum final selling price in EUR."
+          },
+          "made_in_europe": {
+            "type": "boolean",
+            "description": "When true, only return products labelled as Made in Europe."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "default": 5,
+            "description": "Maximum number of products to return."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "chambre-enfant-bebe.fr",
+  "source": "webmcp.com/api/directory.json"
+}

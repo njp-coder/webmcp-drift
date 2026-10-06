@@ -1,0 +1,89 @@
+{
+  "sponsio": 1,
+  "url": "https://www.everydayhealth.care/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "search_providers",
+      "description": "Search doctors, specialists, procedures, and health conditions across the US directory.",
+      "kind": "imperative",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "term": {
+            "type": "string",
+            "description": "Doctor name, specialty, health condition, or medical procedure.",
+            "maxLength": 150
+          },
+          "location": {
+            "type": "string",
+            "description": "US city and state (for example, 'Austin, TX') or 5-digit ZIP code.",
+            "maxLength": 150
+          },
+          "distance": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10000,
+            "description": "Search radius in miles."
+          },
+          "insurances": {
+            "type": "string",
+            "description": "Health insurance plan or carrier name.",
+            "maxLength": 150
+          },
+          "newPatients": {
+            "type": "boolean",
+            "description": "Filter for doctors accepting new patients."
+          },
+          "rating": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5,
+            "description": "Minimum patient star rating from 1 to 5."
+          },
+          "zocdocBooking": {
+            "type": "boolean",
+            "description": "Filter for providers with instant online appointment booking."
+          },
+          "zocdocVirtual": {
+            "type": "boolean",
+            "description": "Filter for providers offering telehealth consultations."
+          },
+          "ccDoctor": {
+            "type": "boolean",
+            "description": "Filter for Castle Connolly Top Doctor honorees."
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "DISTANCE",
+              "RATING",
+              "RELEVANCE"
+            ],
+            "description": "Sort by relevance, distance, or patient rating."
+          },
+          "genders": {
+            "type": "string",
+            "enum": [
+              "F",
+              "M"
+            ],
+            "description": "Filter by doctor gender: \"F\" for Female or \"M\" for Male."
+          }
+        },
+        "required": [
+          "term"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": false
+      }
+    }
+  ],
+  "host": "everydayhealth.care",
+  "source": "webmcp.com/api/directory.json"
+}

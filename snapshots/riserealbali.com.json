@@ -1,0 +1,190 @@
+{
+  "sponsio": 1,
+  "url": "https://riserealbali.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "contact_broker",
+      "description": "Asks a Rise Real Bali broker to message the visitor on WhatsApp about buying property in Bali. Needs a name and a phone number.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "form": {
+            "type": "string"
+          },
+          "domain": {
+            "type": "string"
+          },
+          "lang": {
+            "type": "string"
+          },
+          "page_key": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "description": "First and last name"
+          },
+          "phone": {
+            "type": "string",
+            "description": "+1 555 010 2030"
+          },
+          "company": {
+            "type": "string"
+          },
+          "consent": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "name",
+          "phone",
+          "consent"
+        ]
+      }
+    },
+    {
+      "name": "request_property_shortlist",
+      "description": "Asks a Rise Real Bali broker for a shortlist of Bali villas or apartments that fit the visitor's goal and budget. A broker replies on WhatsApp or by phone.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "form": {
+            "type": "string"
+          },
+          "domain": {
+            "type": "string"
+          },
+          "lang": {
+            "type": "string"
+          },
+          "page_key": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string",
+            "description": "+1 …"
+          },
+          "email": {
+            "type": "string"
+          },
+          "goal": {
+            "type": "string"
+          },
+          "budget": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string",
+            "description": "Area, number of bedrooms, when you plan to buy"
+          },
+          "company": {
+            "type": "string"
+          },
+          "consent": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "name",
+          "phone",
+          "consent"
+        ]
+      }
+    },
+    {
+      "name": "rise_contact",
+      "description": "Contact details for Rise Real Bali, a real estate agency in Bali, riserealbali.com: WhatsApp, email and the broker phone number. Buyers pay nothing: the seller pays the commission. The tool only returns links and sends nothing.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "topic": {
+            "type": "string",
+            "description": "What the question is about: a property, an area, a yield estimate, or selling your own property"
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "rise_estimate_yield",
+      "description": "Estimates rental yield on a Bali property with the model used by Rise Real Bali, a real estate agency in Bali, riserealbali.com: gross revenue (nightly rate × 365 × occupancy), operating expenses at 40% of revenue (management 18%, tax 10%, vacancy and upkeep 12%), net operating income, net yield on the price and payback period. An estimate, not a promise of income.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "price_usd": {
+            "type": "number",
+            "description": "Property price, in the same currency as the nightly rate (IDR on this site)"
+          },
+          "adr_usd": {
+            "type": "number",
+            "description": "Average daily rate per night, in the same currency as the price"
+          },
+          "occupancy_pct": {
+            "type": "number",
+            "description": "Average yearly occupancy in percent; default 70"
+          }
+        },
+        "required": [
+          "price_usd",
+          "adr_usd"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "rise_find_objects",
+      "description": "Searches the open catalog of Rise Real Bali, a real estate agency in Bali, riserealbali.com on the current page: villas and apartments with the developer price and a net income estimate. Filters: area, type, bedrooms, budget, completion. Returns a list with price, area, net yield and a link to each property page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "district": {
+            "type": "string",
+            "description": "Area name: Canggu, Pererenan, Ubud, Uluwatu, Nusa Dua, Seminyak, Umalas, Seseh, Nyanyi, Kedungu…"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "villa",
+              "apart"
+            ],
+            "description": "villa or apart (apartment)"
+          },
+          "bedrooms": {
+            "type": "integer",
+            "description": "Minimum bedrooms"
+          },
+          "budget_max_usd": {
+            "type": "number",
+            "description": "Maximum price, in the developer price-list currency"
+          },
+          "ready_only": {
+            "type": "boolean",
+            "description": "Completed properties only"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "How many to return; default 10"
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "riserealbali.com",
+  "source": "webmcp.com/api/directory.json"
+}

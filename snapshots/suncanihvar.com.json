@@ -1,0 +1,229 @@
+{
+  "sponsio": 1,
+  "url": "https://www.suncanihvar.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "add_room_to_cart",
+      "description": "Add a room offer from check_availability to the guest's cart. The cart is shared with the page, so the guest sees the change immediately. This does NOT reserve or pay — call start_reservation when the guest is ready.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "offerId": {
+            "type": "string",
+            "description": "An offerId returned by check_availability."
+          },
+          "adults": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 6,
+            "description": "Adults for this room. Defaults to the occupancy the offer was priced for."
+          },
+          "children": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 17
+            },
+            "description": "Children ages for this room. Defaults to the occupancy the offer was priced for."
+          }
+        },
+        "required": [
+          "offerId"
+        ]
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "check_availability",
+      "description": "Get live room availability and prices for one hotel and stay. Each returned offer carries an offerId (valid 30 minutes) that add_room_to_cart accepts. Prices are the stay total for the given occupancy, in the hotel's currency.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "hotel": {
+            "type": "string",
+            "description": "Hotel slug from search_hotels, e.g. \"adriana\"."
+          },
+          "checkin": {
+            "type": "string",
+            "description": "Check-in date as YYYY-MM-DD. Must be today or later."
+          },
+          "nights": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 30,
+            "description": "Length of stay in nights. Defaults to 2."
+          },
+          "adults": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 6,
+            "description": "Adults in the room. Defaults to 2."
+          },
+          "children": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 17
+            },
+            "description": "Ages of children in the room, one entry per child. Defaults to none."
+          },
+          "promoCode": {
+            "type": "string",
+            "description": "Promotional or partner code to apply, if the guest has one."
+          },
+          "locale": {
+            "type": "string",
+            "enum": [
+              "en",
+              "hr",
+              "de",
+              "fr",
+              "it",
+              "pt"
+            ],
+            "description": "Language for room and rate names. Defaults to the page language."
+          }
+        },
+        "required": [
+          "hotel",
+          "checkin"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "clear_cart",
+      "description": "Remove every room from the guest's cart. Only do this when the guest asks for it or agrees to switch hotel or dates. Nothing has been reserved yet, so this cancels no booking.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "get_hotel_info",
+      "description": "Get one hotel's profile: description, star rating, guest benefits, and every room type with size, bed setup and occupancy limits. Does not include prices — use check_availability for those.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "hotel": {
+            "type": "string",
+            "description": "Hotel slug from search_hotels (e.g. \"palace-elisabeth\") or its display name."
+          },
+          "locale": {
+            "type": "string",
+            "enum": [
+              "en",
+              "hr",
+              "de",
+              "fr",
+              "it",
+              "pt"
+            ],
+            "description": "Language for the returned text. Defaults to the page language."
+          }
+        },
+        "required": [
+          "hotel"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "search_hotels",
+      "description": "List Sunčani Hvar hotels on Hvar island, optionally filtered by free-text query (name, style, amenities) and minimum star rating. Returns each hotel's slug, which the other tools accept as \"hotel\". With no arguments returns every hotel.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Free text to match against hotel names, descriptions and room types, e.g. \"family beach\", \"luxury spa\", \"adults only\"."
+          },
+          "minStars": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5,
+            "description": "Only return hotels with at least this many stars."
+          },
+          "locale": {
+            "type": "string",
+            "enum": [
+              "en",
+              "hr",
+              "de",
+              "fr",
+              "it",
+              "pt"
+            ],
+            "description": "Language for names and descriptions. Defaults to the page language."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "start_reservation",
+      "description": "Hand the booking over to the guest: opens the payment page with the cart pre-selected and re-priced live. The guest must review the reservation and enter their own guest and payment details — an agent cannot and must not complete the reservation. Returns the payment URL, which can also be shared with the guest to open later.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "view_cart",
+      "description": "Show what is currently in the guest's booking cart: hotel, dates, rooms, rate and grand total. Reflects rooms added by the guest on the page as well as by add_room_to_cart.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "locale": {
+            "type": "string",
+            "enum": [
+              "en",
+              "hr",
+              "de",
+              "fr",
+              "it",
+              "pt"
+            ],
+            "description": "Language for room names. Defaults to the page language."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": false
+      }
+    }
+  ],
+  "host": "suncanihvar.com",
+  "source": "webmcp.com/api/directory.json"
+}

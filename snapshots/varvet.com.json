@@ -1,0 +1,99 @@
+{
+  "sponsio": 1,
+  "url": "https://varvet.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_case_studies",
+      "description": "Get Varvet's portfolio and case study details including clients, challenges, and outcomes.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_services",
+      "description": "Get information about Varvet's services, expertise areas, team, and how they work.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "submit_contact_request",
+      "description": "Submit a contact request to Varvet to discuss a digital product project. Provide name, email, and message at minimum. Optionally include goal, expertise, and budget for a more structured inquiry. Rate limited to 5 requests per 10 minutes.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Full name"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email address"
+          },
+          "company": {
+            "type": "string",
+            "description": "Company name (optional)"
+          },
+          "message": {
+            "type": "string",
+            "description": "Project description or inquiry"
+          },
+          "goal": {
+            "type": "string",
+            "enum": [
+              "craft-new",
+              "scale-working",
+              "rethink-explore",
+              "something-else"
+            ],
+            "description": "Project goal: craft-new (build from scratch), scale-working (grow existing product), rethink-explore (pivot or discover), something-else"
+          },
+          "expertise": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "development",
+                "design",
+                "product-strategy",
+                "mobile",
+                "tech-advisory",
+                "ai-automation"
+              ]
+            },
+            "description": "Areas of expertise needed (one or more)"
+          },
+          "budget": {
+            "type": "string",
+            "enum": [
+              "under-500k",
+              "500k-1.5m",
+              "over-1.5m",
+              "not-sure"
+            ],
+            "description": "Rough budget range in SEK: under-500k, 500k-1.5m, over-1.5m, or not-sure"
+          }
+        },
+        "required": [
+          "name",
+          "email",
+          "message"
+        ]
+      }
+    }
+  ],
+  "host": "varvet.com",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,102 @@
+{
+  "sponsio": 1,
+  "url": "https://car.towncar.co.kr/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_car",
+      "description": "차량 id로 타운카 공유 차량의 상세 정보(요금·스펙·옵션)를 조회합니다.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "search_cars가 반환한 차량 id"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_reservation_link",
+      "description": "차량 id로 타운카 앱 예약 딥링크와 웹 상세 페이지 URL을 반환합니다. 예약·결제는 앱에서 완료됩니다.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "차량 id"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "list_regions",
+      "description": "타운카 공유 차량이 있는 지역 목록과 지역별 차량 수, 지역 페이지 URL을 반환합니다.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "search_cars",
+      "description": "타운카(이웃 간 차량공유)에 등록된 공유 차량을 조건으로 검색합니다. 지역·차종·연료·예산으로 필터링할 수 있습니다.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "region": {
+            "type": "string",
+            "description": "지역 (부분 일치, 예: \"성남\", \"경기도 시흥시\", \"서울\")"
+          },
+          "query": {
+            "type": "string",
+            "description": "차명·제조사 검색어 (예: \"테슬라\", \"카니발\")"
+          },
+          "carClass": {
+            "type": "string",
+            "description": "차종 (예: 경형, 소형, 준중형, 중형, 준대형, 대형, 소형SUV, 중형SUV, 대형SUV, 승합(RV))"
+          },
+          "fuel": {
+            "type": "string",
+            "description": "연료 (예: 전기, 하이브리드, 휘발유, 경유, LPG)"
+          },
+          "maxDailyRate": {
+            "type": "number",
+            "description": "일 대여료 상한 (원)"
+          },
+          "minYear": {
+            "type": "number",
+            "description": "최소 연식"
+          },
+          "limit": {
+            "type": "number",
+            "description": "최대 결과 수 (기본 10, 최대 30)"
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "car.towncar.co.kr",
+  "source": "webmcp.com/api/directory.json"
+}

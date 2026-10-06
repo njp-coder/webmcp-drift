@@ -1,0 +1,98 @@
+{
+  "sponsio": 1,
+  "url": "https://guiademoteles.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "buscar_moteles",
+      "description": "Busca moteles en una ciudad de México por zona, comodidad, precio máximo o texto en el nombre. Devuelve nombre, alcaldía, rango de precios en MXN, comodidades y URL de la ficha. No reserva ni consulta disponibilidad.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "ciudad": {
+            "type": "string",
+            "description": "Nombre o slug de la ciudad, por ejemplo \"Monterrey\" o \"ciudad-de-mexico\""
+          },
+          "zona": {
+            "description": "Slug o nombre de la zona, por ejemplo \"zona-centro\"",
+            "type": "string"
+          },
+          "amenidad": {
+            "description": "Comodidad que el motel debe ofrecer",
+            "type": "string",
+            "enum": [
+              "jacuzzi",
+              "alberca",
+              "garage privado",
+              "sauna"
+            ]
+          },
+          "precio_max": {
+            "description": "Precio máximo en MXN de la tarifa más económica del motel",
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "texto": {
+            "description": "Texto que debe aparecer en el nombre del motel",
+            "type": "string"
+          },
+          "limite": {
+            "description": "Máximo de resultados, por defecto 10",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20
+          }
+        },
+        "required": [
+          "ciudad"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "ficha_motel",
+      "description": "Devuelve la ficha completa de un motel (o de una ciudad, zona o barrio) en markdown: suites, precios por periodo, comodidades, descripción, preguntas frecuentes y teléfono. Recibe la URL de guiademoteles.com o la ruta, por ejemplo /mexico/monterrey/zona-centro/hotel-washington-monterrey.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "URL completa o ruta de la página en guiademoteles.com"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "listar_ciudades",
+      "description": "Ciudades (áreas metropolitanas) y zonas cubiertas por Guía de Moteles, con cantidad de moteles y URL. Úsalo primero para resolver el nombre de la ciudad o para ver las zonas de una ciudad.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "ciudad": {
+            "description": "Nombre o slug de una ciudad para ver solo sus zonas, por ejemplo \"Guadalajara\". Sin este campo devuelve todas las ciudades.",
+            "type": "string"
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "guiademoteles.com",
+  "source": "webmcp.com/api/directory.json"
+}

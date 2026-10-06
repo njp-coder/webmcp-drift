@@ -1,0 +1,222 @@
+{
+  "sponsio": 1,
+  "url": "https://www.drleylaarvas.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_clinic_contact_info",
+      "description": "Returns the contact details of the clinic of Op. Dr. Leyla Arvas (plastic, reconstructive and aesthetic surgeon, Şişli, Istanbul): phone numbers, WhatsApp link, e-mail, address, Google Maps link and opening hours.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_doctor_profile",
+      "description": "Returns profile information about Op. Dr. Leyla Arvas: specialty, clinic, profile page URL and official profiles (Google Scholar, ASPS, social media).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_service_details",
+      "description": "Returns details about one service offered by Op. Dr. Leyla Arvas (e.g. tummy_tuck, vaser_liposuction, breast_augmentation, rhinoplasty): its official page URL, the page title and summary written by the clinic, links to the English/German/French versions of the page when available, and how to contact the clinic about it. Use list_services to find the id.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "service": {
+            "type": "string",
+            "enum": [
+              "facelift",
+              "mini_facelift",
+              "facial_feminization",
+              "lip_lift",
+              "blepharoplasty",
+              "almond_eye",
+              "rhinoplasty",
+              "forehead_lift",
+              "brow_lift",
+              "buccal_fat_removal",
+              "chin_surgery",
+              "double_chin_removal",
+              "dimple_creation",
+              "hair_transplant",
+              "fue_hair_transplant",
+              "dhi_hair_transplant",
+              "beard_transplant",
+              "female_hair_transplant",
+              "vaser_liposuction",
+              "liposuction",
+              "vaser_hi_def",
+              "abdominal_etching",
+              "tummy_tuck",
+              "mini_tummy_tuck",
+              "brazilian_butt_lift",
+              "buttock_aesthetics",
+              "arm_lift",
+              "thigh_lift",
+              "fat_transfer",
+              "body_lift_360",
+              "post_bariatric_surgery",
+              "labiaplasty",
+              "j_plasma",
+              "breast_aesthetics",
+              "breast_augmentation",
+              "breast_reduction",
+              "breast_lift",
+              "breast_implants",
+              "breast_fat_transfer",
+              "nipple_surgery",
+              "tuberous_breast_correction",
+              "gynecomastia",
+              "male_aesthetics",
+              "botox",
+              "dermal_fillers",
+              "lip_filler",
+              "thread_lift",
+              "non_surgical_facelift",
+              "prp_therapy",
+              "mesotherapy",
+              "sculptra",
+              "ultherapy",
+              "thermage_flx",
+              "morpheus8",
+              "hydrafacial",
+              "laser_hair_removal",
+              "fractional_laser"
+            ],
+            "description": "The service id, for example \"tummy_tuck\" (abdominoplasty), \"liposuction\", \"vaser_liposuction\", \"brazilian_butt_lift\", \"breast_augmentation\", \"rhinoplasty\" or \"hair_transplant\"."
+          }
+        },
+        "required": [
+          "service"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "list_services",
+      "description": "Lists the main surgical and non-surgical aesthetic services offered by Op. Dr. Leyla Arvas in Istanbul, such as liposuction, VASER liposuction, tummy tuck (abdominoplasty), Brazilian butt lift, breast augmentation, breast lift, rhinoplasty, facelift, eyelid surgery, hair transplant, Botox and fillers. Each result has an id (use it with get_service_details), English and Turkish name, category and page URL. Filter by category and/or a free-text query in English or Turkish.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "enum": [
+              "face_surgery",
+              "hair_transplant",
+              "body_surgery",
+              "breast_surgery",
+              "men",
+              "non_surgical",
+              "devices"
+            ],
+            "description": "Optional service category: face_surgery = Facial aesthetic surgery (Yüz Estetiği); hair_transplant = Hair, beard and moustache transplant (Saç Ekimi); body_surgery = Body contouring surgery (Vücut Estetiği); breast_surgery = Breast aesthetic surgery (Meme Estetiği); men = Aesthetic procedures for men (Erkeklerde Estetik); non_surgical = Non-surgical aesthetics: injectables and threads (Ameliyatsız Estetik); devices = Energy-based device and laser treatments (Teknolojik Uygulamalar)."
+          },
+          "query": {
+            "type": "string",
+            "description": "Optional search text matched against English names, Turkish names and common synonyms, e.g. \"tummy tuck\", \"karın germe\", \"boob job\", \"nose job\"."
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "list_treatment_pages",
+      "description": "Lists every treatment and procedure page linked in the website navigation (more than 150 pages, titles mostly in Turkish), including less common treatments not in list_services. Optionally filter by keyword.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Optional keyword to filter the page titles, e.g. \"meme\", \"burun\", \"botoks\", \"dolgu\". Leave empty to list all pages."
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "search_site",
+      "description": "Searches the website of Op. Dr. Leyla Arvas (plastic, reconstructive and aesthetic surgeon in Istanbul) for treatments, procedures and blog articles, and opens the results page.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "s": {
+            "type": "string",
+            "description": " Arama..."
+          },
+          "post_type[]": {
+            "type": "string"
+          },
+          "search_limit_to_post_titles": {
+            "type": "string"
+          },
+          "live_min_character": {
+            "type": "string"
+          },
+          "live_posts_per_page": {
+            "type": "string"
+          },
+          "live_search_display_featured_image": {
+            "type": "string"
+          },
+          "live_search_display_post_type": {
+            "type": "string"
+          },
+          "fs": {
+            "type": "string"
+          },
+          "lang": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "s"
+        ]
+      }
+    },
+    {
+      "name": "submit_form_35099",
+      "description": "Fills in a contact form on the website of Op. Dr. Leyla Arvas. The person must review and submit the form.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "insert_your_email": {
+            "type": "string",
+            "description": "E-posta adresiniz*"
+          }
+        },
+        "required": [
+          "insert_your_email"
+        ]
+      }
+    }
+  ],
+  "host": "drleylaarvas.com",
+  "source": "webmcp.com/api/directory.json"
+}

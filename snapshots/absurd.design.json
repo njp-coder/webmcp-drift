@@ -1,0 +1,120 @@
+{
+  "sponsio": 1,
+  "url": "https://absurd.design/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "fill_newsletter_signup",
+      "description": "Opens the Absurd Design newsletter sign-up form (updates and new illustrations) and fills in the email address. It does not subscribe anyone: the person reviews the address, ticks the consent box and presses Subscribe, and a confirmation email follows. The form is shown only to visitors who are not signed in.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 254,
+            "description": "The email address to put in the form."
+          }
+        },
+        "required": [
+          "email"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "get_membership_plans",
+      "description": "Returns the current membership plans with monthly and yearly prices, monthly download credits and included features, plus the pricing page URL. Membership is capped at 300 members at once. Read-only; joining happens on the pricing page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "list_chapters",
+      "description": "Lists the chapters of the Absurd Design illustration library: surrealist, hand-drawn illustrations by one artist, Diana Valeanu (no AI-generated artwork). Returns each chapter's name, slug, page URL, whether it is free or for members, and its file types. Read-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "list_illustrations",
+      "description": "Lists the illustrations in one chapter, newest first: each one's title, page URL and preview image URL. Downloading happens on the illustration page. Read-only.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chapter": {
+            "type": "string",
+            "description": "Chapter slug from list_chapters, for example \"chapter9\"."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "description": "How many to return (default 20, at most 50)."
+          }
+        },
+        "required": [
+          "chapter"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "open_page",
+      "description": "Opens one of the site's public pages in this tab: home (Illustration library (home)), pricing (Pricing and membership), faq (FAQ), about (About the project), license (License overview), free_license (Free license), paid_license (Paid (member) license), what_is_illustration (What is illustration (guide)), privacy (Privacy policy), terms (Terms), sign_in (Sign in), sign_up (Sign up). For a chapter or illustration, use the URL returned by list_chapters or list_illustrations.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "string",
+            "enum": [
+              "home",
+              "pricing",
+              "faq",
+              "about",
+              "license",
+              "free_license",
+              "paid_license",
+              "what_is_illustration",
+              "privacy",
+              "terms",
+              "sign_in",
+              "sign_up"
+            ],
+            "description": "Which page to open."
+          }
+        },
+        "required": [
+          "page"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    }
+  ],
+  "host": "absurd.design",
+  "source": "webmcp.com/api/directory.json"
+}

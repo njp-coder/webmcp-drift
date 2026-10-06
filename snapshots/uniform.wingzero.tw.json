@@ -1,0 +1,133 @@
+{
+  "sponsio": 1,
+  "url": "https://uniform.wingzero.tw/zh-TW",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "uniform-map.get-airline-name",
+      "description": "Look up a localized airline display name by ICAO code using the UniForme public API.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "icao": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9]{2,8}$",
+            "description": "Airline ICAO code."
+          },
+          "lang": {
+            "type": "string",
+            "enum": [
+              "en",
+              "zh-TW",
+              "zh-CN",
+              "ja",
+              "ko",
+              "fr",
+              "de",
+              "es",
+              "pt",
+              "ru"
+            ],
+            "description": "Optional locale code."
+          }
+        },
+        "required": [
+          "icao"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "uniform-map.navigate",
+      "description": "Navigate to a key UniForme section or to a localized search page after user-mediated interaction.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "target": {
+            "type": "string",
+            "enum": [
+              "home",
+              "schools",
+              "airlines",
+              "ai_photos",
+              "videos",
+              "prompts",
+              "looks",
+              "search"
+            ],
+            "description": "Destination section."
+          },
+          "query": {
+            "type": "string",
+            "description": "Search query, used only when target is search."
+          },
+          "lang": {
+            "type": "string",
+            "enum": [
+              "en",
+              "zh-TW",
+              "zh-CN",
+              "ja",
+              "ko",
+              "fr",
+              "de",
+              "es",
+              "pt",
+              "ru"
+            ],
+            "description": "Optional locale code for search URLs."
+          }
+        },
+        "required": [
+          "target"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "uniform-map.search",
+      "description": "Build a localized UniForme search URL for a query without changing page state.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search query text."
+          },
+          "lang": {
+            "type": "string",
+            "enum": [
+              "en",
+              "zh-TW",
+              "zh-CN",
+              "ja",
+              "ko",
+              "fr",
+              "de",
+              "es",
+              "pt",
+              "ru"
+            ],
+            "description": "Optional locale code."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "uniform.wingzero.tw",
+  "source": "webmcp.com/api/directory.json"
+}

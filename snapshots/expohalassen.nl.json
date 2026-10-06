@@ -1,0 +1,125 @@
+{
+  "sponsio": 1,
+  "url": "https://expohalassen.nl/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "contact-details",
+      "description": "Returns address, phone number and email for Expohal Assen.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list-agenda",
+      "description": "Returns upcoming Expohal Assen events with date, category and status.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "number",
+            "description": "Maximum number of events (1-30).",
+            "minimum": 1,
+            "maximum": 30,
+            "default": 10
+          },
+          "category": {
+            "type": "string",
+            "description": "Optional category filter (Dutch machine keys).",
+            "enum": [
+              "beurs",
+              "congres",
+              "bedrijfsevenement",
+              "publieksevenement",
+              "concert-of-show",
+              "maatwerk"
+            ]
+          },
+          "locale": {
+            "type": "string",
+            "description": "Result language/URL locale: nl (default), en or de.",
+            "enum": [
+              "nl",
+              "en",
+              "de"
+            ],
+            "default": "nl"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search-events",
+      "description": "Search the Expohal Assen events agenda by name, artist, category or topic.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string",
+            "description": "Search term, for example an event name or category."
+          },
+          "upcomingOnly": {
+            "type": "boolean",
+            "description": "If true, return upcoming events only.",
+            "default": true
+          },
+          "locale": {
+            "type": "string",
+            "description": "Result language/URL locale: nl (default), en or de.",
+            "enum": [
+              "nl",
+              "en",
+              "de"
+            ],
+            "default": "nl"
+          }
+        },
+        "required": [
+          "q"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "venue-specifications",
+      "description": "Returns verified Expohal Assen venue specifications (capacity, floor area, technical facts).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "group": {
+            "type": "string",
+            "description": "Optional: kern (core) or techniek (technical).",
+            "enum": [
+              "kern",
+              "techniek"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "zoek-evenementen-formulier",
+      "description": "Doorzoekt de evenementenagenda van Expohal Assen op naam, artiest of onderwerp.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string",
+            "description": "Zoek op naam, artiest of onderwerp"
+          }
+        }
+      }
+    }
+  ],
+  "host": "expohalassen.nl",
+  "source": "webmcp.com/api/directory.json"
+}

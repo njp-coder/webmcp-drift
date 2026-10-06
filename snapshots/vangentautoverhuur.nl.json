@@ -1,0 +1,71 @@
+{
+  "sponsio": 1,
+  "url": "https://vangentautoverhuur.nl/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "search_rental_vehicles",
+      "description": "Find rental vehicles for a branch, period, customer type, and optional filters.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "pickupDateTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Pickup ISO date-time, with or without an offset."
+          },
+          "returnDateTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Return ISO date-time, with or without an offset."
+          },
+          "branch": {
+            "type": "string",
+            "enum": [
+              "Zwijndrecht",
+              "Etten-Leur"
+            ],
+            "description": "Human-readable pickup branch."
+          },
+          "customerType": {
+            "type": "string",
+            "enum": [
+              "private",
+              "business"
+            ],
+            "description": "Customer journey."
+          },
+          "vehicleType": {
+            "type": "string",
+            "description": "Optional human-readable vehicle category."
+          },
+          "seats": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9,
+            "description": "Optional minimum number of seats."
+          },
+          "expectedKilometers": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Optional expected rental distance in kilometers."
+          }
+        },
+        "required": [
+          "pickupDateTime",
+          "returnDateTime",
+          "branch",
+          "customerType"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    }
+  ],
+  "host": "vangentautoverhuur.nl",
+  "source": "webmcp.com/api/directory.json"
+}

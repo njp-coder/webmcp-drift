@@ -1,0 +1,143 @@
+{
+  "sponsio": 1,
+  "url": "https://cruisehub.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "cruise_search_form",
+      "description": "CruiseHub cruise search: pick destination, sailing month, departure port, duration, and cruise line, then submit to open live results on book.cruisehub.com. Agents should prefer the search_cruises tool, which returns the same results URL directly.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "join_deals_list",
+      "description": "Sign the user up for CruiseHub deal emails (and optionally SMS deal alerts). Only call with the user's real email and explicit permission. Set smsOptIn true ONLY if the user explicitly agreed to receive recurring marketing text messages; it also requires mobilePhone.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "The user's email address"
+          },
+          "mobilePhone": {
+            "type": "string",
+            "description": "The user's mobile number, required when smsOptIn is true"
+          },
+          "smsOptIn": {
+            "type": "boolean",
+            "description": "True only if the user explicitly consented to marketing texts"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      }
+    },
+    {
+      "name": "join_deals_list_form",
+      "description": "Join CruiseHub's free deals list: exclusive cruise offers by email, with optional SMS deal alerts. Email is required; only tick the SMS box with the user's explicit consent to marketing texts.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Enter your email address"
+          },
+          "mobilephone": {
+            "type": "string",
+            "description": "Mobile number (optional)"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      }
+    },
+    {
+      "name": "search_cruises",
+      "description": "Build a link to live CruiseHub cruise search results. All filters are optional and combinable: destination, cruise line, departure port, nights range, and sailing month. Returns a URL on book.cruisehub.com showing real prices and availability. Phone support: 1-877-733-0777, 24/7.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "destination": {
+            "type": "string",
+            "enum": [
+              "Caribbean",
+              "Bahamas",
+              "Alaska",
+              "Mexico",
+              "Bermuda",
+              "Europe",
+              "Mediterranean",
+              "Hawaii",
+              "Canada & New England",
+              "Panama Canal",
+              "Antarctica",
+              "South America",
+              "Australia & New Zealand",
+              "Transatlantic"
+            ],
+            "description": "Cruise destination region"
+          },
+          "cruiseLine": {
+            "type": "string",
+            "enum": [
+              "Carnival",
+              "Royal Caribbean",
+              "MSC Cruises",
+              "Norwegian",
+              "Princess",
+              "Celebrity",
+              "Disney",
+              "Virgin Voyages",
+              "Holland America",
+              "Costa",
+              "Cunard",
+              "Oceania",
+              "Regent Seven Seas",
+              "Silversea",
+              "Seabourn",
+              "Crystal",
+              "Windstar"
+            ],
+            "description": "Cruise line brand"
+          },
+          "departurePortCode": {
+            "type": "string",
+            "pattern": "^[A-Za-z]{3}$",
+            "description": "Three-letter departure port code, e.g. MIA for Miami or XPC for Port Canaveral"
+          },
+          "minNights": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 60,
+            "description": "Minimum cruise length in nights"
+          },
+          "maxNights": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 60,
+            "description": "Maximum cruise length in nights"
+          },
+          "month": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}$",
+            "description": "Sailing month as YYYY-MM"
+          }
+        },
+        "required": []
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "cruisehub.com",
+  "source": "webmcp.com/api/directory.json"
+}

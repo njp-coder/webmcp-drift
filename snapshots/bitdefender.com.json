@@ -1,0 +1,366 @@
+{
+  "sponsio": 1,
+  "url": "https://www.bitdefender.com/en-us/blog/hotforsecurity/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "blog_get_author",
+      "description": "Look up a blog author by slug. Returns name, bio, profile_image, linkedin, and twitter.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "lang",
+          "blog",
+          "slug"
+        ],
+        "properties": {
+          "lang": {
+            "type": "string",
+            "enum": [
+              "en",
+              "ro",
+              "de",
+              "fr",
+              "es"
+            ],
+            "description": "Language code."
+          },
+          "blog": {
+            "type": "string",
+            "enum": [
+              "hotforsecurity",
+              "labs",
+              "businessinsights",
+              "cyberpedia"
+            ],
+            "description": "Blog identifier. One of: \"hotforsecurity\" (Consumer Insights), \"labs\" (Labs), \"businessinsights\" (Business Insights), \"cyberpedia\" (Cyberpedia)."
+          },
+          "slug": {
+            "type": "string",
+            "description": "Author slug or numeric ID."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "blog_get_latest",
+      "description": "Get the latest post(s) from every blog available in a given locale. Returns title, URL, excerpt, date, and image per post, grouped by blog.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "locale"
+        ],
+        "properties": {
+          "locale": {
+            "type": "string",
+            "description": "BCP-47 locale, e.g. \"en-us\", \"de-de\", \"fr-fr\", \"ro-ro\", \"es-es\"."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 8,
+            "description": "Number of latest posts per blog. Omit for 1 post per blog."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "blog_get_post",
+      "description": "Retrieve a single blog post by slug, including full HTML body, reading time, tags, authors, and hreflang translations.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "lang",
+          "blog",
+          "slug"
+        ],
+        "properties": {
+          "lang": {
+            "type": "string",
+            "enum": [
+              "en",
+              "ro",
+              "de",
+              "fr",
+              "es"
+            ],
+            "description": "Language code."
+          },
+          "blog": {
+            "type": "string",
+            "enum": [
+              "hotforsecurity",
+              "labs",
+              "businessinsights",
+              "cyberpedia"
+            ],
+            "description": "Blog identifier. One of: \"hotforsecurity\" (Consumer Insights), \"labs\" (Labs), \"businessinsights\" (Business Insights), \"cyberpedia\" (Cyberpedia)."
+          },
+          "slug": {
+            "type": "string",
+            "description": "Post slug (URL-safe, hyphen-separated, lowercase)."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "blog_get_posts",
+      "description": "Browse a paginated list of blog posts. Returns title, slug, excerpt, feature_image, published_at, authors, and tags. Available blogs: \"hotforsecurity\" (Consumer Insights), \"labs\" (Labs), \"businessinsights\" (Business Insights), \"cyberpedia\" (Cyberpedia).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "lang",
+          "blog"
+        ],
+        "properties": {
+          "lang": {
+            "type": "string",
+            "enum": [
+              "en",
+              "ro",
+              "de",
+              "fr",
+              "es"
+            ],
+            "description": "Language code."
+          },
+          "blog": {
+            "type": "string",
+            "enum": [
+              "hotforsecurity",
+              "labs",
+              "businessinsights",
+              "cyberpedia"
+            ],
+            "description": "Blog identifier. One of: \"hotforsecurity\" (Consumer Insights), \"labs\" (Labs), \"businessinsights\" (Business Insights), \"cyberpedia\" (Cyberpedia)."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 4,
+            "description": "Number of posts to return (max 50)."
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1,
+            "description": "Page number for pagination."
+          },
+          "tag": {
+            "type": "string",
+            "description": "Filter by tag slug."
+          },
+          "primaryTag": {
+            "type": "string",
+            "description": "Filter by primary tag slug."
+          },
+          "featured": {
+            "type": "boolean",
+            "description": "When true, return only featured posts."
+          },
+          "format": {
+            "type": "string",
+            "enum": [
+              "plaintext",
+              "html"
+            ],
+            "default": "plaintext",
+            "description": "Content format for the post body."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "blog_get_posts_by_slugs",
+      "description": "Fetch a specific set of posts by their slugs (up to 50). Useful for building \"related posts\" widgets or reading lists.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "lang",
+          "blog",
+          "slugs"
+        ],
+        "properties": {
+          "lang": {
+            "type": "string",
+            "enum": [
+              "en",
+              "ro",
+              "de",
+              "fr",
+              "es"
+            ],
+            "description": "Language code."
+          },
+          "blog": {
+            "type": "string",
+            "enum": [
+              "hotforsecurity",
+              "labs",
+              "businessinsights",
+              "cyberpedia"
+            ],
+            "description": "Blog identifier. One of: \"hotforsecurity\" (Consumer Insights), \"labs\" (Labs), \"businessinsights\" (Business Insights), \"cyberpedia\" (Cyberpedia)."
+          },
+          "slugs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "maxItems": 50,
+            "description": "Array of post slugs to retrieve."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "blog_get_settings",
+      "description": "Get blog-level metadata: title, description, og_image, og_title, og_description.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "lang",
+          "blog"
+        ],
+        "properties": {
+          "lang": {
+            "type": "string",
+            "enum": [
+              "en",
+              "ro",
+              "de",
+              "fr",
+              "es"
+            ],
+            "description": "Language code."
+          },
+          "blog": {
+            "type": "string",
+            "enum": [
+              "hotforsecurity",
+              "labs",
+              "businessinsights",
+              "cyberpedia"
+            ],
+            "description": "Blog identifier. One of: \"hotforsecurity\" (Consumer Insights), \"labs\" (Labs), \"businessinsights\" (Business Insights), \"cyberpedia\" (Cyberpedia)."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "blog_get_tags",
+      "description": "List all tags for a blog, or look up a single tag by slug. Returns id, name, and slug.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "lang",
+          "blog"
+        ],
+        "properties": {
+          "lang": {
+            "type": "string",
+            "enum": [
+              "en",
+              "ro",
+              "de",
+              "fr",
+              "es"
+            ],
+            "description": "Language code."
+          },
+          "blog": {
+            "type": "string",
+            "enum": [
+              "hotforsecurity",
+              "labs",
+              "businessinsights",
+              "cyberpedia"
+            ],
+            "description": "Blog identifier. One of: \"hotforsecurity\" (Consumer Insights), \"labs\" (Labs), \"businessinsights\" (Business Insights), \"cyberpedia\" (Cyberpedia)."
+          },
+          "slug": {
+            "type": "string",
+            "description": "Tag slug for single-tag lookup. Omit to list all tags."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 4,
+            "description": "Max number of tags to return when listing."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "blog_search",
+      "description": "Fetch the full slug+title index for a blog (up to 300 posts). Use this to power client-side full-text search or to enumerate all posts.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "lang",
+          "blog"
+        ],
+        "properties": {
+          "lang": {
+            "type": "string",
+            "enum": [
+              "en",
+              "ro",
+              "de",
+              "fr",
+              "es"
+            ],
+            "description": "Language code."
+          },
+          "blog": {
+            "type": "string",
+            "enum": [
+              "hotforsecurity",
+              "labs",
+              "businessinsights",
+              "cyberpedia"
+            ],
+            "description": "Blog identifier. One of: \"hotforsecurity\" (Consumer Insights), \"labs\" (Labs), \"businessinsights\" (Business Insights), \"cyberpedia\" (Cyberpedia)."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "bitdefender.com",
+  "source": "webmcp.com/api/directory.json"
+}

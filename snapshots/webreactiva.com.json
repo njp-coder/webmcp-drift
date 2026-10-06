@@ -1,0 +1,112 @@
+{
+  "sponsio": 1,
+  "url": "https://www.webreactiva.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "control_audio",
+      "description": "Controls the audio player: toggles play/pause ('toggle') or closes it ('close'). Requires a loaded audio track.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "toggle",
+              "close"
+            ]
+          }
+        },
+        "required": [
+          "action"
+        ]
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "get_audio_state",
+      "description": "Returns the current state of the site's audio player: loaded track, whether it's paused, current time and duration.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_site_info",
+      "description": "Describes Web Reactiva (webreactiva.com): a Spanish-language web programming and AI learning site (podcast, blog, courses and skills), the sections available to navigate, and which agent tools each section unlocks.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "navigate_section",
+      "description": "Navigates to an internal section or page of Web Reactiva (e.g. /podcast, /blog, /cursos, /skills). Only accepts internal routes; rejects external URLs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Internal route, e.g. /podcast or /skills/learning-astro"
+          }
+        },
+        "required": [
+          "path"
+        ]
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "search_web_reactiva",
+      "description": "Searches content on Web Reactiva: podcast episodes, blog posts, courses, newsletters and guides. Returns title, URL, type and summary.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search terms"
+          },
+          "content_type": {
+            "type": "string",
+            "enum": [
+              "podcast",
+              "post",
+              "course",
+              "newsletter",
+              "guide"
+            ],
+            "description": "Optional filter by content type"
+          },
+          "limit": {
+            "type": "number",
+            "description": "Max results (default 8)"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    }
+  ],
+  "host": "webreactiva.com",
+  "source": "webmcp.com/api/directory.json"
+}

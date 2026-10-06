@@ -1,0 +1,165 @@
+{
+  "sponsio": 1,
+  "url": "https://tokenstead.ai/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "estimate_api_cost",
+      "description": "Estimate the USD cost of an API workload against one catalog model, at its cheapest verified per-token rate. Napkin math - the /calculator page is the full workload estimator.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "model_slug": {
+            "type": "string",
+            "description": "Model slug (from search_ai_models)"
+          },
+          "input_tokens": {
+            "type": "number",
+            "description": "Total input (prompt) tokens. Default 1,000."
+          },
+          "output_tokens": {
+            "type": "number",
+            "description": "Total output (completion) tokens. Default 0."
+          }
+        },
+        "required": [
+          "model_slug"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "find_models_for_hardware",
+      "description": "Find which AI models can run locally on given hardware, with a fit verdict and estimated tokens per second. Provide a chip name, or an explicit memory size plus memory type. Same engine as Tokenstead's rig finder.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chip_name": {
+            "type": "string",
+            "description": "Chip name, e.g. 'RTX 4090', 'M5 Max', 'Ryzen AI Max+ 395'"
+          },
+          "memory_gb": {
+            "type": "number",
+            "description": "Memory available in GB (use with memory_type when no chip_name)"
+          },
+          "memory_type": {
+            "type": "string",
+            "enum": [
+              "unified",
+              "vram",
+              "system-ram"
+            ],
+            "description": "Memory type when no chip_name given"
+          },
+          "use_case": {
+            "type": "string",
+            "enum": [
+              "coding",
+              "reasoning",
+              "writing",
+              "chat",
+              "general",
+              "vision"
+            ],
+            "description": "Rank results for this use case"
+          },
+          "limit": {
+            "type": "number",
+            "description": "Max results (default 10, max 25)"
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_model_details",
+      "description": "Get full details for one AI model by slug: scores, context window, license, local quantized variants with their memory requirements, and cheapest verified per-token API pricing.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Model slug, e.g. 'glm-5-2', 'qwen3-8-27b' (from search_ai_models)"
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "search_ai_models",
+      "description": "Search Tokenstead's catalog of AI models (open-weight and cloud). Filter by free-text query, use case, open weights, or a max input price. Returns name, parameter count, context window, license, scores, and the cheapest verified API price per model.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string",
+            "description": "Free-text name search, e.g. 'qwen', 'glm', 'kimi'"
+          },
+          "use_case": {
+            "type": "string",
+            "enum": [
+              "coding",
+              "reasoning",
+              "writing",
+              "chat",
+              "general",
+              "vision"
+            ],
+            "description": "Primary use case filter"
+          },
+          "open_weights": {
+            "type": "boolean",
+            "description": "true = only models with downloadable weights"
+          },
+          "max_input_price": {
+            "type": "number",
+            "description": "Only models whose cheapest input API price is at or below this USD per 1M tokens"
+          },
+          "limit": {
+            "type": "number",
+            "description": "Max results (default 10, max 25)"
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "search_guides",
+      "description": "Search Tokenstead's published guides (local-AI hardware, model runbooks, cost breakdowns, benchmark reports).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string",
+            "description": "Free-text title search, e.g. 'dgx spark', 'glm', 'budget'"
+          },
+          "limit": {
+            "type": "number",
+            "description": "Max results (default 10, max 25)"
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "tokenstead.ai",
+  "source": "webmcp.com/api/directory.json"
+}

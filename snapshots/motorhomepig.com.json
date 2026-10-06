@@ -1,0 +1,400 @@
+{
+  "sponsio": 1,
+  "url": "https://www.motorhomepig.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "book_a_viewing",
+      "description": "Request a viewing of a specific motorhome. The seller keeps the vehicle at their own location and hosts the viewing themselves, so this asks them to confirm one of the buyer's preferred times; it does not confirm an appointment on the spot. Give two or three preferred slots. Only call it once the buyer has given you their name, email, phone and postcode.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "listing_id": {
+            "type": "string",
+            "description": "The listing id from search_motorhomes. On a listing page this defaults to the motorhome on screen."
+          },
+          "full_name": {
+            "type": "string",
+            "description": "The person's full name, exactly as they gave it. Do not invent or abbreviate it."
+          },
+          "email": {
+            "type": "string",
+            "description": "Their email address. Ask them for it; never guess it from their name."
+          },
+          "phone": {
+            "type": "string",
+            "description": "Their UK mobile or landline number, digits as they gave them."
+          },
+          "postcode": {
+            "type": "string",
+            "description": "The buyer's own UK postcode. Used to work out how far they would travel."
+          },
+          "preferred_times": {
+            "type": "array",
+            "description": "Two or three slots the buyer could attend. Earliest first.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "date": {
+                  "type": "string",
+                  "description": "Calendar date as YYYY-MM-DD, e.g. 2026-09-04."
+                },
+                "time": {
+                  "type": "string",
+                  "description": "24-hour local time as HH:MM, e.g. 14:30."
+                }
+              },
+              "required": [
+                "date",
+                "time"
+              ]
+            }
+          },
+          "notes": {
+            "type": "string",
+            "description": "Anything the seller should know before the viewing."
+          }
+        },
+        "required": [
+          "listing_id",
+          "full_name",
+          "email",
+          "phone",
+          "postcode",
+          "preferred_times"
+        ]
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "get_motorhome",
+      "description": "Get the full specification of one motorhome by its listing id: price, year, mileage, berths, travelling seats, dimensions, weight class, layout, transmission, fuel, where it is, how many photographs it has and whether it has a walkaround video. Use it to answer a specific question about a vehicle before offering on it or booking a viewing.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "listing_id": {
+            "type": "string",
+            "description": "The listing id from search_motorhomes. On a listing page this defaults to the motorhome on screen."
+          }
+        },
+        "required": [
+          "listing_id"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get_stock_summary",
+      "description": "Get an overview of everything Motorhome Pig currently has for sale: how many vehicles, the price range, which manufacturers are represented and how many of each, the split between motorhomes, campervans and caravans, and how many have a walkaround video. Use it to answer 'what have you got' without listing every vehicle.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "how_selling_works",
+      "description": "Get Motorhome Pig's own account of how it works: what a seller pays and when, the published success-fee scale with worked examples, how a sale completes and who pays whom, how viewings are arranged and who hosts them, typical time to sell, and the cancellation terms. Use this rather than inferring any of it, especially anything about money.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "make_an_offer",
+      "description": "Put a buyer's offer to the seller of a specific motorhome. This is a real offer on a real vehicle, sent to its owner, not a draft or an enquiry. Confirm the amount with the buyer in pounds before calling it, and only call it once they have given you their own name, email and phone number and told you to go ahead.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "listing_id": {
+            "type": "string",
+            "description": "The listing id from search_motorhomes. On a listing page this defaults to the motorhome on screen."
+          },
+          "full_name": {
+            "type": "string",
+            "description": "The person's full name, exactly as they gave it. Do not invent or abbreviate it."
+          },
+          "email": {
+            "type": "string",
+            "description": "Their email address. Ask them for it; never guess it from their name."
+          },
+          "phone": {
+            "type": "string",
+            "description": "Their UK mobile or landline number, digits as they gave them."
+          },
+          "offer_amount": {
+            "type": "number",
+            "description": "The offer in whole pounds, e.g. 32500. No currency symbol, no decimals."
+          },
+          "buying_preference": {
+            "type": "string",
+            "enum": [
+              "Cash",
+              "Finance",
+              "Part exchange",
+              "Not sure"
+            ],
+            "description": "How the buyer intends to pay, if they have said."
+          },
+          "part_exchange_registration": {
+            "type": "string",
+            "description": "UK registration of a vehicle they want to part-exchange, if they have one."
+          },
+          "comments": {
+            "type": "string",
+            "description": "Anything else the buyer wants the seller to know."
+          },
+          "confirm_low_offer": {
+            "type": "boolean",
+            "description": "Set true only after checking a very low offer with the buyer. Omit otherwise."
+          }
+        },
+        "required": [
+          "listing_id",
+          "full_name",
+          "email",
+          "phone",
+          "offer_amount"
+        ]
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "request_more_information",
+      "description": "Send a buyer's questions about a specific motorhome to Motorhome Pig, who will come back to them with answers. Creates a real enquiry and puts the buyer in touch with a person, so only call it once the buyer has asked you to and has given you their own name, email and phone number.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "listing_id": {
+            "type": "string",
+            "description": "The listing id from search_motorhomes. On a listing page this defaults to the motorhome on screen."
+          },
+          "full_name": {
+            "type": "string",
+            "description": "The person's full name, exactly as they gave it. Do not invent or abbreviate it."
+          },
+          "email": {
+            "type": "string",
+            "description": "Their email address. Ask them for it; never guess it from their name."
+          },
+          "phone": {
+            "type": "string",
+            "description": "Their UK mobile or landline number, digits as they gave them."
+          },
+          "questions": {
+            "type": "string",
+            "description": "What the buyer wants to know, in their own words. Be specific."
+          }
+        },
+        "required": [
+          "listing_id",
+          "full_name",
+          "email",
+          "phone",
+          "questions"
+        ]
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "search_motorhomes",
+      "description": "Search Motorhome Pig's live stock of motorhomes, campervans and caravans for sale in the UK. Filter by make, price, year, berths, mileage, layout, length, weight class or distance from a UK town or city. Returns matching vehicles with their price, specification, location and page URL. Use this before any tool that needs a listing id.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Free text, e.g. 'fixed bed automatic' or 'Bailey Autograph'. Optional."
+          },
+          "make": {
+            "type": "string",
+            "description": "Manufacturer, e.g. 'Bailey', 'Auto-Trail', 'Roller Team'."
+          },
+          "model": {
+            "type": "string",
+            "description": "Model name, e.g. 'Autograph 79-4'."
+          },
+          "min_price": {
+            "type": "number",
+            "description": "Lowest price in pounds."
+          },
+          "max_price": {
+            "type": "number",
+            "description": "Highest price in pounds. Their budget ceiling."
+          },
+          "min_year": {
+            "type": "number",
+            "description": "Earliest registration year, e.g. 2018."
+          },
+          "max_year": {
+            "type": "number",
+            "description": "Latest registration year."
+          },
+          "min_berths": {
+            "type": "number",
+            "description": "Fewest berths (sleeping places) they need."
+          },
+          "max_mileage": {
+            "type": "number",
+            "description": "Highest acceptable mileage."
+          },
+          "max_length_metres": {
+            "type": "number",
+            "description": "Longest vehicle they can park or store, in metres."
+          },
+          "vehicle_type": {
+            "type": "string",
+            "enum": [
+              "Motorhome",
+              "Campervan",
+              "Caravan"
+            ],
+            "description": "Which kind of vehicle they want."
+          },
+          "transmission": {
+            "type": "string",
+            "enum": [
+              "Automatic",
+              "Manual"
+            ],
+            "description": "Gearbox type."
+          },
+          "fuel_type": {
+            "type": "string",
+            "enum": [
+              "Diesel",
+              "Petrol"
+            ],
+            "description": "Fuel."
+          },
+          "layout": {
+            "type": "string",
+            "description": "One of: fixed bed, french bed, island bed, twin singles, garage, rear lounge, washroom, overcab, drop-down, rock n roll, bunk beds, dinette."
+          },
+          "under_3_5_tonnes": {
+            "type": "boolean",
+            "description": "True to return only vehicles drivable on a standard UK category B licence."
+          },
+          "near_location": {
+            "type": "string",
+            "description": "A UK town, city or county to search around, e.g. 'Manchester', 'Devon'."
+          },
+          "within_miles": {
+            "type": "number",
+            "description": "Search radius around near_location. Defaults to 50."
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "relevance",
+              "price_low_to_high",
+              "price_high_to_low",
+              "newest",
+              "year_newest",
+              "mileage_lowest"
+            ],
+            "description": "Result order. Defaults to relevance, or nearest first for a location search."
+          },
+          "limit": {
+            "type": "number",
+            "description": "How many to return, 1 to 10. Defaults to 6."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "start_selling_enquiry",
+      "description": "Register someone who wants Motorhome Pig to sell their motorhome, campervan or caravan for them. A member of the team comes back to them to talk through the advert and the price. Nothing is committed and nothing is charged by calling this. Only call it once the owner has given you their own name, email and phone number.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "full_name": {
+            "type": "string",
+            "description": "The person's full name, exactly as they gave it. Do not invent or abbreviate it."
+          },
+          "email": {
+            "type": "string",
+            "description": "Their email address. Ask them for it; never guess it from their name."
+          },
+          "phone": {
+            "type": "string",
+            "description": "Their UK mobile or landline number, digits as they gave them."
+          },
+          "postcode": {
+            "type": "string",
+            "description": "Where the vehicle is kept, as a UK postcode."
+          },
+          "vehicle_type": {
+            "type": "string",
+            "enum": [
+              "Motorhome",
+              "Campervan",
+              "Caravan"
+            ],
+            "description": "What kind of vehicle they are selling."
+          },
+          "make": {
+            "type": "string",
+            "description": "Manufacturer, e.g. 'Swift', 'Auto-Sleeper'."
+          },
+          "model": {
+            "type": "string",
+            "description": "Model name as it appears on the vehicle."
+          },
+          "year": {
+            "type": "number",
+            "description": "Registration year, e.g. 2019."
+          },
+          "mileage": {
+            "type": "number",
+            "description": "Current mileage."
+          },
+          "registration": {
+            "type": "string",
+            "description": "UK registration plate, e.g. 'AB19 CDE'."
+          },
+          "asking_price": {
+            "type": "number",
+            "description": "What the owner hopes to get, in whole pounds. Their figure, not your estimate."
+          }
+        },
+        "required": [
+          "full_name",
+          "email",
+          "phone"
+        ]
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    }
+  ],
+  "host": "motorhomepig.com",
+  "source": "webmcp.com/api/directory.json"
+}

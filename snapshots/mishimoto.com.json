@@ -1,0 +1,192 @@
+{
+  "sponsio": 1,
+  "url": "https://www.mishimoto.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_product_details",
+      "description": "Look up catalog details (name, price, images, product page URL) for a Mishimoto product SKU. Does not include live stock/availability.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sku": {
+            "type": "string",
+            "description": "The Mishimoto product SKU to look up."
+          }
+        },
+        "required": [
+          "sku"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_products_for_vehicle",
+      "description": "Find Mishimoto products that fit a given vehicle by year, make, and model (optionally narrowed by trim, engine, or submodel). Returns SKU, name, categories, and product page URL for each match.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "year": {
+            "type": "number",
+            "description": "Vehicle model year, e.g. 2019."
+          },
+          "make": {
+            "type": "string",
+            "description": "Vehicle make, e.g. \"Subaru\"."
+          },
+          "model": {
+            "type": "string",
+            "description": "Vehicle model, e.g. \"WRX\"."
+          },
+          "trim": {
+            "type": "string",
+            "description": "Optional vehicle trim level."
+          },
+          "engine": {
+            "type": "string",
+            "description": "Optional engine designation."
+          },
+          "submodel": {
+            "type": "string",
+            "description": "Optional vehicle submodel."
+          },
+          "limit": {
+            "type": "number",
+            "description": "Maximum number of products to return (default 50)."
+          },
+          "offset": {
+            "type": "number",
+            "description": "Number of results to skip, for pagination (default 0)."
+          }
+        },
+        "required": [
+          "year",
+          "make",
+          "model"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_related_content",
+      "description": "Find install guides/blog posts and videos related to a Mishimoto product SKU, as shown on the product's fits page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sku": {
+            "type": "string",
+            "description": "The Mishimoto product SKU to look up related content for."
+          }
+        },
+        "required": [
+          "sku"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_vehicles_for_product",
+      "description": "Look up which vehicles (year, make, model, submodel, trim, engine, body type/cab style) a Mishimoto product SKU fits. Matches the \"Compatible Vehicles\" table shown on the product page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sku": {
+            "type": "string",
+            "description": "The Mishimoto product SKU to look up."
+          },
+          "limit": {
+            "type": "number",
+            "description": "Maximum number of vehicles to return (default 100)."
+          },
+          "offset": {
+            "type": "number",
+            "description": "Number of results to skip, for pagination (default 0)."
+          }
+        },
+        "required": [
+          "sku"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "list_vehicle_options",
+      "description": "List valid values for a vehicle year/make/model/submodel/body type/engine/trim field, scoped to vehicles with compatible Mishimoto products. Use this to discover the exact spelling of a make or model before calling get_products_for_vehicle, instead of guessing.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string",
+            "enum": [
+              "year",
+              "make",
+              "model",
+              "submodel",
+              "body_type_name",
+              "engine",
+              "trim"
+            ],
+            "description": "Which field to list values for."
+          },
+          "year": {
+            "type": "number",
+            "description": "Optional: narrow to this model year."
+          },
+          "make": {
+            "type": "string",
+            "description": "Optional: narrow to this vehicle make."
+          },
+          "model": {
+            "type": "string",
+            "description": "Optional: narrow to this vehicle model."
+          }
+        },
+        "required": [
+          "field"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Free-text search for Mishimoto products by name when an agent doesn't have an exact SKU or year/make/model (e.g. \"cold air intake\"). Returns SKU, name, price, and product page URL for each match.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Free-text search query."
+          },
+          "limit": {
+            "type": "number",
+            "description": "Maximum number of products to return (default 8)."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "mishimoto.com",
+  "source": "webmcp.com/api/directory.json"
+}

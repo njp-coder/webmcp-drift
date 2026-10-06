@@ -1,0 +1,77 @@
+{
+  "sponsio": 1,
+  "url": "https://flowpoint.ai/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "list_flowpoint_free_tools",
+      "description": "List every free browser-based tool on flowpoint.ai, grouped by category, with the URL of each. Use this to find which tool page can perform a calculation or conversion.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "enum": [
+              "PDF & Documents",
+              "Design",
+              "Content & Writing",
+              "Data Analysis",
+              "Utility"
+            ],
+            "description": "Restrict the list to a single category. Omit to list all of them."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "navigate_to_page",
+      "description": "Open a page on flowpoint.ai in the current tab. Use search_flowpoint_content or list_flowpoint_free_tools first to find the path.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Site-relative path starting with a slash, for example \"/tools/nps-calculator\"."
+          }
+        },
+        "required": [
+          "path"
+        ]
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "search_flowpoint_content",
+      "description": "Search the Flowpoint website for pages, free tools, blog articles, and customer case studies matching a topic. Returns titles, URLs, and descriptions.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "What to look for, in plain words — for example \"conversion rate\", \"contrast checker\", or \"design to code\"."
+          },
+          "limit": {
+            "type": "number",
+            "description": "Maximum number of results to return. Defaults to 10."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "flowpoint.ai",
+  "source": "webmcp.com/api/directory.json"
+}

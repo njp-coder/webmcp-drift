@@ -1,0 +1,170 @@
+{
+  "sponsio": 1,
+  "url": "https://www.pcbox.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "add_to_cart",
+      "description": "Añade un producto al carrito por su SKU. Obtén el SKU con search_products o get_product; nunca lo inventes. La cantidad es incremental: llamar dos veces con quantity=1 deja 2 unidades.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "sku_id"
+        ],
+        "properties": {
+          "sku_id": {
+            "type": "string",
+            "description": "SKU del producto (campo «id» de search_products)"
+          },
+          "quantity": {
+            "type": "integer",
+            "description": "Unidades a añadir. Por defecto 1.",
+            "minimum": 1
+          },
+          "seller": {
+            "type": "string",
+            "description": "ID del vendedor en VTEX. Por defecto \"1\"."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "browse_categories",
+      "description": "Devuelve el árbol de categorías de la tienda con sus URLs. Úsalo cuando el usuario quiera explorar el catálogo por secciones en lugar de buscar un producto concreto.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get_cart",
+      "description": "Devuelve el contenido actual del carrito: líneas con nombre, SKU, cantidad, precio unitario y totales. Funciona desde cualquier página.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get_product",
+      "description": "Obtiene el detalle completo de un producto a partir de su ID o SKU (el campo «id» que devuelve search_products). Úsalo antes de add_to_cart para confirmar precio y stock.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "product_id"
+        ],
+        "properties": {
+          "product_id": {
+            "type": "string",
+            "description": "ID o SKU del producto en VTEX"
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "go_to_checkout",
+      "description": "Lleva al usuario al checkout para finalizar la compra. Requiere el carrito con al menos un artículo. Tras esta llamada el usuario ya está en el checkout: no navegues de nuevo.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "navigate_to",
+      "description": "Lleva el navegador del usuario a una página de la tienda: resultados de búsqueda, ficha de producto, categoría o carrito. Usa las rutas que devuelven las demás tools; no construyas URLs a mano. Tras esta llamada el usuario YA está en la página: no le pidas que haga clic en ningún enlace ni vuelvas a navegar.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "path"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Ruta interna que empieza por \"/\", ej. \"/search?q=iphone\", \"/product/mi-producto\", \"/cart\""
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Busca productos en el catálogo de la tienda por texto libre. Devuelve nombre, precio, disponibilidad, SKU y URL de cada resultado. NO navega ni añade nada al carrito: usa navigate_to para llevar al usuario a los resultados y add_to_cart para comprar.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "query"
+        ],
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Texto a buscar, ej. \"iphone 15\", \"portátil gaming\", \"cartucho HP 302\""
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Número máximo de resultados (1-50). Por defecto 10.",
+            "minimum": 1,
+            "maximum": 50
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "update_cart_item",
+      "description": "Cambia la cantidad de una línea del carrito o la elimina. La cantidad es absoluta, no un incremento: quantity=0 elimina la línea. Identifica la línea con el SKU que devuelve get_cart.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "sku_id",
+          "quantity"
+        ],
+        "properties": {
+          "sku_id": {
+            "type": "string",
+            "description": "SKU de la línea a modificar"
+          },
+          "quantity": {
+            "type": "integer",
+            "description": "Cantidad final. 0 elimina la línea.",
+            "minimum": 0
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    }
+  ],
+  "host": "pcbox.com",
+  "source": "webmcp.com/api/directory.json"
+}

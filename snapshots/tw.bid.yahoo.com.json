@@ -1,0 +1,585 @@
+{
+  "sponsio": 1,
+  "url": "https://tw.bid.yahoo.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "add_product",
+      "description": "將完整的商品資料提交上架。此工具支援「雙模態相容路徑」，Agent 必須嚴格遵守以下決策優先級：\n1.【優先路徑 - 多模態直接分析】：若使用者在對話中直接「夾帶/上傳圖片檔案」，Agent 必須發揮多模態視覺能力直接辨識該圖片，並將圖片轉化為 Data URI Base64 格式填入 imageBase64，此時不需執行 analyze_product_image 工具。\n2.【次要路徑 - 工具鏈依賴】：若使用者僅提供純文字或圖片網址、未在上下文直接夾帶圖片檔案，則【必須強制先執行】 analyze_product_image 工具取得視覺事實。\n   ⚠️【超時與錯誤熔斷硬約束】：執行 analyze_product_image 工具的極限超時時間（Timeout）為 60 秒。若該工具執行超過 60 秒無回應，或回傳 isError: true 失敗結果時，代表圖片解析發生異常。模型【嚴禁繼續重試呼叫】、且【嚴禁通靈捏造文案】！必須視同發生致命異常（Throw Exception），立刻中斷所有工具鏈，直接向使用者回報：『圖片分析超時或失敗，上架程序終止。』\n⚠️ 嚴格禁止路徑交叉：若走優先路徑，imageBase64 填入標準 Data URI；若走次要路徑，imageBase64 固定填寫 \"未夾帶圖片，已透過工具分析\"。所有產出的文案欄位絕對不可憑空想像、必須完全符合圖片事實。",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "productName": {
+            "type": "string",
+            "maxLength": 80,
+            "description": "商品名稱。例如：\"極簡風陶瓷馬克杯\"。長度嚴格限制在 80 個中文字以內。名稱必須高度符合圖片展現的真實商品品類、顏色與外觀風格。"
+          },
+          "brand": {
+            "type": "string",
+            "description": "品牌名稱。若輸入未提及，請根據商品風格自動生成一個虛擬品牌。"
+          },
+          "imageUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "商品圖片的完整 URL 網址。若為多模態上傳，請帶入系統生成的圖片託管 URL。"
+          },
+          "imageBase64": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "data-uri",
+                "description": "【優先路徑使用】當使用者有直接夾帶實體圖片檔案時，請將該圖片數據轉換為標準的 Data URI 格式（如 data:image/jpeg;base64,...）。"
+              },
+              {
+                "type": "string",
+                "enum": [
+                  "未夾帶圖片，已透過工具分析"
+                ],
+                "description": "【次要路徑使用】當使用者沒有夾帶實體圖片檔案時，必須固定填寫此精準字串。"
+              }
+            ]
+          },
+          "shortDescription": {
+            "type": "string",
+            "maxLength": 70,
+            "description": "適合放在商品列表的精簡短描述。風格活潑有趣，長度嚴格限制在 70 個中文字以內。⚠️注意：文案內容皆須嚴格結合真實圖片特徵（實體圖片內容或前述工具分析之事實）進行撰寫，嚴格禁止脫離圖片事實憑空捏造特色。"
+          },
+          "productDescription": {
+            "type": "string",
+            "description": "豐富的商品完整詳細描述。⚠️【字數與事實硬性約束】：總字數必須「至少 500 字」，且「絕對不可超過 1000 字」。文案內容皆須嚴格結合真實圖片特徵進行撰寫，嚴格禁止通靈與脫離事實。\n\n💡【行銷長文案建議結構】：為確保內容豐富且層次分明，請包含以下四大區塊：\n1.【吸睛引言】：結合圖片呈現的氛圍，點出商品的質感與第一眼印象。\n2.【細節與材質解密】：深入描繪觀察到的顏色細節、線條、材質或特殊工藝，將視覺轉化為文字觸感。\n3.【多元情境舞台】：想像並描繪至少兩個這件商品最適合出現的生活場景或使用體驗（例如：辦公桌上的儀式感、週末約會的焦點）。\n4.【品牌情感連結】：呼應 brand 欄位，撰寫一段符合該商品風格的品牌堅持或貼心語錄，完成高質感的行銷長文案。"
+          },
+          "hashtags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 3,
+            "maxItems": 5,
+            "description": "社群熱門雜湊標籤（Hashtags）。數量嚴格限制在最少 3 個，最多 5 個。標籤內容必須高度相關於圖片中商品的真實特徵、分類或風格（例如：#針織背心、#復古馬克杯），勿帶入無關的萬用詞。"
+          }
+        },
+        "required": [
+          "productName",
+          "brand",
+          "imageUrl",
+          "imageBase64",
+          "shortDescription",
+          "productDescription",
+          "hashtags"
+        ]
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "analyze_product_image",
+      "description": "當使用者提供商品圖片網址，但沒有提供細節特徵時使用。此工具會由後端下載圖片並完成視覺辨識，回傳該商品的顏色、材質、外觀、風格等具體文字描述。",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "imageUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "需要解析的商品圖片網址。"
+          }
+        },
+        "required": [
+          "imageUrl"
+        ]
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "buyer_orders_search",
+      "description": "搜尋並篩選買家（Buyer）的歷史訂單。適用於使用者詢問：『幫我查上週買的衣服』、『我有一筆訂單退款了嗎』、『追蹤 7-11 運送進度』或提供特定的訂單編號/商品關鍵字進行查詢時。",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "queryContext": {
+            "type": "string",
+            "description": "搜尋的關鍵字內容（例如：\"洋裝\"、\"O2026060901\"）。請與 queryType 參數搭配使用，將核心搜尋標的填入此處。",
+            "default": ""
+          },
+          "shippingType": {
+            "type": "string",
+            "description": "依運送方式/物流渠道篩選。當使用者提及特定超商（如全家、7-11）或特定宅配（如低溫、都會送）時填入。若未提及則維持預設值。",
+            "default": "全部運送方式",
+            "enum": [
+              "全部運送方式",
+              "郵寄掛號",
+              "宅配",
+              "低溫配送",
+              "全家取貨付款",
+              "7-11 取貨付款",
+              "7-11 取貨不付款",
+              "萊爾富取貨付款",
+              "離島寄送",
+              "跨國寄送",
+              "大型/超重物品運送",
+              "面交/自取",
+              "郵局貨到付款",
+              "都會送"
+            ]
+          },
+          "shippingStatus": {
+            "type": "string",
+            "description": "依出貨與物流狀態篩選。當使用者詢問『收到了沒』、『出貨了嗎』、『怎麼退貨了』時，對應映射到此狀態（例如：詢問物流卡住可選\"買家商品配送中\"，詢問退貨進度可選\"退貨中\"）。",
+            "default": "全部出貨狀態",
+            "enum": [
+              "全部出貨狀態",
+              "尚未出貨",
+              "已上傳出貨檔，待出貨",
+              "部份商品已出貨",
+              "已出貨",
+              "買家商品配送中",
+              "買家商品重新配送中",
+              "買家商品配送失敗，等待重試",
+              "買家商品已到店",
+              "買家已取貨",
+              "已退貨",
+              "退貨中",
+              "退貨商品已到物流",
+              "退貨商品已到店",
+              "賣家申請領回",
+              "賣家已取退貨",
+              "商品已拋棄 (賣家選擇拋棄)",
+              "商品已拋棄 (逾期未領自動拋棄)",
+              "逾期未出貨",
+              "物流驗收失敗",
+              "遺失賠償",
+              "毀損賠償"
+            ]
+          },
+          "paymentType": {
+            "type": "string",
+            "description": "依付款方式篩選。當使用者提及『刷卡』、使用『ATM轉帳』或『超商付款』時進行篩選。",
+            "default": "全部付款方式",
+            "enum": [
+              "全部付款方式",
+              "ATM",
+              "拍賣帳戶餘額",
+              "FamiPort",
+              "信用卡",
+              "全家取貨付款",
+              "7-11 取貨付款",
+              "萊爾富取貨付款",
+              "郵局貨到付款"
+            ]
+          },
+          "escrowStatus": {
+            "type": "string",
+            "description": "依價金保管、訂單及退款執行狀態篩選。適用於處理糾紛或確認款項流向，如使用者詢問『什麼時候撥款』、『申請退款進度』或『訂單完成了沒』時。",
+            "default": "全部價金保管",
+            "enum": [
+              "全部價金保管",
+              "保管期中",
+              "已申請退款",
+              "已同意退款",
+              "已自動退款",
+              "已拒絕退款",
+              "已進入協商",
+              "協商處理完成",
+              "完成訂單"
+            ]
+          },
+          "queryType": {
+            "type": "string",
+            "description": "指定 queryContext 的搜尋維度。必須根據使用者輸入的內容進行推理選擇：若輸入純數字或序號，優先判斷為\"訂單編號\"或\"商品編號\"；若輸入文字，則預設為\"商品關鍵字\"。",
+            "default": "商品關鍵字",
+            "enum": [
+              "訂單編號",
+              "商品關鍵字",
+              "商品編號",
+              "賣家店名",
+              "賣家拍賣代號",
+              "帳單編號",
+              "條碼",
+              "商品貨號"
+            ]
+          },
+          "sortBy": {
+            "type": "string",
+            "description": "查詢結果的排序規則。",
+            "default": "訂單成立新到舊",
+            "enum": [
+              "訂單成立新到舊",
+              "訂單成立舊到新",
+              "更新時間新到舊"
+            ]
+          }
+        },
+        "required": [
+          "shippingType",
+          "shippingStatus",
+          "paymentType",
+          "escrowStatus",
+          "queryType",
+          "sortBy"
+        ]
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "compare_products",
+      "description": "比較多個商品的優缺點。\n⚠️【前置硬性條件】：Agent 必須先呼叫 get_product_details 取得商品基礎事實資料。\n⚠️【大腦推理提前中斷機制】：若 get_product_details 的回傳結果因部分商品不存在、下架或系統錯誤，導致「最終成功取得詳細資料的有效商品不足 2 筆」時，此比較工具已失去執行意義。模型【嚴禁】強行呼叫此工具！模型必須立刻中斷工具鏈流程，並以親切的自然語言向使用者說明哪些商品讀取失敗、以及因有效商品不足兩筆而無法進行比較的真實原因。\n💡【分析原則】：當符合前置條件時，請由模型針對各個維度進行深度分析，並將結構化的比較結果傳回後端。注意：分析內容必須嚴格基於 get_product_details 所提供的客觀資料，嚴禁虛構特徵。",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "productIds": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 5,
+            "items": {
+              "type": "string"
+            },
+            "description": "參與比較的商品編號陣列。"
+          },
+          "analysisResult": {
+            "type": "object",
+            "description": "模型對商品進行多維度分析後的結構化結果。",
+            "properties": {
+              "comparisonDimensions": {
+                "type": "array",
+                "description": "不同比較維度（例如：價格、外觀設計、規格與色系）的對比列表。",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "dimensionName": {
+                      "type": "string",
+                      "description": "比較的維度名稱，例如 \"價格競爭力\"、\"硬體規格\"、\"續航力\""
+                    },
+                    "analysisSummary": {
+                      "type": "string",
+                      "description": "該維度下各商品的綜合對比概述。"
+                    },
+                    "productComparisonList": {
+                      "type": "array",
+                      "description": "每個商品在此維度下的細緻表現對比列表。必須包含所有參與比較的商品。",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "productId": {
+                            "type": "string",
+                            "description": "參與比較的商品編號（Product ID），必須與 productIds 陣列中的字串完全一致（例如 \"101734803016\"），嚴禁帶有任何 \"item_\" 或 \"long_\" 前綴。"
+                          },
+                          "rating": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 5,
+                            "description": "該商品在此維度的表現評等。數值範圍為 1 到 5 的整數（1 代表最差、5 代表最佳）。"
+                          },
+                          "pros": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "description": "該商品在此維度下的優點列表（必須基於事實，嚴禁胡謅）"
+                          },
+                          "cons": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "description": "該商品在此維度下的缺點列表（必須基於事實，嚴禁胡謅）"
+                          }
+                        },
+                        "required": [
+                          "productId",
+                          "rating",
+                          "pros",
+                          "cons"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "dimensionName",
+                    "analysisSummary",
+                    "productComparisonList"
+                  ]
+                }
+              },
+              "finalVerdict": {
+                "type": "string",
+                "description": "整體的購買建議與客群推薦總結。\n⚠️【重要格式命令】：此欄位【必須】完全使用標準 Markdown 語法撰寫，嚴禁輸出純文字！\n請嚴格遵循以下 Markdown 結構模板進行排版：\n### 🎯 整體購買建議\n（這裡填寫一兩句總結核心重點）\n\n### 👥 依需求推薦客群\n* **追求性價比/小資包色**：首選 `商品ID`，因為...\n* **追求獨特設計感**：首選 `商品ID`，因為...\n\n> 💡 *小提醒：三款商品均為同一賣家提供，可視穿衣習慣與場景需求進行搭配挑選。*"
+              }
+            },
+            "required": [
+              "comparisonDimensions",
+              "finalVerdict"
+            ]
+          }
+        },
+        "required": [
+          "productIds",
+          "analysisResult"
+        ]
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get_product_details",
+      "description": "當使用者提供一個或者多個商品編號（Product IDs）時，批量查詢並提供對應的完整商品資訊，包含：商品名稱、商品短描述、商品長描述、商品規格、hashtags、價格、付款方式以及商品狀態等。此工具通常作為商品比較（compare_products）的前置步驟。\n⚠️【失敗處理與中斷規範】：若此工具呼叫後回傳 isError: true，代表資料庫完全無此商品、商品已下架或伺服器異常。模型【嚴禁】在未經使用者指示下自行修改參數（如胡亂猜測 ID、或移除看似錯誤的 ID）並重複呼叫此工具！模型必須立刻中止工具鏈流程，並將「系統查詢失敗，查無此商品」的訊息直接誠實呈現給使用者。",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "productIds": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 5,
+            "items": {
+              "type": "string",
+              "description": "單一商品的唯一識別編號（Product ID）"
+            },
+            "description": "包含一個或多個商品編號的陣列，用於批量查詢商品細節。"
+          }
+        },
+        "required": [
+          "productIds"
+        ]
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "product_search",
+      "description": "Search products by keywords",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "p": {
+            "type": "string",
+            "description": "search keyword"
+          },
+          "store": {
+            "type": "string",
+            "description": "store or seller name"
+          },
+          "refine": {
+            "type": "string",
+            "description": "product type or state",
+            "anyOf": [
+              {
+                "const": "all",
+                "title": "所有類型商品"
+              },
+              {
+                "const": "buy_now",
+                "title": "直購類型商品"
+              },
+              {
+                "const": "bidding",
+                "title": "競標類型商品"
+              },
+              {
+                "const": "con_used",
+                "title": "二手商品"
+              },
+              {
+                "const": "has_coupon",
+                "title": "可使用折扣碼商品"
+              }
+            ]
+          },
+          "sort": {
+            "type": "string",
+            "description": "search sorting",
+            "anyOf": [
+              {
+                "const": "rel",
+                "title": "與關鍵字最相關商品資訊"
+              },
+              {
+                "const": "auc_ranking",
+                "title": "拍賣全站排名"
+              },
+              {
+                "const": "popular",
+                "title": "最高人氣"
+              }
+            ]
+          },
+          "minp": {
+            "type": "number",
+            "default": null,
+            "minimum": 1,
+            "description": "設定最低商品價格條件"
+          },
+          "maxp": {
+            "type": "number",
+            "default": null,
+            "maximum": 3000000,
+            "description": "設定最高商品價格條件"
+          },
+          "uloc0": {
+            "type": "string",
+            "default": null,
+            "description": "商品所在地",
+            "anyOf": [
+              {
+                "const": "台北市",
+                "title": "台北市"
+              },
+              {
+                "const": "新北市",
+                "title": "新北市"
+              },
+              {
+                "const": "基隆市",
+                "title": "基隆市"
+              },
+              {
+                "const": "宜蘭縣",
+                "title": "宜蘭縣"
+              },
+              {
+                "const": "桃園市",
+                "title": "桃園市"
+              },
+              {
+                "const": "新竹市",
+                "title": "新竹市"
+              },
+              {
+                "const": "新竹縣",
+                "title": "新竹縣"
+              },
+              {
+                "const": "苗栗縣",
+                "title": "苗栗縣"
+              },
+              {
+                "const": "台中市",
+                "title": "台中市"
+              },
+              {
+                "const": "彰化縣",
+                "title": "彰化縣"
+              },
+              {
+                "const": "南投縣",
+                "title": "南投縣"
+              },
+              {
+                "const": "嘉義市",
+                "title": "嘉義市"
+              },
+              {
+                "const": "嘉義縣",
+                "title": "嘉義縣"
+              },
+              {
+                "const": "雲林縣",
+                "title": "雲林縣"
+              },
+              {
+                "const": "台南市",
+                "title": "台南市"
+              },
+              {
+                "const": "高雄市",
+                "title": "高雄市"
+              },
+              {
+                "const": "屏東縣",
+                "title": "屏東縣"
+              },
+              {
+                "const": "花蓮縣",
+                "title": "花蓮縣"
+              },
+              {
+                "const": "台東縣",
+                "title": "台東縣"
+              },
+              {
+                "const": "澎湖縣",
+                "title": "澎湖縣"
+              },
+              {
+                "const": "金門",
+                "title": "金門"
+              },
+              {
+                "const": "馬祖",
+                "title": "馬祖"
+              }
+            ]
+          }
+        },
+        "required": [
+          "p"
+        ]
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "store_search",
+      "description": "Search store by keywords",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "p": {
+            "type": "string",
+            "description": "search keyword"
+          },
+          "sort": {
+            "type": "string",
+            "description": "search sorting",
+            "anyOf": [
+              {
+                "const": "-rating",
+                "title": "評價數高"
+              },
+              {
+                "const": "-productCount",
+                "title": "商品數高"
+              },
+              {
+                "const": "-likeCount",
+                "title": "粉絲數高"
+              }
+            ],
+            "enum": [
+              "-rating",
+              "-productCount",
+              "-likeCount"
+            ]
+          }
+        },
+        "required": [
+          "p"
+        ]
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": true
+      }
+    }
+  ],
+  "host": "tw.bid.yahoo.com",
+  "source": "webmcp.com/api/directory.json"
+}

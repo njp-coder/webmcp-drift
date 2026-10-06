@@ -1,0 +1,86 @@
+{
+  "sponsio": 1,
+  "url": "https://www.forumone.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "describe_form",
+      "description": "Describe the form on the current page: which fields it has, which are required, and what each one accepts. Use it to help a person fill the form in. It cannot submit — the person submits the form themselves.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get_page",
+      "description": "Fetch the full text of one page on forumone.com by its path, e.g. /insights/blog/ai-search-impact-nonprofits. Use search_content first if you do not already have the path.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "The site-relative path, starting with a slash. Not a full URL."
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "search_content",
+      "description": "Search Forum One's published articles, case studies, reports, events, capabilities and open roles. Returns titles, URLs and summaries. Use this before fetching a page, to find which page to fetch.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Words to search for in titles and summaries, e.g. \"AI strategy nonprofits\"."
+          },
+          "collection": {
+            "type": "string",
+            "description": "Restrict the search to one kind of content. Omit to search all of them.",
+            "enum": [
+              "posts",
+              "resources",
+              "case-studies",
+              "events",
+              "capabilities",
+              "jobs"
+            ]
+          },
+          "limit": {
+            "type": "integer",
+            "description": "How many results to return.",
+            "minimum": 1,
+            "maximum": 25,
+            "default": 10
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    }
+  ],
+  "host": "forumone.com",
+  "source": "webmcp.com/api/directory.json"
+}

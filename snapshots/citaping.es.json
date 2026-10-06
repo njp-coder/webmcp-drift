@@ -1,0 +1,98 @@
+{
+  "sponsio": 1,
+  "url": "https://citaping.es/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_province_availability",
+      "description": "Report how many appointments have appeared in one province over the last 7 and 30 days, when the last one appeared, and which procedures they were for.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "province": {
+            "type": "string",
+            "description": "Province slug, as returned by search_catalogue or list_provinces."
+          }
+        },
+        "required": [
+          "province"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "list_procedures",
+      "description": "List every appointment procedure at least one available office offers, with its slug and category.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "list_provinces",
+      "description": "List every Spanish province Cita Ping covers, with its slug and autonomous community.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "open_monitor_checkout",
+      "description": "Open the Cita Ping checkout with a province and procedure already chosen, so the visitor can set up alerts for it. Navigates the page; it neither submits the form nor pays. A procedure that province does not offer opens the checkout at its own picker, with the province chosen.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "province": {
+            "type": "string",
+            "description": "Province slug."
+          },
+          "procedure": {
+            "type": "string",
+            "description": "Procedure slug."
+          }
+        },
+        "required": [
+          "province",
+          "procedure"
+        ]
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "search_catalogue",
+      "description": "Find the provinces and procedures Cita Ping covers that match a free-text query, and return their slugs. Use it to turn what someone typed into the slugs the other tools take.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "What to look for, in any of the four site languages — a procedure, a province, or part of either."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "citaping.es",
+  "source": "webmcp.com/api/directory.json"
+}

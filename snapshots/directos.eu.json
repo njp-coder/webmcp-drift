@@ -1,0 +1,174 @@
+{
+  "sponsio": 1,
+  "url": "https://directos.eu/en/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "add_to_cart",
+      "description": "Add a product to the shopping cart. The cart is only prepared, never ordered or paid: the customer stays in control of checkout. The requested quantity is adjusted to the product packaging rules, and the applied quantity is returned. Products sold in several formats are refused with the list of their variations, call again with the chosen productId.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string",
+            "description": "Product identifier returned by search_products."
+          },
+          "slug": {
+            "type": "string",
+            "description": "Product slug as it appears in the page URL."
+          },
+          "quantity": {
+            "type": "number",
+            "description": "Desired quantity. Adjusted to packaging constraints. Defaults to the minimum sellable quantity."
+          }
+        }
+      }
+    },
+    {
+      "name": "estimate_shipping_cost",
+      "description": "Estimate delivery options and their cost for a destination, based on the current cart. Only a country code and a postal code are needed, never a full address. Each option reports thresholdForFree, the cart amount that unlocks free delivery (null when the option never offers it), and isFreeForCurrentCart for the cart as it stands. When free delivery is not reached yet, missingForFree tells how much is left to add.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "countryCode": {
+            "type": "string",
+            "description": "ISO 3166-1 alpha-2 country code, e.g. FR, BE, ES."
+          },
+          "postalCode": {
+            "type": "string",
+            "description": "Destination postal code."
+          }
+        },
+        "required": [
+          "countryCode",
+          "postalCode"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_cart",
+      "description": "Read the current shopping cart: line items with quantities and unit prices, subtotal, total weight. Does not include shipping cost, use estimate_shipping_cost for that.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_product_details",
+      "description": "Get full details for one product: price tiers, weight, packaging constraints, allergens, nutrition facts per 100g and meat origin. Identify the product by productId (from search_products) or by slug. Long marketing copy is not included: follow the returned url for it.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string",
+            "description": "Product identifier returned by search_products."
+          },
+          "slug": {
+            "type": "string",
+            "description": "Product slug as it appears in the page URL."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "go_to_checkout",
+      "description": "Open the cart summary page so the customer can review the order and complete the checkout themselves. This does not place an order and does not pay.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "remove_from_cart",
+      "description": "Remove a product from the shopping cart entirely.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string",
+            "description": "Product identifier, as returned by get_cart."
+          }
+        },
+        "required": [
+          "productId"
+        ]
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Search the Directos delicatessen catalog (Spanish and French charcuterie: saucisson, chorizo, fuet, jamon, sobrasada). Returns a short projection of each matching product with its price, weight and canonical URL. Product names are in the language of the current page, so translate the query accordingly before calling. Use get_product_details for allergens, nutrition facts and meat origin.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Free text matched against product name, benefits and categories. Omit to list the catalog."
+          },
+          "benefit": {
+            "type": "string",
+            "description": "Filter on a product benefit, as returned in the benefits field of a previous search."
+          },
+          "minPrice": {
+            "type": "number",
+            "description": "Minimum price per unit, tax included, in EUR."
+          },
+          "maxPrice": {
+            "type": "number",
+            "description": "Maximum price per unit, tax included, in EUR."
+          },
+          "onSale": {
+            "type": "boolean",
+            "description": "Only products currently discounted."
+          },
+          "limit": {
+            "type": "number",
+            "description": "Maximum number of results (default 20, max 50)."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "set_cart_item_quantity",
+      "description": "Set the quantity of a product already in the cart. Use 0 to remove it. The quantity is adjusted to the packaging rules of the product.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string",
+            "description": "Product identifier, as returned by get_cart."
+          },
+          "quantity": {
+            "type": "number",
+            "description": "New quantity. 0 removes the line."
+          }
+        },
+        "required": [
+          "productId",
+          "quantity"
+        ]
+      }
+    }
+  ],
+  "host": "directos.eu",
+  "source": "webmcp.com/api/directory.json"
+}

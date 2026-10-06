@@ -1,0 +1,90 @@
+{
+  "sponsio": 1,
+  "url": "https://welplan.pmh.codes/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "welplan.get-current-page",
+      "description": "Return a structured summary of the currently visible Welplan page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "welplan.open-restaurant",
+      "description": "Navigate to a restaurant's daily menu gallery page. Use search-restaurants first to obtain the vendor and id.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "vendor": {
+            "type": "string",
+            "enum": [
+              "welstory",
+              "shinsegae"
+            ],
+            "description": "Restaurant vendor."
+          },
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256,
+            "description": "Restaurant identifier returned by search-restaurants."
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "description": "Restaurant name returned by search-restaurants. Include it when available."
+          },
+          "date": {
+            "type": "string",
+            "pattern": "^\\d{8}$",
+            "description": "Date in YYYYMMDD format. Defaults to today when omitted."
+          }
+        },
+        "required": [
+          "vendor",
+          "id"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "welplan.search-restaurants",
+      "description": "Search Welstory and Shinsegae Food restaurants by name or keyword. Returns id, name, vendor, and path for each match.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "description": "Restaurant name or keyword to search for."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    }
+  ],
+  "host": "welplan.pmh.codes",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,232 @@
+{
+  "sponsio": 1,
+  "url": "https://ytcom.co.il/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_business_info",
+      "description": "Return general info about this business: name, tagline, website, and contact details. Use to introduce or summarize the business.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_contact_info",
+      "description": "Return the contact details for this business: phone, email, and address. Use when the user wants to call, email, or visit.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_page_content",
+      "description": "Get the full readable text content of a page or post by its slug. Use after search_posts/search_pages to actually read a result, or when the user asks what a specific page says.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "The page or post slug, i.e. the last part of its URL path, e.g. \"about-us\"."
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_product",
+      "description": "Get details for a single product by its slug. Returns name, price, URL, and short description if available.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "The product slug, e.g. \"blue-cotton-tshirt\"."
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "list_recent_posts",
+      "description": "List the most recently published blog posts on this site, newest first. Use when the user asks what's new or latest.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "description": "How many posts to return, default 5, max 10.",
+            "default": 5
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "search_pages",
+      "description": "Search this site's static pages (about, services, contact, etc.) by keyword. Returns up to ten matches with titles and URLs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Keyword or phrase to search for."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Max results, default 5, max 10.",
+            "default": 5
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "search_posts",
+      "description": "Search this site's published blog posts by keyword. Returns up to ten matching posts with their titles and URLs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Keyword or phrase to search for."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Max results, default 5, max 10.",
+            "default": 5
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Search this WooCommerce store's products by keyword. Returns up to ten matching products with name, price, and URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Keyword or phrase to search for."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Max products to return, default 5, max 10.",
+            "default": 5
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "search_site",
+      "description": "Search this site for posts and pages by keyword. Loads the WordPress search results page.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "s": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "submit_footercontactform",
+      "description": "Submit the \"Footer Contact Form\" form on this page. Field purposes are described on each input.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "post_id": {
+            "type": "string"
+          },
+          "form_id": {
+            "type": "string"
+          },
+          "referer_title": {
+            "type": "string"
+          },
+          "queried_id": {
+            "type": "string"
+          },
+          "form_fields[name]": {
+            "type": "string",
+            "description": "שם"
+          },
+          "form_fields[company]": {
+            "type": "string",
+            "description": "חברה"
+          },
+          "form_fields[email]": {
+            "type": "string",
+            "description": "אימייל"
+          },
+          "form_fields[phone]": {
+            "type": "string",
+            "description": "טלפון"
+          },
+          "form_fields[message]": {
+            "type": "string",
+            "description": "הודעה"
+          },
+          "form_fields[consent]": {
+            "type": "boolean"
+          },
+          "g-recaptcha-response": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "form_fields[name]",
+          "form_fields[email]",
+          "form_fields[phone]"
+        ]
+      }
+    }
+  ],
+  "host": "ytcom.co.il",
+  "source": "webmcp.com/api/directory.json"
+}

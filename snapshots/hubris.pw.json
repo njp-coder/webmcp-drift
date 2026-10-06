@@ -1,0 +1,179 @@
+{
+  "sponsio": 1,
+  "url": "https://hubris.pw/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "cost_estimate",
+      "description": "Оценивает стоимость использования модели в рублях по ожидаемому числу запросов в день и среднему числу токенов на запрос; это ориентир по текущим ценам каталога, не оферта. Цены — на момент запроса, без истории: для сверки с прошлыми списаниями (logs_query/usage_stats за старые даты) не годится, если цена модели с тех пор менялась. Все три числовых параметра неотрицательны, разумные верхние границы: до 1 000 000 000 запросов/день, до 10 000 000 токенов на запрос.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "model_id": {
+            "type": "string",
+            "description": "Идентификатор модели в каталоге Hubris"
+          },
+          "requests_per_day": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1000000000,
+            "description": "Ожидаемое количество запросов в день, 0..1000000000"
+          },
+          "avg_input_tokens": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 10000000,
+            "description": "Среднее число входных токенов на один запрос, 0..10000000"
+          },
+          "avg_output_tokens": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 10000000,
+            "description": "Среднее число выходных токенов на один запрос, 0..10000000"
+          }
+        },
+        "required": [
+          "model_id",
+          "requests_per_day",
+          "avg_input_tokens",
+          "avg_output_tokens"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "docs_search",
+      "description": "Ищет по документации Hubris (hubris.pw/docs) и возвращает до 10 страниц в поле items: заголовок, текстовый фрагмент (сниппет) и абсолютную ссылку. Одна страница — одна запись, даже если совпадений внутри неё несколько. Ответ несёт total (сколько всего уникальных страниц нашлось) и hasMore (true, если total больше показанных items) — но постраничной выборки у этого инструмента нет (нет limit/offset), поэтому при hasMore:true остальные страницы получить им нельзя в принципе: сузьте query, чтобы результат уместился в первые 10.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Поисковый запрос по документации Hubris, не короче 2 символов"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "models_search",
+      "description": "Ищет модели в публичном каталоге Hubris; возвращает компактный список с ценами в рублях — токенные модели за 1М токенов, поштучные (image/video/speech/transcription) за свою единицу, см. ниже. Свободный текст в query — это ПОИСК ПО ПОДСТРОКЕ в названии и идентификаторе модели (идентификатор включает провайдера через слэш, например \"openai/gpt-4o\"), а не поиск по смыслу задачи — описание вроде \"дешёвая модель для суммаризации\" ничего не найдёт. Чтобы подобрать модель ПОД ЗАДАЧУ, используйте фильтры (output_modality, input_modalities, series, providers, supported_parameters) и sort: например, \"дешёвая модель для картинок\" — это output_modality:\"image\" + sort:\"cheapest\". Часть моделей (генерация изображений/видео и т.п.) тарифицируется поштучно, не за токены: у них inputPriceRubPerMillion/outputPriceRubPerMillion равны null, а цена — в pricePerUnitRub+unit (один тариф) или в perUnitRub (несколько тарифов на разные размеры/качества) — см. pricingNote, если цены нет вовсе. Ответ несёт total (сколько всего подходит) и hasMore; для следующей страницы вызовите этот же инструмент с offset, увеличенным на limit. Поле facets (фактические значения providers/series/output_modality/input_modalities/supported_parameters из живого каталога с числом моделей на каждое) — единственный надёжный способ узнать точные значения для series/providers/supported_parameters (их десятки, статичного списка в этом описании нет намеренно — он бы устарел), но в ответе оно ЕСТЬ ТОЛЬКО при пустой выдаче (items:[]) или если явно передать include_facets:true — иначе ~1800 токенов facets уходили бы в контекст при каждом успешном поиске.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Подстрока для поиска в названии модели или в идентификаторе (не по смыслу задачи — для этого есть фильтры ниже)"
+          },
+          "output_modality": {
+            "type": "string",
+            "enum": [
+              "text",
+              "image",
+              "video",
+              "audio",
+              "speech",
+              "transcription",
+              "embeddings"
+            ],
+            "description": "Фильтр по модальности вывода: text, image, video, audio, speech (озвучка), transcription (распознавание речи), embeddings (векторные представления)"
+          },
+          "input_modalities": {
+            "type": "string",
+            "description": "Фильтр по модальностям входа через запятую, например \"text,image\". Допустимые значения токенов: text, image, file, video, audio (file — документы-вложения)."
+          },
+          "series": {
+            "type": "string",
+            "description": "Фильтр по семейству моделей через запятую. Точный список значений — в facets.series ответа models_search (вызовите с include_facets:true, чтобы увидеть все семейства с числом моделей в каждом)."
+          },
+          "providers": {
+            "type": "string",
+            "description": "Фильтр по провайдерам через запятую. Точный список значений — в facets.providers ответа models_search (вызовите с include_facets:true, чтобы увидеть всех провайдеров с числом моделей у каждого)."
+          },
+          "supported_parameters": {
+            "type": "string",
+            "description": "Фильтр по поддерживаемым параметрам API через запятую, например \"tools,reasoning\". Точный список значений — в facets.supportedParameters ответа models_search (вызовите с include_facets:true)."
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "default",
+              "newest",
+              "cheapest",
+              "expensive",
+              "long_context",
+              "short_context"
+            ],
+            "description": "Порядок сортировки: default, newest (новые), cheapest (дешевле), expensive (дороже), long_context (длинный контекст), short_context (короткий контекст)"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "description": "Максимум моделей в ответе, 1..50 (по умолчанию 20), целое число"
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Смещение для постраничной выборки, по умолчанию 0, целое число"
+          },
+          "include_facets": {
+            "type": "boolean",
+            "description": "Принудительно включить facets в ответ, даже если выдача непустая (по умолчанию — только при пустой выдаче). Запросите, чтобы заранее узнать точные значения providers/series/supported_parameters перед первым использованием фильтра."
+          }
+        },
+        "required": []
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "pricing_get",
+      "description": "Возвращает подробные цены и характеристики одной модели каталога Hubris по её идентификатору. У моделей с поштучной тарификацией (не за токены) inputPriceRubPerMillion/outputPriceRubPerMillion равны null — цена в pricePerUnitRub+unit (один тариф) или в perUnitRub (несколько тарифов), см. pricingNote, если цены нет вовсе. ВАЖНО: цены здесь ТЕКУЩИЕ, на момент запроса — для сверки со старыми записями журнала (logs_query/usage_stats за прошлые даты) не годятся: цена могла измениться, инструмент не хранит и не возвращает историю цен, расхождение с суммой списания в старой строке не обязательно ошибка.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "model_id": {
+            "type": "string",
+            "description": "Идентификатор модели в каталоге Hubris, например \"openai/gpt-4o\""
+          }
+        },
+        "required": [
+          "model_id"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "status_get",
+      "description": "Возвращает текущий статус платформы Hubris и провайдеров моделей, включая активные (нерешённые) инциденты.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "hubris.pw",
+  "source": "webmcp.com/api/directory.json"
+}

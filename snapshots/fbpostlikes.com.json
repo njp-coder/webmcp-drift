@@ -1,0 +1,98 @@
+{
+  "sponsio": 1,
+  "url": "https://www.fbpostlikes.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "create_order",
+      "description": "Create an UNPAID order and return its payment link. Nothing is charged — the customer must open the returned paymentUrl and pay themselves. Always confirm the service, quantity, target URL and total price with the user before calling this.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "platform": {
+            "type": "string",
+            "description": "Platform slug or name, e.g. 'instagram'."
+          },
+          "service": {
+            "type": "string",
+            "description": "Exact service name from list_services, e.g. 'Likes', 'Page Likes', 'Video Views'."
+          },
+          "quantity": {
+            "type": "number",
+            "description": "How many units to order, within the service's min/max."
+          },
+          "target_url": {
+            "type": "string",
+            "description": "The customer's public post, video or profile URL that the engagement is delivered to. Never a password or login page."
+          },
+          "email": {
+            "type": "string",
+            "description": "Customer's email for the order receipt and tracking. Strongly recommended — without it they can only track by order ID."
+          }
+        },
+        "required": [
+          "platform",
+          "service",
+          "quantity",
+          "target_url"
+        ]
+      },
+      "annotations": {
+        "readOnly": false,
+        "consequential": true
+      }
+    },
+    {
+      "name": "get_service_price",
+      "description": "Get the exact USD price for a specific quantity of a FBPostLikes service, using the same tiered pricing the checkout uses. Example: 1000 Instagram likes.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "platform": {
+            "type": "string",
+            "description": "Platform slug or name, e.g. 'instagram' or 'YouTube'."
+          },
+          "service": {
+            "type": "string",
+            "description": "Service name as returned by list_services, e.g. 'Likes', 'Followers', 'Views', 'Comments'."
+          },
+          "quantity": {
+            "type": "number",
+            "description": "How many units to price. Must be within the service's min/max."
+          }
+        },
+        "required": [
+          "platform",
+          "service",
+          "quantity"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false
+      }
+    },
+    {
+      "name": "list_services",
+      "description": "List every social media growth service FBPostLikes sells (platform, service type, order size limits, starting price and the page URL). Use this to find out what can be bought before quoting a price.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "platform": {
+            "type": "string",
+            "description": "Optional filter, e.g. 'instagram', 'facebook', 'youtube', 'tiktok', 'x'. Omit to list everything."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false
+      }
+    }
+  ],
+  "host": "fbpostlikes.com",
+  "source": "webmcp.com/api/directory.json"
+}

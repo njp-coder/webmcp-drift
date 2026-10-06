@@ -1,0 +1,177 @@
+{
+  "sponsio": 1,
+  "url": "https://www.cannabis-seeds-store.co.uk/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_cart_status",
+      "description": "Retrieves current shopping cart state, total item count, and checkout readiness for The Vault.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_product_details",
+      "description": "Retrieves comprehensive product specifications, genetics, breeder information, pricing, and stock status for a given cannabis seed strain.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_id_or_url": {
+            "type": "string",
+            "description": "Product URL slug, path, or SKU (e.g., \"/barneys-farm-gorilla-glue-auto\", \"barneys-farm-gorilla-glue-auto\", or SKU identifier)"
+          }
+        },
+        "required": [
+          "product_id_or_url"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_seed_categories",
+      "description": "Lists main cannabis seed categories, breeder collections, and popular classifications available at The Vault.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "filter": {
+            "type": "string",
+            "description": "Filter category types: \"seed_types\", \"breeders\", or \"all\"",
+            "enum": [
+              "seed_types",
+              "breeders",
+              "all"
+            ],
+            "default": "all"
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "inspect_image_c2pa",
+      "description": "Fetch a single image (by CSS selector or URL) and return its fully decoded C2PA manifest store: every manifest's claim, assertions (e.g. c2pa.actions edit history, schema.org authorship), and the COSE signature details (algorithm and signing-certificate identity). Provide exactly one of `selector` or `url`. Note: the signature is decoded but NOT cryptographically verified.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "selector": {
+            "type": "string",
+            "maxLength": 8192,
+            "description": "CSS selector for an <img> element on the page."
+          },
+          "url": {
+            "type": "string",
+            "maxLength": 8192,
+            "description": "Image URL (absolute, or relative to the current page) to fetch and inspect."
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "navigate_to_page",
+      "description": "Navigates the user or browser agent to a designated destination or section of The Vault website.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "destination": {
+            "type": "string",
+            "description": "Target section on The Vault store",
+            "enum": [
+              "home",
+              "catalog",
+              "feminised",
+              "autoflowering",
+              "regular",
+              "cart",
+              "checkout",
+              "news_blog",
+              "deals",
+              "contact"
+            ]
+          },
+          "path": {
+            "type": "string",
+            "description": "Optional direct relative path (e.g. \"/cart\", \"/checkout\", \"/feminised-seeds\")"
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": false,
+        "consequential": false
+      }
+    },
+    {
+      "name": "scan_images_c2pa",
+      "description": "Scan every <img> on the current page for C2PA Content Credentials (content provenance metadata) and return a per-image summary: whether a manifest is present, the claim generator (the tool that produced or edited the image), the title, and the signer name. Use this to find which images on a page carry provenance data. Note: provenance is decoded but NOT cryptographically verified.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 25,
+            "description": "Maximum number of images to fetch and scan (default 25, max 100)."
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "search_catalog",
+      "description": "Searches The Vault cannabis seeds catalog by keyword, strain name, category, or breeder with optional result limits.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search query or strain name (e.g., \"Gorilla Glue\", \"Northern Lights\", \"Barneys Farm\", \"Gelato\", \"Autoflowering\")"
+          },
+          "category": {
+            "type": "string",
+            "description": "Optional category filter: \"feminized\", \"autoflowering\", \"regular\", \"cbd\", \"high-thc\", \"pick-and-mix\"",
+            "enum": [
+              "feminized",
+              "autoflowering",
+              "regular",
+              "cbd",
+              "high-thc",
+              "pick-and-mix",
+              "all"
+            ]
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum number of product results to return (default: 10, max: 50)",
+            "default": 10,
+            "minimum": 1,
+            "maximum": 50
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "cannabis-seeds-store.co.uk",
+  "source": "webmcp.com/api/directory.json"
+}

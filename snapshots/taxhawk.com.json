@@ -1,0 +1,245 @@
+{
+  "sponsio": 1,
+  "url": "https://www.taxhawk.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "find_page",
+      "description": "Search TaxHawk's own pages by topic, for example \"1099-NEC\", \"Oregon\", \"extension\" or \"military\", and return up to 8 matching pages with their titles, descriptions, paths and links. Open one in this tab with open_page. Help articles are searched separately, with the help search tool.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "A topic, form, state or situation, for example \"self-employed\" or \"Form 1099-K\"."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_current_page",
+      "description": "Describe the TaxHawk page the person is on: its title, link and canonical link, its main heading and section headings, the help articles it shows and, on an article page, that article's id (ids to read in full), the sign-in and start-return buttons on it, and the tools available right now. Call it after arriving on a page or after open_page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get_entry_links",
+      "description": "Returns links, without opening them: startNewReturn for a new 2025 return, signInToContinue for a return already started, priorYearReturn to start a return for taxYear (default 2024), and accountRecovery for a lost username or password. Each opens the sign-in site, where the person signs in or creates an account themselves.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "taxYear": {
+            "type": "integer",
+            "description": "A prior tax year for priorYearReturn, 2018 to 2024. Defaults to 2024."
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_faq",
+      "description": "Read up to 5 articles from TaxHawk's tax help library in full, by id. Returns each article's title, its text with the formatting removed, and its link. Get ids from search_faqs or from get_current_page. An id that does not exist is left out of the results.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "ids": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "minItems": 1,
+            "maxItems": 5,
+            "description": "Help article ids from a search result's id or from get_current_page, for example [1605]."
+          }
+        },
+        "required": [
+          "ids"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get_key_dates",
+      "description": "The IRS dates on TaxHawk's deadline page for the 2025 tax year: when the IRS starts processing returns, the April filing deadline, and the extension deadline, plus today's date and whether each deadline has passed. irsStartsProcessing is null until the IRS announces it. Dates are US local dates in YYYY-MM-DD form.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_pricing",
+      "description": "Current TaxHawk prices for the 2025 tax year, in US dollars, as the pricing page shows them. Federal returns are $0. The state return, Deluxe, Pro Support, Audit Defense, amended, printed, bound and prior-year prices are listed separately, plus the fee for paying out of a federal refund.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "open_account_page",
+      "description": "Open a page inside the person's TaxHawk account, in this tab, after they sign in: check their e-file status, contact customer support, or print or download a return they filed. The browser goes to the sign-in site first; the person signs in themselves.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "string",
+            "enum": [
+              "check_efile_status",
+              "contact_support",
+              "print_return"
+            ],
+            "description": "Which account page to open after sign-in."
+          }
+        },
+        "required": [
+          "page"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "open_page",
+      "description": "Open another TaxHawk page in this tab by its path, for example \"/pricing\" or \"/states/oregon\", and return a description of the new page, as get_current_page does. Use a path from find_page or from a link on this page. Only pages on this site open; sign-in and start-return buttons have their own tools.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "A path on this site starting with \"/\", for example \"/pricing\" or \"/survey?name=feedback\"."
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "recover_account",
+      "description": "Open TaxHawk's account recovery page in this tab, for a person who forgot their username or password or can't sign in. The person answers the recovery questions there; recovery codes and the new password go into that page directly, never through this conversation.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "search_faqs",
+      "description": "Search TaxHawk's tax help library and return up to 5 matching articles with their ids, titles and links. Use it for questions about tax forms, credits, deductions, filing situations, and how the software handles them. Titles are not answers: read the article with get_faq before giving tax guidance. An empty results list means no article matched.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "A plain-language tax question, for example \"Can I deduct student loan interest?\""
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "sign_in",
+      "description": "Open TaxHawk's sign-in site in this tab so the person can sign in and continue a 2025 return they already started. The password and any verification code go into that page directly, from the person, a password manager or a passkey, never through this conversation.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "start_return",
+      "description": "Open TaxHawk's sign-in site to start a tax return, in this tab. product picks the starting point: a new 2025 return, one with Deluxe, Pro Support or Audit Defense added, an extension, an amended return, a prior-year return, or a paid-preparer return. The person signs in or creates an account there themselves.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product": {
+            "type": "string",
+            "enum": [
+              "new",
+              "deluxe",
+              "pro_support",
+              "audit_defense",
+              "extension",
+              "amended",
+              "prior_year",
+              "paid_preparer"
+            ],
+            "description": "What to start. Use \"new\" for an ordinary current-year return."
+          },
+          "year": {
+            "type": "integer",
+            "description": "Tax year, only for prior_year (default 2024) or amended (default 2025)."
+          }
+        },
+        "required": [
+          "product"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    }
+  ],
+  "host": "taxhawk.com",
+  "source": "webmcp.com/api/directory.json"
+}

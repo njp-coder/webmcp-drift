@@ -1,0 +1,87 @@
+{
+  "sponsio": 1,
+  "url": "https://way2quran.com/en",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "next_surah",
+      "description": "Advance to the next surah in the current reciter's playlist (or the next item in the queue).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "pause_playback",
+      "description": "Pause the currently-playing recitation.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "play_random_recitation",
+      "description": "Pick a random surah and reciter and start playing. Useful when the user has no specific preference.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "play_surah",
+      "description": "Play a Holy Qur'an surah by a specific reciter on this page. Looks up the reciter by slug, picks the requested surah number (1–114), and starts playback in the site's audio player.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "reciterSlug": {
+            "type": "string",
+            "description": "URL slug of the reciter (e.g. 'abdul-basit-abdul-samad'). Use search_reciters first if you only have a name."
+          },
+          "surahNumber": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 114,
+            "description": "1-based surah number (1 = Al-Fatihah, 114 = An-Nas)."
+          }
+        },
+        "required": [
+          "reciterSlug",
+          "surahNumber"
+        ]
+      }
+    },
+    {
+      "name": "resume_playback",
+      "description": "Resume playback of the currently-loaded recitation.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "search_reciters",
+      "description": "Search reciters by name (Arabic or English). Returns matching reciters with their slug, names, and country.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Search term — reciter name or partial name."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "way2quran.com",
+  "source": "webmcp.com/api/directory.json"
+}

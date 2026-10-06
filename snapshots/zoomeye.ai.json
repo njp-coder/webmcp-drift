@@ -1,0 +1,61 @@
+{
+  "sponsio": 1,
+  "url": "https://www.zoomeye.ai/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "zoomeye_build_search_url",
+      "description": "Build a ZoomEye search page URL from a valid dork query. Constructs the URL only, does not call any backend API. Supports v4, v6, web, and all search types.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "dork": {
+            "type": "string",
+            "description": "A valid ZoomEye dork query string. Examples: country=\"US\" && service=\"ssh\", vul.cve=\"CVE-2021-44228\", is_bugbounty=true && app=\"GitLab\", service=\"redis\" && is_new=true."
+          },
+          "sub_type": {
+            "type": "string",
+            "enum": [
+              "v4",
+              "v6",
+              "web",
+              "all"
+            ],
+            "description": "Search data type. v4=IPv4 devices (default), v6=IPv6, web=websites/domains, all=everything."
+          }
+        },
+        "required": [
+          "dork"
+        ]
+      }
+    },
+    {
+      "name": "zoomeye_syntax_reference",
+      "description": "Get ZoomEye dork search syntax, fields, operators, rules, and natural-language-to-dork conversion examples. Covers device fingerprints, SSL/TLS certs, HTTP headers, geolocation, and advanced fields like vul.cve, is_bugbounty, is_new, is_changed. Does not call any backend API.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string",
+            "description": "Optional field name to look up details. E.g. app, port, ssl, vul.cve, is_bugbounty, ssl.jarm."
+          },
+          "category": {
+            "type": "string",
+            "description": "Optional category filter. E.g. Geolocation, HTTP Headers & Body, SSL/TLS Certificates, Device & Service Fingerprints, IP, Domain & Organization, Protocol Banners, Hashes & Time, Additional Fields."
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "examples"
+            ],
+            "description": "Set to examples to output natural-language-to-dork conversion examples."
+          }
+        }
+      }
+    }
+  ],
+  "host": "zoomeye.ai",
+  "source": "webmcp.com/api/directory.json"
+}

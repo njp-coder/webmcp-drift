@@ -1,0 +1,96 @@
+{
+  "sponsio": 1,
+  "url": "https://one-place.com/en",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "open_property_listing",
+      "description": "Navigate the current tab to the page for one listing, so the user can see it. Takes the `url` returned by search_property_listings.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "Site-relative path to the listing, as returned in a search result's `url` field."
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "search_property_listings",
+      "description": "Search One Place's aggregated European real-estate listings by structured criteria (facet filters, numeric ranges, sorting, pagination). Returns matching listings with id, title, price, size and a link. Use this rather than reading the rendered page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "filters": {
+            "type": "object",
+            "description": "Exact-match facet filters keyed by field, each an array of accepted values. Values within a key are OR-ed; keys are AND-ed. Common keys: ad_type (sell|rent), housing_type (apartment|house|land|commercial|parking), country (ISO 3166-1 alpha-2), housing_subtypes.",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "ranges": {
+            "type": "object",
+            "description": "Inclusive numeric bounds keyed by field; either bound may be null. Common keys: price (EUR), rooms.total, rooms.bedrooms, rooms.bathrooms, surfaces.livable_surface (m²), surfaces.land_surface (m²), construction_year.",
+            "additionalProperties": {
+              "type": "object",
+              "properties": {
+                "min": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "max": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                }
+              }
+            }
+          },
+          "text_queries": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Semantic terms matched against listings, e.g. [\"sea view\"]. This does NOT parse sentences into filters — express constraints via filters and ranges instead. Supplying it orders results by semantic relevance and makes sort_by inapplicable."
+          },
+          "sort_by": {
+            "type": "string",
+            "description": "Comma-separated field:direction clauses, e.g. \"price:asc\". Ignored when text_queries is supplied."
+          },
+          "per_page": {
+            "type": "number",
+            "description": "Results per page (default 20, maximum 36; keep small for context)."
+          },
+          "page": {
+            "type": "number",
+            "description": "1-indexed page number, up to 100."
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    }
+  ],
+  "host": "one-place.com",
+  "source": "webmcp.com/api/directory.json"
+}

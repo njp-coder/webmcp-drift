@@ -1,0 +1,73 @@
+{
+  "sponsio": 1,
+  "url": "https://zoo-mall.pl/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "add_to_cart",
+      "description": "Dodaj produkt do koszyka w Zoo-Mall.pl. Add a product to the shopping cart by product_id (obtained from search_products). Returns the updated cart count, total and the cart/checkout URLs. This modifies the cart for the current session.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": [
+              "integer",
+              "string"
+            ],
+            "description": "Identyfikator produktu (pole \"id\" zwracane przez search_products)."
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1,
+            "description": "Liczba sztuk do dodania. Domyślnie 1."
+          }
+        },
+        "required": [
+          "product_id"
+        ]
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "get_page_context",
+      "description": "Pobierz kontekst bieżącej strony Zoo-Mall.pl: adres URL, tytuł, język oraz dane strukturalne Schema.org (JSON-LD), w tym dane produktu/oferty, jeśli są dostępne. Get the current page context (URL, title, and Schema.org structured data such as the current Product/Offer) so the agent can answer questions about what the user is viewing.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Wyszukaj produkty w sklepie zoologicznym Zoo-Mall.pl (karmy, przysmaki, żwirki, akcesoria, zabawki, produkty pielęgnacyjne i zdrowotne dla psów, kotów, gryzoni, ptaków i innych zwierząt). Search products in the Zoo-Mall.pl pet store. Returns matching products with id, name, price (PLN), category and URL. Only in-stock, visible products are returned.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Fraza wyszukiwania, np. \"karma sucha dla kota\" lub nazwa marki/produktu."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": false
+      }
+    }
+  ],
+  "host": "zoo-mall.pl",
+  "source": "webmcp.com/api/directory.json"
+}

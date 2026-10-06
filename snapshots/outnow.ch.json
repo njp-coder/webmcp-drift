@@ -1,0 +1,223 @@
+{
+  "sponsio": 1,
+  "url": "https://outnow.ch/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "cinema_films",
+      "description": "Films showing in Swiss cinemas on one day, today or one of the next 6 days, from outnow.ch. Pass any combination of place, cinema and movie, at least one: place for the cinemas in and around a town, cinema for one cinema, movie to narrow to one title. Returns up to 25 films, most show times first, each linking to its outnow.ch page with that day's Swiss show times, plus a link to the day's programme of the town or cinema. Show times are only on those pages, so send the user there to see when. place is a town name in any national language or a 4-digit postal code; users rarely know postal codes, so pass the town they name. When a place or cinema fits several, the error lists them: ask the user which one they mean, then call again with that entry. date defaults to today; the response states the day, and an out-of-range date error names the allowed days.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "place": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 64,
+            "description": "Swiss town or postal code, such as Bern, Genf or 9470 Buchs"
+          },
+          "cinema": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 64,
+            "description": "Cinema name, such as Abaton or Rex (Bern)"
+          },
+          "language": {
+            "type": "string",
+            "enum": [
+              "de",
+              "fr",
+              "it",
+              "en"
+            ],
+            "description": "The reader's language; it localizes the linked pages. Defaults to the page language"
+          },
+          "movie": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 300,
+            "description": "Only films whose title contains this"
+          },
+          "date": {
+            "type": "string",
+            "format": "date",
+            "description": "The day, from today to 6 days ahead in Swiss time; default today"
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "popular",
+      "description": "The titles outnow.ch readers in one language view most right now: films in Swiss cinemas, films and series on streaming in Switzerland, or games. Ranked by weighted reader activity (page views, review views, video plays) over the last 48 hours, recent activity weighing more, most popular first; the list is outnow.ch readership, not box office or sales. A cinema film counts while it is showing or before its Swiss start, a streaming title while it is offered or before its start. Returns up to limit titles, each linking to its outnow.ch page, plus a link to the Swiss charts.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "channel": {
+            "type": "string",
+            "enum": [
+              "cinema",
+              "streaming",
+              "games"
+            ]
+          },
+          "language": {
+            "type": "string",
+            "enum": [
+              "de",
+              "fr",
+              "it",
+              "en"
+            ],
+            "description": "The reader's language; it localizes the linked pages. Defaults to the page language"
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "movie",
+              "series"
+            ],
+            "description": "Streaming only; default both"
+          },
+          "platform": {
+            "type": "string",
+            "description": "Games only; a platform key such as ps5 or switch2"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "default": 10
+          }
+        },
+        "required": [
+          "channel"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "release_calendar",
+      "description": "Swiss release calendar from outnow.ch. It lists films opening in Swiss cinemas (German-, French- or Italian-speaking Switzerland), films and series starting on streaming services in Switzerland, and game releases. Returns up to 25 releases for a window of up to 14 days, each with a link to its page. For one specific title's dates, use search_content.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "channel": {
+            "type": "string",
+            "enum": [
+              "cinema",
+              "streaming",
+              "games"
+            ]
+          },
+          "language": {
+            "type": "string",
+            "enum": [
+              "de",
+              "fr",
+              "it",
+              "en"
+            ],
+            "description": "The reader's language; it localizes the linked pages. Defaults to the page language"
+          },
+          "region": {
+            "type": "string",
+            "enum": [
+              "CH-DE",
+              "CH-FR",
+              "CH-IT"
+            ],
+            "description": "Cinema only; defaults to the language's region"
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "movie",
+              "series"
+            ],
+            "description": "Required for streaming, one call per category"
+          },
+          "platform": {
+            "type": "string",
+            "description": "Games only; a platform key such as ps5 or switch2"
+          },
+          "from": {
+            "type": "string",
+            "format": "date",
+            "description": "First day, default today"
+          },
+          "days": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 14,
+            "default": 7
+          }
+        },
+        "required": [
+          "channel"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "search_content",
+      "description": "Find outnow.ch pages about films, series and games in Switzerland: title pages, editorial reviews and news. Returns up to 5 results with a link to each page, plus a link to the full search. Title results include their Swiss release dates. Use the reader's language (de, fr, it or en). Use type to narrow the search to titles, reviews or news.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 300,
+            "description": "Title, name or topic"
+          },
+          "language": {
+            "type": "string",
+            "enum": [
+              "de",
+              "fr",
+              "it",
+              "en"
+            ],
+            "description": "The reader's language; it localizes the linked pages. Defaults to the page language"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "all",
+              "title",
+              "review",
+              "news"
+            ],
+            "default": "all"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    }
+  ],
+  "host": "outnow.ch",
+  "source": "webmcp.com/api/directory.json"
+}

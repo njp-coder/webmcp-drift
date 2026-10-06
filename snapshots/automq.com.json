@@ -1,0 +1,84 @@
+{
+  "sponsio": 1,
+  "url": "https://www.automq.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "automq.get_site_links",
+      "description": "Return official AutoMQ product, documentation, pricing, demo, and contact links.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "category": {
+            "type": "string",
+            "enum": [
+              "about",
+              "product",
+              "comparison",
+              "customer",
+              "docs",
+              "action",
+              "legal"
+            ],
+            "description": "Optional category filter."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "automq.open_page",
+      "description": "Navigate the current browser tab to an allow-listed AutoMQ website page.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "url"
+        ],
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "An AutoMQ URL returned by automq.search_site or automq.get_site_links."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "automq.search_site",
+      "description": "Search curated AutoMQ website pages and return matching official links.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search phrase, such as pricing, BYOC, Kafka migration, Iceberg, or customer stories."
+          },
+          "limit": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 10,
+            "description": "Maximum number of results to return."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": false
+      }
+    }
+  ],
+  "host": "automq.com",
+  "source": "webmcp.com/api/directory.json"
+}

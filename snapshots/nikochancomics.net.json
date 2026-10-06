@@ -1,0 +1,180 @@
+{
+  "sponsio": 1,
+  "url": "https://nikochancomics.net/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "actualizar_cantidad_carrito",
+      "description": "Fija las unidades de un producto en el carrito de Nikochan, reemplazando las que hubiera. Con cantidad 0 se elimina el artículo. Si pides más de las disponibles, el carrito se queda con las que hay y la respuesta lo explica.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Identificador del producto."
+          },
+          "cantidad": {
+            "type": "integer",
+            "description": "Unidades deseadas. 0 elimina el producto del carrito.",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "id",
+          "cantidad"
+        ]
+      },
+      "annotations": {
+        "readOnly": false,
+        "consequential": true
+      }
+    },
+    {
+      "name": "anadir_al_carrito",
+      "description": "Añade unidades de un producto al carrito de Nikochan, sumándolas a las que ya hubiera. Requiere el id del producto, que se obtiene con buscar_productos. Comprueba el stock y el límite por cliente: si pides más de lo permitido deja las que puede y lo dice. No completa la compra: el usuario finaliza el pedido.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Identificador del producto a añadir."
+          },
+          "cantidad": {
+            "type": "integer",
+            "description": "Unidades a añadir a las que ya haya en el carrito. Por defecto 1.",
+            "minimum": 1,
+            "default": 1
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
+      "annotations": {
+        "readOnly": false,
+        "consequential": true
+      }
+    },
+    {
+      "name": "aplicar_cupon",
+      "description": "Aplica un código de cupón de descuento al carrito de Nikochan. Devuelve el resultado de la validación: algunos cupones están limitados a un email, a un importe mínimo o a un número de usos.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "codigo": {
+            "type": "string",
+            "description": "Código del cupón, por ejemplo \"VERANO10\"."
+          }
+        },
+        "required": [
+          "codigo"
+        ]
+      },
+      "annotations": {
+        "readOnly": false,
+        "consequential": true
+      }
+    },
+    {
+      "name": "buscar_productos",
+      "description": "Busca cómics, manga, figuras, juegos de mesa, cartas TCG y pinturas de modelismo en el catálogo de Nikochan Comics. Úsala cuando el usuario quiera encontrar un producto por título, saga, personaje o referencia. Devuelve precio, descuento y stock real de cada resultado.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "consulta": {
+            "type": "string",
+            "description": "Términos de búsqueda, por ejemplo \"one piece 105\" o \"pintura acrílica AK\"."
+          },
+          "limite": {
+            "type": "integer",
+            "description": "Número máximo de resultados (1-24).",
+            "minimum": 1,
+            "maximum": 24,
+            "default": 10
+          }
+        },
+        "required": [
+          "consulta"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false
+      }
+    },
+    {
+      "name": "eliminar_del_carrito",
+      "description": "Quita por completo un producto del carrito de Nikochan, independientemente de las unidades que tuviera.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Identificador del producto a quitar."
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
+      "annotations": {
+        "readOnly": false,
+        "consequential": true
+      }
+    },
+    {
+      "name": "listar_categorias",
+      "description": "Lista las categorías del catálogo de Nikochan Comics con su enlace. Útil para orientar al usuario cuando no busca un título concreto sino un tipo de producto.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false
+      }
+    },
+    {
+      "name": "ver_carrito",
+      "description": "Muestra qué hay ahora mismo en el carrito de la compra del usuario en Nikochan: artículos, entradas de torneo, cantidades, precio por línea y subtotal. Consúltala antes de modificar el carrito o cuando el usuario pregunte cuánto lleva.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false
+      }
+    },
+    {
+      "name": "ver_producto",
+      "description": "Consulta la ficha completa de un producto de Nikochan por su id: precio vigente, descuento, unidades disponibles y descripción. Usa antes buscar_productos para obtener el id. Solo devuelve productos a la venta.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Identificador del producto."
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false
+      }
+    }
+  ],
+  "host": "nikochancomics.net",
+  "source": "webmcp.com/api/directory.json"
+}

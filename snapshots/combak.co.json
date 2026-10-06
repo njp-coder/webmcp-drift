@@ -1,0 +1,141 @@
+{
+  "sponsio": 1,
+  "url": "https://www.combak.co/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "combak_add_favorite",
+      "description": "Ajoute un modèle aux favoris de l'utilisateur connecté sur Combak. Nécessite que l'utilisateur soit connecté. Le modelId, modelName et category proviennent généralement d'un appel préalable à combak_search_products.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "modelId": {
+            "type": "string",
+            "description": "Identifiant du modèle (objectID)."
+          },
+          "modelName": {
+            "type": "string",
+            "description": "Nom lisible du modèle."
+          },
+          "category": {
+            "type": "string",
+            "description": "Slug de catégorie, ex. \"smartphone\", \"ordinateur-portable\"."
+          }
+        },
+        "required": [
+          "modelId",
+          "modelName",
+          "category"
+        ]
+      }
+    },
+    {
+      "name": "combak_compare_products",
+      "description": "Compare rapidement jusqu'à quatre modèles électroniques reconditionnés sur Combak. Renvoie le meilleur résultat trouvé pour chaque requête, avec prix minimum, volume d'offres et lien vers la fiche. À utiliser pour des questions du type « iPhone 13 vs iPhone 14 » ou « MacBook Air M1 ou M2 ».",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "queries": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Liste de 2 à 4 modèles à comparer."
+          }
+        },
+        "required": [
+          "queries"
+        ]
+      }
+    },
+    {
+      "name": "combak_get_product_details",
+      "description": "Récupère un résumé exploitable d'un modèle Combak déjà identifié : prix minimum, nombre d'offres, catégorie et URL. Ne renvoie pas le flux d'offres complet. À utiliser après combak_search_products quand l'agent doit confirmer un modèle avant de le recommander.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "modelId": {
+            "type": "string",
+            "description": "Identifiant du modèle, si connu depuis combak_search_products."
+          },
+          "modelName": {
+            "type": "string",
+            "description": "Nom lisible du modèle, ex. \"iPhone 13\"."
+          },
+          "query": {
+            "type": "string",
+            "description": "Requête de fallback si le nom exact du modèle n'est pas connu."
+          }
+        }
+      }
+    },
+    {
+      "name": "combak_search_products",
+      "description": "Cherche dans le catalogue Combak les produits électroniques reconditionnés (smartphones, ordinateurs portables, écouteurs…) correspondant à une requête, et renvoie pour chacun le prix à partir duquel il est disponible, le nombre d'offres et le lien vers la fiche produit. À utiliser pour répondre à des questions de type « le moins cher iPhone 13 reconditionné », « comparer les prix ».",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Termes de recherche, ex. \"iPhone 13\", \"MacBook Air M1\"."
+          },
+          "limit": {
+            "type": "number",
+            "description": "Nombre max de résultats (défaut 8)."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "combak_set_price_alert",
+      "description": "Crée une alerte prix pour un modèle : l'utilisateur connecté reçoit un email dès qu'une offre passe sous le prix cible. Nécessite que l'utilisateur soit connecté. Les champs modelId, modelName, modelSlug, category et currentPrice proviennent d'un appel préalable à combak_search_products ; targetPrice est le prix souhaité par l'utilisateur (doit être inférieur à currentPrice).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "modelId": {
+            "type": "string",
+            "description": "Identifiant du modèle (objectID)."
+          },
+          "modelName": {
+            "type": "string",
+            "description": "Nom lisible du modèle."
+          },
+          "modelSlug": {
+            "type": "string",
+            "description": "Slug produit renvoyé par combak_search_products."
+          },
+          "category": {
+            "type": "string",
+            "description": "Slug de catégorie, ex. \"smartphone\", \"ordinateur-portable\"."
+          },
+          "currentPrice": {
+            "type": "number",
+            "description": "Prix courant le plus bas (priceFrom du résultat de recherche)."
+          },
+          "targetPrice": {
+            "type": "number",
+            "description": "Prix cible désiré (€). Doit être > 0 et idéalement < currentPrice."
+          }
+        },
+        "required": [
+          "modelId",
+          "modelName",
+          "modelSlug",
+          "category",
+          "currentPrice",
+          "targetPrice"
+        ]
+      }
+    }
+  ],
+  "host": "combak.co",
+  "source": "webmcp.com/api/directory.json"
+}

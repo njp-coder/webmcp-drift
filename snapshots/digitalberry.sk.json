@@ -1,0 +1,125 @@
+{
+  "sponsio": 1,
+  "url": "https://www.digitalberry.sk/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "find_service",
+      "description": "Nájde službu Digital Berry, ktorá rieši zadanú potrebu klienta, a vráti jej názov, stručný popis s orientačnou cenou a odkaz na stránku služby. Používa sa na otázky typu \"robia e-shopy?\", \"koľko stojí nový web\", \"potrebujem viac dopytov z Googlu\".",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "potreba": {
+            "type": "string",
+            "description": "Čo klient potrebuje, vlastnými slovami. Napríklad \"nový e-shop\" alebo \"málo objednávok z webu\"."
+          }
+        },
+        "required": [
+          "potreba"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "get_company_info",
+      "description": "Vráti overené firemné a kontaktné údaje Digital Berry: obchodné meno, sídlo, IČO, DIČ, IČ DPH a odkazy na kontakt, služby a referencie.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "prepare_inquiry",
+      "description": "Predvyplní dopytový formulár Digital Berry údajmi od používateľa a zobrazí mu ho na kontrolu. Formulár neodosiela: súhlas so spracovaním údajov zaškrtne a tlačidlo Odoslať stlačí sám používateľ. Používa sa, keď chce používateľ osloviť agentúru alebo požiadať o cenovú ponuku.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "meno": {
+            "type": "string",
+            "description": "Krstné meno používateľa."
+          },
+          "priezvisko": {
+            "type": "string",
+            "description": "Priezvisko používateľa."
+          },
+          "email": {
+            "type": "string",
+            "description": "E-mailová adresa, na ktorú má prísť odpoveď."
+          },
+          "telefon": {
+            "type": "string",
+            "description": "Telefónne číslo. Nepovinné."
+          },
+          "nazov_spolocnosti": {
+            "type": "string",
+            "description": "Názov firmy používateľa. Nepovinné."
+          },
+          "sprava": {
+            "type": "string",
+            "description": "Text dopytu vlastnými slovami používateľa, vrátane toho, čo potrebuje a dokedy."
+          },
+          "dovod": {
+            "type": "string",
+            "enum": [
+              "Chcem vytvoriť web, alebo e-shop",
+              "Chcem správu webu",
+              "Chcem analýzu",
+              "Chcem vytvoriť marketingovú stratégiu",
+              "Chcem online marketing",
+              "Iný dôvod"
+            ],
+            "description": "Čoho sa dopyt týka. Podľa toho sa dostane k správnemu človeku."
+          }
+        },
+        "required": [
+          "meno",
+          "priezvisko",
+          "email",
+          "sprava",
+          "dovod"
+        ]
+      },
+      "annotations": {
+        "readOnly": false,
+        "consequential": false,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "search_articles",
+      "description": "Prehľadá články a prípadové štúdie Digital Berry a vráti najrelevantnejšie s odkazom a krátkym zhrnutím. Vhodné na otázky o skúsenostiach, výsledkoch u klientov a na hľadanie odborného obsahu k téme.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tema": {
+            "type": "string",
+            "description": "Téma alebo kľúčové slovo, napríklad \"AI v supporte\" alebo \"redizajn webu\"."
+          }
+        },
+        "required": [
+          "tema"
+        ]
+      },
+      "annotations": {
+        "readOnly": true,
+        "consequential": false,
+        "untrustedContent": false
+      }
+    }
+  ],
+  "host": "digitalberry.sk",
+  "source": "webmcp.com/api/directory.json"
+}

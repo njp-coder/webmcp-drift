@@ -1,0 +1,78 @@
+{
+  "sponsio": 1,
+  "url": "https://planwatch.co.uk/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_application_details",
+      "description": "Return structured details for one planning application already loaded in the visible PlanWatch search results. Search first, then use the exact reference.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "reference": {
+            "type": "string",
+            "description": "The exact planning application reference shown in the current results.",
+            "minLength": 1,
+            "maxLength": 160
+          }
+        },
+        "required": [
+          "reference"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "search_planning_applications",
+      "description": "Search PlanWatch for tracked UK planning applications near a postcode and show the same results in the visible page. This does not create an alert or account.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "postcode": {
+            "type": "string",
+            "description": "A full UK postcode, for example SW1A 1AA.",
+            "minLength": 5,
+            "maxLength": 12
+          },
+          "radiusKm": {
+            "type": "number",
+            "enum": [
+              0.25,
+              0.5,
+              1,
+              2
+            ],
+            "default": 2,
+            "description": "Search radius in kilometres."
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "newest",
+              "closest",
+              "oldest"
+            ],
+            "default": "newest",
+            "description": "Order the visible results by newest, closest, or oldest."
+          }
+        },
+        "required": [
+          "postcode"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    }
+  ],
+  "host": "planwatch.co.uk",
+  "source": "webmcp.com/api/directory.json"
+}

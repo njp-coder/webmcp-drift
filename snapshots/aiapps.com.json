@@ -1,0 +1,113 @@
+{
+  "sponsio": 1,
+  "url": "https://www.aiapps.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "find_alternatives",
+      "description": "Find AI tools that are alternatives to a given tool — ranked by overlap of categories with the source tool. Use when the user asks 'what are alternatives to X' or 'something like Y'.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Source tool slug to find alternatives for."
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "get_category_tools",
+      "description": "Get the top tools in a specific category. Use after list_categories to drill into one. Returns up to 30 tools sorted by featured/verified status.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Category slug, e.g. 'ai-image-tools'. Or pass the human name like 'AI Image Tools' — we tolerate both."
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "get_latest_tools",
+      "description": "Get the most recently added AI tools (default 12). Use when the user asks 'what's new' or 'what was launched this week'.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "number",
+            "description": "Number of tools to return (default 12, max 50)."
+          }
+        }
+      }
+    },
+    {
+      "name": "get_tool",
+      "description": "Fetch the full canonical data for a specific AI tool by its slug. Returns name, description, category, features, FAQ, pricing, and the live URL. Use when the user asks 'tell me about ChatGPT' or 'what's the pricing for Midjourney'.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "The tool's URL slug, e.g. 'chatgpt'. Lowercase with hyphens."
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "list_categories",
+      "description": "List every tool category on AIapps with the number of tools in each. Use when the user wants to browse by topic rather than search.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_industries",
+      "description": "List every industry / profession page on AIapps (e.g. designers, marketers, healthcare professionals). Use when the user wants tools tailored to a job role.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "search_tools",
+      "description": "Free-text search the AIapps directory of 2,000+ AI tools. Matches against tool name and description (case-insensitive). Returns up to 20 results ranked by name match strength. Use when the user asks 'find me an AI for X' or 'show me Y tools'.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search terms — keywords, tool name fragment, or use case"
+          },
+          "limit": {
+            "type": "number",
+            "description": "Max results to return (default 20, max 50)"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "aiapps.com",
+  "source": "webmcp.com/api/directory.json"
+}

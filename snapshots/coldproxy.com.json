@@ -1,0 +1,100 @@
+{
+  "sponsio": 1,
+  "url": "https://coldproxy.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "build-tool-link",
+      "description": "Return the right ColdProxy free-tool URL for proxy testing, public IP checks, or IPv6 checks.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "tool": {
+            "type": "string",
+            "enum": [
+              "proxy-checker",
+              "my-ip",
+              "ipv6-checker"
+            ],
+            "description": "Which ColdProxy tool to use."
+          },
+          "proxy": {
+            "type": "string",
+            "description": "Proxy string for proxy-checker deep links. Ignored by other tools."
+          },
+          "domain": {
+            "type": "string",
+            "description": "Domain or URL for ipv6-checker deep links. Ignored by other tools."
+          },
+          "openNow": {
+            "type": "boolean",
+            "description": "When true, open the generated URL in the current tab."
+          }
+        },
+        "required": [
+          "tool"
+        ]
+      }
+    },
+    {
+      "name": "choose-proxy-plan",
+      "description": "Recommend the best ColdProxy plan family for a workload and return the best matching pricing URLs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "useCase": {
+            "type": "string",
+            "description": "Workload such as scraping, QA, SEO monitoring, social automation, public APIs, or geo testing."
+          },
+          "needsStrictSiteSupport": {
+            "type": "boolean",
+            "description": "Set true for stricter websites that need residential IPs. Residential IPv6 leads when needsIpv6 is true; otherwise both Residential IPv4 plans suit them and the billing preference (prefersUsageBilling or a small, light, pilot, test, or starter workload) picks between them."
+          },
+          "needsIpv6": {
+            "type": "boolean",
+            "description": "Set true when the target publishes IPv6 addresses or is served by a supported CDN (check with the IPv6 Checker)."
+          },
+          "prefersUsageBilling": {
+            "type": "boolean",
+            "description": "Set true when monthly traffic packs suit the budget better than an Mbps speed tier."
+          },
+          "openBestMatch": {
+            "type": "boolean",
+            "description": "When true, open the best matching pricing page in the current tab."
+          }
+        },
+        "required": [
+          "useCase"
+        ]
+      }
+    },
+    {
+      "name": "route-support-request",
+      "description": "Route a user to the best ColdProxy support channel for billing, abuse, setup, or sales questions.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "topic": {
+            "type": "string",
+            "description": "Support topic such as billing, refunds, abuse, setup, connectivity, or sales."
+          },
+          "openNow": {
+            "type": "boolean",
+            "description": "When true, open the recommended support URL in the current tab."
+          }
+        },
+        "required": [
+          "topic"
+        ]
+      }
+    }
+  ],
+  "host": "coldproxy.com",
+  "source": "webmcp.com/api/directory.json"
+}

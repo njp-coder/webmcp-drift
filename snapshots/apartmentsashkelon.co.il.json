@@ -1,0 +1,89 @@
+{
+  "sponsio": 1,
+  "url": "https://www.apartmentsashkelon.co.il/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_contact_details",
+      "description": "Get Michael Mester's phone number, WhatsApp link, email and office address, so the user can arrange a viewing or list a property. Does not send anything.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "search_articles",
+      "description": "Search Michael Mester's articles and video guides (Hebrew) about selling, buying, renting and investing in property in Ashkelon. Returns up to 5 titles with a short summary and the page URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "The topic in Hebrew or English, e.g. 'exclusivity agreement' or 'מסמכים למכירת דירה'."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "search_listings",
+      "description": "Search the properties Michael Mester (RE/MAX Lekulam) is marketing in and around Ashkelon, Israel: homes for sale, rentals, commercial property and land. Returns up to 8 matches with asking price in ILS (per_month marks a rental), rooms, floor, neighborhood and page URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Free text in Hebrew or English, e.g. a neighborhood, street or feature."
+          },
+          "deal": {
+            "type": "string",
+            "enum": [
+              "sale",
+              "rent"
+            ],
+            "description": "Buy or rent. rent includes commercial property for rent."
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "sale",
+              "rent",
+              "commercial",
+              "land"
+            ],
+            "description": "Category: homes for sale, homes for rent, commercial, land."
+          },
+          "neighborhood": {
+            "type": "string",
+            "description": "Neighborhood, e.g. ברנע or Barnea."
+          },
+          "min_rooms": {
+            "type": "number",
+            "description": "Minimum rooms, Israeli count (bedrooms plus living room: 3 bedrooms = 4 rooms)."
+          },
+          "max_rooms": {
+            "type": "number",
+            "description": "Maximum rooms, Israeli count."
+          },
+          "max_price": {
+            "type": "number",
+            "description": "Maximum price in ILS (monthly rent for rentals)."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    }
+  ],
+  "host": "apartmentsashkelon.co.il",
+  "source": "webmcp.com/api/directory.json"
+}

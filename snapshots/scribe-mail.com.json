@@ -1,0 +1,255 @@
+{
+  "sponsio": 1,
+  "url": "https://www.scribe-mail.com/en-US",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "scribe_book_demo",
+      "description": "Book a product demo with the Scribe team. In Phase 1, returns the Cal.com booking URL for the user to complete scheduling. In Phase 2 (when NEXT_PUBLIC_SCRIBE_API_URL is set), submits a demo request directly. The agent should surface confirmation to the user before acting.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "context": {
+            "type": "string",
+            "description": "Optional context to include with the demo request (team size, use case)."
+          },
+          "name": {
+            "type": "string",
+            "description": "Required for Phase 2 API submission; ignored in Phase 1."
+          },
+          "email": {
+            "type": "string",
+            "description": "Required for Phase 2 API submission; ignored in Phase 1."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "scribe_calculate_lead_generation_roi",
+      "description": "Calculate projected revenue from using Scribe email signatures as a lead-generation channel. Mirrors the /roi-calculator page's lead-gen tab. Returns monthly impressions and clicks, projected revenue, Scribe's cost, and net annual value. Use this when someone asks about marketing or revenue value of Scribe.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "team_size": {
+            "type": "number",
+            "description": "Number of email users.",
+            "minimum": 1
+          },
+          "daily_emails_per_user": {
+            "type": "number",
+            "description": "Average outbound emails per user per working day. Default: 30. Working days per month: 21.",
+            "minimum": 0
+          },
+          "signature_ctr_percent": {
+            "type": "number",
+            "description": "Click-through rate on signature banner as percent (12 = 12%). Default: 12.",
+            "minimum": 0
+          },
+          "lead_to_customer_rate_percent": {
+            "type": "number",
+            "description": "Lead-to-customer conversion rate as percent. Default: 2.",
+            "minimum": 0
+          },
+          "average_customer_value_usd": {
+            "type": "number",
+            "description": "Average customer value in USD. Default: 500.",
+            "minimum": 0
+          },
+          "billing_interval": {
+            "type": "string",
+            "enum": [
+              "monthly",
+              "yearly"
+            ],
+            "description": "Used to compute Scribe's cost. Default: yearly."
+          }
+        },
+        "required": [
+          "team_size"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "scribe_calculate_time_saving_roi",
+      "description": "Calculate IT/marketing time savings from automating email signature management with Scribe. Mirrors the /roi-calculator page's time-saving tab. Returns hours saved, cost saved, Scribe's cost, and net annual savings. Use this when someone asks about IT cost savings, deployment time, or the operational case for Scribe.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "team_size": {
+            "type": "number",
+            "description": "Number of email users.",
+            "minimum": 1
+          },
+          "update_frequency": {
+            "type": "string",
+            "enum": [
+              "twice-year",
+              "monthly",
+              "biweekly",
+              "weekly",
+              "twice-week"
+            ],
+            "description": "How often signatures get updated. Default: monthly."
+          },
+          "minutes_per_update": {
+            "type": "number",
+            "description": "Minutes spent per user per update without Scribe. Default: 45.",
+            "minimum": 0
+          },
+          "hourly_rate_usd": {
+            "type": "number",
+            "description": "Fully-loaded hourly cost in USD. Default: 75.",
+            "minimum": 1
+          },
+          "billing_interval": {
+            "type": "string",
+            "enum": [
+              "monthly",
+              "yearly"
+            ],
+            "description": "Used to compute Scribe's cost. Default: yearly."
+          }
+        },
+        "required": [
+          "team_size"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "scribe_compare_plans",
+      "description": "Compare Scribe pricing plans side by side. Returns a structured comparison of price ranges and tier structure for the Free, Business, and Enterprise plans.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "plans": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Plan IDs (or substrings) to compare. Omit to compare all plans."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "scribe_compare_with_competitor",
+      "description": "Compare Scribe against a named competitor email-signature platform. Supported competitors: codetwo, exclaimer, letsignit, opensense, rocketseed, wisestamp, xink. Returns a structured capability-by-capability comparison and Scribe's advantages. Use this when someone is comparing Scribe to another vendor or asking 'why Scribe instead of X'.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "competitor": {
+            "type": "string",
+            "enum": [
+              "codetwo",
+              "exclaimer",
+              "letsignit",
+              "opensense",
+              "rocketseed",
+              "wisestamp",
+              "xink"
+            ],
+            "description": "The competitor to compare against."
+          }
+        },
+        "required": [
+          "competitor"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "scribe_get_pricing",
+      "description": "Get Scribe pricing plans and what is included in each tier. Optionally provide a team size to get a specific monthly price for the recommended plan at that size. Prices are USD/month; the response distinguishes monthly and annual billing.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "team_size": {
+            "type": "number",
+            "description": "Number of email users. If provided, response includes a tier-matched quote.",
+            "minimum": 1
+          },
+          "billing_interval": {
+            "type": "string",
+            "enum": [
+              "monthly",
+              "yearly"
+            ],
+            "description": "Defaults to yearly (which typically includes a discount vs monthly)."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "scribe_get_product_info",
+      "description": "Get information about Scribe, a B2B SaaS for automated email signature management. Returns product description, value propositions, supported integrations (Google Workspace, Microsoft 365, Outlook, Salesforce, Salesloft, and more), and ideal company size. Use this when someone asks what Scribe is, what it does, or whether it fits their needs.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "focus": {
+            "type": "string",
+            "enum": [
+              "overview",
+              "integrations",
+              "ideal_customer"
+            ],
+            "description": "Which aspect to focus on. Defaults to overview."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "scribe_start_trial",
+      "description": "Start a 14-day free trial of Scribe. In Phase 1, returns the registration URL on the Scribe app subdomain. In Phase 2 (when NEXT_PUBLIC_SCRIBE_API_URL is set), creates the trial account directly. No credit card required.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Required for Phase 2; ignored in Phase 1."
+          },
+          "company": {
+            "type": "string",
+            "description": "Optional, used only in Phase 2."
+          },
+          "team_size": {
+            "type": "number",
+            "description": "Optional, used only in Phase 2."
+          }
+        }
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    }
+  ],
+  "host": "scribe-mail.com",
+  "source": "webmcp.com/api/directory.json"
+}

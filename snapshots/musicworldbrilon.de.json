@@ -1,0 +1,96 @@
+{
+  "sponsio": 1,
+  "url": "https://www.musicworldbrilon.de/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "fill_customer_login",
+      "description": "Fill in the Musicworld customer login form for the user to review and submit.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "context": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "username",
+          "password"
+        ]
+      }
+    },
+    {
+      "name": "prepare_newsletter_subscription",
+      "description": "Fill in the newsletter subscription form for the user to verify and submit.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Geben Sie Ihre E-Mail-Adresse ein"
+          },
+          "form_key": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Search the current Musicworld storefront catalog. Returns matching visible products with SKU, URL, image, price, currency and availability.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 64,
+            "description": "Product name, model, manufacturer, feature or SKU to search for."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 6,
+            "description": "Maximum number of matching products to return."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "search_storefront",
+      "description": "Search the Musicworld storefront catalog and display the matching product results.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string",
+            "description": "Gesamten Shop hier durchsuchen..."
+          }
+        }
+      }
+    }
+  ],
+  "host": "musicworldbrilon.de",
+  "source": "webmcp.com/api/directory.json"
+}

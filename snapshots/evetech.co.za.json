@@ -1,0 +1,306 @@
+{
+  "sponsio": 1,
+  "url": "https://www.evetech.co.za/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "browse_category",
+      "description": "List products in one Evetech (South Africa) product category by its exact category name. Categories include: Laptop, Graphics Card, CPUs / Processors, Motherboards, Memory, SSDs, Hard Drives, Power Supply, Computer Cases, CPU Coolers, Case Fans, Monitors, Keyboards, Mice, Headphones & Headsets, Gaming & Office Chairs, Custom Computer Systems, Mini PCs, Upgrade Bundle Kits, Open Box. Returns live ZAR prices incl. VAT and stock status. Prefer search_products when unsure of the exact category name.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "description": "Exact category name as shown on evetech.co.za"
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "price_asc",
+              "price_desc"
+            ],
+            "description": "Sort by ZAR price"
+          },
+          "in_stock_only": {
+            "type": "boolean",
+            "description": "Only return products currently in stock"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "description": "Results to return (default 20)"
+          }
+        },
+        "required": [
+          "category"
+        ]
+      }
+    },
+    {
+      "name": "check_pc_compatibility",
+      "description": "Check PC part compatibility using Evetech's PC Builder engine (South Africa). Given the numeric product ids already chosen (cpu, gpu, motherboard, cooler, ram, case, psu — from search_products), returns the ids of compatible products for the requested part type, plus required wattage and warnings. To test a specific part, check whether its id is in the returned list.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "selections": {
+            "type": "object",
+            "description": "Chosen product ids keyed by part",
+            "properties": {
+              "cpu": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "gpu": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "motherboard": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "cooler": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "ram": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "case": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "psu": {
+                "type": "integer",
+                "minimum": 1
+              }
+            }
+          },
+          "want": {
+            "type": "string",
+            "enum": [
+              "motherboard",
+              "cooler",
+              "ram",
+              "case",
+              "psu"
+            ],
+            "description": "Part type to find compatible products for"
+          }
+        },
+        "required": [
+          "selections",
+          "want"
+        ]
+      }
+    },
+    {
+      "name": "get_component",
+      "description": "Get details for one PC component or peripheral (GPU, CPU, RAM, storage, monitor, etc.) sold by Evetech in South Africa by its numeric product id (from search_products). Returns priceZarIncVat (the displayed web price in ZAR incl. VAT), current stock status, key specs, warranty where available, free extras and images.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "get_flash_deals",
+      "description": "List Evetech's currently active, time-limited flash deals in South Africa across PCs, components and laptops. Each deal has the deal price and original price in ZAR incl. VAT, the deal end time and the product id.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_laptop",
+      "description": "Get details for one laptop or notebook sold by Evetech in South Africa by its numeric product id (from search_products). Returns priceZarIncVat (the displayed web price in ZAR incl. VAT), current stock status, key specs, warranty where available, free extras and images.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "get_pc",
+      "description": "Get details for one pre-built or custom gaming PC, including its full parts configuration sold by Evetech in South Africa by its numeric product id (from search_products). Returns priceZarIncVat (the displayed web price in ZAR incl. VAT), current stock status, key specs, warranty where available, free extras and images.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "get_products_by_ids",
+      "description": "Look up several Evetech (South Africa) products at once by numeric product id. Returns product cards with live ZAR prices incl. VAT, stock status, brand and product page URL, in the order requested.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "ids": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "minItems": 1,
+            "maxItems": 50,
+            "description": "Product ids"
+          }
+        },
+        "required": [
+          "ids"
+        ]
+      }
+    },
+    {
+      "name": "get_specials",
+      "description": "List products currently on special at Evetech in South Africa, by type: gaming PCs, PC components or laptops. Returns the total count and up to `limit` products (default 20) with discounted live ZAR prices incl. VAT, stock status and warranty.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "pc",
+              "component",
+              "laptop"
+            ],
+            "description": "Which specials to list"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "description": "Results to return (default 20)"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      }
+    },
+    {
+      "name": "get_trending",
+      "description": "List products currently trending on evetech.co.za in South Africa, based on recent live shopper activity (not an all-time best-seller list). Returns the total count and up to `limit` products (default 15) with live ZAR prices incl. VAT, stock status and key highlights.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "description": "Results to return (default 15)"
+          }
+        }
+      }
+    },
+    {
+      "name": "list_brands",
+      "description": "List the hardware brands Evetech (South Africa) stocks, with each brand page link. Use it to confirm whether a brand is carried before searching for its products.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "search_guides",
+      "description": "Search Evetech's South African site for buying guides, blog articles and info pages alongside matching products. Use for questions like \"how to choose a PSU\" or \"best laptop for students\". Product hits include live ZAR prices incl. VAT and stock status.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Topic or question keywords"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "description": "Results per index (default 12)"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Search Evetech's South African catalogue of gaming PCs, laptops and PC components by keyword. Returns live ZAR prices incl. VAT and current stock status for each product, plus its product page URL.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Keywords, e.g. \"RTX 5080 gaming PC\" or \"32GB DDR5 RAM\""
+          },
+          "product_type": {
+            "type": "string",
+            "enum": [
+              "pc",
+              "component",
+              "laptop"
+            ],
+            "description": "Restrict to PCs, components or laptops"
+          },
+          "min_price": {
+            "type": "number",
+            "description": "Minimum price in ZAR incl. VAT"
+          },
+          "max_price": {
+            "type": "number",
+            "description": "Maximum price in ZAR incl. VAT"
+          },
+          "in_stock_only": {
+            "type": "boolean",
+            "description": "Only return products currently in stock"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "description": "Results to return (default 20)"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "host": "evetech.co.za",
+  "source": "webmcp.com/api/directory.json"
+}

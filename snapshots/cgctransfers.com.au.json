@@ -1,0 +1,109 @@
+{
+  "sponsio": 1,
+  "url": "https://cgctransfers.com.au/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_business_info",
+      "description": "CGC Airport Transfers service facts: contact, hours, inclusions and policies.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "get_transfer_quote",
+      "description": "Get CGC Airport Transfers fixed prices for a trip between two Gold Coast / Brisbane / Northern Rivers locations. Returns per-vehicle AUD fares, GST and tolls included, honoured at booking. If the route is not fixed-price it is quoted per km at booking.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "pickup": {
+            "type": "string",
+            "description": "Pickup suburb, hotel or airport (e.g. \"Surfers Paradise\", \"Gold Coast Airport\")"
+          },
+          "dropoff": {
+            "type": "string",
+            "description": "Drop-off suburb, hotel or airport"
+          }
+        },
+        "required": [
+          "pickup",
+          "dropoff"
+        ]
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "list_fixed_routes",
+      "description": "List every CGC Airport Transfers fixed-price route (zones, suburbs and per-vehicle fares).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnly": true
+      }
+    },
+    {
+      "name": "start_booking",
+      "description": "Open the CGC booking form pre-filled with trip details. This only navigates to the form — a human reviews the quote and completes the booking and payment themselves. No charge is made by this tool.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "pickup": {
+            "type": "string",
+            "description": "Pickup suburb, hotel or airport"
+          },
+          "dropoff": {
+            "type": "string",
+            "description": "Drop-off suburb, hotel or airport"
+          },
+          "date": {
+            "type": "string",
+            "description": "Optional travel date, YYYY-MM-DD"
+          },
+          "time": {
+            "type": "string",
+            "description": "Optional pickup time, HH:MM 24h"
+          },
+          "pax": {
+            "type": "integer",
+            "description": "Optional passenger count, 1-12"
+          },
+          "vehicle": {
+            "type": "string",
+            "enum": [
+              "sedan",
+              "carnival",
+              "carnival-rav",
+              "2-carnivals"
+            ],
+            "description": "Optional vehicle: sedan (1-3 pax), carnival (up to 7), carnival-rav (up to 9), 2-carnivals (up to 14). Larger vehicles are quoted on request by phone."
+          },
+          "flight": {
+            "type": "string",
+            "description": "Optional flight number"
+          }
+        },
+        "required": [
+          "pickup",
+          "dropoff"
+        ]
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    }
+  ],
+  "host": "cgctransfers.com.au",
+  "source": "webmcp.com/api/directory.json"
+}

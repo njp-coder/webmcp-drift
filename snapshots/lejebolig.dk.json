@@ -1,0 +1,123 @@
+{
+  "sponsio": 1,
+  "url": "https://www.lejebolig.dk/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "get_listing",
+      "description": "Get full details for a specific rental listing including description, images and financial terms. Direct the user to the url field to contact the landlord.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Listing ID from search_listings."
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "search_areas",
+      "description": "Resolve a location name to area slugs for use in search_listings. Supports Danish city names, neighbourhoods and postal codes.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string",
+            "description": "City name, neighbourhood or postal code. Minimum 2 characters."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum number of results.",
+            "default": 10
+          }
+        },
+        "required": [
+          "q"
+        ]
+      }
+    },
+    {
+      "name": "search_listings",
+      "description": "Search rental properties in Denmark. Use search_areas first to resolve a location to level1Slug/level2Slug.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "level1Slug": {
+            "type": "string",
+            "description": "Top-level area slug from search_areas."
+          },
+          "level2Slug": {
+            "type": "string",
+            "description": "Sub-area slug from search_areas."
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "apartment",
+              "house",
+              "room",
+              "flatshare",
+              "homeswap",
+              "holidayhome"
+            ]
+          },
+          "roomsMin": {
+            "type": "integer",
+            "default": 1
+          },
+          "roomsMax": {
+            "type": "integer"
+          },
+          "rentMax": {
+            "type": "integer",
+            "description": "Maximum monthly rent in DKK."
+          },
+          "sizeMin": {
+            "type": "integer",
+            "description": "Minimum floor size in square metres."
+          },
+          "leasePeriod": {
+            "type": "string",
+            "enum": [
+              "unlimited",
+              "over-1-year",
+              "under-1-year"
+            ]
+          },
+          "availableFrom": {
+            "type": "string",
+            "description": "Only listings available on or before this date (ISO 8601)."
+          },
+          "sortBy": {
+            "type": "string",
+            "enum": [
+              "datePosted-desc",
+              "rent-asc",
+              "rent-desc",
+              "size-desc"
+            ],
+            "default": "datePosted-desc"
+          },
+          "page": {
+            "type": "integer",
+            "default": 1
+          },
+          "pageSize": {
+            "type": "integer",
+            "default": 10,
+            "maximum": 20
+          }
+        }
+      }
+    }
+  ],
+  "host": "lejebolig.dk",
+  "source": "webmcp.com/api/directory.json"
+}

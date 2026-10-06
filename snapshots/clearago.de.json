@@ -1,0 +1,330 @@
+{
+  "sponsio": 1,
+  "url": "https://clearago.de/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "check_delivery_availability",
+      "description": "Get the dates a container can actually be delivered to a German postcode: the earliest date, the next selectable dates, the partner's lead time, whether the first date carries an express fee, and how many days of placement time the price includes. Deliveries are working days only and regional public holidays, bridge days and an 11:00 cutoff all apply, so never estimate a delivery date without calling this.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "postcode": {
+            "type": "string",
+            "pattern": "^[0-9]{5}$",
+            "description": "German postal code where the container is delivered, exactly 5 digits."
+          },
+          "waste_type": {
+            "type": "string",
+            "enum": [
+              "baumischabfall/baumischabfall-unter-15-prozent-schutt-oder-erde",
+              "baumischabfall/baumischabfall-ueber-15-prozent-schutt-oder-erde",
+              "bauschutt-beton/bauschutt-ohne-fremdanteile",
+              "bauschutt-beton/bauschutt-mit-fremdanteilen",
+              "bauschutt-beton/beton-ohne-stahl-kantenlaenge-unter-60cm",
+              "bauschutt-beton/beton-ohne-stahl-kantenlaenge-ueber-60cm",
+              "leichtbaustoffe/ytong-gasbeton",
+              "leichtbaustoffe/gips-rigipshaltige-baustoffe",
+              "sperrmuell-hausmuell/sperrmuell",
+              "sperrmuell-hausmuell/siedlungsabfall",
+              "erdaushub/erdaushub-ohne-fremdanteile",
+              "erdaushub/erdaushub-mit-fremdanteilen",
+              "holz/holzabfaelle-a-i-a-iii-unbehandelt-behandelt",
+              "holz/holzabfaelle-a-iv-schadstoffbelastet",
+              "gartenabfall/gartenabfaelle-gruenschnitt",
+              "gartenabfall/baumstumpen-wurzeln",
+              "dachpappe/dachpappe-teerfrei",
+              "dachpappe/dachpappe-teerhaltig",
+              "daemmung-asbest/kmf-daemmung-mineralwolle",
+              "daemmung-asbest/styropor",
+              "daemmung-asbest/asbesthaltige-baustoffe",
+              "verpackungen/gemischte-verpackungen",
+              "verpackungen/pe-folie",
+              "altpapier-pappe-karton/altpapier-karton",
+              "sonstiges/metallschrott",
+              "sonstiges/flachglas-bauglas",
+              "sonstiges/gemischte-gewerbeabfaelle",
+              "sonstiges/elektroschrott"
+            ],
+            "description": "The waste type. Lead time belongs to the partner who supplies it."
+          },
+          "container_size": {
+            "type": "string",
+            "enum": [
+              "1",
+              "2",
+              "2.5",
+              "3",
+              "4",
+              "5",
+              "5.5",
+              "6",
+              "7",
+              "8",
+              "10",
+              "11",
+              "12",
+              "13",
+              "14",
+              "15",
+              "16",
+              "18",
+              "20",
+              "22",
+              "23",
+              "24",
+              "25",
+              "27",
+              "28",
+              "30",
+              "31",
+              "33",
+              "34",
+              "35",
+              "36",
+              "37",
+              "38",
+              "40"
+            ],
+            "description": "Optional. Different sizes can come from different partners with different lead times."
+          },
+          "container_type": {
+            "type": "string",
+            "enum": [
+              "Abrollcontainer",
+              "Absetzcontainer",
+              "Gitterbox"
+            ],
+            "description": "Optional. Only when the customer has asked for a specific container type."
+          }
+        },
+        "required": [
+          "postcode",
+          "waste_type"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "get_container_price",
+      "description": "Get the all-in price for renting a waste container (Container/Mulde) from clearago.de at a German postcode, including delivery, rental, collection and disposal. Also reports whether that size is available there, how soon it can be delivered, the container's outside dimensions in metres, its maximum load in kg, whether a street-placement permit is needed and who obtains it, and which payment methods apply. Prices include 19% German VAT. One size is sometimes offered as more than one container type at different prices: when that happens the reply sets multiple_container_types and lists every type in options, and all of them should be mentioned rather than only the cheapest.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "postcode": {
+            "type": "string",
+            "pattern": "^[0-9]{5}$",
+            "description": "German postal code (Postleitzahl) where the container is delivered, exactly 5 digits, e.g. '10115'."
+          },
+          "waste_type": {
+            "type": "string",
+            "enum": [
+              "baumischabfall/baumischabfall-unter-15-prozent-schutt-oder-erde",
+              "baumischabfall/baumischabfall-ueber-15-prozent-schutt-oder-erde",
+              "bauschutt-beton/bauschutt-ohne-fremdanteile",
+              "bauschutt-beton/bauschutt-mit-fremdanteilen",
+              "bauschutt-beton/beton-ohne-stahl-kantenlaenge-unter-60cm",
+              "bauschutt-beton/beton-ohne-stahl-kantenlaenge-ueber-60cm",
+              "leichtbaustoffe/ytong-gasbeton",
+              "leichtbaustoffe/gips-rigipshaltige-baustoffe",
+              "sperrmuell-hausmuell/sperrmuell",
+              "sperrmuell-hausmuell/siedlungsabfall",
+              "erdaushub/erdaushub-ohne-fremdanteile",
+              "erdaushub/erdaushub-mit-fremdanteilen",
+              "holz/holzabfaelle-a-i-a-iii-unbehandelt-behandelt",
+              "holz/holzabfaelle-a-iv-schadstoffbelastet",
+              "gartenabfall/gartenabfaelle-gruenschnitt",
+              "gartenabfall/baumstumpen-wurzeln",
+              "dachpappe/dachpappe-teerfrei",
+              "dachpappe/dachpappe-teerhaltig",
+              "daemmung-asbest/kmf-daemmung-mineralwolle",
+              "daemmung-asbest/styropor",
+              "daemmung-asbest/asbesthaltige-baustoffe",
+              "verpackungen/gemischte-verpackungen",
+              "verpackungen/pe-folie",
+              "altpapier-pappe-karton/altpapier-karton",
+              "sonstiges/metallschrott",
+              "sonstiges/flachglas-bauglas",
+              "sonstiges/gemischte-gewerbeabfaelle",
+              "sonstiges/elektroschrott"
+            ],
+            "description": "The kind of waste going into the container. Call list_waste_types to map the customer's wording onto one of these values. Examples: baumischabfall/baumischabfall-unter-15-prozent-schutt-oder-erde (Baumischabfall (bis 15% Schutt / Erde)), baumischabfall/baumischabfall-ueber-15-prozent-schutt-oder-erde (Baumischabfall (über 15% Schutt / Erde)), bauschutt-beton/bauschutt-ohne-fremdanteile (Bauschutt ohne Fremdanteile), bauschutt-beton/bauschutt-mit-fremdanteilen (Bauschutt mit Fremdanteilen (<5%)), bauschutt-beton/beton-ohne-stahl-kantenlaenge-unter-60cm (Beton ohne Stahl (Kantenlänge < 60 cm)), bauschutt-beton/beton-ohne-stahl-kantenlaenge-ueber-60cm (Beton mit Stahl (Kantenlänge < 60 cm)), leichtbaustoffe/ytong-gasbeton (Ytong, Poren- & Gasbeton), leichtbaustoffe/gips-rigipshaltige-baustoffe (Rigips & gipshaltige Baustoffe)."
+          },
+          "container_size": {
+            "type": "string",
+            "enum": [
+              "1",
+              "2",
+              "2.5",
+              "3",
+              "4",
+              "5",
+              "5.5",
+              "6",
+              "7",
+              "8",
+              "10",
+              "11",
+              "12",
+              "13",
+              "14",
+              "15",
+              "16",
+              "18",
+              "20",
+              "22",
+              "23",
+              "24",
+              "25",
+              "27",
+              "28",
+              "30",
+              "31",
+              "33",
+              "34",
+              "35",
+              "36",
+              "37",
+              "38",
+              "40"
+            ],
+            "description": "Container volume in cubic metres, as one of the listed values. Pass the customer's stated size directly; do not convert from weight, area or number of loads."
+          },
+          "container_type": {
+            "type": "string",
+            "enum": [
+              "Abrollcontainer",
+              "Absetzcontainer",
+              "Gitterbox"
+            ],
+            "description": "Optional. The kind of container, when the customer has asked for a specific one. Leave it out to get every type offered at that size."
+          }
+        },
+        "required": [
+          "postcode",
+          "waste_type",
+          "container_size"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "get_waste_type_rules",
+      "description": "Get what may and may not be put into a clearago container for a given waste type, its official German AVV waste code, the container's maximum load, the surcharge for exceeding it, and any legal handling requirement. Call this before confirming a booking whenever the customer names specific materials, or asks whether something is allowed, how heavy a load may be, or what the waste code is. Getting this wrong contaminates the load and costs the customer money, so do not answer from general knowledge.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "waste_type": {
+            "type": "string",
+            "enum": [
+              "baumischabfall/baumischabfall-unter-15-prozent-schutt-oder-erde",
+              "baumischabfall/baumischabfall-ueber-15-prozent-schutt-oder-erde",
+              "bauschutt-beton/bauschutt-ohne-fremdanteile",
+              "bauschutt-beton/bauschutt-mit-fremdanteilen",
+              "bauschutt-beton/beton-ohne-stahl-kantenlaenge-unter-60cm",
+              "bauschutt-beton/beton-ohne-stahl-kantenlaenge-ueber-60cm",
+              "leichtbaustoffe/ytong-gasbeton",
+              "leichtbaustoffe/gips-rigipshaltige-baustoffe",
+              "sperrmuell-hausmuell/sperrmuell",
+              "sperrmuell-hausmuell/siedlungsabfall",
+              "erdaushub/erdaushub-ohne-fremdanteile",
+              "erdaushub/erdaushub-mit-fremdanteilen",
+              "holz/holzabfaelle-a-i-a-iii-unbehandelt-behandelt",
+              "holz/holzabfaelle-a-iv-schadstoffbelastet",
+              "gartenabfall/gartenabfaelle-gruenschnitt",
+              "gartenabfall/baumstumpen-wurzeln",
+              "dachpappe/dachpappe-teerfrei",
+              "dachpappe/dachpappe-teerhaltig",
+              "daemmung-asbest/kmf-daemmung-mineralwolle",
+              "daemmung-asbest/styropor",
+              "daemmung-asbest/asbesthaltige-baustoffe",
+              "verpackungen/gemischte-verpackungen",
+              "verpackungen/pe-folie",
+              "altpapier-pappe-karton/altpapier-karton",
+              "sonstiges/metallschrott",
+              "sonstiges/flachglas-bauglas",
+              "sonstiges/gemischte-gewerbeabfaelle",
+              "sonstiges/elektroschrott"
+            ],
+            "description": "The waste type to get rules for. Use list_waste_types to resolve one."
+          },
+          "container_size": {
+            "type": "string",
+            "enum": [
+              "1",
+              "2",
+              "2.5",
+              "3",
+              "4",
+              "5",
+              "5.5",
+              "6",
+              "7",
+              "8",
+              "10",
+              "11",
+              "12",
+              "13",
+              "14",
+              "15",
+              "16",
+              "18",
+              "20",
+              "22",
+              "23",
+              "24",
+              "25",
+              "27",
+              "28",
+              "30",
+              "31",
+              "33",
+              "34",
+              "35",
+              "36",
+              "37",
+              "38",
+              "40"
+            ],
+            "description": "Optional. Supplying it returns the weight limit as an absolute figure in kilograms for that container rather than only a density."
+          }
+        },
+        "required": [
+          "waste_type"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "list_waste_types",
+      "description": "List the waste types clearago.de rents containers for, each with its German name and a short English description. Use this to translate what the customer says they are throwing away (rubble, garden waste, mixed building waste, asbestos, ...) into a waste_type value for get_container_price. Also returns the container sizes we offer, in cubic metres.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": false
+      }
+    }
+  ],
+  "host": "clearago.de",
+  "source": "webmcp.com/api/directory.json"
+}

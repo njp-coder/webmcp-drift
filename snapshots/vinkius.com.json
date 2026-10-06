@@ -1,0 +1,160 @@
+{
+  "sponsio": 1,
+  "url": "https://vinkius.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "browse_ai_capability_categories",
+      "description": "Navigate to the AI Capability category listing page to browse all available categories of AI Capabilities (CRM, DevOps, Finance, Marketing, Productivity, and more).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "get_current_capability_info",
+      "description": "Get structured information about the AI Capability being viewed on the current page, including title, slug, description, category, and listing type. Only returns data on AI Capability listing pages (/ai-agent-connect/[slug]).",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "navigate_to_ai_capability",
+      "description": "Navigate to a specific AI Capability listing page on vinkius.com. Provide the slug of the capability (e.g. \"github\", \"slack\", \"notion\"). Returns the listing page with capability details, available tools, setup instructions, and supported AI clients.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120,
+            "pattern": "^[a-z0-9][a-z0-9-]*[a-z0-9]$",
+            "description": "The AI Capability slug — a URL-safe identifier such as \"github\", \"slack\", \"notion\", or \"stripe\"."
+          }
+        },
+        "required": [
+          "slug"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "navigate_to_client_guide",
+      "description": "Navigate to a step-by-step setup guide that explains how to give a specific AI client (Claude, ChatGPT, Gemini, and more) access to a specific AI Capability. Use this when the user asks how to connect an AI Capability to a particular AI client.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120,
+            "pattern": "^[a-z0-9][a-z0-9-]*[a-z0-9]$",
+            "description": "The AI Capability slug — a URL-safe identifier such as \"github\", \"slack\", \"notion\", or \"stripe\"."
+          },
+          "client": {
+            "type": "string",
+            "enum": [
+              "claude",
+              "chatgpt",
+              "gemini",
+              "perplexity",
+              "grok",
+              "copilot",
+              "cursor",
+              "vscode",
+              "windsurf",
+              "jetbrains",
+              "cline",
+              "langchain",
+              "vercel",
+              "lovable",
+              "zai",
+              "raycast",
+              "qwen",
+              "kimi",
+              "mistral"
+            ],
+            "description": "The AI client to set up (e.g. \"claude\", \"chatgpt\", \"gemini\")."
+          }
+        },
+        "required": [
+          "slug",
+          "client"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "search_ai_capabilities",
+      "description": "Search the AI Capability catalog by keyword and return structured results (up to 10: title, slug, short description, and the listing-page URL for each match). Use this when the user wants to find an AI Capability but does not know its exact slug. Pass the keyword as the user gave it — it is sent to the search API verbatim, so do not slugify or translate it.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "The search keyword or phrase (e.g. \"email marketing\", \"database\", \"CRM\").",
+            "minLength": 1,
+            "maxLength": 200
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "start_authentication",
+      "description": "Open the authentication modal to sign in or create an account. Users can authenticate with Google or GitHub to start subscribing and activating AI Capabilities. Requires explicit user consent before proceeding.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "view_pricing",
+      "description": "Navigate to the pricing page to see available subscription plans (Free, Lite, Starter, Pro, Business, Enterprise) for running AI Capabilities on Vinkius.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    }
+  ],
+  "host": "vinkius.com",
+  "source": "webmcp.com/api/directory.json"
+}

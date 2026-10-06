@@ -1,0 +1,108 @@
+{
+  "sponsio": 1,
+  "url": "https://meta.vn/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "add_to_cart",
+      "description": "Gửi yêu cầu thêm sản phẩm vào giỏ hàng hiện tại khi người dùng yêu cầu. Không đặt hàng hay thanh toán. quantity là số lượng thêm, mặc định 1. price_id và attributes lấy từ lựa chọn sản phẩm; bỏ trống dùng lựa chọn mặc định của website. Trả JSON với status submitted; cần kiểm tra giỏ hàng để xác nhận kết quả, không tự động thử lại vì có thể tăng số lượng lần nữa.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]*$",
+            "description": "Mã sản phẩm (Int32 dương)."
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 1
+          },
+          "price_id": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Mã lựa chọn giá; 0 dùng mặc định của website."
+          },
+          "attributes": {
+            "type": "string",
+            "default": "",
+            "description": "Các mã thuộc tính phân cách bằng dấu phẩy; rỗng dùng mặc định của website."
+          }
+        },
+        "required": [
+          "product_id"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false
+      }
+    },
+    {
+      "name": "get_product_detail",
+      "description": "Lấy chi tiết sản phẩm theo product_id từ search_products hoặc mã người dùng cung cấp. Trả chuỗi JSON chứa product_id, name, category, brand, price dạng số, currency và in_stock; trả chuỗi JSON null nếu không tìm thấy. Lỗi tải dữ liệu làm tool thất bại.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Mã định danh sản phẩm."
+          }
+        },
+        "required": [
+          "product_id"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Tìm sản phẩm theo từ khóa, có phân trang. Trả chuỗi JSON gồm query, page, page_size, total, total_pages, products. Mỗi sản phẩm có product_id để gọi get_product_detail, name, price dạng số, currency và in_stock. Không tìm thấy trả products rỗng và total bằng 0. Lỗi tải dữ liệu làm tool thất bại.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Tên, mã hoặc từ khóa sản phẩm."
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991,
+            "default": 1,
+            "description": "Trang kết quả, bắt đầu từ 1."
+          },
+          "page_size": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 32,
+            "default": 20,
+            "description": "Số sản phẩm mỗi trang (tối đa 32)."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    }
+  ],
+  "host": "meta.vn",
+  "source": "webmcp.com/api/directory.json"
+}

@@ -1,0 +1,113 @@
+{
+  "sponsio": 1,
+  "url": "https://www.cabgo.app/en",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "cabgo_about",
+      "description": "Return a concise description of what Cabgo is — a multi-tenant SaaS platform that lets transport / delivery / courier / services operators in Latin America launch their own white-label app. Call this when the user asks what Cabgo does, what kinds of apps it creates, or whether it fits their use case.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "cabgo_get_plans",
+      "description": "Return Cabgo's pricing — three monthly SaaS subscriptions (Basic / Professional / Enterprise) and three one-time app-build plans (Starter / Pro / Full). Use when the user asks about cost, pricing, or which plan to pick. The Full plan includes the Flutter source code.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "cabgo_navigate",
+      "description": "Navigate the SPA to a named page. Use to show the user a specific section of the marketing site without making them search. Pages: home, pricing, features, platform, customization, scalability, monetization, calculator, roadmap, signup, docs, api-docs, blog, tutorials, support, status.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "page"
+        ],
+        "properties": {
+          "page": {
+            "type": "string",
+            "enum": [
+              "home",
+              "pricing",
+              "features",
+              "platform",
+              "customization",
+              "scalability",
+              "monetization",
+              "calculator",
+              "roadmap",
+              "signup",
+              "docs",
+              "api-docs",
+              "blog",
+              "tutorials",
+              "support",
+              "status"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "cabgo_signup_link",
+      "description": "Build a pre-filled signup URL for /empezar. Pass the user's chosen appName, country (ISO-3166 alpha-2), monthly plan, app-build plan, and product lines. The user opens the returned URL in their browser to complete Google login + Stripe Checkout. Use this when the user has decided they want to create a Cabgo tenant.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "appName": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string",
+            "description": "ISO-3166-1 alpha-2, e.g. 'mx'"
+          },
+          "phone": {
+            "type": "string",
+            "description": "WhatsApp phone in international format e.g. +525500001234"
+          },
+          "plan": {
+            "type": "string",
+            "enum": [
+              "BASIC",
+              "PROFESSIONAL",
+              "ENTERPRISE"
+            ]
+          },
+          "appPlan": {
+            "type": "string",
+            "enum": [
+              "STARTER",
+              "PRO",
+              "FULL"
+            ]
+          },
+          "productLines": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "taxi",
+                "delivery",
+                "courier",
+                "services"
+              ]
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "host": "cabgo.app",
+  "source": "webmcp.com/api/directory.json"
+}

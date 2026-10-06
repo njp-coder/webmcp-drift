@@ -1,0 +1,195 @@
+{
+  "sponsio": 1,
+  "url": "https://orderly.shop/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "add_to_cart",
+      "description": "Add one Orderly product to the browser cart by shareUrl or SKU. This changes only the cart and does not create an order, collect payment, or start checkout.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "shareUrl": {
+            "type": "string",
+            "maxLength": 512,
+            "description": "Orderly product share URL or relative product path."
+          },
+          "skuType": {
+            "type": "integer",
+            "description": "Orderly SKU type. In Orderly, an SKU is a SKUType plus a SKU value."
+          },
+          "skuValue": {
+            "type": "string",
+            "maxLength": 128,
+            "description": "Orderly SKU value."
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1,
+            "default": 1,
+            "description": "Quantity to add. Orderly WebMCP currently supports adding one used item at a time."
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": false,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "create_search_alert",
+      "description": "Prepare a new saved product search with email notifications for matching new arrivals at Orderly. Requires an existing signed-in account and the user to review and submit the form. Does not sign in, edit existing alerts, modify the cart, or start checkout.",
+      "kind": "declarative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "get_cart_summary",
+      "description": "Return the current browser cart summary and visible line snapshot. This is read-only and never starts checkout.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "refresh": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether to refresh the cart summary from the current stored cart draft."
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": false
+      }
+    },
+    {
+      "name": "get_product",
+      "description": "Resolve one Orderly product by shareUrl or SKU and return product details. Use this before adding an item to the cart when only a SKU or product URL is known.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "shareUrl": {
+            "type": "string",
+            "maxLength": 512,
+            "description": "Orderly product share URL or relative product path."
+          },
+          "skuType": {
+            "type": "integer",
+            "description": "Orderly SKU type. In Orderly, an SKU is a SKUType plus a SKU value."
+          },
+          "skuValue": {
+            "type": "string",
+            "maxLength": 128,
+            "description": "Orderly SKU value."
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "get_recommendations",
+      "description": "Return related Orderly products for a known product. Use this for alternatives and similar items; it does not modify the cart.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "shareUrl": {
+            "type": "string",
+            "maxLength": 512,
+            "description": "Orderly product share URL or relative product path."
+          },
+          "skuType": {
+            "type": "integer",
+            "description": "Orderly SKU type. In Orderly, an SKU is a SKUType plus a SKU value."
+          },
+          "skuValue": {
+            "type": "string",
+            "maxLength": 128,
+            "description": "Orderly SKU value."
+          },
+          "take": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12,
+            "default": 6,
+            "description": "Maximum number of related products to return."
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    },
+    {
+      "name": "search_products",
+      "description": "Search Orderly's Danish webshop inventory for used products. Use this for product discovery only; it does not modify the cart or start checkout.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "description": "Search text, including Danish words, author names, brands, ISBNs, categories, sizes, or product titles."
+          },
+          "take": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12,
+            "default": 8,
+            "description": "Maximum number of products to return."
+          },
+          "continuationToken": {
+            "type": "string",
+            "maxLength": 1024,
+            "description": "Continuation token from a previous search response."
+          },
+          "activeTags": {
+            "type": "array",
+            "description": "Optional backend filter tags returned by or known to Orderly search.",
+            "maxItems": 8,
+            "items": {
+              "type": "string",
+              "maxLength": 80,
+              "description": "One search filter tag."
+            }
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      }
+    }
+  ],
+  "host": "orderly.shop",
+  "source": "webmcp.com/api/directory.json"
+}

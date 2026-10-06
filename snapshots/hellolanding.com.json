@@ -1,0 +1,45 @@
+{
+  "sponsio": 1,
+  "url": "https://www.hellolanding.com/",
+  "capturedAt": "2026-10-06T08:36:23.194Z",
+  "tools": [
+    {
+      "name": "searchApartments",
+      "description": "Search Landing furnished apartments by city and dates. Navigates to the search results page (/s/{market}/apartments).\nUse when the user wants to find a place to stay in a Landing market.\n\nStay types:\n- Fixed: pass endDate as YYYY-MM-DD.\n- Flex (open-ended): pass endDate as the literal string \"indefinite\" AND a committedNights tier — typically 90, 180, or 365 (3, 6, or 12 months). Longer commitments unlock larger discounts (exact amounts vary by home — call getFlexOptions for details). Members can transfer between any of Landing’s 250+ furnished homes with two weeks’ notice.\nThe exact tiers a home accepts vary (e.g. a 90-night-minimum home rejects the 1-month tier). Call getFlexOptions for the home before quoting a tier to the user.\nIf the user is \"flexible\" without picking a length, default to committedNights=180.",
+      "kind": "imperative",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "city"
+        ],
+        "properties": {
+          "city": {
+            "type": "string",
+            "description": "City to search (e.g. \"Birmingham, AL\", \"Austin\"). Resolved against Landing display cities — the first match wins; the tool returns the resolved name/slug so you can confirm."
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Move-in date (YYYY-MM-DD)."
+          },
+          "endDate": {
+            "type": "string",
+            "description": "Move-out date (YYYY-MM-DD) OR the literal string \"indefinite\" for Flex stays."
+          },
+          "committedNights": {
+            "type": "integer",
+            "enum": [
+              30,
+              90,
+              180,
+              365
+            ],
+            "description": "Only valid with endDate=\"indefinite\". Picks the Flex tier (1/3/6/12 months)."
+          }
+        }
+      }
+    }
+  ],
+  "host": "hellolanding.com",
+  "source": "webmcp.com/api/directory.json"
+}
